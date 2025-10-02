@@ -2043,7 +2043,315 @@ header {
             padding-bottom: 8px;
         }
 
-        /* User Details Modal Styles */
+        /* Modern User Profile Modal Styles */
+        .user-profile-modal {
+            backdrop-filter: blur(10px);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        .user-profile-modal.modal-show {
+            opacity: 1;
+        }
+
+        .user-profile-modal.modal-show .profile-modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .user-profile-modal.modal-hide {
+            opacity: 0;
+        }
+
+        .user-profile-modal.modal-hide .profile-modal-content {
+            transform: translateY(-20px) scale(0.95);
+        }
+
+        .profile-modal-content {
+            background: var(--card-bg);
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px) scale(0.95);
+            transition: all 0.3s ease-out;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--color-highlight) 0%, rgba(161, 180, 84, 0.8) 100%);
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            color: white;
+        }
+
+        .profile-avatar {
+            flex-shrink: 0;
+        }
+
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .avatar-initials {
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-title h2 {
+            margin: 0 0 5px 0;
+            font-size: 28px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-subtitle {
+            margin: 0 0 15px 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .profile-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-blue {
+            background: rgba(59, 130, 246, 0.9);
+            color: white;
+        }
+
+        .badge-pink {
+            background: rgba(236, 72, 153, 0.9);
+            color: white;
+        }
+
+        .badge-orange {
+            background: rgba(249, 115, 22, 0.9);
+            color: white;
+        }
+
+        .profile-close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .profile-close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .profile-content {
+            padding: 30px;
+            overflow-y: auto;
+            max-height: calc(90vh - 200px);
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .profile-card {
+            background: var(--bg-color);
+            border-radius: 15px;
+            border: 1px solid rgba(161, 180, 84, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(161, 180, 84, 0.15);
+        }
+
+        .profile-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, rgba(161, 180, 84, 0.1) 0%, rgba(161, 180, 84, 0.05) 100%);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(161, 180, 84, 0.1);
+        }
+
+        .card-icon {
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-highlight);
+            border-radius: 10px;
+            color: white;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            color: var(--color-text);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(161, 180, 84, 0.1);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: var(--color-text);
+            opacity: 0.8;
+            font-size: 14px;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--color-text);
+            text-align: right;
+            font-size: 14px;
+        }
+
+        .text-orange {
+            color: #f97316 !important;
+        }
+
+        .measurement-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .measurement-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(161, 180, 84, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(161, 180, 84, 0.1);
+        }
+
+        .measurement-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--color-highlight);
+            margin-bottom: 5px;
+        }
+
+        .measurement-label {
+            font-size: 12px;
+            color: var(--color-text);
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                backdrop-filter: blur(0px);
+            }
+            to {
+                opacity: 1;
+                backdrop-filter: blur(10px);
+            }
+        }
+
+        /* Responsive Design for Profile Modal */
+        @media (max-width: 768px) {
+            .profile-modal-content {
+                margin: 5% auto;
+                width: 98%;
+                max-height: 95vh;
+            }
+
+            .profile-header {
+                padding: 20px;
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .profile-title h2 {
+                font-size: 24px;
+            }
+
+            .profile-content {
+                padding: 20px;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .measurement-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .measurement-item {
+                padding: 12px;
+            }
+
+            .measurement-value {
+                font-size: 20px;
+            }
+        }
+
+        /* Legacy User Details Modal Styles (for compatibility) */
         .user-details-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -5262,105 +5570,155 @@ header {
         }
 
         function showUserDetailsModal(userData) {
+            // Calculate age from birthday if available
+            let ageDisplay = 'N/A';
+            if (userData.birthday) {
+                const birthDate = new Date(userData.birthday);
+                const today = new Date();
+                const age = Math.floor((today - birthDate) / (365.25 * 24 * 60 * 60 * 1000));
+                ageDisplay = `${age} years old`;
+            }
+
+            // Calculate BMI if weight and height are available
+            let bmiDisplay = 'N/A';
+            if (userData.weight && userData.height) {
+                const heightInM = userData.height / 100;
+                const bmi = (userData.weight / (heightInM * heightInM)).toFixed(1);
+                bmiDisplay = bmi;
+            }
+
+            // Format dates
+            const formatDate = (dateString) => {
+                if (!dateString) return 'N/A';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            };
+
             const modal = document.createElement('div');
-            modal.className = 'modal';
+            modal.className = 'modal user-profile-modal';
             modal.innerHTML = `
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2>User Details - ${userData.name || 'N/A'}</h2>
-                        <span class="close" onclick="this.parentElement.parentElement.parentElement.remove()">&times;</span>
+                <div class="modal-content profile-modal-content">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <div class="avatar-circle">
+                                <span class="avatar-initials">${(userData.name || 'U').charAt(0).toUpperCase()}</span>
+                            </div>
+                        </div>
+                        <div class="profile-title">
+                            <h2>${userData.name || 'Unknown User'}</h2>
+                            <p class="profile-subtitle">${userData.email || 'No email provided'}</p>
+                            <div class="profile-badges">
+                                <span class="badge ${userData.sex === 'Male' ? 'badge-blue' : 'badge-pink'}">${userData.sex || 'N/A'}</span>
+                                ${userData.is_pregnant === 'Yes' ? '<span class="badge badge-orange">Pregnant</span>' : ''}
+                            </div>
+                        </div>
+                        <button class="profile-close-btn" onclick="this.closest('.modal').remove()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
                     </div>
-                    <div class="modal-body">
-                        <div class="user-details-grid">
-                            <div class="detail-section">
-                                <h3>Personal Information</h3>
-                                <div class="detail-item">
-                                    <label>Name:</label>
-                                    <span>${userData.name || 'N/A'}</span>
+                    
+                    <div class="profile-content">
+                        <div class="profile-grid">
+                            <!-- Personal Information Card -->
+                            <div class="profile-card">
+                                <div class="card-header">
+                                    <div class="card-icon">👤</div>
+                                    <h3>Personal Information</h3>
                                 </div>
-                                <div class="detail-item">
-                                    <label>Email:</label>
-                                    <span>${userData.email || 'N/A'}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <label>Age:</label>
-                                    <span>${userData.age || 'N/A'}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <label>Sex:</label>
-                                    <span>${userData.sex || 'N/A'}</span>
-                                </div>
-                            </div>
-                            
-                            <div class="detail-section">
-                                <h3>Location Information</h3>
-                                <div class="detail-item">
-                                    <label>Municipality:</label>
-                                    <span>${userData.municipality || 'N/A'}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <label>Barangay:</label>
-                                    <span>${userData.barangay || 'N/A'}</span>
-                                </div>
-                            </div>
-                            
-                            <div class="detail-section">
-                                <h3>Physical Measurements</h3>
-                                <div class="detail-item">
-                                    <label>Weight (kg):</label>
-                                    <span>${userData.weight || 'N/A'}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <label>Height (cm):</label>
-                                    <span>${userData.height || 'N/A'}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <label>BMI:</label>
-                                    <span>${userData.bmi || 'N/A'}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <label>MUAC (cm):</label>
-                                    <span>${userData.muac_cm || 'N/A'}</span>
+                                <div class="card-content">
+                                    <div class="info-row">
+                                        <span class="info-label">Full Name</span>
+                                        <span class="info-value">${userData.name || 'N/A'}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Email Address</span>
+                                        <span class="info-value">${userData.email || 'N/A'}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Date of Birth</span>
+                                        <span class="info-value">${formatDate(userData.birthday)}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Age</span>
+                                        <span class="info-value">${ageDisplay}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Gender</span>
+                                        <span class="info-value">${userData.sex || 'N/A'}</span>
+                                    </div>
+                                    ${userData.is_pregnant ? `
+                                    <div class="info-row">
+                                        <span class="info-label">Pregnancy Status</span>
+                                        <span class="info-value ${userData.is_pregnant === 'Yes' ? 'text-orange' : ''}">${userData.is_pregnant}</span>
+                                    </div>
+                                    ` : ''}
                                 </div>
                             </div>
-                            
-                            <div class="detail-section">
-                                <h3>Assessment Results</h3>
-                                <div class="detail-item">
-                                    <label>Weight-for-Age Z-Score:</label>
-                                    <span>${userData.weight_for_age || 'N/A'}</span>
+
+                            <!-- Location Information Card -->
+                            <div class="profile-card">
+                                <div class="card-header">
+                                    <div class="card-icon">📍</div>
+                                    <h3>Location Details</h3>
                                 </div>
-                                <div class="detail-item">
-                                    <label>Height-for-Age Z-Score:</label>
-                                    <span>${userData.height_for_age || 'N/A'}</span>
+                                <div class="card-content">
+                                    <div class="info-row">
+                                        <span class="info-label">Municipality</span>
+                                        <span class="info-value">${userData.municipality || 'N/A'}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Barangay</span>
+                                        <span class="info-value">${userData.barangay || 'N/A'}</span>
+                                    </div>
                                 </div>
-                                <div class="detail-item">
-                                    <label>Weight-for-Height Z-Score:</label>
-                                    <span>${userData.weight_for_height || 'N/A'}</span>
+                            </div>
+
+                            <!-- Physical Measurements Card -->
+                            <div class="profile-card">
+                                <div class="card-header">
+                                    <div class="card-icon">📏</div>
+                                    <h3>Physical Measurements</h3>
                                 </div>
-                                <div class="detail-item">
-                                    <label>BMI-for-Age Z-Score:</label>
-                                    <span>${userData.bmi_for_age || 'N/A'}</span>
+                                <div class="card-content">
+                                    <div class="measurement-grid">
+                                        <div class="measurement-item">
+                                            <div class="measurement-value">${userData.weight || 'N/A'}</div>
+                                            <div class="measurement-label">Weight (kg)</div>
+                                        </div>
+                                        <div class="measurement-item">
+                                            <div class="measurement-value">${userData.height || 'N/A'}</div>
+                                            <div class="measurement-label">Height (cm)</div>
+                                        </div>
+                                        <div class="measurement-item">
+                                            <div class="measurement-value">${bmiDisplay}</div>
+                                            <div class="measurement-label">BMI</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="detail-item">
-                                    <label>BMI Category:</label>
-                                    <span>${userData.bmi_category || 'N/A'}</span>
+                            </div>
+
+                            <!-- Screening Information Card -->
+                            <div class="profile-card full-width">
+                                <div class="card-header">
+                                    <div class="card-icon">🏥</div>
+                                    <h3>Screening Information</h3>
                                 </div>
-                                <div class="detail-item">
-                                    <label>MUAC Category:</label>
-                                    <span>${userData.muac_category || 'N/A'}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <label>Nutritional Risk:</label>
-                                    <span>${userData.nutritional_risk || 'N/A'}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <label>Screening Date:</label>
-                                    <span>${userData.screening_date || 'N/A'}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <label>Record Created:</label>
-                                    <span>${userData.created_at || 'N/A'}</span>
+                                <div class="card-content">
+                                    <div class="info-row">
+                                        <span class="info-label">Last Screening Date</span>
+                                        <span class="info-value">${formatDate(userData.screening_date)}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Record Created</span>
+                                        <span class="info-value">${formatDate(userData.created_at)}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -5371,12 +5729,28 @@ header {
             document.body.appendChild(modal);
             modal.style.display = 'block';
             
+            // Add animation
+            setTimeout(() => {
+                modal.classList.add('modal-show');
+            }, 10);
+            
             // Close modal when clicking outside
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
-                    modal.remove();
+                    modal.classList.add('modal-hide');
+                    setTimeout(() => modal.remove(), 300);
                 }
             });
+
+            // Close with Escape key
+            const handleEscape = (e) => {
+                if (e.key === 'Escape') {
+                    modal.classList.add('modal-hide');
+                    setTimeout(() => modal.remove(), 300);
+                    document.removeEventListener('keydown', handleEscape);
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
         }
 
         // BMI calculations are now handled by WHO Growth Standards PHP backend
