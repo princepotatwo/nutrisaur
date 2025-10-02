@@ -43,10 +43,10 @@ try {
         $isEmail = filter_var($usernameOrEmail, FILTER_VALIDATE_EMAIL);
         
         if ($isEmail) {
-            $stmt = $pdo->prepare("SELECT user_id, username, email, password FROM users WHERE email = :email");
+            $stmt = $pdo->prepare("SELECT user_id, username, email, password, is_active FROM users WHERE email = :email");
             $stmt->bindParam(':email', $usernameOrEmail);
         } else {
-            $stmt = $pdo->prepare("SELECT user_id, username, email, password FROM users WHERE username = :username");
+            $stmt = $pdo->prepare("SELECT user_id, username, email, password, is_active FROM users WHERE username = :username");
             $stmt->bindParam(':username', $usernameOrEmail);
         }
         
@@ -56,6 +56,12 @@ try {
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if (password_verify($password, $user['password'])) {
+                // Check if user is archived/inactive
+                if (isset($user['is_active']) && $user['is_active'] == 0) {
+                    echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
+                    exit;
+                }
+                
                 // Login successful - no email verification required for existing users
                 
                 $_SESSION['user_id'] = $user['user_id'];
