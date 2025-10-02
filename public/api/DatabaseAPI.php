@@ -7185,9 +7185,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $email = $data['email'] ?? '';
                 $note = $data['note'] ?? '';
                 
-                if (empty($email) || empty($note)) {
-                    echo json_encode(['success' => false, 'message' => 'Email and note are required']);
+                if (empty($email)) {
+                    echo json_encode(['success' => false, 'message' => 'Email is required']);
                     break;
+                }
+                
+                // Allow empty note for deletion
+                if ($note === null || $note === '') {
+                    $note = '';
                 }
                 
                 // Update the notes field for the user
@@ -7195,14 +7200,15 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $result = $stmt->execute([$note, $email]);
                 
                 if ($result) {
+                    $message = empty($note) ? 'Note deleted successfully' : 'Note saved successfully';
                     echo json_encode([
                         'success' => true, 
-                        'message' => 'Note saved successfully',
+                        'message' => $message,
                         'email' => $email,
                         'note_length' => strlen($note)
                     ]);
                 } else {
-                    echo json_encode(['success' => false, 'message' => 'Failed to save note']);
+                    echo json_encode(['success' => false, 'message' => 'Failed to update note']);
                 }
                 
             } catch (Exception $e) {
