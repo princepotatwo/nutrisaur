@@ -7269,7 +7269,7 @@ header {
                     </p>
                     ${noteDate ? `<p style="margin: 0 0 20px 0; color: var(--color-text); opacity: 0.7; font-style: italic; font-size: 14px;">${noteDate}</p>` : ''}
                     <div style="margin-bottom: 20px; padding: 15px; background: var(--color-input); border-radius: 8px; border: 1px solid var(--color-border);">
-                        <p style="margin: 0; color: var(--color-text); line-height: 1.5; white-space: pre-wrap;">${noteText || 'No note content'}</p>
+                        <p style="margin: 0; color: var(--color-text); line-height: 1.5; white-space: pre-wrap;">${noteText || 'This user has no notes.'}</p>
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: flex-end;">
                         <button onclick="closeNoteModal(this)" 
@@ -7426,7 +7426,12 @@ header {
                     note: noteToSave 
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log('📝 Note save response:', data);
                 
@@ -7471,7 +7476,12 @@ header {
                     note: '' 
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log('🗑️ Note delete response:', data);
                 
