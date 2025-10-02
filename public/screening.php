@@ -5032,7 +5032,7 @@ header {
                                             echo '<td class="text-center">' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                             echo '<td class="text-center">';
                                             echo '<div class="action-buttons">';
-                                            echo '<button class="btn-view" onclick="console.log(\'🔍 View button clicked for user ID: ' . $user['id'] . '\'); viewUserDetails(' . $user['id'] . ')" title="View Full Details">';
+                                            echo '<button class="btn-view" onclick="console.log(\'🔍 View button clicked for user EMAIL: ' . htmlspecialchars($user['email']) . '\'); viewUserDetails(\'' . htmlspecialchars($user['email']) . '\')" title="View Full Details">';
                                             echo 'View';
                                             echo '</button>';
                                             echo '</div>';
@@ -5556,15 +5556,15 @@ header {
                 });
         }
 
-        function viewUserDetails(userId) {
+        function viewUserDetails(userEmail) {
             console.log('🔍 ViewUserDetails function called!');
-            console.log('   - userId parameter:', userId);
-            console.log('   - typeof userId:', typeof userId);
+            console.log('   - userEmail parameter:', userEmail);
+            console.log('   - typeof userEmail:', typeof userEmail);
             
-            // Validate userId
-            if (!userId || userId === 'undefined' || userId === 'null') {
-                console.error('❌ Invalid userId:', userId);
-                alert('Error: Invalid user ID');
+            // Validate userEmail
+            if (!userEmail || userEmail === 'undefined' || userEmail === 'null') {
+                console.error('❌ Invalid userEmail:', userEmail);
+                alert('Error: Invalid user email');
                 return;
             }
 
@@ -5584,9 +5584,15 @@ header {
 
             console.log('📡 Fetching user details from API...');
             
-            // Fetch user details via AJAX
-            fetch(`/api/DatabaseAPI.php?action=get_user_details&user_id=${userId}`)
-                .then(response => {
+        // Fetch user details via AJAX using email as identifier
+        fetch('api/DatabaseAPI.php?action=get_community_user_data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: userEmail })
+        })
+            .then(response => {
                     console.log('📥 API Response received:', response.status, response.statusText);
                     
                     if (!response.ok) {
@@ -5595,27 +5601,27 @@ header {
                     
                     return response.json();
                 })
-                .then(data => {
-                    console.log('📋 User data received:', data);
-                    
-                    // Remove loading modal
-                    loadingModal.remove();
-                    
-                    if (data.error) {
-                        console.error('❌ API Error:', data.error);
-                        alert('Error loading user details: ' + data.error);
-                        return;
-                    }
-                    
-                    if (!data || Object.keys(data).length === 0) {
-                        console.error('❌ Empty data received');
-                        alert('Error: No user data received');
-                        return;
-                    }
-                    
-                    console.log('✅ Showing user modal...');
-                    showUserDetailsModal(data);
-                })
+                    .then(data => {
+                        console.log('📋 User data received:', data);
+                        
+                        // Remove loading modal
+                        loadingModal.remove();
+                        
+                        if (!data.success) {
+                            console.error('❌ API Error:', data.message);
+                            alert('Error loading user details: ' + data.message);
+                            return;
+                        }
+                        
+                        if (!data.data || Object.keys(data.data).length === 0) {
+                            console.error('❌ Empty data received');
+                            alert('Error: No user data received');
+                            return;
+                        }
+                        
+                        console.log('✅ Showing user modal...');
+                        showUserDetailsModal(data.data);
+                    })
                 .catch(error => {
                     console.error('❌ Fetch Error:', error);
                     

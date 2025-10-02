@@ -4189,6 +4189,53 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
+        // GET COMMUNITY USER DATA API
+        // ========================================
+        case 'get_community_user_data':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Try to get JSON data first
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                // If JSON parsing fails, try form data
+                if (!$data) {
+                    $data = $_POST;
+                }
+                
+                if (!$data) {
+                    echo json_encode(['success' => false, 'message' => 'No data provided']);
+                    break;
+                }
+                
+                $email = $data['email'] ?? '';
+                
+                if (empty($email)) {
+                    echo json_encode(['success' => false, 'message' => 'Email is required']);
+                    break;
+                }
+                
+                // Get user from community_users table
+                $result = $db->universalSelect('community_users', '*', 'email = ?', '', '', [$email]);
+                
+                if (!$result['success'] || empty($result['data'])) {
+                    echo json_encode(['success' => false, 'message' => 'User not found']);
+                    break;
+                }
+                
+                $user = $result['data'][0];
+                
+                // Return user data (without password for security)
+                unset($user['password']);
+                echo json_encode([
+                    'success' => true,
+                    'data' => $user
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            }
+            break;
+            
+        // ========================================
         // LOGIN API
         // ========================================
         case 'login':
