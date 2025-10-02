@@ -2483,7 +2483,7 @@ header {
             color: var(--color-text);
         }
 
-        /* New Control Grid Layout - Strictly Contained */
+        /* New Control Grid Layout - Flexbox for Strict Containment */
         .control-grid {
             background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.1) 100%);
             border-radius: 12px;
@@ -2491,17 +2491,18 @@ header {
             margin-bottom: 20px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             border: 2px solid rgba(161, 180, 84, 0.3);
-            display: grid;
-            grid-template-rows: auto auto;
+            display: flex;
+            flex-direction: column;
             gap: 20px;
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
             position: relative;
             overflow: hidden;
+            contain: layout style;
         }
 
-        /* Row 1: Action Buttons and Search - Strictly Contained */
+        /* Row 1: Action Buttons and Search - Flexbox Child */
         .control-row-1 {
             display: flex;
             gap: 20px;
@@ -2513,6 +2514,8 @@ header {
             box-sizing: border-box;
             overflow: hidden;
             position: static;
+            flex-shrink: 0;
+            contain: layout;
         }
 
         .action-section {
@@ -2609,7 +2612,7 @@ header {
             transform: scale(1.05);
         }
 
-        /* Row 2: Filter Controls - Properly Contained */
+        /* Row 2: Filter Controls - Flexbox Child */
         .control-row-2 {
             background: linear-gradient(135deg, rgba(161, 180, 84, 0.15) 0%, rgba(161, 180, 84, 0.05) 100%);
             border-radius: 10px;
@@ -2620,6 +2623,8 @@ header {
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
+            flex-shrink: 0;
+            contain: layout;
         }
 
         .filter-section {
