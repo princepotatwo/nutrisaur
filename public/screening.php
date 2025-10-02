@@ -1626,6 +1626,7 @@ header {
             flex-wrap: nowrap;
             width: 100%;
             box-sizing: border-box;
+            text-align: center;
         }
 
         .action-buttons .btn-view {
@@ -4009,7 +4010,7 @@ header {
                                             
                                             echo '<td class="text-center">' . htmlspecialchars($classificationDisplay) . '</td>';
                                             echo '<td class="text-center">' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
-                                            echo '<td class="action-buttons">';
+                                            echo '<td class="text-center action-buttons">';
                                             echo '<button class="btn-view" onclick="viewUserDetails(' . $user['id'] . ')" title="View Full Details">';
                                             echo 'View';
                                             echo '</button>';
@@ -4610,12 +4611,28 @@ header {
                             <div class="detail-section">
                                 <h3>Assessment Results</h3>
                                 <div class="detail-item">
-                                    <label>Z-Score:</label>
-                                    <span>${userData.z_score || 'N/A'}</span>
+                                    <label>Weight-for-Age Z-Score:</label>
+                                    <span>${userData.weight_for_age || 'N/A'}</span>
                                 </div>
                                 <div class="detail-item">
-                                    <label>Classification:</label>
-                                    <span>${userData.classification || 'N/A'}</span>
+                                    <label>Height-for-Age Z-Score:</label>
+                                    <span>${userData.height_for_age || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Weight-for-Height Z-Score:</label>
+                                    <span>${userData.weight_for_height || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>BMI-for-Age Z-Score:</label>
+                                    <span>${userData.bmi_for_age || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>BMI Category:</label>
+                                    <span>${userData.bmi_category || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>MUAC Category:</label>
+                                    <span>${userData.muac_category || 'N/A'}</span>
                                 </div>
                                 <div class="detail-item">
                                     <label>Nutritional Risk:</label>
@@ -4624,6 +4641,10 @@ header {
                                 <div class="detail-item">
                                     <label>Screening Date:</label>
                                     <span>${userData.screening_date || 'N/A'}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <label>Record Created:</label>
+                                    <span>${userData.created_at || 'N/A'}</span>
                                 </div>
                             </div>
                         </div>
