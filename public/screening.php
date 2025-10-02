@@ -2178,7 +2178,7 @@ header {
             font-weight: bold;
         }
 
-        /* User Management Styles - Same as settings.php */
+        /* User Management Styles - Fixed for Full Screen */
         .user-management-container {
             background-color: var(--color-card);
             border-radius: 20px;
@@ -2187,11 +2187,12 @@ header {
             margin-bottom: 30px;
             border: 1px solid var(--color-border);
             position: relative;
-            overflow: hidden;
+            overflow: visible;
             width: 100%;
-            max-width: calc(100% - 60px);
+            max-width: 100%;
             margin-left: 0;
             margin-right: 0;
+            box-sizing: border-box;
         }
 
         /* Dark theme specific styles */
@@ -2482,7 +2483,7 @@ header {
             color: var(--color-text);
         }
 
-        /* New Control Grid Layout - Larger for Full Screen */
+        /* New Control Grid Layout - Properly Contained */
         .control-grid {
             background: linear-gradient(135deg, var(--color-card) 0%, rgba(161, 180, 84, 0.1) 100%);
             border-radius: 12px;
@@ -2494,7 +2495,8 @@ header {
             grid-template-rows: auto auto;
             gap: 20px;
             width: 100%;
-            max-width: none;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         /* Row 1: Action Buttons and Search - Larger for Full Screen */
@@ -2564,8 +2566,10 @@ header {
             color: var(--color-text);
             outline: none;
             transition: all 0.3s ease;
-            width: 350px;
-            flex-shrink: 0;
+            width: 100%;
+            max-width: 350px;
+            min-width: 250px;
+            flex-shrink: 1;
             height: 45px;
             box-sizing: border-box;
         }
