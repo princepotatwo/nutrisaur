@@ -5766,8 +5766,11 @@ header {
         let pendingDeleteData = null;
 
         function showPasswordConfirmModal(deleteAction, deleteData, confirmMessage) {
+            console.log('Setting up password modal with:', {deleteAction, deleteData, confirmMessage});
             pendingDeleteAction = deleteAction;
             pendingDeleteData = deleteData;
+            
+            console.log('Pending actions set:', {pendingDeleteAction, pendingDeleteData});
             
             document.getElementById('deleteConfirmMessage').textContent = confirmMessage || 'Please enter your admin password to confirm this deletion.';
             document.getElementById('confirmPassword').value = '';
@@ -5817,14 +5820,20 @@ header {
                 try { return JSON.parse(text); } catch { return {success: false, error: 'Invalid response'}; }
             }))
             .then(data => {
+                console.log('Password verification response:', data);
                 if (data.success) {
                     // Password verified, proceed with deletion
+                    console.log('Password verified! Calling delete function:', pendingDeleteAction, 'with data:', pendingDeleteData);
                     closePasswordConfirmModal();
                     if (pendingDeleteAction && pendingDeleteData) {
+                        console.log('Executing delete action...');
                         pendingDeleteAction(pendingDeleteData);
+                    } else {
+                        console.error('Missing delete action or data:', {pendingDeleteAction, pendingDeleteData});
                     }
                 } else {
                     // Password verification failed
+                    console.log('Password verification failed:', data.error);
                     passwordError.textContent = data.error || 'Incorrect password';
                     passwordError.style.display = 'block';
                 }
