@@ -13364,6 +13364,40 @@ body {
             });
         }
         
+        // Optimized chart update function
+        function updateChartSmoothly(chartInstance, newData, options = {}) {
+            if (!chartInstance) return;
+            
+            // Add updating class to chart container
+            const chartContainer = chartInstance.canvas.parentElement;
+            if (chartContainer) {
+                chartContainer.classList.add('chart-updating');
+            }
+            
+            // Update chart data smoothly
+            if (newData.datasets) {
+                chartInstance.data.datasets = newData.datasets;
+            }
+            if (newData.labels) {
+                chartInstance.data.labels = newData.labels;
+            }
+            
+            // Update options if provided
+            if (options) {
+                Object.assign(chartInstance.options, options);
+            }
+            
+            // Update chart with animation
+            chartInstance.update('none'); // No animation for instant update
+            
+            // Remove updating class after a short delay
+            setTimeout(() => {
+                if (chartContainer) {
+                    chartContainer.classList.remove('chart-updating');
+                }
+            }, 300);
+        }
+        
         // Function to start real-time updates
         function startRealtimeUpdates() {
             if (isRealtimeActive) {
@@ -13396,13 +13430,24 @@ body {
                         const currentWHOStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
                         console.log('🔄 Real-time update with WHO standard:', currentWHOStandard);
                         
-                        // Update dashboard components silently with current filters
-                        await updateDashboardForBarangay(currentBarangay);
+                        // Add subtle visual feedback for updating
+                        addUpdatingClass('.metric-card, .chart-container, .data-display');
                         
-                        // Also update WHO chart to respect current WHO standard filter
-                        await handleWHOStandardChange();
-                        
-                        console.log('✅ Real-time update completed');
+                        try {
+                            // Update dashboard components silently with current filters
+                            await updateDashboardForBarangay(currentBarangay);
+                            
+                            // Also update WHO chart to respect current WHO standard filter
+                            await handleWHOStandardChange();
+                            
+                            // Add smooth fade effect to indicate successful update
+                            addSmoothFade('.metric-card, .chart-container');
+                            
+                            console.log('✅ Real-time update completed');
+                        } finally {
+                            // Always remove updating class
+                            removeUpdatingClass('.metric-card, .chart-container, .data-display');
+                        }
                     } else {
                         console.log('⏸️ Skipping real-time update - visibility:', document.visibilityState, 'updateInProgress:', dashboardState.updateInProgress);
                         
