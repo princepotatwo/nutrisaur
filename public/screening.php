@@ -2612,19 +2612,19 @@ header {
             transform: scale(1.05);
         }
 
-        /* Row 2: Filter Controls - Flexbox Child */
+        /* Row 2: Filter Controls - Strict Container */
         .control-row-2 {
             background: linear-gradient(135deg, rgba(161, 180, 84, 0.15) 0%, rgba(161, 180, 84, 0.05) 100%);
             border-radius: 10px;
             padding: 20px;
             border: 1px solid rgba(161, 180, 84, 0.2);
-            overflow: visible;
-            position: static;
+            overflow: hidden;
+            position: relative;
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
             flex-shrink: 0;
-            contain: layout;
+            contain: layout style;
         }
 
         .filter-section {
@@ -2632,11 +2632,12 @@ header {
             grid-template-columns: repeat(6, 1fr);
             gap: 20px;
             align-items: end;
-            overflow: visible;
+            overflow: hidden;
             position: static;
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
+            contain: layout;
         }
 
         .filter-item {
@@ -2644,6 +2645,10 @@ header {
             flex-direction: column;
             gap: 8px;
             position: static;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         .filter-item label {
@@ -2660,6 +2665,7 @@ header {
         .filter-item select,
         .filter-item input {
             width: 100%;
+            max-width: 100%;
             padding: 12px 15px;
             border: 2px solid rgba(161, 180, 84, 0.3);
             border-radius: 8px;
@@ -2673,6 +2679,7 @@ header {
             position: static;
             height: 45px;
             box-sizing: border-box;
+            overflow: hidden;
         }
 
         .filter-item select:hover,
