@@ -13293,11 +13293,292 @@ body {
             console.log('📱 Option selected:', value, text);
         }
 
+        // Real-time dashboard updates
+        let realTimeInterval;
+        let isUpdating = false;
+        let lastUpdateTime = Date.now();
+
+        async function updateDashboardData() {
+            if (isUpdating) {
+                console.log('⏳ Dashboard update already in progress, skipping...');
+                return;
+            }
+
+            isUpdating = true;
+            
+            try {
+                // Show loading indicator
+                showLoadingIndicator();
+                
+                // Get current barangay filter
+                const barangaySelect = document.querySelector('select[name="barangay"]');
+                const currentBarangay = barangaySelect ? barangaySelect.value : 'all';
+                
+                // Fetch updated data
+                const response = await fetch(`/api/dashboard_data.php?barangay=${currentBarangay}&t=${Date.now()}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const dashboardData = await response.json();
+                
+                if (!dashboardData.success) {
+                    throw new Error(dashboardData.message || 'Failed to fetch dashboard data');
+                }
+                
+                console.log('🔄 Dashboard data updated:', dashboardData.timestamp);
+                
+                // Update dashboard elements
+                updateDashboardElements(dashboardData.data);
+                
+                // Update last update time
+                lastUpdateTime = Date.now();
+                updateLastUpdateIndicator();
+                
+                hideLoadingIndicator();
+                
+            } catch (error) {
+                console.error('❌ Error updating dashboard:', error);
+                hideLoadingIndicator();
+                showErrorIndicator();
+            } finally {
+                isUpdating = false;
+            }
+        }
+
+        function updateDashboardElements(data) {
+            // Update main metrics
+            updateMetrics(data.metrics);
+            
+            // Update statistics
+            updateStatistics(data.nutritional_statistics);
+            
+            // Note: Charts are updated via existing dropdown change handlers
+            // Real-time updates only refresh metrics and statistics
+        }
+
+        function updateMetrics(metrics) {
+            // Update total screened
+            const totalElement = document.querySelector('.metric-card .metric-number');
+            if (totalElement && totalElement.textContent !== metrics.total_screened.toString()) {
+                animateNumberChange(totalElement, metrics.total_screened);
+            }
+            
+            // Update other metric cards
+            const metricCards = document.querySelectorAll('.metric-card');
+            metricCards.forEach((card, index) => {
+                const numberElement = card.querySelector('.metric-number');
+                if (numberElement) {
+                    let newValue;
+                    switch (index) {
+                        case 0: newValue = metrics.total_screened; break;
+                        case 1: newValue = metrics.high_risk_cases; break;
+                        case 2: newValue = metrics.sam_cases; break;
+                        case 3: newValue = metrics.severely_wasted; break;
+                        default: return;
+                    }
+                    
+                    if (numberElement.textContent !== newValue.toString()) {
+                        animateNumberChange(numberElement, newValue);
+                    }
+                }
+            });
+        }
+
+
+        function updateStatistics(stats) {
+            // Update nutritional statistics display
+            if (window.nutritionalStatistics) {
+                window.nutritionalStatistics = stats;
+                console.log('📊 Nutritional statistics updated');
+            }
+        }
+
+        function animateNumberChange(element, newValue) {
+            const currentValue = parseInt(element.textContent) || 0;
+            const difference = newValue - currentValue;
+            
+            if (difference === 0) return;
+            
+            // Add animation class
+            element.classList.add('updating');
+            
+            // Animate the number change
+            const duration = 500;
+            const steps = 20;
+            const stepValue = difference / steps;
+            let currentStep = 0;
+            
+            const animation = setInterval(() => {
+                currentStep++;
+                const displayValue = Math.round(currentValue + (stepValue * currentStep));
+                element.textContent = displayValue;
+                
+                if (currentStep >= steps) {
+                    clearInterval(animation);
+                    element.textContent = newValue;
+                    element.classList.remove('updating');
+                    
+                    // Add flash effect for significant changes
+                    if (Math.abs(difference) > 0) {
+                        element.classList.add('changed');
+                        setTimeout(() => element.classList.remove('changed'), 1000);
+                    }
+                }
+            }, duration / steps);
+        }
+
+        function showLoadingIndicator() {
+            let indicator = document.getElementById('realtime-loading');
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.id = 'realtime-loading';
+                indicator.innerHTML = '🔄 Updating...';
+                indicator.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: rgba(0, 123, 255, 0.9);
+                    color: white;
+                    padding: 8px 16px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    z-index: 10000;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                `;
+                document.body.appendChild(indicator);
+            }
+            indicator.style.opacity = '1';
+        }
+
+        function hideLoadingIndicator() {
+            const indicator = document.getElementById('realtime-loading');
+            if (indicator) {
+                indicator.style.opacity = '0';
+            }
+        }
+
+        function showErrorIndicator() {
+            let indicator = document.getElementById('realtime-error');
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.id = 'realtime-error';
+                indicator.innerHTML = '⚠️ Update failed';
+                indicator.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: rgba(220, 53, 69, 0.9);
+                    color: white;
+                    padding: 8px 16px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    z-index: 10000;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                `;
+                document.body.appendChild(indicator);
+            }
+            indicator.style.opacity = '1';
+            setTimeout(() => {
+                indicator.style.opacity = '0';
+            }, 3000);
+        }
+
+        function updateLastUpdateIndicator() {
+            let indicator = document.getElementById('last-update-indicator');
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.id = 'last-update-indicator';
+                indicator.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background: rgba(40, 167, 69, 0.9);
+                    color: white;
+                    padding: 6px 12px;
+                    border-radius: 15px;
+                    font-size: 11px;
+                    z-index: 9999;
+                    opacity: 0.7;
+                `;
+                document.body.appendChild(indicator);
+            }
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            indicator.textContent = `Last updated: ${timeString}`;
+        }
+
+        function startRealTimeUpdates() {
+            console.log('🚀 Starting real-time dashboard updates (every 3 seconds)');
+            
+            // Initial update
+            updateLastUpdateIndicator();
+            
+            // Set up interval for updates every 3 seconds
+            realTimeInterval = setInterval(updateDashboardData, 3000);
+            
+            // Add pause/resume functionality when tab is not visible
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    console.log('⏸️ Pausing real-time updates (tab hidden)');
+                    if (realTimeInterval) {
+                        clearInterval(realTimeInterval);
+                        realTimeInterval = null;
+                    }
+                } else {
+                    console.log('▶️ Resuming real-time updates (tab visible)');
+                    if (!realTimeInterval) {
+                        realTimeInterval = setInterval(updateDashboardData, 3000);
+                        // Immediate update when tab becomes visible
+                        updateDashboardData();
+                    }
+                }
+            });
+        }
+
+        function stopRealTimeUpdates() {
+            console.log('⏹️ Stopping real-time dashboard updates');
+            if (realTimeInterval) {
+                clearInterval(realTimeInterval);
+                realTimeInterval = null;
+            }
+        }
+
+        // Add CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            .metric-number.updating {
+                color: #007bff;
+                transition: color 0.3s ease;
+            }
+            
+            .metric-number.changed {
+                background: rgba(40, 167, 69, 0.2);
+                border-radius: 4px;
+                padding: 2px 4px;
+                animation: flash 1s ease-out;
+            }
+            
+            @keyframes flash {
+                0% { background: rgba(40, 167, 69, 0.4); }
+                100% { background: rgba(40, 167, 69, 0.1); }
+            }
+        `;
+        document.head.appendChild(style);
+
         // Initialize when DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initNavigation);
+            document.addEventListener('DOMContentLoaded', function() {
+                initNavigation();
+                startRealTimeUpdates();
+            });
         } else {
             initNavigation();
+            startRealTimeUpdates();
         }
 
     </script>
