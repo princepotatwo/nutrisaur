@@ -2660,19 +2660,99 @@ header {
             font-family: 'Courier New', monospace;
         }
 
-        /* WHO Standard dropdown specific styling */
-        #standardFilter {
-            background: var(--color-bg) !important;
-            border: 2px solid rgba(161, 180, 84, 0.3) !important;
-            position: relative !important;
-            z-index: 200 !important;
+        /* WHO Standard buttons styling */
+        .who-standard-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
         }
 
-        #standardFilter option {
-            background: var(--color-bg) !important;
-            color: var(--color-text) !important;
-            padding: 8px !important;
-            border: none !important;
+        .who-standard-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            border: 2px solid rgba(161, 180, 84, 0.3);
+            border-radius: 6px;
+            background: var(--color-bg);
+            color: var(--color-text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+            min-height: 50px;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .who-standard-btn:hover {
+            border-color: var(--color-highlight);
+            background: rgba(161, 180, 84, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(161, 180, 84, 0.2);
+        }
+
+        .who-standard-btn.active {
+            border-color: var(--color-highlight);
+            background: var(--color-highlight);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(161, 180, 84, 0.3);
+        }
+
+        .who-standard-btn.active:hover {
+            background: var(--color-highlight);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(161, 180, 84, 0.4);
+        }
+
+        .btn-title {
+            font-size: 10px;
+            font-weight: 600;
+            line-height: 1.1;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+
+        .btn-subtitle {
+            font-size: 8px;
+            opacity: 0.8;
+            line-height: 1;
+            text-align: center;
+            font-weight: 400;
+        }
+
+        .who-standard-btn.active .btn-subtitle {
+            opacity: 0.9;
+        }
+
+        /* Responsive adjustments for WHO standard buttons */
+        @media (max-width: 768px) {
+            .who-standard-buttons {
+                gap: 6px;
+            }
+            
+            .who-standard-btn {
+                min-width: 70px;
+                min-height: 45px;
+                padding: 6px 8px;
+            }
+            
+            .btn-title {
+                font-size: 9px;
+            }
+            
+            .btn-subtitle {
+                font-size: 7px;
+            }
+        }
+
+        /* Hidden dropdown for compatibility */
+        #standardFilter {
+            display: none !important;
         }
 
         /* Table responsive behavior for different screen sizes */
@@ -4211,8 +4291,31 @@ header {
                             
                             <div class="filter-item">
                                 <label>WHO STANDARD</label>
-                                <select id="standardFilter" onchange="filterByStandard()">
-                                    <option value="weight-for-age">Weight-for-Age (0-71 months)</option>
+                                <div class="who-standard-buttons">
+                                    <button type="button" class="who-standard-btn active" data-standard="weight-for-age" onclick="selectWHOStandard('weight-for-age', this)">
+                                        <span class="btn-title">Weight-for-Age</span>
+                                        <span class="btn-subtitle">(0-71 months)</span>
+                                    </button>
+                                    <button type="button" class="who-standard-btn" data-standard="height-for-age" onclick="selectWHOStandard('height-for-age', this)">
+                                        <span class="btn-title">Height-for-Age</span>
+                                        <span class="btn-subtitle">(0-71 months)</span>
+                                    </button>
+                                    <button type="button" class="who-standard-btn" data-standard="weight-for-height" onclick="selectWHOStandard('weight-for-height', this)">
+                                        <span class="btn-title">Weight-for-Height</span>
+                                        <span class="btn-subtitle">(0-60 months)</span>
+                                    </button>
+                                    <button type="button" class="who-standard-btn" data-standard="bmi-for-age" onclick="selectWHOStandard('bmi-for-age', this)">
+                                        <span class="btn-title">BMI-for-Age</span>
+                                        <span class="btn-subtitle">(5-19 years)</span>
+                                    </button>
+                                    <button type="button" class="who-standard-btn" data-standard="bmi-adult" onclick="selectWHOStandard('bmi-adult', this)">
+                                        <span class="btn-title">BMI Adult</span>
+                                        <span class="btn-subtitle">(≥19 years)</span>
+                                    </button>
+                                </div>
+                                <!-- Hidden select to maintain compatibility with existing logic -->
+                                <select id="standardFilter" style="display: none;" onchange="filterByStandard()">
+                                    <option value="weight-for-age" selected>Weight-for-Age (0-71 months)</option>
                                     <option value="height-for-age">Height-for-Age (0-71 months)</option>
                                     <option value="weight-for-height">Weight-for-Height (0-60 months)</option>
                                     <option value="bmi-for-age">BMI-for-Age (5-19 years)</option>
@@ -5582,6 +5685,24 @@ header {
                         <option value="Overweight">Overweight</option>
                         <option value="Obese">Obese</option>
                     </optgroup>`;
+            }
+        }
+
+        // New function to handle WHO standard button selection
+        function selectWHOStandard(standardValue, buttonElement) {
+            // Update button states
+            document.querySelectorAll('.who-standard-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            buttonElement.classList.add('active');
+            
+            // Update hidden select to maintain compatibility with existing logic
+            const standardFilter = document.getElementById('standardFilter');
+            if (standardFilter) {
+                standardFilter.value = standardValue;
+                
+                // Trigger the existing filter logic
+                filterByStandard();
             }
         }
 
