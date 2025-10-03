@@ -67,12 +67,62 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
     
     /**
-     * Navigate to another activity with session validation
+     * Navigate to another activity with session validation and community user cache clearing
      */
     protected void navigateWithSessionValidation(Class<?> targetActivity) {
         // Record user interaction for session management
         onUserInteraction();
         
+        // Clear community user cache and validate archived status before navigation
+        clearCommunityUserCacheAndNavigate(targetActivity);
+    }
+    
+    /**
+     * Clear community user cache and navigate to target activity
+     */
+    private void clearCommunityUserCacheAndNavigate(Class<?> targetActivity) {
+        Log.d("BaseActivity", "Clearing community user cache before navigation...");
+        
+        // Get current user email
+        CommunityUserManager userManager = new CommunityUserManager(this);
+        String email = userManager.getCurrentUserEmail();
+        
+        if (email == null || email.isEmpty()) {
+            Log.d("BaseActivity", "No email found, proceeding with normal navigation");
+            proceedWithNavigation(targetActivity);
+            return;
+        }
+        
+        // Call the clear_community_user_cache API
+        SessionManager.getInstance(this).clearCommunityUserCache(email, new SessionManager.CommunityUserCacheCallback() {
+            @Override
+            public void onCacheCleared(boolean success, String message, boolean isArchived, Map<String, String> freshUserData) {
+                if (isArchived) {
+                    // User is archived, show logout modal
+                    Log.d("BaseActivity", "User is archived: " + message);
+                    showArchivedAccountModal(message);
+                } else if (success && freshUserData != null) {
+                    // Cache cleared successfully, update local cache with fresh data
+                    Log.d("BaseActivity", "Community user cache cleared successfully, updating local cache");
+                    userManager.updateCacheWithFreshData(email, freshUserData);
+                    proceedWithNavigation(targetActivity);
+                } else if (success) {
+                    // Cache cleared successfully but no fresh data
+                    Log.d("BaseActivity", "Community user cache cleared successfully");
+                    proceedWithNavigation(targetActivity);
+                } else {
+                    // API call failed, but proceed with navigation (don't block user)
+                    Log.w("BaseActivity", "Failed to clear cache: " + message + ", proceeding anyway");
+                    proceedWithNavigation(targetActivity);
+                }
+            }
+        });
+    }
+    
+    /**
+     * Proceed with navigation to target activity
+     */
+    private void proceedWithNavigation(Class<?> targetActivity) {
         // Validate session before navigation
         SessionManager.getInstance(this).isUserValidAsync(new SessionManager.ValidationCallback() {
             @Override
@@ -90,6 +140,29 @@ public abstract class BaseActivity extends AppCompatActivity {
                     Log.d("BaseActivity", "Session invalid during navigation, redirecting to login");
                 }
             }
+        });
+    }
+    
+    /**
+     * Show archived account modal
+     */
+    private void showArchivedAccountModal(String message) {
+        runOnUiThread(() -> {
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle("Account Archived")
+                    .setMessage(message)
+                    .setCancelable(false)
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        // Logout user and redirect to login
+                        CommunityUserManager userManager = new CommunityUserManager(this);
+                        userManager.logout();
+                        
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    })
+                    .show();
         });
     }
     
