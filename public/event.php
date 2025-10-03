@@ -184,42 +184,60 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         if ($result['success']) {
             $eventId = $nextId; // Use the program_id we calculated, not insert_id
             
-            // 🚨 COMPLETELY DISABLE NOTIFICATIONS TO ISOLATE THE 500 ERROR
-            $notificationMessage = 'Event created successfully (notifications disabled to fix 500 error)';
-            error_log("✅ Event saved successfully with ID: $eventId (notifications completely disabled)");
+            // 🚨 SIMPLIFIED NOTIFICATION SYSTEM - NO COMPLEX FUNCTIONS
+            $notificationMessage = 'Event created successfully';
+            error_log("✅ Event saved successfully with ID: $eventId");
             
-            // TODO: Once we confirm event creation works, we'll re-enable notifications step by step
-            /*
-            // 🚨 SEND NOTIFICATIONS WITH IMPROVED ERROR HANDLING
-            $notificationType = $_POST['notification_type'] ?? 'push';
-            $notificationMessage = '';
-            
-            if ($notificationType !== 'none') {
-                error_log("📱 Sending notifications for event ID: $eventId using sendEventNotifications function");
+            // Try to send notifications using the simple DatabaseAPI method
+            try {
+                error_log("📱 Attempting to send notifications via DatabaseAPI...");
                 
-                try {
-                    // Use the centralized sendEventNotifications function for consistency
-                    $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer);
-                    
-                    if ($notificationResult['success']) {
-                        $notificationMessage = $notificationResult['message'];
-                        error_log("✅ Notification sent successfully: " . $notificationMessage);
-                    } else {
-                        $notificationMessage = $notificationResult['message'];
-                        error_log("⚠️ Notification warning: " . $notificationMessage);
-                    }
-                } catch (Exception $e) {
-                    error_log("❌ Notification error: " . $e->getMessage());
-                    error_log("❌ Notification error stack trace: " . $e->getTraceAsString());
-                    $notificationMessage = 'Event created but notification failed: ' . $e->getMessage();
-                    
-                    // Don't let notification errors break the entire event creation
-                    // The event was successfully saved, so we should return success
+                // Use the DatabaseAPI directly instead of complex functions
+                $db = DatabaseAPI::getInstance();
+                
+                // Get FCM tokens for the location
+                $locationQuery = $location === 'All Locations' || $location === 'all' ? '' : "AND barangay = :location";
+                $sql = "SELECT fcm_token, email FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != '' $locationQuery LIMIT 10";
+                
+                if ($location === 'All Locations' || $location === 'all') {
+                    $stmt = $db->getPDO()->prepare($sql);
+                } else {
+                    $stmt = $db->getPDO()->prepare($sql);
+                    $stmt->bindParam(':location', $location);
                 }
-            } else {
-                $notificationMessage = 'Event created without notifications';
+                
+                $stmt->execute();
+                $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                $notificationCount = 0;
+                foreach ($users as $user) {
+                    if (!empty($user['fcm_token'])) {
+                        $notificationResult = \sendFCMNotificationToToken(
+                            $user['fcm_token'],
+                            "🎯 New Event: $title",
+                            "New event at $location on " . date('M j, Y g:i A', strtotime($date_time))
+                        );
+                        
+                        if ($notificationResult['success']) {
+                            $notificationCount++;
+                        }
+                    }
+                }
+                
+                if ($notificationCount > 0) {
+                    $notificationMessage = "Event created and notifications sent to $notificationCount users";
+                    error_log("✅ Notifications sent to $notificationCount users");
+                } else {
+                    $notificationMessage = "Event created (no users found for notifications)";
+                    error_log("⚠️ No notifications sent - no users found");
+                }
+                
+            } catch (Exception $e) {
+                error_log("❌ Notification error (non-blocking): " . $e->getMessage());
+                $notificationMessage = "Event created successfully (notification error: " . $e->getMessage() . ")";
+                // Don't let notification errors break event creation
             }
-            */
+            
         } else {
             throw new Exception('Failed to insert event: ' . $result['message']);
         }
