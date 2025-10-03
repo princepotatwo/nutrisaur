@@ -6502,6 +6502,40 @@ header .user-info {
     transform: translateY(0);
 }
 
+/* Simple Live Indicator (Standard Professional Approach) */
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    border-radius: 12px;
+    font-size: 11px;
+    color: #4CAF50;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+
+.live-dot {
+    width: 6px;
+    height: 6px;
+    background: #4CAF50;
+    border-radius: 50%;
+    animation: live-pulse 2s infinite;
+}
+
+.live-text {
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+@keyframes live-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
 .btn-icon {
     font-size: 16px;
 }
@@ -8020,6 +8054,11 @@ body {
                 <h1>Dashboard</h1>
             </div>
             <div class="user-info">
+                <!-- Simple Live Indicator (Standard Professional Approach) -->
+                <div id="live-indicator" class="live-indicator" title="Live data">
+                    <span class="live-dot"></span>
+                    <span class="live-text">Live</span>
+                </div>
                 <button id="new-theme-toggle" class="new-theme-toggle-btn" title="Toggle theme">
                     <span class="new-theme-icon">🌙</span>
                 </button>
@@ -8877,6 +8916,124 @@ body {
             return currentSelectedBarangay && currentSelectedBarangay !== '';
         }
         
+        // Silent Dashboard Update Function (Standard Professional Approach)
+        async function updateDashboardSilently(barangay) {
+            try {
+                // Update all components in parallel for speed
+                await Promise.all([
+                    updateCommunityMetricsSilently(barangay),
+                    updateChartsSilently(barangay),
+                    updateIntelligentProgramsSilently(barangay),
+                    updateTrendsChartSilently(),
+                    updateSevereCasesListSilently(barangay)
+                ]);
+            } catch (error) {
+                console.error('Silent update error:', error);
+            }
+        }
+        
+        // Silent community metrics update
+        async function updateCommunityMetricsSilently(barangay) {
+            try {
+                const params = {};
+                if (barangay && barangay !== '') {
+                    params.barangay = barangay;
+                }
+                
+                const data = await fetchDataFromAPI('dashboard_assessment_stats', params);
+                
+                if (data && data.success && data.data) {
+                    // Update numbers silently without animation
+                    const totalScreened = document.getElementById('community-total-screened');
+                    const screenedChange = document.getElementById('community-screened-change');
+                    
+                    if (totalScreened && screenedChange) {
+                        const totalUsersValue = data.data.total_screened || 0;
+                        const recentRegValue = data.data.total_screened || 0;
+                        
+                        // Direct update - no animation
+                        totalScreened.textContent = totalUsersValue;
+                        screenedChange.textContent = recentRegValue;
+                    }
+                }
+            } catch (error) {
+                console.error('Silent community metrics error:', error);
+            }
+        }
+        
+        // Silent charts update
+        async function updateChartsSilently(barangay) {
+            try {
+                // Update charts without visual effects
+                const params = {};
+                if (barangay && barangay !== '') {
+                    params.barangay = barangay;
+                }
+                
+                const data = await fetchDataFromAPI('risk_distribution', params);
+                
+                if (data && data.success) {
+                    // Update charts silently
+                    updateNutritionalStatusCard(data.data || [], []);
+                }
+            } catch (error) {
+                console.error('Silent charts error:', error);
+            }
+        }
+        
+        // Silent intelligent programs update
+        async function updateIntelligentProgramsSilently(barangay) {
+            try {
+                const response = await fetch(`unified_api.php?type=intelligent_programs&barangay=${encodeURIComponent(barangay)}`);
+                const data = await response.json();
+                
+                if (data && data.success) {
+                    updateIntelligentProgramsDisplay(data.programs || [], data.analysis || {});
+                }
+            } catch (error) {
+                console.error('Silent programs error:', error);
+            }
+        }
+        
+        // Silent trends chart update
+        async function updateTrendsChartSilently() {
+            try {
+                // Only update if chart exists and data is available
+                if (typeof updateTrendsChart === 'function') {
+                    await updateTrendsChart();
+                }
+            } catch (error) {
+                console.error('Silent trends error:', error);
+            }
+        }
+        
+        // Silent severe cases update
+        async function updateSevereCasesListSilently(barangay) {
+            try {
+                if (typeof updateSevereCasesList === 'function') {
+                    await updateSevereCasesList(barangay);
+                }
+            } catch (error) {
+                console.error('Silent severe cases error:', error);
+            }
+        }
+        
+        // Simple Update Notification (Standard Professional Approach)
+        function showUpdateNotification() {
+            const indicator = document.getElementById('live-indicator');
+            if (indicator) {
+                // Brief highlight effect
+                indicator.style.background = 'rgba(76, 175, 80, 0.2)';
+                indicator.style.borderColor = 'rgba(76, 175, 80, 0.5)';
+                
+                // Reset after 1 second
+                setTimeout(() => {
+                    indicator.style.background = 'rgba(76, 175, 80, 0.1)';
+                    indicator.style.borderColor = 'rgba(76, 175, 80, 0.3)';
+                }, 1000);
+            }
+        }
+
         // Function to update dashboard data based on selected barangay
         async function updateDashboardForBarangay(barangay) {
             // Store the selected barangay globally
@@ -13318,9 +13475,11 @@ body {
             initNavigation();
         }
 
-        // Real-time dashboard updates (every 3 seconds)
+        // Standard Live Update System (like most professional apps)
         let realtimeUpdateInterval = null;
         let isRealtimeActive = false;
+        let lastUpdateTime = 0;
+        let updateInProgress = false;
         
         // Function to start real-time updates
         function startRealtimeUpdates() {
@@ -13347,20 +13506,23 @@ body {
                     console.log('🔍 Current barangay:', currentBarangay);
                     
                     // Only update if dashboard is visible and not in loading state
-                    if (document.visibilityState === 'visible' && !dashboardState.updateInProgress) {
-                        console.log('🔄 Real-time update for barangay:', currentBarangay);
+                    if (document.visibilityState === 'visible' && !updateInProgress) {
+                        console.log('🔄 Silent background update for barangay:', currentBarangay);
                         
-                        // Get current WHO standard to maintain filter
-                        const currentWHOStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
-                        console.log('🔄 Real-time update with WHO standard:', currentWHOStandard);
+                        updateInProgress = true;
                         
-                        // Update dashboard components silently with current filters
-                        await updateDashboardForBarangay(currentBarangay);
-                        
-                        // Also update WHO chart to respect current WHO standard filter
-                        await handleWHOStandardChange();
-                        
-                        console.log('✅ Real-time update completed');
+                        try {
+                            // Silent background update - no visual feedback
+                            await updateDashboardSilently(currentBarangay);
+                            lastUpdateTime = Date.now();
+                            
+                            // Brief visual feedback (like most professional apps)
+                            showUpdateNotification();
+                        } catch (error) {
+                            console.error('❌ Silent update error:', error);
+                        } finally {
+                            updateInProgress = false;
+                        }
                     } else {
                         console.log('⏸️ Skipping real-time update - visibility:', document.visibilityState, 'updateInProgress:', dashboardState.updateInProgress);
                         
