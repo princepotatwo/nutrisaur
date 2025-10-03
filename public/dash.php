@@ -6502,6 +6502,135 @@ header .user-info {
     transform: translateY(0);
 }
 
+/* Professional Flicker-Hiding Techniques */
+
+/* Smooth Update Overlay */
+.update-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.02);
+    z-index: 9998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.update-overlay.active {
+    opacity: 1;
+}
+
+/* Content Fade Transitions */
+.dashboard-content {
+    transition: opacity 0.2s ease;
+}
+
+.dashboard-content.updating {
+    opacity: 0.95;
+}
+
+/* Chart Container Smooth Updates */
+.chart-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(161, 180, 84, 0.1) 50%, 
+        transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.chart-container.updating::before {
+    transform: translateX(100%);
+}
+
+/* Card Update Animation */
+.stat-card, .chart-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.stat-card.updating, .chart-card.updating {
+    transform: scale(0.98);
+    opacity: 0.8;
+}
+
+/* Smooth Number Transitions */
+.stat-number {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+}
+
+.stat-number.updating {
+    transform: scale(1.05);
+    color: var(--color-highlight);
+}
+
+/* Loading Skeleton Effect */
+.skeleton {
+    background: linear-gradient(90deg, 
+        rgba(161, 180, 84, 0.1) 25%, 
+        rgba(161, 180, 84, 0.2) 50%, 
+        rgba(161, 180, 84, 0.1) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Subtle Pulse for Active Updates */
+.updating-pulse {
+    animation: subtle-pulse 0.8s ease-in-out;
+}
+
+@keyframes subtle-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.02); opacity: 0.9; }
+}
+
+/* Professional Loading States */
+.loading-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
 .btn-icon {
     font-size: 16px;
 }
@@ -8014,6 +8143,9 @@ body {
         </div>
     </div>
     
+    <!-- Professional Update Overlay -->
+    <div id="update-overlay" class="update-overlay"></div>
+    
     <div class="dashboard">
         <header>
             <div class="dashboard-header">
@@ -9225,14 +9357,14 @@ body {
                         console.log('📊 Total users from API (data.processed_users):', data.processed_users);
                         console.log('📊 Final total users value:', totalUsersValue);
                         
-                        // Force update the total screened card
+                        // Smooth update the total screened card with animation
                         console.log('📊 Setting total screened to:', totalUsersValue);
-                            totalScreened.textContent = totalUsersValue;
-                            dashboardState.totalScreened = totalUsersValue;
+                        smoothUpdateManager.animateNumberUpdate(totalScreened, totalUsersValue);
+                        dashboardState.totalScreened = totalUsersValue;
                         
                         console.log('📊 Setting screened change to:', recentRegValue);
-                            screenedChange.textContent = recentRegValue;
-                            dashboardState.recentRegistrations = recentRegValue;
+                        smoothUpdateManager.animateNumberUpdate(screenedChange, recentRegValue);
+                        dashboardState.recentRegistrations = recentRegValue;
                     } else {
                         console.log('❌ HTML elements not found for Total Screened');
                     }
@@ -10998,10 +11130,14 @@ body {
                 
                 console.log('📊 Trends Chart Filters:', { fromDate, toDate, barangay, whoStandard });
                 
-                // Show loading state - target the trends chart container directly
+                // Show smooth loading animation
                 const chartContainer = document.getElementById('trends-chart-container');
                 if (chartContainer) {
-                    chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Loading trends chart...</div>';
+                    // Add smooth update animation
+                    smoothUpdateManager.animateChartUpdate(chartContainer);
+                    
+                    // Show loading state with skeleton effect
+                    chartContainer.innerHTML = '<div class="skeleton" style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center; padding: 20px;">Loading trends chart...</div>';
                 }
                 
                 // Fetch screening data with date range
@@ -11056,9 +11192,21 @@ body {
                     const canvas = document.getElementById('trendsLineChart');
                     const ctx = canvas.getContext('2d');
                     
-                    // Destroy existing chart
+                    // Smooth chart transition
                     if (trendsLineChart) {
-                        trendsLineChart.destroy();
+                        // Add fade out effect before destroying
+                        const canvas = trendsLineChart.canvas;
+                        if (canvas) {
+                            canvas.style.transition = 'opacity 0.3s ease';
+                            canvas.style.opacity = '0.7';
+                            
+                            setTimeout(() => {
+                                trendsLineChart.destroy();
+                                canvas.style.opacity = '1';
+                            }, 150);
+                        } else {
+                            trendsLineChart.destroy();
+                        }
                     }
                     
                     console.log('📊 Creating trends line chart with data:', { timeLabels, datasets, totalUsers });
@@ -11278,9 +11426,21 @@ body {
 
                 console.log('📊 Age Classification Line Chart Data:', { ageLabels, datasets, totalUsers, totalPopulation: data.totalPopulation });
 
-                // Destroy existing chart
+                // Smooth chart transition
                 if (ageClassificationLineChart) {
-                    ageClassificationLineChart.destroy();
+                    // Add fade out effect before destroying
+                    const canvas = ageClassificationLineChart.canvas;
+                    if (canvas) {
+                        canvas.style.transition = 'opacity 0.3s ease';
+                        canvas.style.opacity = '0.7';
+                        
+                        setTimeout(() => {
+                            ageClassificationLineChart.destroy();
+                            canvas.style.opacity = '1';
+                        }, 150);
+                    } else {
+                        ageClassificationLineChart.destroy();
+                    }
                 }
                 
                 // Restore canvas element
@@ -13318,6 +13478,124 @@ body {
             initNavigation();
         }
 
+        // Professional Flicker-Hiding System
+        class SmoothUpdateManager {
+            constructor() {
+                this.isUpdating = false;
+                this.updateOverlay = document.getElementById('update-overlay');
+                this.dashboardContent = document.querySelector('.dashboard');
+            }
+            
+            // Show smooth update animation
+            showUpdateAnimation() {
+                if (this.isUpdating) return;
+                this.isUpdating = true;
+                
+                // Show subtle overlay
+                if (this.updateOverlay) {
+                    this.updateOverlay.classList.add('active');
+                }
+                
+                // Add updating class to dashboard
+                if (this.dashboardContent) {
+                    this.dashboardContent.classList.add('updating');
+                }
+                
+                // Add updating classes to cards
+                this.addUpdatingClasses();
+            }
+            
+            // Hide update animation
+            hideUpdateAnimation() {
+                if (!this.isUpdating) return;
+                
+                // Remove overlay
+                if (this.updateOverlay) {
+                    this.updateOverlay.classList.remove('active');
+                }
+                
+                // Remove updating class from dashboard
+                if (this.dashboardContent) {
+                    this.dashboardContent.classList.remove('updating');
+                }
+                
+                // Remove updating classes from cards
+                this.removeUpdatingClasses();
+                
+                this.isUpdating = false;
+            }
+            
+            // Add updating classes to elements
+            addUpdatingClasses() {
+                // Add to stat cards
+                const statCards = document.querySelectorAll('.stat-card');
+                statCards.forEach(card => {
+                    card.classList.add('updating');
+                });
+                
+                // Add to chart cards
+                const chartCards = document.querySelectorAll('.chart-card');
+                chartCards.forEach(card => {
+                    card.classList.add('updating');
+                });
+                
+                // Add to chart containers
+                const chartContainers = document.querySelectorAll('.chart-container');
+                chartContainers.forEach(container => {
+                    container.classList.add('updating');
+                });
+                
+                // Add to stat numbers
+                const statNumbers = document.querySelectorAll('.stat-number');
+                statNumbers.forEach(number => {
+                    number.classList.add('updating');
+                });
+            }
+            
+            // Remove updating classes
+            removeUpdatingClasses() {
+                const elements = document.querySelectorAll('.updating');
+                elements.forEach(element => {
+                    element.classList.remove('updating');
+                });
+            }
+            
+            // Smooth number update with animation
+            animateNumberUpdate(element, newValue) {
+                if (!element) return;
+                
+                element.classList.add('updating');
+                
+                // Use requestAnimationFrame for smooth transition
+                requestAnimationFrame(() => {
+                    element.textContent = newValue;
+                    
+                    // Remove updating class after animation
+                    setTimeout(() => {
+                        element.classList.remove('updating');
+                    }, 400);
+                });
+            }
+            
+            // Smooth chart update with shimmer effect
+            animateChartUpdate(container) {
+                if (!container) return;
+                
+                container.classList.add('updating');
+                
+                // Add shimmer effect
+                container.classList.add('loading-shimmer');
+                
+                // Remove effects after animation
+                setTimeout(() => {
+                    container.classList.remove('updating', 'loading-shimmer');
+                }, 600);
+            }
+        }
+        
+        // Initialize smooth update manager
+        const smoothUpdateManager = new SmoothUpdateManager();
+        
         // Real-time dashboard updates (every 3 seconds)
         let realtimeUpdateInterval = null;
         let isRealtimeActive = false;
@@ -13350,17 +13628,27 @@ body {
                     if (document.visibilityState === 'visible' && !dashboardState.updateInProgress) {
                         console.log('🔄 Real-time update for barangay:', currentBarangay);
                         
-                        // Get current WHO standard to maintain filter
-                        const currentWHOStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
-                        console.log('🔄 Real-time update with WHO standard:', currentWHOStandard);
+                        // Show smooth update animation
+                        smoothUpdateManager.showUpdateAnimation();
                         
-                        // Update dashboard components silently with current filters
-                        await updateDashboardForBarangay(currentBarangay);
-                        
-                        // Also update WHO chart to respect current WHO standard filter
-                        await handleWHOStandardChange();
-                        
-                        console.log('✅ Real-time update completed');
+                        try {
+                            // Get current WHO standard to maintain filter
+                            const currentWHOStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
+                            console.log('🔄 Real-time update with WHO standard:', currentWHOStandard);
+                            
+                            // Update dashboard components silently with current filters
+                            await updateDashboardForBarangay(currentBarangay);
+                            
+                            // Also update WHO chart to respect current WHO standard filter
+                            await handleWHOStandardChange();
+                            
+                            console.log('✅ Real-time update completed');
+                        } finally {
+                            // Hide update animation after a short delay
+                            setTimeout(() => {
+                                smoothUpdateManager.hideUpdateAnimation();
+                            }, 500);
+                        }
                     } else {
                         console.log('⏸️ Skipping real-time update - visibility:', document.visibilityState, 'updateInProgress:', dashboardState.updateInProgress);
                         
