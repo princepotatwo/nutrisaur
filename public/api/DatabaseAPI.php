@@ -7284,6 +7284,61 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
+        // FORCE SESSION VALIDATION API (NO CACHE)
+        // ========================================
+        case 'validate_user_session':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Try to get JSON data first
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                // If JSON parsing fails, try form data
+                if (!$data) {
+                    $data = $_POST;
+                }
+                
+                if (!$data) {
+                    echo json_encode(['success' => false, 'message' => 'No data provided']);
+                    break;
+                }
+                
+                $email = $data['email'] ?? '';
+                
+                if (empty($email)) {
+                    echo json_encode(['success' => false, 'message' => 'Email is required']);
+                    break;
+                }
+                
+                // Force fresh database check (no cache)
+                $pdo = $db->getPDO();
+                $stmt = $pdo->prepare("SELECT email, status FROM community_users WHERE email = ?");
+                $stmt->execute([$email]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$user) {
+                    echo json_encode(['success' => false, 'message' => 'User not found']);
+                    break;
+                }
+                
+                // Check if user is archived (0 = archived, 1 = active)
+                if (isset($user['status']) && $user['status'] == 0) {
+                    echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
+                    break;
+                }
+                
+                // User is valid and active
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'User session is valid',
+                    'email' => $user['email'],
+                    'status' => $user['status']
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'POST method required']);
+            }
+            break;
+            
+        // ========================================
         // GET USER NOTES
         // ========================================
         case 'get_user_notes':
