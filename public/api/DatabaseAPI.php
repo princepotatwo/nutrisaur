@@ -13,6 +13,38 @@
 // Set timezone for DateTime calculations
 date_default_timezone_set('Asia/Manila');
 
+// ========================================
+// GLOBAL ARCHIVED USER CHECK MIDDLEWARE
+// ========================================
+function checkUserArchivedStatus($email) {
+    if (empty($email)) return false;
+    
+    try {
+        $db = DatabaseAPI::getInstance();
+        $pdo = $db->getPDO();
+        $stmt = $pdo->prepare("SELECT status FROM community_users WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Check if user is archived (0 = archived, 1 = active)
+        if ($user && isset($user['status']) && $user['status'] == 0) {
+            echo json_encode([
+                'success' => false, 
+                'message' => 'Your account has been archived. Please contact an administrator.',
+                'action' => 'logout',
+                'reason' => 'account_archived'
+            ]);
+            exit; // Stop execution immediately
+        }
+        
+        return true; // User is active
+    } catch (Exception $e) {
+        // If error checking status, allow request to continue
+        error_log("Error checking archived status: " . $e->getMessage());
+        return true;
+    }
+}
+
 // FCM Notification Sending Function
 function sendFCMNotification($fcmToken, $title, $body) {
     try {
@@ -4138,6 +4170,33 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
     error_log("🔍 DatabaseAPI Debug - Action received: '" . $action . "'");
     error_log("🔍 DatabaseAPI Debug - GET params: " . print_r($_GET, true));
     error_log("🔍 DatabaseAPI Debug - POST params: " . print_r($_POST, true));
+    
+    // ========================================
+    // GLOBAL ARCHIVED USER CHECK
+    // ========================================
+    // Check for archived users on ANY API call that involves user data
+    if ($action && !in_array($action, ['test', 'info', 'usage'])) {
+        // Try to get email from various sources
+        $email = '';
+        
+        // Check POST data
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $input = file_get_contents('php://input');
+            $data = json_decode($input, true);
+            if (!$data) $data = $_POST;
+            $email = $data['email'] ?? '';
+        }
+        
+        // Check GET data
+        if (empty($email)) {
+            $email = $_GET['email'] ?? $_GET['user_email'] ?? '';
+        }
+        
+        // If we have an email, check if user is archived
+        if (!empty($email)) {
+            checkUserArchivedStatus($email);
+        }
+    }
     
     switch ($action) {
         
