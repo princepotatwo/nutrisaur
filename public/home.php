@@ -126,7 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
                         if ($emailSent) {
                             $registrationSuccess = "Registration successful! Please check your email for verification code.";
                         } else {
-                            $registrationSuccess = "Registration successful! However, email delivery failed. Your verification code is: " . $verificationCode;
+                            $registrationSuccess = "Registration successful! Please check your email inbox or spam folder for the verification code.";
                         }
                     } else {
                         $registrationError = "Failed to create user account";
@@ -498,7 +498,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                         'success' => true,
                         'message' => $emailSent ? 
                             'Registration successful! Please check your email for verification code.' : 
-                            'Registration successful! However, email delivery failed. Your verification code is: ' . $verificationCode,
+                            'Registration successful! Please check your email inbox or spam folder for the verification code.',
                         'requires_verification' => true,
                         'data' => [
                             'user_id' => $userId,
@@ -2123,11 +2123,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             document.getElementById('verification_email').value = email;
             authTitle.textContent = 'Email Verification';
             
-            if (verificationCode) {
-                showMessage(`Registration successful! Your verification code is: ${verificationCode}`, 'success');
-            } else {
-                showMessage('Please check your email for the verification code.', 'info');
-            }
+            showMessage('Registration successful! Please check your email inbox or spam folder for the verification code.', 'success');
         }
 
         // Hide verification screen and show login
