@@ -4238,6 +4238,12 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 $user = $result['data'][0];
                 
+                // Check if user is archived (0 = archived, 1 = active)
+                if (isset($user['status']) && $user['status'] == 0) {
+                    echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
+                    break;
+                }
+                
                 // Return user data (without password for security)
                 unset($user['password']);
                 echo json_encode([
@@ -6222,6 +6228,12 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     
                     if ($user) {
+                        // Check if user is archived (0 = archived, 1 = active)
+                        if (isset($user['status']) && $user['status'] == 0) {
+                            echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
+                            break;
+                        }
+                        
                         echo json_encode([
                             'success' => true,
                             'message' => 'User data retrieved successfully',
