@@ -63,6 +63,10 @@ try {
             handleIntelligentProgramsRequest($db);
             break;
             
+        case 'realtime_stream':
+            handleRealtimeStreamRequest($db);
+            break;
+            
         default:
             // Route based on endpoint parameter
             switch ($endpoint) {
@@ -476,6 +480,93 @@ function handleMobileSignupRequest($db) {
             'success' => false,
             'message' => 'Error in mobile signup: ' . $e->getMessage()
         ]);
+    }
+}
+
+// Server-Sent Events handler for real-time dashboard updates
+function handleRealtimeStreamRequest($db) {
+    try {
+        // Set headers for SSE
+        header('Content-Type: text/event-stream');
+        header('Cache-Control: no-cache');
+        header('Connection: keep-alive');
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Headers: Cache-Control');
+        
+        // Get parameters
+        $barangay = $_GET['barangay'] ?? '';
+        $lastCheckTime = time();
+        
+        // Keep connection alive and check for changes
+        while (true) {
+            // Check if client disconnected
+            if (connection_aborted()) {
+                break;
+            }
+            
+            // Check for new screening data
+            $pdo = $db->getPDO();
+            $query = "SELECT COUNT(*) as new_screenings 
+                      FROM screening_responses 
+                      WHERE (barangay = ? OR ? = '') 
+                      AND created_at > ?";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute([$barangay, $barangay, date('Y-m-d H:i:s', $lastCheckTime)]);
+            $result = $stmt->fetch();
+            
+            // Check for new programs
+            $query2 = "SELECT COUNT(*) as new_programs 
+                       FROM programs 
+                       WHERE (target_location = ? OR ? = '') 
+                       AND created_at > ?";
+            $stmt2 = $pdo->prepare($query2);
+            $stmt2->execute([$barangay, $barangay, date('Y-m-d H:i:s', $lastCheckTime)]);
+            $result2 = $stmt2->fetch();
+            
+            // Check for new critical alerts
+            $query3 = "SELECT COUNT(*) as new_alerts 
+                       FROM screening_responses 
+                       WHERE (barangay = ? OR ? = '') 
+                       AND created_at > ? 
+                       AND (bmi_category = 'Severely Underweight' OR bmi_category = 'Severely Overweight')";
+            $stmt3 = $pdo->prepare($query3);
+            $stmt3->execute([$barangay, $barangay, date('Y-m-d H:i:s', $lastCheckTime)]);
+            $result3 = $stmt3->fetch();
+            
+            $hasChanges = $result['new_screenings'] > 0 || $result2['new_programs'] > 0 || $result3['new_alerts'] > 0;
+            
+            if ($hasChanges) {
+                // Send update signal to client
+                $updateData = [
+                    'timestamp' => time(),
+                    'barangay' => $barangay,
+                    'new_screenings' => $result['new_screenings'],
+                    'new_programs' => $result2['new_programs'],
+                    'new_alerts' => $result3['new_alerts'],
+                    'message' => 'Dashboard data updated'
+                ];
+                
+                echo "data: " . json_encode($updateData) . "\n\n";
+                ob_flush();
+                flush();
+                
+                $lastCheckTime = time();
+            } else {
+                // Send heartbeat to keep connection alive
+                echo "data: " . json_encode(['heartbeat' => true, 'timestamp' => time()]) . "\n\n";
+                ob_flush();
+                flush();
+            }
+            
+            // Wait 3 seconds before next check
+            sleep(3);
+        }
+        
+    } catch (Exception $e) {
+        error_log("SSE Error: " . $e->getMessage());
+        echo "data: " . json_encode(['error' => 'Connection error']) . "\n\n";
+        ob_flush();
+        flush();
     }
 }
 ?>

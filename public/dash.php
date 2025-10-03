@@ -6502,6 +6502,84 @@ header .user-info {
     transform: translateY(0);
 }
 
+/* SSE Real-time Status Indicators */
+.realtime-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    margin-right: 15px;
+}
+
+.status-indicator {
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    min-width: 80px;
+    text-align: center;
+}
+
+.status-indicator.connected {
+    background: #4CAF50;
+    color: white;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.status-indicator.disconnected {
+    background: #f44336;
+    color: white;
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+.status-indicator.connecting {
+    background: #FF9800;
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+}
+
+.update-indicator {
+    background: #2196F3;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+    animation: slideInRight 0.3s ease;
+}
+
+.spinner {
+    width: 10px;
+    height: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 .btn-icon {
     font-size: 16px;
 }
@@ -8020,6 +8098,14 @@ body {
                 <h1>Dashboard</h1>
             </div>
             <div class="user-info">
+                <!-- SSE Connection Status Indicators -->
+                <div class="realtime-status">
+                    <div id="connection-status" class="status-indicator">Connecting...</div>
+                    <div id="update-indicator" class="update-indicator" style="display: none;">
+                        <span class="spinner"></span>
+                        Updating...
+                    </div>
+                </div>
                 <button id="new-theme-toggle" class="new-theme-toggle-btn" title="Toggle theme">
                     <span class="new-theme-icon">🌙</span>
                 </button>
@@ -8611,6 +8697,11 @@ body {
                 
                 // Update dashboard with all active filters (barangay + municipality + WHO standard)
                 await updateDashboardWithAllFilters();
+                
+                // Update SSE connection for new barangay selection
+                if (typeof updateSSEForBarangay === 'function') {
+                    updateSSEForBarangay(value);
+                }
                 
                 // Test municipality filtering if a municipality is selected
                 if (value && value.startsWith('MUNICIPALITY_')) {
@@ -12431,6 +12522,11 @@ body {
                 // Update dashboard with all active filters (municipality + WHO standard)
                 updateDashboardWithAllFilters();
                 
+                // Update SSE connection for municipality selection
+                if (typeof updateSSEForBarangay === 'function') {
+                    updateSSEForBarangay(municipalityValue);
+                }
+                
                 console.log('✅ Municipality selection complete, dashboard updated with all filters');
             } catch (error) {
                 console.error('❌ Error in municipality selection:', error);
@@ -13318,97 +13414,200 @@ body {
             initNavigation();
         }
 
-        // Real-time dashboard updates (every 3 seconds)
-        let realtimeUpdateInterval = null;
-        let isRealtimeActive = false;
-        
-        // Function to start real-time updates
-        function startRealtimeUpdates() {
-            if (isRealtimeActive) {
-                console.log('🔄 Real-time updates already active');
-                return;
+        // Server-Sent Events (SSE) Real-time Dashboard Manager
+        class SSEDashboardManager {
+            constructor() {
+                this.eventSource = null;
+                this.isConnected = false;
+                this.currentBarangay = '';
+                this.reconnectAttempts = 0;
+                this.maxReconnectAttempts = 5;
+                this.updateInProgress = false;
+                this.lastUpdateTime = 0;
             }
             
-            console.log('🚀 Starting real-time dashboard updates (3-second interval)');
-            console.log('🔍 Dashboard state:', dashboardState);
-            console.log('🔍 Current barangay:', currentSelectedBarangay);
-            console.log('🔍 Document visibility:', document.visibilityState);
-            
-            isRealtimeActive = true;
-            
-            realtimeUpdateInterval = setInterval(async () => {
-                try {
-                    // Get current selected barangay
-                    const currentBarangay = currentSelectedBarangay || '';
-                    
-                    console.log('⏰ Real-time interval triggered');
-                    console.log('🔍 Visibility state:', document.visibilityState);
-                    console.log('🔍 Update in progress:', dashboardState.updateInProgress);
-                    console.log('🔍 Current barangay:', currentBarangay);
-                    
-                    // Only update if dashboard is visible and not in loading state
-                    if (document.visibilityState === 'visible' && !dashboardState.updateInProgress) {
-                        console.log('🔄 Real-time update for barangay:', currentBarangay);
-                        
-                        // Get current WHO standard to maintain filter
-                        const currentWHOStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
-                        console.log('🔄 Real-time update with WHO standard:', currentWHOStandard);
-                        
-                        // Update dashboard components silently with current filters
-                        await updateDashboardForBarangay(currentBarangay);
-                        
-                        // Also update WHO chart to respect current WHO standard filter
-                        await handleWHOStandardChange();
-                        
-                        console.log('✅ Real-time update completed');
-                    } else {
-                        console.log('⏸️ Skipping real-time update - visibility:', document.visibilityState, 'updateInProgress:', dashboardState.updateInProgress);
-                        
-                        // If updateInProgress is stuck as true, reset it after a reasonable time
-                        if (dashboardState.updateInProgress) {
-                            console.log('🔧 Resetting stuck updateInProgress flag');
-                            dashboardState.updateInProgress = false;
-                        }
-                    }
-                } catch (error) {
-                    console.error('❌ Real-time update error:', error);
-                    // Don't stop real-time updates on individual errors
+            // Start SSE connection
+            start(barangay = '') {
+                this.currentBarangay = barangay;
+                
+                // Close existing connection if any
+                if (this.eventSource) {
+                    this.eventSource.close();
                 }
-            }, 3000); // 3 seconds
-        }
-        
-        // Function to stop real-time updates
-        function stopRealtimeUpdates() {
-            if (realtimeUpdateInterval) {
-                console.log('⏹️ Stopping real-time dashboard updates');
-                clearInterval(realtimeUpdateInterval);
-                realtimeUpdateInterval = null;
-                isRealtimeActive = false;
+                
+                // Update connection status
+                this.updateConnectionStatus('connecting');
+                
+                // Open new SSE connection
+                const url = `unified_api.php?type=realtime_stream&barangay=${encodeURIComponent(barangay)}`;
+                this.eventSource = new EventSource(url);
+                
+                // Handle connection open
+                this.eventSource.onopen = () => {
+                    console.log('✅ SSE Connected to real-time updates');
+                    this.isConnected = true;
+                    this.reconnectAttempts = 0;
+                    this.updateConnectionStatus('connected');
+                };
+                
+                // Handle incoming data
+                this.eventSource.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        
+                        // Handle heartbeat
+                        if (data.heartbeat) {
+                            console.log('💓 SSE Heartbeat received');
+                            return;
+                        }
+                        
+                        // Handle data updates
+                        if (data.message || data.new_screenings || data.new_programs || data.new_alerts) {
+                            console.log('📡 SSE Data update received:', data);
+                            this.handleUpdate(data);
+                        }
+                        
+                    } catch (error) {
+                        console.error('❌ Error parsing SSE data:', error);
+                    }
+                };
+                
+                // Handle connection errors
+                this.eventSource.onerror = (error) => {
+                    console.log('❌ SSE Connection error:', error);
+                    this.isConnected = false;
+                    this.updateConnectionStatus('disconnected');
+                    this.reconnect();
+                };
+            }
+            
+            // Handle the update when data changes
+            async handleUpdate(data) {
+                if (this.updateInProgress) {
+                    console.log('⏳ Update already in progress, skipping...');
+                    return;
+                }
+                
+                this.updateInProgress = true;
+                this.showUpdateIndicator();
+                
+                try {
+                    console.log('🔄 Database changed, updating dashboard...');
+                    
+                    // Update dashboard data smoothly
+                    await this.refreshDashboardData();
+                    
+                } catch (error) {
+                    console.error('❌ Error refreshing dashboard:', error);
+                } finally {
+                    this.updateInProgress = false;
+                    this.hideUpdateIndicator();
+                }
+            }
+            
+            // Refresh dashboard data (calls existing functions)
+            async refreshDashboardData() {
+                const barangay = this.currentBarangay;
+                
+                try {
+                    // Update all dashboard components in parallel for better performance
+                    await Promise.all([
+                        updateCommunityMetrics(barangay),
+                        updateCharts(barangay),
+                        updateIntelligentPrograms(barangay),
+                        updateTrendsChart(),
+                        updateSevereCasesList(barangay),
+                        updateAnalysisSection(barangay),
+                        updateGeographicChart(barangay)
+                    ]);
+                    
+                    console.log('✅ Dashboard updated successfully');
+                    
+                } catch (error) {
+                    console.error('❌ Error updating dashboard components:', error);
+                }
+            }
+            
+            // Reconnect if connection is lost
+            reconnect() {
+                if (this.reconnectAttempts < this.maxReconnectAttempts) {
+                    this.reconnectAttempts++;
+                    console.log(`🔄 Attempting to reconnect... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+                    
+                    setTimeout(() => {
+                        this.start(this.currentBarangay);
+                    }, 2000 * this.reconnectAttempts);
+                } else {
+                    console.error('❌ Max reconnection attempts reached');
+                    this.updateConnectionStatus('disconnected');
+                }
+            }
+            
+            // Stop SSE connection
+            stop() {
+                if (this.eventSource) {
+                    this.eventSource.close();
+                    this.isConnected = false;
+                    this.updateConnectionStatus('disconnected');
+                }
+            }
+            
+            // Update connection status indicator
+            updateConnectionStatus(status) {
+                const indicator = document.getElementById('connection-status');
+                if (indicator) {
+                    indicator.textContent = status;
+                    indicator.className = `status-indicator ${status}`;
+                }
+            }
+            
+            // Show update indicator
+            showUpdateIndicator() {
+                const indicator = document.getElementById('update-indicator');
+                if (indicator) {
+                    indicator.style.display = 'flex';
+                }
+            }
+            
+            // Hide update indicator
+            hideUpdateIndicator() {
+                const indicator = document.getElementById('update-indicator');
+                if (indicator) {
+                    indicator.style.display = 'none';
+                }
             }
         }
         
-        // Start real-time updates when page loads
+        // Initialize SSE manager
+        const sseManager = new SSEDashboardManager();
+        
+        // Start SSE when page loads
         document.addEventListener('DOMContentLoaded', function() {
             // Small delay to ensure all initializations are complete
             setTimeout(() => {
-                startRealtimeUpdates();
+                sseManager.start(currentSelectedBarangay || '');
             }, 2000);
         });
         
-        // Pause real-time updates when page is hidden
+        // Update SSE when barangay changes
+        function updateSSEForBarangay(barangay) {
+            sseManager.start(barangay);
+        }
+        
+        // Pause SSE when page is hidden
         document.addEventListener('visibilitychange', function() {
             if (document.visibilityState === 'hidden') {
-                console.log('⏸️ Pausing real-time updates (page hidden)');
-                stopRealtimeUpdates();
+                console.log('⏸️ Pausing SSE (page hidden)');
+                sseManager.stop();
             } else if (document.visibilityState === 'visible') {
-                console.log('▶️ Resuming real-time updates (page visible)');
-                startRealtimeUpdates();
+                console.log('▶️ Resuming SSE (page visible)');
+                sseManager.start(currentSelectedBarangay || '');
             }
         });
         
         // Clean up on page unload
         window.addEventListener('beforeunload', function() {
-            stopRealtimeUpdates();
+            sseManager.stop();
         });
 
     </script>
