@@ -15,8 +15,12 @@ function sendEventFCMNotificationToToken($fcmToken, $title, $body, $dataPayload 
     try {
         // Use the working FCM implementation from DatabaseAPI
         // Call the global function from DatabaseAPI.php with proper data payload
-        return \sendFCMNotificationToToken($fcmToken, $title, $body, $dataPayload);
+        error_log("🔔 sendEventFCMNotificationToToken called with token: " . substr($fcmToken, 0, 20) . "...");
+        $result = \sendFCMNotificationToToken($fcmToken, $title, $body, $dataPayload);
+        error_log("🔔 FCM result: " . json_encode($result));
+        return $result;
     } catch (Exception $e) {
+        error_log("❌ Error in sendEventFCMNotificationToToken: " . $e->getMessage());
         return ['success' => false, 'error' => $e->getMessage()];
     }
 }
@@ -180,9 +184,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         if ($result['success']) {
             $eventId = $nextId; // Use the program_id we calculated, not insert_id
             
-            // 🚨 SEND NOTIFICATIONS IMMEDIATELY AFTER SAVING using centralized function
+            // 🚨 SEND NOTIFICATIONS WITH IMPROVED ERROR HANDLING
             $notificationType = $_POST['notification_type'] ?? 'push';
             $notificationMessage = '';
+            
             if ($notificationType !== 'none') {
                 error_log("📱 Sending notifications for event ID: $eventId using sendEventNotifications function");
                 
@@ -199,16 +204,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                     }
                 } catch (Exception $e) {
                     error_log("❌ Notification error: " . $e->getMessage());
+                    error_log("❌ Notification error stack trace: " . $e->getTraceAsString());
                     $notificationMessage = 'Event created but notification failed: ' . $e->getMessage();
+                    
+                    // Don't let notification errors break the entire event creation
+                    // The event was successfully saved, so we should return success
                 }
             } else {
                 $notificationMessage = 'Event created without notifications';
             }
+            
+            error_log("✅ Event saved successfully with ID: $eventId");
         } else {
             throw new Exception('Failed to insert event: ' . $result['message']);
         }
-        
-        error_log("✅ Event saved successfully with ID: $eventId");
         
         // Return success response
         header('Content-Type: application/json');
@@ -848,6 +857,7 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
         
     } catch (Exception $e) {
         error_log("❌ Error in sendEventNotifications: " . $e->getMessage());
+        error_log("❌ Error stack trace: " . $e->getTraceAsString());
         return [
             'success' => false,
             'message' => "Error sending notifications: " . $e->getMessage(),
