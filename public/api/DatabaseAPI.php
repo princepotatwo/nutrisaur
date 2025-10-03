@@ -7284,9 +7284,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
-        // FORCE SESSION VALIDATION API (NO CACHE)
+        // NAVIGATION BAR USER VALIDATION API
         // ========================================
-        case 'validate_user_session':
+        case 'validate_navigation_access':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Try to get JSON data first
                 $input = file_get_contents('php://input');
@@ -7309,7 +7309,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     break;
                 }
                 
-                // Force fresh database check (no cache)
+                // Force fresh database check (no cache) - only when user navigates
                 $pdo = $db->getPDO();
                 $stmt = $pdo->prepare("SELECT email, status FROM community_users WHERE email = ?");
                 $stmt->execute([$email]);
@@ -7322,14 +7322,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 // Check if user is archived (0 = archived, 1 = active)
                 if (isset($user['status']) && $user['status'] == 0) {
-                    echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
+                    echo json_encode([
+                        'success' => false, 
+                        'message' => 'Your account has been archived. Please contact an administrator.',
+                        'action' => 'logout',
+                        'reason' => 'account_archived'
+                    ]);
                     break;
                 }
                 
-                // User is valid and active
+                // User is valid and active - allow navigation
                 echo json_encode([
                     'success' => true,
-                    'message' => 'User session is valid',
+                    'message' => 'Navigation access granted',
                     'email' => $user['email'],
                     'status' => $user['status']
                 ]);
