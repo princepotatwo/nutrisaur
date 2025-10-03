@@ -424,7 +424,17 @@ function handleMobileSignupRequest($db) {
                     return;
                 }
                 
+                // Check if user is archived before allowing save
                 $pdo = $db->getPDO();
+                $checkStmt = $pdo->prepare("SELECT status FROM community_users WHERE email = ?");
+                $checkStmt->execute([$email]);
+                $existingUser = $checkStmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($existingUser && isset($existingUser['status']) && $existingUser['status'] == 0) {
+                    echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
+                    return;
+                }
+                
                 $stmt = $pdo->prepare("
                     INSERT INTO community_users (email, name, screening_date) 
                     VALUES (?, ?, NOW())
@@ -457,6 +467,12 @@ function handleMobileSignupRequest($db) {
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 
                 if ($user) {
+                    // Check if user is archived
+                    if (isset($user['status']) && $user['status'] == 0) {
+                        echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
+                        return;
+                    }
+                    
                     echo json_encode([
                         'success' => true,
                         'data' => $user
