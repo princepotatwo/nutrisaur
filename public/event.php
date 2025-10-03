@@ -195,9 +195,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                 // Use the DatabaseAPI directly instead of complex functions
                 $db = DatabaseAPI::getInstance();
                 
-                // Get FCM tokens for the location
+                // Get FCM tokens for the location (no limit to process all users)
                 $locationQuery = $location === 'All Locations' || $location === 'all' ? '' : "AND barangay = :location";
-                $sql = "SELECT fcm_token, email FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != '' $locationQuery LIMIT 10";
+                $sql = "SELECT fcm_token, email FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != '' $locationQuery";
                 
                 if ($location === 'All Locations' || $location === 'all') {
                     $stmt = $db->getPDO()->prepare($sql);
@@ -209,24 +209,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                 $stmt->execute();
                 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
+                error_log("📊 Found " . count($users) . " users to notify for location: $location");
+                
                 $notificationCount = 0;
+                $errorCount = 0;
+                
                 foreach ($users as $user) {
                     if (!empty($user['fcm_token'])) {
-                        $notificationResult = \sendFCMNotificationToToken(
-                            $user['fcm_token'],
-                            "🎯 New Event: $title",
-                            "New event at $location on " . date('M j, Y g:i A', strtotime($date_time))
-                        );
-                        
-                        if ($notificationResult['success']) {
-                            $notificationCount++;
+                        try {
+                            $notificationResult = \sendFCMNotificationToToken(
+                                $user['fcm_token'],
+                                "🎯 New Event: $title",
+                                "New event at $location on " . date('M j, Y g:i A', strtotime($date_time))
+                            );
+                            
+                            if ($notificationResult['success']) {
+                                $notificationCount++;
+                            } else {
+                                $errorCount++;
+                                error_log("⚠️ Failed to send notification to " . $user['email'] . ": " . ($notificationResult['error'] ?? 'Unknown error'));
+                            }
+                        } catch (Exception $e) {
+                            $errorCount++;
+                            error_log("❌ Exception sending notification to " . $user['email'] . ": " . $e->getMessage());
                         }
                     }
                 }
                 
                 if ($notificationCount > 0) {
-                    $notificationMessage = "Event created and notifications sent to $notificationCount users";
-                    error_log("✅ Notifications sent to $notificationCount users");
+                    $totalUsers = count($users);
+                    $notificationMessage = "Event created and notifications sent to $notificationCount of $totalUsers users";
+                    if ($errorCount > 0) {
+                        $notificationMessage .= " ($errorCount failed)";
+                    }
+                    error_log("✅ Notifications sent to $notificationCount of $totalUsers users ($errorCount failed)");
                 } else {
                     $notificationMessage = "Event created (no users found for notifications)";
                     error_log("⚠️ No notifications sent - no users found");
