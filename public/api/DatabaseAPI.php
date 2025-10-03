@@ -13,38 +13,6 @@
 // Set timezone for DateTime calculations
 date_default_timezone_set('Asia/Manila');
 
-// ========================================
-// GLOBAL ARCHIVED USER CHECK MIDDLEWARE
-// ========================================
-function checkUserArchivedStatus($email) {
-    if (empty($email)) return false;
-    
-    try {
-        $db = DatabaseAPI::getInstance();
-        $pdo = $db->getPDO();
-        $stmt = $pdo->prepare("SELECT status FROM community_users WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        // Check if user is archived (0 = archived, 1 = active)
-        if ($user && isset($user['status']) && $user['status'] == 0) {
-            echo json_encode([
-                'success' => false, 
-                'message' => 'Your account has been archived. Please contact an administrator.',
-                'action' => 'logout',
-                'reason' => 'account_archived'
-            ]);
-            exit; // Stop execution immediately
-        }
-        
-        return true; // User is active
-    } catch (Exception $e) {
-        // If error checking status, allow request to continue
-        error_log("Error checking archived status: " . $e->getMessage());
-        return true;
-    }
-}
-
 // FCM Notification Sending Function
 function sendFCMNotification($fcmToken, $title, $body) {
     try {
@@ -4171,7 +4139,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
     error_log("🔍 DatabaseAPI Debug - GET params: " . print_r($_GET, true));
     error_log("🔍 DatabaseAPI Debug - POST params: " . print_r($_POST, true));
     
-    
     switch ($action) {
         
         // ========================================
@@ -4270,12 +4237,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 }
                 
                 $user = $result['data'][0];
-                
-                // Check if user is archived (0 = archived, 1 = active)
-                if (isset($user['status']) && $user['status'] == 0) {
-                    echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
-                    break;
-                }
                 
                 // Return user data (without password for security)
                 unset($user['password']);
@@ -6261,12 +6222,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     
                     if ($user) {
-                        // Check if user is archived (0 = archived, 1 = active)
-                        if (isset($user['status']) && $user['status'] == 0) {
-                            echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
-                            break;
-                        }
-                        
                         echo json_encode([
                             'success' => true,
                             'message' => 'User data retrieved successfully',
@@ -7313,77 +7268,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             } catch (Exception $e) {
                 error_log("Error toggling user flag: " . $e->getMessage());
                 echo json_encode(['success' => false, 'message' => 'Error updating flag: ' . $e->getMessage()]);
-            }
-            break;
-            
-        // ========================================
-        // CLEAR COMMUNITY USER CACHE API
-        // ========================================
-        case 'clear_community_user_cache':
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Try to get JSON data first
-                $input = file_get_contents('php://input');
-                $data = json_decode($input, true);
-                
-                // If JSON parsing fails, try form data
-                if (!$data) {
-                    $data = $_POST;
-                }
-                
-                if (!$data) {
-                    echo json_encode(['success' => false, 'message' => 'No data provided']);
-                    break;
-                }
-                
-                $email = $data['email'] ?? '';
-                
-                if (empty($email)) {
-                    echo json_encode(['success' => false, 'message' => 'Email is required']);
-                    break;
-                }
-                
-                // Force fresh database check (no cache) - only for community_users table
-                $pdo = $db->getPDO();
-                $stmt = $pdo->prepare("SELECT email, status, name, weight, height, municipality, barangay, sex, birthday, is_pregnant, screening_date FROM community_users WHERE email = ?");
-                $stmt->execute([$email]);
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                
-                if (!$user) {
-                    echo json_encode(['success' => false, 'message' => 'User not found']);
-                    break;
-                }
-                
-                // Check if user is archived (0 = archived, 1 = active)
-                if (isset($user['status']) && $user['status'] == 0) {
-                    echo json_encode([
-                        'success' => false, 
-                        'message' => 'Your account has been archived. Please contact an administrator.',
-                        'action' => 'logout',
-                        'reason' => 'account_archived'
-                    ]);
-                    break;
-                }
-                
-                // User is valid and active - return fresh data (bypassing cache)
-                echo json_encode([
-                    'success' => true,
-                    'message' => 'Fresh user data retrieved',
-                    'user' => [
-                        'email' => $user['email'],
-                        'name' => $user['name'] ?? '',
-                        'weight' => $user['weight'] ?? '',
-                        'height' => $user['height'] ?? '',
-                        'municipality' => $user['municipality'] ?? '',
-                        'barangay' => $user['barangay'] ?? '',
-                        'sex' => $user['sex'] ?? '',
-                        'birthday' => $user['birthday'] ?? '',
-                        'is_pregnant' => $user['is_pregnant'] ?? '',
-                        'screening_date' => $user['screening_date'] ?? '',
-                        'status' => $user['status']
-                    ]
-                ]);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'POST method required']);
             }
             break;
             

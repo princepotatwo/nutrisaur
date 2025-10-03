@@ -8,7 +8,6 @@ import android.util.Log;
 import androidx.appcompat.app.AlertDialog;
 import org.json.JSONObject;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.CountDownLatch;
@@ -182,9 +181,15 @@ public class SessionManager {
             userManager.getCurrentUserDataFromDatabaseAsync(new CommunityUserManager.UserDataCallback() {
                 @Override
                 public void onUserDataReceived(Map<String, String> userData) {
-                    // Check if we have essential user data
-                    boolean hasEssentialData = userData.containsKey("name") || userData.containsKey("email");
-                    userExists[0] = !userData.isEmpty() && hasEssentialData;
+                    // Check if user is archived
+                    if (userData.containsKey("status") && "0".equals(userData.get("status"))) {
+                        Log.d(TAG, "User is archived, invalidating session");
+                        userExists[0] = false;
+                    } else {
+                        // Check if we have essential user data
+                        boolean hasEssentialData = userData.containsKey("name") || userData.containsKey("email");
+                        userExists[0] = !userData.isEmpty() && hasEssentialData;
+                    }
                     latch.countDown();
                 }
             });
@@ -684,72 +689,5 @@ public class SessionManager {
      */
     public interface ValidationCallback {
         void onValidationResult(boolean isValid);
-    }
-    
-    /**
-     * Callback interface for community user cache clearing
-     */
-    public interface CommunityUserCacheCallback {
-        void onCacheCleared(boolean success, String message, boolean isArchived, Map<String, String> freshUserData);
-    }
-    
-    /**
-     * Clear community user cache and check archived status
-     */
-    public void clearCommunityUserCache(String email, CommunityUserCacheCallback callback) {
-        executorService.execute(() -> {
-            try {
-                Log.d(TAG, "Calling clear_community_user_cache API for: " + email);
-                
-                // Prepare request data
-                JSONObject requestData = new JSONObject();
-                requestData.put("email", email);
-                
-                // Make API call to clear community user cache
-                String response = makeApiCall("action=clear_community_user_cache", requestData.toString());
-                
-                if (response != null) {
-                    JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.optBoolean("success", false);
-                    String message = jsonResponse.optString("message", "Unknown error");
-                    
-                    // Check if user is archived
-                    boolean isArchived = !success && message.contains("archived");
-                    
-                    // Extract fresh user data if successful
-                    Map<String, String> freshUserData = null;
-                    if (success && jsonResponse.has("user")) {
-                        JSONObject userObject = jsonResponse.getJSONObject("user");
-                        freshUserData = new HashMap<>();
-                        
-                        // Map API response to local cache format
-                        freshUserData.put("name", userObject.optString("name", ""));
-                        freshUserData.put("email", userObject.optString("email", email));
-                        freshUserData.put("sex", userObject.optString("sex", ""));
-                        freshUserData.put("height_cm", userObject.optString("height", ""));
-                        freshUserData.put("weight_kg", userObject.optString("weight", ""));
-                        freshUserData.put("barangay", userObject.optString("barangay", ""));
-                        freshUserData.put("municipality", userObject.optString("municipality", ""));
-                        freshUserData.put("birthday", userObject.optString("birthday", ""));
-                        freshUserData.put("is_pregnant", userObject.optString("is_pregnant", ""));
-                        freshUserData.put("screening_date", userObject.optString("screening_date", ""));
-                        
-                        Log.d(TAG, "Extracted fresh user data: " + freshUserData.toString());
-                    }
-                    
-                    Log.d(TAG, "Clear cache response - Success: " + success + ", Message: " + message + ", IsArchived: " + isArchived);
-                    
-                    // Call callback on main thread
-                    mainHandler.post(() -> callback.onCacheCleared(success, message, isArchived, freshUserData));
-                } else {
-                    Log.w(TAG, "Failed to get response from clear_community_user_cache API");
-                    mainHandler.post(() -> callback.onCacheCleared(false, "Network error", false, null));
-                }
-                
-            } catch (Exception e) {
-                Log.e(TAG, "Error calling clear_community_user_cache API", e);
-                mainHandler.post(() -> callback.onCacheCleared(false, "API error: " + e.getMessage(), false, null));
-            }
-        });
     }
 }

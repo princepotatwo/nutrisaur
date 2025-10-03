@@ -1,496 +1,432 @@
- 🔍 Dashboard Metrics - Using donut chart logic:
-   - Total Screened: 7
-   - Severely Underweight (WFA): 2
-   - Severely Stunted (HFA): 4
-   - Severely Wasted (WFH): 2
- 🔍 WFA Classifications: Object
- 🔍 HFA Classifications: Object
- 🔍 WFH Classifications: Object
-dash:7732 📊 Nutritional Statistics loaded: Object
-dash:8212 🌍 Pre-loaded Geographic Distribution Data: Array(0)
-dash:11245 DOM Content Loaded - Initializing WHO dropdown
-dash:10035 📅 Set from date to: 2024-01-01
-dash:10040 📅 Set to date to: 2024-12-31
-dash:10117 📊 Updating Trends Chart...
-dash:10125 📅 Date inputs found: Object
-dash:10126 📅 Current date values: Object
-dash:8220 🔍 getAllActiveFilters - Raw values: Object
-dash:8236 🔍 Final filter value: 
-dash:10138 📊 Trends Chart Filters: Object
-dash:10148 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2024-01-01&to_date=2024-12-31&barangay=&who_standard=weight-for-age
-dash:12161 📊 Updating severe cases list...
-dash:12162 📊 Severe cases function called with barangay: 
-dash:12166 📊 Severe cases list element found: <div class=​"severe-cases-list" id=​"severe-cases-list">​…​</div>​flex
-dash:12181 📊 Severe cases - WHO Standard Select element: <select id=​"whoStandardSelect" style=​"padding:​ 8px 12px;​ border:​ 1px solid #ddd;​ border-radius:​ 6px;​ background:​ white;​ color:​ #333;​ font-size:​ 14px;​">​…​</select>​
-dash:12182 📊 Severe cases - WHO Standard value: weight-for-age
-dash:12183 📊 Severe cases - Dropdown value at time of call: weight-for-age
-dash:12187 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=weight-for-age
-dash:11287 WHO dropdown found, setting up event listener
-dash:10753 🔄 Starting WHO standard change handler...
-dash:10758 📊 WHO Standard selected: weight-for-age
-dash:10759 📊 Dropdown element found: true
-dash:10760 📊 Dropdown value: weight-for-age
-dash:8220 🔍 getAllActiveFilters - Raw values: Object
-dash:8236 🔍 Final filter value: 
-dash:10767 📡 Fetching WHO data with active filters...
-dash:10768 📊 Active filters: Object
-dash:10806 Fetching WHO data for: Object
-dash:10810 API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=weight-for-age
-dash:11931 🚀 Initializing municipality and barangay dropdown functionality...
-dash:12256 🚀 Initializing modern mobile top navigation...
-dash:12261 📱 Desktop navbar exists: true
-dash:12338 📱 Initializing mobile dropdown functionality...
-dash:12345 📱 Found select headers: 2
-dash:12346 📱 Found dropdown contents: 2
-dash:12347 📱 Found option items: 247
-dash:12406 ✅ Mobile dropdown functionality initialized
-dash:12333 ✅ Modern mobile top navigation system initialized successfully
-dash:10153 📊 Trends API response: Object
-dash:10165 📊 Chart data analysis: Object
-dash:10203 📊 Creating trends line chart with data: Object
-dash:10346 ✅ Trends chart updated successfully
-dash:12195 Severe cases data received: Object
-dash:12204 Found 2 severe cases
-dash:12217 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
-dash:12217 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
-dash:12241 ✅ Severe cases list updated successfully with 2 cases
-dash:10819 Bulk API Response: Object
-dash:10845 Mapping weight-for-age to weight_for_age: Object
-dash:10846 Classification values: Array(6)
-dash:10847 Calculated total: 6
-dash:10848 Original total_users: 7
-dash:10850 Extracted weight-for-age data: Object
-dash:10861 Processed data for donut chart: Object
-dash:10772 📊 Data received for chart update: Object
-dash:10775 🎨 Updating chart...
-dash:10592 WHO Chart Update - Data received: Object
-dash:10593 Data type: object
-dash:10594 Data classifications: Object
-dash:10595 Data total: 6
-dash:10603 Chart elements found:
-dash:10604   - chartBg (risk-chart-bg): <div class=​"donut-chart-bg" id=​"risk-chart-bg" style=​"opacity:​ 1;​ background:​ conic-gradient(rgb(255, 193, 7)​ 0%, rgb(255, 193, 7)​ 100%)​;​">​</div>​
-dash:10605   - centerText (risk-center-text): <div class=​"donut-center-text" id=​"risk-center-text" style=​"color:​ rgb(51, 51, 51)​;​">​1​</div>​flex
-dash:10606   - segments (risk-segments): <div class=​"segments" id=​"risk-segments">​…​</div>​
-dash:10630 Processing classifications: Object
-dash:10631 Classifications keys: Array(6)
-dash:10632 Classifications values: Array(6)
-dash:10633 Total users: 6
-dash:10637 Has data (non-zero counts): true
-dash:10673 Chart segments: Array(3)
-dash:10674 Chart segments length: 3
-dash:10675 Chart segments details: Array(3)
-dash:10687 Creating gradient: conic-gradient(#E91E63 0% 33.33333333333333%, #FFC107 33.33333333333333% 66.66666666666666%, #4CAF50 66.66666666666666% 99.99999999999999%)
-dash:10690 Chart background set to: conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 33.3333%, rgb(255, 193, 7) 33.3333%, rgb(255, 193, 7) 66.6667%, rgb(76, 175, 80) 66.6667%, rgb(76, 175, 80) 100%)
-dash:10694 Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 33.3333%, rgb(255, 193, 7) 33.3333%, rgb(255, 193, 7) 66.6667%, rgb(76, 175, 80) 66.6667%, rgb(76, 175, 80) 100%) repeat scroll 0% 0% / auto padding-box border-box
-dash:10695 Computed opacity: 1
-dash:10696 Element dimensions: Object
-dash:10720 WHO chart updated successfully
-dash:10780 🎨 Updating age classification chart...
-dash:10362 📊 Updating Age Classification Line Chart...
-dash:10390 📊 Using WHO Standard: weight-for-age
-dash:10391 📊 Using Barangay: 
-dash:10395 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
-dash:11959 📍 Found 13 municipality options
-dash:11978 📍 Found 234 barangay options
-dash:11993 ✅ Municipality and barangay dropdown functionality initialized
-dash:10400 📊 Age classification API response: Object
-dash:10418 📊 Age Classification Line Chart Data: Object
-dash:10431 📊 Creating Chart.js line chart with data: Object
-dash:10568 ✅ Age Classification Line Chart created successfully
-dash:10784 🎨 Updating trends chart...
-dash:10117 📊 Updating Trends Chart...
-dash:10125 📅 Date inputs found: Object
-dash:10126 📅 Current date values: Object
-dash:8220 🔍 getAllActiveFilters - Raw values: Object
-dash:8236 🔍 Final filter value: 
-dash:10138 📊 Trends Chart Filters: Object
-dash:10148 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2024-01-01&to_date=2024-12-31&barangay=&who_standard=weight-for-age
-dash:10153 📊 Trends API response: Object
-dash:10165 📊 Chart data analysis: Object
-dash:10203 📊 Creating trends line chart with data: Object
-dash:10346 ✅ Trends chart updated successfully
-dash:10788 🎨 Updating severe cases list...
-dash:10789 📊 WHO Standard before severe cases call: weight-for-age
-dash:10790 📊 Dropdown value before severe cases call: weight-for-age
-dash:12161 📊 Updating severe cases list...
-dash:12162 📊 Severe cases function called with barangay: 
-dash:12166 📊 Severe cases list element found: <div class=​"severe-cases-list" id=​"severe-cases-list">​…​</div>​flex
-dash:12181 📊 Severe cases - WHO Standard Select element: <select id=​"whoStandardSelect" style=​"padding:​ 8px 12px;​ border:​ 1px solid #ddd;​ border-radius:​ 6px;​ background:​ white;​ color:​ #333;​ font-size:​ 14px;​">​…​</select>​
-dash:12182 📊 Severe cases - WHO Standard value: weight-for-age
-dash:12183 📊 Severe cases - Dropdown value at time of call: weight-for-age
-dash:12187 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=weight-for-age
-dash:12195 Severe cases data received: Object
-dash:12204 Found 2 severe cases
-dash:12217 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
-dash:12217 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
-dash:12241 ✅ Severe cases list updated successfully with 2 cases
-dash:10793 ✅ Chart update completed
-dash:10799 🏁 WHO classification loading completed
-dash:11301 📊 Loading initial trends chart...
-dash:11302 📊 updateTrendsChart function exists: function
-dash:10117 📊 Updating Trends Chart...
-dash:10125 📅 Date inputs found: Object
-dash:10126 📅 Current date values: Object
-dash:8220 🔍 getAllActiveFilters - Raw values: Object
-dash:8236 🔍 Final filter value: 
-dash:10138 📊 Trends Chart Filters: Object
-dash:10148 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2024-01-01&to_date=2024-12-31&barangay=&who_standard=weight-for-age
-dash:10153 📊 Trends API response: Object
-dash:10165 📊 Chart data analysis: Object
-dash:10203 📊 Creating trends line chart with data: Object
-dash:10346 ✅ Trends chart updated successfully
-dash:11305 📊 Trends chart loaded successfully
-dash:11312 📊 Loading initial age classification chart...
-dash:10362 📊 Updating Age Classification Line Chart...
-dash:10390 📊 Using WHO Standard: weight-for-age
-dash:10391 📊 Using Barangay: 
-dash:10395 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
-dash:10400 📊 Age classification API response: Object
-dash:10418 📊 Age Classification Line Chart Data: Object
-dash:10431 📊 Creating Chart.js line chart with data: Object
-dash:10568 ✅ Age Classification Line Chart created successfully
-dash:11317 🔄 Loading initial dashboard metrics and geographic distribution...
-dash:8314 🔄 updateCommunityMetrics called with barangay: 
-dash:11321 🔄 Loading barangay distribution data...
-dash:10883 Fetching barangay distribution data for: Object
-dash:10886 Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=
-dash:10895 Barangay API Response: Object
-dash:10999 Updating barangay distribution display: Object
-dash:11326 🔄 Loading gender distribution data...
-dash:10917 Fetching gender distribution data for: Object
-dash:10920 Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
-dash:10929 Gender API Response: Object
-dash:10949 Updating gender distribution display: Object
-dash:11331 🌍 Loading geographic distribution with pre-loaded data...
-dash:11336 🌍 No pre-loaded geographic data available
-dash:8601 🌍 updateGeographicChartDisplay called with data: Array(0)
-dash:8604 ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8604
-dash:11260 🔍 Card Debug - Checking card elements:
-dash:11263 Card Container: <div class=​"card-container" style=​"gap:​ 20px;​">​…​</div>​grid
-dash:11264 Number of cards found: 4
-dash:11266 Card 1: <div class=​"card" id=​"card-total-screened">​…​</div>​flex
-dash:11267 Card 1 display: flex
-dash:11268 Card 1 visibility: visible
-dash:11269 Card 1 opacity: 1
-dash:11266 Card 2: <div class=​"card" id=​"card-high-risk">​…​</div>​flex
-dash:11267 Card 2 display: flex
-dash:11268 Card 2 visibility: visible
-dash:11269 Card 2 opacity: 1
-dash:11266 Card 3: <div class=​"card" id=​"card-sam-cases">​…​</div>​flex
-dash:11267 Card 3 display: flex
-dash:11268 Card 3 visibility: visible
-dash:11269 Card 3 opacity: 1
-dash:11266 Card 4: <div class=​"card" id=​"card-critical-muac">​…​</div>​flex
-dash:11267 Card 4 display: flex
-dash:11268 Card 4 visibility: visible
-dash:11269 Card 4 opacity: 1
-dash:11277 🔍 Initial Dashboard Metrics (Page Load):
-dash:11278   - Total Screened: 7
-dash:11279   - High Risk (Severely Underweight): 2
-dash:11280   - SAM Cases (Severely Stunted): 4
-dash:11281   - Critical MUAC (Severely Wasted): 2
-dash:8328 🔄 Starting community metrics update...
-dash:9463 Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php
-dash:9475 DatabaseAPI response for dashboard_assessment_stats : Object
-dash:9485 Returning data: Object
-dash:8340 📊 Community Metrics Data: Object
-dash:8341 📊 Data type: object
-dash:8342 📊 Data keys: Array(2)
-dash:8349 Total Screened Element: <div class=​"metric-value" id=​"community-total-screened">​7​</div>​flex
-dash:8350 Screened Change Element: <div class=​"metric-change" id=​"community-screened-change">​7​</div>​
-dash:8351 Total Users: 7
-dash:8352 Recent Registrations: 7
-dash:8358 📊 Total screened element: <div class=​"metric-value" id=​"community-total-screened">​7​</div>​flex
-dash:8359 📊 Total screened from API (data.data.total_screened): 7
-dash:8360 📊 Total users from API (data.data.total_users): undefined
-dash:8361 📊 Total users from API (data.total_users): undefined
-dash:8362 📊 Total users from API (data.processed_users): undefined
-dash:8363 📊 Final total users value: 7
-dash:8366 📊 Setting total screened to: 7
-dash:8370 📊 Setting screened change to: 7
-dash:8379 📊 Severely cases will be updated by WHO classification data
-dash:12471 🚀 Starting real-time dashboard updates (3-second interval)
-dash:12472 🔍 Dashboard state: Object
-dash:12473 🔍 Current barangay: 
-dash:12474 🔍 Document visibility: visible
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:11292 WHO dropdown changed to: bmi-adult
-dash:10753 🔄 Starting WHO standard change handler...
-dash:10758 📊 WHO Standard selected: bmi-adult
-dash:10759 📊 Dropdown element found: true
-dash:10760 📊 Dropdown value: bmi-adult
-dash:8220 🔍 getAllActiveFilters - Raw values: Object
-dash:8236 🔍 Final filter value: 
-dash:10767 📡 Fetching WHO data with active filters...
-dash:10768 📊 Active filters: Object
-dash:10806 Fetching WHO data for: Object
-dash:10810 API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=bmi-adult
-dash:10819 Bulk API Response: Object
-dash:10845 Mapping bmi-adult to bmi_adult: Object
-dash:10846 Classification values: Array(6)
-dash:10847 Calculated total: 1
-dash:10848 Original total_users: 7
-dash:10850 Extracted bmi-adult data: Object
-dash:10861 Processed data for donut chart: Object
-dash:10772 📊 Data received for chart update: Object
-dash:10775 🎨 Updating chart...
-dash:10592 WHO Chart Update - Data received: Object
-dash:10593 Data type: object
-dash:10594 Data classifications: Object
-dash:10595 Data total: 1
-dash:10603 Chart elements found:
-dash:10604   - chartBg (risk-chart-bg): <div class=​"donut-chart-bg" id=​"risk-chart-bg" style=​"opacity:​ 1;​ background:​ conic-gradient(rgb(255, 193, 7)​ 0%, rgb(255, 193, 7)​ 100%)​;​">​</div>​
-dash:10605   - centerText (risk-center-text): <div class=​"donut-center-text" id=​"risk-center-text" style=​"color:​ rgb(51, 51, 51)​;​">​1​</div>​flex
-dash:10606   - segments (risk-segments): <div class=​"segments" id=​"risk-segments">​…​</div>​
-dash:10630 Processing classifications: Object
-dash:10631 Classifications keys: Array(6)
-dash:10632 Classifications values: Array(6)
-dash:10633 Total users: 1
-dash:10637 Has data (non-zero counts): true
-dash:10673 Chart segments: Array(1)
-dash:10674 Chart segments length: 1
-dash:10675 Chart segments details: Array(1)
-dash:10687 Creating gradient: conic-gradient(#FFC107 0% 100%)
-dash:10690 Chart background set to: conic-gradient(rgb(255, 193, 7) 0%, rgb(255, 193, 7) 100%)
-dash:10694 Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(255, 193, 7) 0%, rgb(255, 193, 7) 100%) repeat scroll 0% 0% / auto padding-box border-box
-dash:10695 Computed opacity: 1
-dash:10696 Element dimensions: Object
-dash:10720 WHO chart updated successfully
-dash:10780 🎨 Updating age classification chart...
-dash:10362 📊 Updating Age Classification Line Chart...
-dash:10390 📊 Using WHO Standard: bmi-adult
-dash:10391 📊 Using Barangay: 
-dash:10395 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=
-dash:10400 📊 Age classification API response: Object
-dash:10418 📊 Age Classification Line Chart Data: Object
-dash:10431 📊 Creating Chart.js line chart with data: Object
-dash:10568 ✅ Age Classification Line Chart created successfully
-dash:10784 🎨 Updating trends chart...
-dash:10117 📊 Updating Trends Chart...
-dash:10125 📅 Date inputs found: Object
-dash:10126 📅 Current date values: Object
-dash:8220 🔍 getAllActiveFilters - Raw values: Object
-dash:8236 🔍 Final filter value: 
-dash:10138 📊 Trends Chart Filters: Object
-dash:10148 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2024-01-01&to_date=2024-12-31&barangay=&who_standard=bmi-adult
-dash:10153 📊 Trends API response: Object
-dash:10165 📊 Chart data analysis: Object
-dash:10180 No chartable datasets available - showing message with user count
-dash:10788 🎨 Updating severe cases list...
-dash:10789 📊 WHO Standard before severe cases call: bmi-adult
-dash:10790 📊 Dropdown value before severe cases call: bmi-adult
-dash:12161 📊 Updating severe cases list...
-dash:12162 📊 Severe cases function called with barangay: 
-dash:12166 📊 Severe cases list element found: <div class=​"severe-cases-list" id=​"severe-cases-list">​…​</div>​flex
-dash:12181 📊 Severe cases - WHO Standard Select element: <select id=​"whoStandardSelect" style=​"padding:​ 8px 12px;​ border:​ 1px solid #ddd;​ border-radius:​ 6px;​ background:​ white;​ color:​ #333;​ font-size:​ 14px;​">​…​</select>​
-dash:12182 📊 Severe cases - WHO Standard value: bmi-adult
-dash:12183 📊 Severe cases - Dropdown value at time of call: bmi-adult
-dash:12187 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-adult
-dash:12195 Severe cases data received: Object
-dash:12198 No severe cases found
-dash:10793 ✅ Chart update completed
-dash:10799 🏁 WHO classification loading completed
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12483 ⏰ Real-time interval triggered
-dash:12484 🔍 Visibility state: visible
-dash:12485 🔍 Update in progress: true
-dash:12486 🔍 Current barangay: 
-dash:12496 ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
-dash:12526 ⏸️ Pausing real-time updates (page hidden)
-dash:12508 ⏹️ Stopping real-time dashboard updates
-dash:12529 ▶️ Resuming real-time updates (page visible)
-dash:12471 🚀 Starting real-time dashboard updates (3-second interval)
-dash:12472 🔍 Dashboard state: {totalScreened: 7, recentRegistrations: 7, highRisk: null, moderateRisk: null, samCases: null, …}
-dash:12473 🔍 Current barangay: 
-dash:12474 🔍 Document visibility: visible
-dash:12526 ⏸️ Pausing real-time updates (page hidden)
-dash:12508 ⏹️ Stopping real-time dashboard updates
-dash:12529 ▶️ Resuming real-time updates (page visible)
-dash:12471 🚀 Starting real-time dashboard updates (3-second interval)
-dash:12472 🔍 Dashboard state: {totalScreened: 7, recentRegistrations: 7, highRisk: null, moderateRisk: null, samCases: null, …}
-dash:12473 🔍 Current barangay: 
-dash:12474 🔍 Document visibility: visible
- ⏰ Real-time interval triggered
- 🔍 Visibility state: visible
- 🔍 Update in progress: true
- 🔍 Current barangay: 
- ⏸️ Skipping real-time update - visibility: visible updateInProgress: true
+2025-10-03 07:57:01.937 21199-21199 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759449421937
+2025-10-03 07:57:01.972 21199-21199 Ingredient...ryActivity com.example.nutrisaur11              D  Refreshing recommendations for Seafood
+2025-10-03 07:57:01.977 21199-26389 GeminiService           com.example.nutrisaur11              D  Force refresh requested, making API call for category Seafood
+2025-10-03 07:57:01.977 21199-26389 GeminiService           com.example.nutrisaur11              D  === buildCategoryPrompt DEBUG ===
+2025-10-03 07:57:01.977 21199-26389 GeminiService           com.example.nutrisaur11              D  Category: Seafood
+2025-10-03 07:57:01.977 21199-26389 GeminiService           com.example.nutrisaur11              D  UserData received: {is_pregnant=N/A, birthday=2005-10-03, muac_category=, notes=null, nutritional_risk=, weight_kg=90, height_cm=150, sex=Male, municipality=MARIVELES, muac_cm=, screening_date=2025-10-02 20:25:04, bmi_category=, name=jsjej, barangay=Alion, age=, email=uejej@je.e, bmi=}
+2025-10-03 07:57:01.977 21199-26389 GeminiService           com.example.nutrisaur11              D  UserData isEmpty: false
+2025-10-03 07:57:01.977 21199-26389 GeminiService           com.example.nutrisaur11              D  === FOOD PREFERENCES DEBUG ===
+2025-10-03 07:57:01.977 21199-26389 GeminiService           com.example.nutrisaur11              D  User email: uejej@je.e
+2025-10-03 07:57:01.978 21199-26389 GeminiService           com.example.nutrisaur11              D  Combined preferences: Food Identity: VEGAN. Food Allergies: FISH, SHELLFISH. Daily Food Budget: ₱300-500 per day.
+2025-10-03 07:57:01.978 21199-26389 GeminiService           com.example.nutrisaur11              D  Preferences isEmpty: false
+2025-10-03 07:57:01.978 21199-26389 GeminiService           com.example.nutrisaur11              D  Gemini API attempt 1 of 3
+2025-10-03 07:57:03.142 21199-21199 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-03 07:57:03.142 21199-21199 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-03 07:57:03.142 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
+2025-10-03 07:57:03.143 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-03 07:57:03.143 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
+2025-10-03 07:57:03.143 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
+2025-10-03 07:57:03.143 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 0ms
+2025-10-03 07:57:03.143 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
+2025-10-03 07:57:03.146 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
+2025-10-03 07:57:03.146 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-03 07:57:03.147 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
+2025-10-03 07:57:03.147 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
+2025-10-03 07:57:03.147 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-03 07:57:03.147 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
+2025-10-03 07:57:06.150 21199-21199 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-03 07:57:06.151 21199-21199 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-03 07:57:06.151 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
+2025-10-03 07:57:06.151 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-03 07:57:06.152 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
+2025-10-03 07:57:06.152 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
+2025-10-03 07:57:06.152 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-03 07:57:06.153 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
+2025-10-03 07:57:06.157 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
+2025-10-03 07:57:06.157 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-03 07:57:06.158 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
+2025-10-03 07:57:06.158 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
+2025-10-03 07:57:06.158 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-03 07:57:06.158 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
+2025-10-03 07:57:09.163 21199-21199 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-03 07:57:09.163 21199-21199 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-03 07:57:09.164 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
+2025-10-03 07:57:09.164 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-03 07:57:09.164 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
+2025-10-03 07:57:09.164 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
+2025-10-03 07:57:09.165 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-03 07:57:09.165 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
+2025-10-03 07:57:09.170 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
+2025-10-03 07:57:09.170 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-03 07:57:09.171 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
+2025-10-03 07:57:09.171 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
+2025-10-03 07:57:09.171 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-03 07:57:09.171 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
+2025-10-03 07:57:11.555 21199-26389 GeminiService           com.example.nutrisaur11              D  Gemini API Response Code: 200
+2025-10-03 07:57:11.556 21199-26389 GeminiService           com.example.nutrisaur11              D  Gemini API Response: {  "candidates": [    {      "content": {        "parts": [          {            "text": "```json\n[\n  {\n    \"food_name\": \"Tofu Scramble with Spinach and Mushrooms\",\n    \"calories\": 100,\n    \"protein\": 8,\n    \"fat\": 5,\n    \"carbs\": 7,\n    \"serving_size\": \"half cup\",\n    \"description\": \"Provides plant-based protein and fiber while being low in calories. Spinach and mushrooms add volume and nutrients without excessive calories.\",\n    \"emoji\": \"🍳\"\n  },\n  {\n    \"food_name\": \"Lentil Soup\",\n    \"calories\": 90,\n    \"protein\": 7,\n    \"fat\": 0.5,\n    \"carbs\": 15,\n    \"serving_size\": \"small bowl\",\n    \"description\": \"High in fiber and protein, promoting satiety and aiding in weight management. Low in fat and provides essential nutrients.\",\n    \"emoji\": \"🍲\"\n  },\n  {\n    \"food_name\": \"Steamed Broccoli\",\n    \"calories\": 30,\n    \"protein\": 2,\n    \"fat\": 0.3,\n    \"carbs\": 6,\n    \"serving_size\": \"1 cup\",\n    \"description\": \"Very low in calories and high in fiber, providing a feeling of fullness. Rich in vitamins and minerals.\",\n    \"emoji\": \"🥦\"\n  },\n  {\n    \"food_name\": \"Edamame\",\n    \"calories\": 80,\n    \"protein\": 7,\n    \"fat\": 5,\n    \"carbs\": 6,\n    \"serving_size\": \"half cup\",\n    \"description\": \"A good source of plant-based protein and fiber, helping to control appetite and blood sugar levels.\",\n    \"emoji\": \"🌱\"\n  },\n  {\n    \"food_name\": \"Mushroom Stir-fry with Tofu\",\n    \"calories\": 110,\n    \"protein\": 9,\n    \"fat\": 6,\n    \"carbs\": 5,\n    \"serving_size\": \"half cup\",\n    \"description\": \"Provides a good source of protein and fiber with minimal calories. Mushrooms add bulk and nutrients.\",\n    \"emoji\": \"🍄\"\n  },\n  {\n    \"food_name\": \"Vegan Chili\",\n    \"calories\": 120,\n    \"protein\": 8,\n    \"fat\": 3,\n    \"carbs\": 18,\n    \"serving_size\": \"small bowl\",\n    \"description\": \"Rich in fiber and plant-based protein, promoting satiety and aiding in weight management.\",\n    \"emoji\": \"🌶️\"\n  },\n  {\n    \"food_name\": \"Vegetable Skewers (Grilled)\",\n    \"calories\": 70,\n    \"protein\": 2,\n    \"fat\": 1,\n    \"carbs\": 15,\n    \"serving_size\": \"2 skewers\",\n    \"description\": \"Low-calorie and high in fiber, providing a feeling of fullness. A variety of vegetables provides essential nutrients.\",\n    \"emoji\": \"🍢\"\n  },\n  {\n    \"food_name\": \"Clear Noodle Soup with Vegetables and Tofu\",\n    \"calories\": 60,\n    \"protein\": 4,\n    \"fat\": 1,\n    \"carbs\": 10,\n    \"serving_size\": \"small bowl\",\n    \"description\": \"Broth-based soup is very low in calories and filling. Vegetables and tofu add nutrients and a small amount of protein.\",\n    \"emoji\": \"🍜\"\n  },\n  {\n    \"food_name\": \"Seaweed Salad (Wakame)\",\n    \"calories\": 45,\n    \"protein\": 1,\n    \"fat\": 3,\n    \"carbs\": 4,\n    \"serving_size\": \"half cup\",\n    \"description\": \"Low in calories and rich in minerals, including iodine. Provides a unique texture and flavor.\",\n    \"emoji\": \"🥗\"\n  },\n  {\n    \"food_name\": \"Tofu and Vegetable Lettuce Wraps\",\n    \"calories\": 80,\n    \"protein\": 6,\n    \"fat\": 4,\n    \"carbs\": 5,\n    \"serving_size\": \"2 wraps\",\n    \"description\": \"Low in calories and carbohydrates, providing a satisfying meal with minimal impact on blood sugar levels.\",\n    \"emoji\": \"🥬\"\n  },\n  {\n    \"food_name\": \"Roasted Eggplant\",\n    \"calories\": 50,\n    \"protein\": 1,\n    \"fat\": 0.5,\n    \"carbs\": 12,\n    \"serving_size\": \"half cup\",\n    \"description\": \"Very low in calories and high in fiber, providing a feeling of fullness. Roasting enhances the flavor.\",\n    \"emoji\": \"🍆\"\n  },\n  {\n    \"food_name\": \"Hearts of Palm Salad\",\n    \"calories\": 60,\n    \"protein\": 1,\n    \"fat\": 0.5,\n    \"carbs\": 12,\n    \"serving_size\": \"half cup\",\n    \"description\"
+2025-10-03 07:57:11.565 21199-26389 GeminiService           com.example.nutrisaur11              D  Extracted category text: ```json
+                                                                                                    [
+                                                                                                      {
+                                                                                                        "food_name": "Tofu Scramble with Spinach and Mushrooms",
+                                                                                                        "calories": 100,
+                                                                                                        "protein": 8,
+                                                                                                        "fat": 5,
+                                                                                                        "carbs": 7,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Provides plant-based protein and fiber while being low in calories. Spinach and mushrooms add volume and nutrients without excessive calories.",
+                                                                                                        "emoji": "🍳"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Lentil Soup",
+                                                                                                        "calories": 90,
+                                                                                                        "protein": 7,
+                                                                                                        "fat": 0.5,
+                                                                                                        "carbs": 15,
+                                                                                                        "serving_size": "small bowl",
+                                                                                                        "description": "High in fiber and protein, promoting satiety and aiding in weight management. Low in fat and provides essential nutrients.",
+                                                                                                        "emoji": "🍲"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Steamed Broccoli",
+                                                                                                        "calories": 30,
+                                                                                                        "protein": 2,
+                                                                                                        "fat": 0.3,
+                                                                                                        "carbs": 6,
+                                                                                                        "serving_size": "1 cup",
+                                                                                                        "description": "Very low in calories and high in fiber, providing a feeling of fullness. Rich in vitamins and minerals.",
+                                                                                                        "emoji": "🥦"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Edamame",
+                                                                                                        "calories": 80,
+                                                                                                        "protein": 7,
+                                                                                                        "fat": 5,
+                                                                                                        "carbs": 6,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "A good source of plant-based protein and fiber, helping to control appetite and blood sugar levels.",
+                                                                                                        "emoji": "🌱"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Mushroom Stir-fry with Tofu",
+                                                                                                        "calories": 110,
+                                                                                                        "protein": 9,
+                                                                                                        "fat": 6,
+                                                                                                        "carbs": 5,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Provides a good source of protein and fiber with minimal calories. Mushrooms add bulk and nutrients.",
+                                                                                                        "emoji": "🍄"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Vegan Chili",
+                                                                                                        "calories": 120,
+                                                                                                        "protein": 8,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 18,
+                                                                                                        "serving_size": "small bowl",
+                                                                                                        "description": "Rich in fiber and plant-based protein, promoting satiety and aiding in weight management.",
+                                                                                                        "emoji": "🌶️"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Vegetable Skewers (Grilled)",
+                                                                                                        "calories": 70,
+                                                                                                        "protein": 2,
+                                                                                                        "fat": 1,
+                                                                                                        "carbs": 15,
+                                                                                                        "serving_size": "2 skewers",
+                                                                                                        "description": "Low-calorie and high in fiber, providing a feeling of fullness. A variety of vegetables provides essential nutrients.",
+                                                                                                        "emoji": "🍢"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Clear Noodle Soup with Vegetables and Tofu",
+                                                                                                        "calories": 60,
+                                                                                                        "protein": 4,
+                                                                                                        "fat": 1,
+                                                                                                        "carbs": 10,
+                                                                                                        "serving_size": "small bowl",
+                                                                                                        "description": "Broth-based soup is very low in calories and filling. Vegetables and tofu add nutrients and a small amount of protein.",
+                                                                                                        "emoji": "🍜"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Seaweed Salad (Wakame)",
+                                                                                                        "calories": 45,
+                                                                                                        "protein": 1,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 4,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Low in calories and rich in minerals, including iodine. Provides a unique texture and flavor.",
+                                                                                                        "emoji": "🥗"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Tofu and Vegetable Lettuce Wraps",
+                                                                                                        "calories": 80,
+                                                                                                        "protein": 6,
+                                                                                                        "fat": 4,
+                                                                                                        "carbs": 5,
+                                                                                                        "serving_size": "2 wraps",
+                                                                                                        "description": "Low in calories and carbohydrates, providing a satisfying meal with minimal impact on blood sugar levels.",
+                                                                                                        "emoji": "🥬"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Roasted Eggplant",
+                                                                                                        "calories": 50,
+                                                                                                        "protein": 1,
+                                                                                                        "fat": 0.5,
+                                                                                                        "carbs": 12,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Very low in calories and high in fiber, providing a feeling of fullness. Roasting enhances the flavor.",
+                                                                                                        "emoji": "🍆"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Hearts of Palm Salad",
+                                                                                                        "calories": 60,
+                                                                                                        "protein": 1,
+                                                                                                        "fat": 0.5,
+                                                                                                        "carbs": 12,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Very low in calories, and provide some fiber and nutrients. A good option for adding bulk to a meal.",
+                                                                                                        "emoji": "🌴"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Vegan Spring Rolls (fresh, not fried)",
+                                                                                                        "calories": 75,
+                                                                                                        "protein": 2,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 10,
+                                                                                                        "serving_size": "2 rolls",
+                                                                                                        "description": "Fresh spring rolls are low in calories and filled with vegetables, providing fiber and nutrients.",
+                                                                                                        "emoji": "🌯"
+                                                                                                      },
+                                                                                                      {
+2025-10-03 07:57:11.565 21199-26389 GeminiService           com.example.nutrisaur11              D      "food_name": "Cauliflower Rice Stir-fry with Vegetables",
+                                                                                                        "calories": 70,
+                                                                                                        "protein": 3,
+                                                                                                        "fat": 2,
+                                                                                                        "carbs": 10,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Cauliflower rice is very low in calories and carbohydrates, making it an excellent base for a stir-fry. Vegetables add fiber and nutrients.",
+                                                                                                        "emoji": "🍚"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Okra Stew",
+                                                                                                        "calories": 80,
+                                                                                                        "protein": 2,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 10,
+                                                                                                        "serving_size": "small bowl",
+                                                                                                        "description": "Okra is low in calories and high in fiber, providing a feeling of fullness. Stewing adds flavor and moisture.",
+                                                                                                        "emoji": "🍲"
+                                                                                                      }
+                                                                                                    ]
+                                                                                                    ```
+2025-10-03 07:57:11.565 21199-26389 GeminiService           com.example.nutrisaur11              D  Extracted category JSON: [
+                                                                                                      {
+                                                                                                        "food_name": "Tofu Scramble with Spinach and Mushrooms",
+                                                                                                        "calories": 100,
+                                                                                                        "protein": 8,
+                                                                                                        "fat": 5,
+                                                                                                        "carbs": 7,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Provides plant-based protein and fiber while being low in calories. Spinach and mushrooms add volume and nutrients without excessive calories.",
+                                                                                                        "emoji": "🍳"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Lentil Soup",
+                                                                                                        "calories": 90,
+                                                                                                        "protein": 7,
+                                                                                                        "fat": 0.5,
+                                                                                                        "carbs": 15,
+                                                                                                        "serving_size": "small bowl",
+                                                                                                        "description": "High in fiber and protein, promoting satiety and aiding in weight management. Low in fat and provides essential nutrients.",
+                                                                                                        "emoji": "🍲"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Steamed Broccoli",
+                                                                                                        "calories": 30,
+                                                                                                        "protein": 2,
+                                                                                                        "fat": 0.3,
+                                                                                                        "carbs": 6,
+                                                                                                        "serving_size": "1 cup",
+                                                                                                        "description": "Very low in calories and high in fiber, providing a feeling of fullness. Rich in vitamins and minerals.",
+                                                                                                        "emoji": "🥦"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Edamame",
+                                                                                                        "calories": 80,
+                                                                                                        "protein": 7,
+                                                                                                        "fat": 5,
+                                                                                                        "carbs": 6,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "A good source of plant-based protein and fiber, helping to control appetite and blood sugar levels.",
+                                                                                                        "emoji": "🌱"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Mushroom Stir-fry with Tofu",
+                                                                                                        "calories": 110,
+                                                                                                        "protein": 9,
+                                                                                                        "fat": 6,
+                                                                                                        "carbs": 5,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Provides a good source of protein and fiber with minimal calories. Mushrooms add bulk and nutrients.",
+                                                                                                        "emoji": "🍄"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Vegan Chili",
+                                                                                                        "calories": 120,
+                                                                                                        "protein": 8,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 18,
+                                                                                                        "serving_size": "small bowl",
+                                                                                                        "description": "Rich in fiber and plant-based protein, promoting satiety and aiding in weight management.",
+                                                                                                        "emoji": "🌶️"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Vegetable Skewers (Grilled)",
+                                                                                                        "calories": 70,
+                                                                                                        "protein": 2,
+                                                                                                        "fat": 1,
+                                                                                                        "carbs": 15,
+                                                                                                        "serving_size": "2 skewers",
+                                                                                                        "description": "Low-calorie and high in fiber, providing a feeling of fullness. A variety of vegetables provides essential nutrients.",
+                                                                                                        "emoji": "🍢"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Clear Noodle Soup with Vegetables and Tofu",
+                                                                                                        "calories": 60,
+                                                                                                        "protein": 4,
+                                                                                                        "fat": 1,
+                                                                                                        "carbs": 10,
+                                                                                                        "serving_size": "small bowl",
+                                                                                                        "description": "Broth-based soup is very low in calories and filling. Vegetables and tofu add nutrients and a small amount of protein.",
+                                                                                                        "emoji": "🍜"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Seaweed Salad (Wakame)",
+                                                                                                        "calories": 45,
+                                                                                                        "protein": 1,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 4,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Low in calories and rich in minerals, including iodine. Provides a unique texture and flavor.",
+                                                                                                        "emoji": "🥗"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Tofu and Vegetable Lettuce Wraps",
+                                                                                                        "calories": 80,
+                                                                                                        "protein": 6,
+                                                                                                        "fat": 4,
+                                                                                                        "carbs": 5,
+                                                                                                        "serving_size": "2 wraps",
+                                                                                                        "description": "Low in calories and carbohydrates, providing a satisfying meal with minimal impact on blood sugar levels.",
+                                                                                                        "emoji": "🥬"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Roasted Eggplant",
+                                                                                                        "calories": 50,
+                                                                                                        "protein": 1,
+                                                                                                        "fat": 0.5,
+                                                                                                        "carbs": 12,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Very low in calories and high in fiber, providing a feeling of fullness. Roasting enhances the flavor.",
+                                                                                                        "emoji": "🍆"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Hearts of Palm Salad",
+                                                                                                        "calories": 60,
+                                                                                                        "protein": 1,
+                                                                                                        "fat": 0.5,
+                                                                                                        "carbs": 12,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Very low in calories, and provide some fiber and nutrients. A good option for adding bulk to a meal.",
+                                                                                                        "emoji": "🌴"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Vegan Spring Rolls (fresh, not fried)",
+                                                                                                        "calories": 75,
+                                                                                                        "protein": 2,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 10,
+                                                                                                        "serving_size": "2 rolls",
+                                                                                                        "description": "Fresh spring rolls are low in calories and filled with vegetables, providing fiber and nutrients.",
+                                                                                                        "emoji": "🌯"
+                                                                                                      },
+                                                                                                      {
+2025-10-03 07:57:11.565 21199-26389 GeminiService           com.example.nutrisaur11              D      "food_name": "Cauliflower Rice Stir-fry with Vegetables",
+                                                                                                        "calories": 70,
+                                                                                                        "protein": 3,
+                                                                                                        "fat": 2,
+                                                                                                        "carbs": 10,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Cauliflower rice is very low in calories and carbohydrates, making it an excellent base for a stir-fry. Vegetables add fiber and nutrients.",
+                                                                                                        "emoji": "🍚"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Okra Stew",
+                                                                                                        "calories": 80,
+                                                                                                        "protein": 2,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 10,
+                                                                                                        "serving_size": "small bowl",
+                                                                                                        "description": "Okra is low in calories and high in fiber, providing a feeling of fullness. Stewing adds flavor and moisture.",
+                                                                                                        "emoji": "🍲"
+                                                                                                      }
+                                                                                                    ]
+2025-10-03 07:57:11.568 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Tofu Scramble with Spinach and Mushrooms (🍳)
+2025-10-03 07:57:11.568 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Lentil Soup (🍲)
+2025-10-03 07:57:11.568 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Steamed Broccoli (🥦)
+2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Edamame (🌱)
+2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Mushroom Stir-fry with Tofu (🍄)
+2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Vegan Chili (🌶️)
+2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Vegetable Skewers (Grilled) (🍢)
+2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Clear Noodle Soup with Vegetables and Tofu (🍜)
+2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Seaweed Salad (Wakame) (🥗)
+2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Tofu and Vegetable Lettuce Wraps (🥬)
+2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Roasted Eggplant (🍆)
+2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Hearts of Palm Salad (🌴)
+2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Vegan Spring Rolls (fresh, not fried) (🌯)
+2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Cauliflower Rice Stir-fry with Vegetables (🍚)
+2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Okra Stew (🍲)
+2025-10-03 07:57:11.572 21199-26389 GeminiService           com.example.nutrisaur11              D  Calculated age from birthday '2005-10-03': 20
+2025-10-03 07:57:11.572 21199-26389 GeminiService           com.example.nutrisaur11              D  Created user profile from database data: jsjej (Age: 20, Weight: 90.0, Height: 150.0, Gender: Male, Activity: Moderate)
+2025-10-03 07:57:11.589 21199-26389 GeminiCacheManager      com.example.nutrisaur11              D  Cached persistent recommendations for Seafood (user: 20_Male_90.0_150.0, ingredient: null)
+2025-10-03 07:57:11.589 21199-26389 GeminiService           com.example.nutrisaur11              D  Cached category recommendations for Seafood
+2025-10-03 07:57:11.592 21199-21199 Ingredient...ryActivity com.example.nutrisaur11              D  Refreshed 15 recommendations for Seafood
+2025-10-03 07:57:11.630 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 0 meal categories for 2025-10-03
+2025-10-03 07:57:11.631 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  No foods found in daily storage system for 2025-10-03
+2025-10-03 07:57:11.631 21199-21199 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Tofu Scramble with Spinach and Mushrooms isAdded check: false (final: false)
+2025-10-03 07:57:11.640 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 0 meal categories for 2025-10-03
+2025-10-03 07:57:11.640 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  No foods found in daily storage system for 2025-10-03
+2025-10-03 07:57:11.640 21199-21199 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Lentil Soup isAdded check: false (final: false)
+2025-10-03 07:57:11.646 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 0 meal categories for 2025-10-03
+2025-10-03 07:57:11.646 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  No foods found in daily storage system for 2025-10-03
+2025-10-03 07:57:11.646 21199-21199 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Steamed Broccoli isAdded check: false (final: false)
+2025-10-03 07:57:11.652 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 0 meal categories for 2025-10-03
+2025-10-03 07:57:11.652 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  No foods found in daily storage system for 2025-10-03
+2025-10-03 07:57:11.653 21199-21199 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Edamame isAdded check: false (final: false)
+2025-10-03 07:57:11.658 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 0 meal categories for 2025-10-03
+2025-10-03 07:57:11.658 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  No foods found in daily storage system for 2025-10-03
+2025-10-03 07:57:11.659 21199-21199 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Mushroom Stir-fry with Tofu isAdded check: false (final: false)
+2025-10-03 07:57:11.664 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 0 meal categories for 2025-10-03
+2025-10-03 07:57:11.664 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  No foods found in daily storage system for 2025-10-03
+2025-10-03 07:57:11.664 21199-21199 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Vegan Chili isAdded check: false (final: false)
+2025-10-03 07:57:11.668 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 0 meal categories for 2025-10-03
+2025-10-03 07:57:11.669 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  No foods found in daily storage system for 2025-10-03
+2025-10-03 07:57:11.669 21199-21199 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Vegetable Skewers (Grilled) isAdded check: false (final: false)
+2025-10-03 07:57:12.174 21199-21199 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-03 07:57:12.174 21199-21199 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-03 07:57:12.175 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
+2025-10-03 07:57:12.175 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-03 07:57:12.175 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
+2025-10-03 07:57:12.176 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
+2025-10-03 07:57:12.176 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-03 07:57:12.177 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
+2025-10-03 07:57:12.181 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
+2025-10-03 07:57:12.181 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-03 07:57:12.182 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
+2025-10-03 07:57:12.182 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
+2025-10-03 07:57:12.182 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-03 07:57:12.183 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
+2025-10-03 07:57:13.242 21199-21217 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223236265084ms; Flags=0, FrameTimelineVsyncId=5674723, IntendedVsync=135771770162577, Vsync=135771770162577, InputEventId=0, HandleInputStart=135771771723413, AnimationStart=135771771736538, PerformTraversalsStart=135771771743569, DrawStart=135771772349454, FrameDeadline=135771786829243, FrameInterval=135771771647527, FrameStartTime=16666666, SyncQueued=135771774140704, SyncStart=135771774220756, IssueDrawCommandsStart=135771775450392, SwapBuffers=135771782863725, FrameCompleted=9223372036854775807, DequeueBufferDuration=102916, QueueBufferDuration=2601927, GpuCompleted=9223372036854775807, SwapBuffersCompleted=135771786874975, DisplayPresentTime=0, 
+2025-10-03 07:57:15.187 21199-21199 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-03 07:57:15.188 21199-21199 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-03 07:57:15.188 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
+2025-10-03 07:57:15.188 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-03 07:57:15.189 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
+2025-10-03 07:57:15.189 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
+2025-10-03 07:57:15.190 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
+2025-10-03 07:57:15.190 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
+2025-10-03 07:57:15.195 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
+2025-10-03 07:57:15.195 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-03 07:57:15.196 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
+2025-10-03 07:57:15.196 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
+2025-10-03 07:57:15.196 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-03 07:57:15.197 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e

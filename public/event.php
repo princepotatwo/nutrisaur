@@ -5615,7 +5615,10 @@ header:hover {
                             'Content-Type': 'application/x-www-form-urlencoded',
                             'X-Requested-With': 'XMLHttpRequest'
                         },
-                        body: 'action=query&sql=SELECT * FROM programs ORDER BY program_id DESC LIMIT 5'
+                        body: new URLSearchParams({
+                            'action': 'query',
+                            'sql': 'SELECT * FROM programs ORDER BY program_id DESC LIMIT 5'
+                        })
                     });
                     const programsResult = await programsResponse.json();
                     console.log('📊 Current programs table (last 5 events):', programsResult);
@@ -5657,7 +5660,10 @@ header:hover {
                         'Content-Type': 'application/x-www-form-urlencoded',
                             'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: 'action=query&sql=SELECT * FROM programs ORDER BY program_id DESC LIMIT 10'
+                    body: new URLSearchParams({
+                        'action': 'query',
+                        'sql': 'SELECT * FROM programs ORDER BY program_id DESC LIMIT 10'
+                    })
                 });
                 const result = await response.json();
                 console.log('📊 Programs table (last 10 events):', result);
