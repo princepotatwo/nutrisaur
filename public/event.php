@@ -184,6 +184,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         if ($result['success']) {
             $eventId = $nextId; // Use the program_id we calculated, not insert_id
             
+            // 🚨 COMPLETELY DISABLE NOTIFICATIONS TO ISOLATE THE 500 ERROR
+            $notificationMessage = 'Event created successfully (notifications disabled to fix 500 error)';
+            error_log("✅ Event saved successfully with ID: $eventId (notifications completely disabled)");
+            
+            // TODO: Once we confirm event creation works, we'll re-enable notifications step by step
+            /*
             // 🚨 SEND NOTIFICATIONS WITH IMPROVED ERROR HANDLING
             $notificationType = $_POST['notification_type'] ?? 'push';
             $notificationMessage = '';
@@ -213,25 +219,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             } else {
                 $notificationMessage = 'Event created without notifications';
             }
-            
-            error_log("✅ Event saved successfully with ID: $eventId");
+            */
         } else {
             throw new Exception('Failed to insert event: ' . $result['message']);
         }
         
         // Return success response
+        error_log("🚀 About to return JSON response for event ID: $eventId");
         header('Content-Type: application/json');
-        echo json_encode([
+        $response = [
             'success' => true,
             'message' => $notificationMessage ?: 'Event saved successfully!',
             'event_id' => $eventId
-        ]);
+        ];
+        error_log("🚀 JSON response: " . json_encode($response));
+        echo json_encode($response);
+        error_log("🚀 JSON response sent successfully");
         exit;
         
     } catch (Exception $e) {
         error_log("❌ Error saving event: " . $e->getMessage());
+        error_log("❌ Error stack trace: " . $e->getTraceAsString());
         http_response_code(500);
-        echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+        header('Content-Type: application/json');
+        $errorResponse = ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+        error_log("❌ Error response: " . json_encode($errorResponse));
+        echo json_encode($errorResponse);
         exit;
     }
 }
