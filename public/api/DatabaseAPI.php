@@ -4171,32 +4171,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
     error_log("🔍 DatabaseAPI Debug - GET params: " . print_r($_GET, true));
     error_log("🔍 DatabaseAPI Debug - POST params: " . print_r($_POST, true));
     
-    // ========================================
-    // GLOBAL ARCHIVED USER CHECK
-    // ========================================
-    // Check for archived users on ANY API call that involves user data
-    if ($action && !in_array($action, ['test', 'info', 'usage'])) {
-        // Try to get email from various sources
-        $email = '';
-        
-        // Check POST data
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $input = file_get_contents('php://input');
-            $data = json_decode($input, true);
-            if (!$data) $data = $_POST;
-            $email = $data['email'] ?? '';
-        }
-        
-        // Check GET data
-        if (empty($email)) {
-            $email = $_GET['email'] ?? $_GET['user_email'] ?? '';
-        }
-        
-        // If we have an email, check if user is archived
-        if (!empty($email)) {
-            checkUserArchivedStatus($email);
-        }
-    }
     
     switch ($action) {
         
@@ -7343,9 +7317,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
-        // NAVIGATION BAR USER VALIDATION API
+        // CLEAR COMMUNITY USER CACHE API
         // ========================================
-        case 'validate_navigation_access':
+        case 'clear_community_user_cache':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Try to get JSON data first
                 $input = file_get_contents('php://input');
@@ -7368,9 +7342,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     break;
                 }
                 
-                // Force fresh database check (no cache) - only when user navigates
+                // Force fresh database check (no cache) - only for community_users table
                 $pdo = $db->getPDO();
-                $stmt = $pdo->prepare("SELECT email, status FROM community_users WHERE email = ?");
+                $stmt = $pdo->prepare("SELECT email, status, name, weight, height, municipality, barangay, sex, birthday, is_pregnant, screening_date FROM community_users WHERE email = ?");
                 $stmt->execute([$email]);
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
                 
@@ -7390,12 +7364,23 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     break;
                 }
                 
-                // User is valid and active - allow navigation
+                // User is valid and active - return fresh data (bypassing cache)
                 echo json_encode([
                     'success' => true,
-                    'message' => 'Navigation access granted',
-                    'email' => $user['email'],
-                    'status' => $user['status']
+                    'message' => 'Fresh user data retrieved',
+                    'user' => [
+                        'email' => $user['email'],
+                        'name' => $user['name'] ?? '',
+                        'weight' => $user['weight'] ?? '',
+                        'height' => $user['height'] ?? '',
+                        'municipality' => $user['municipality'] ?? '',
+                        'barangay' => $user['barangay'] ?? '',
+                        'sex' => $user['sex'] ?? '',
+                        'birthday' => $user['birthday'] ?? '',
+                        'is_pregnant' => $user['is_pregnant'] ?? '',
+                        'screening_date' => $user['screening_date'] ?? '',
+                        'status' => $user['status']
+                    ]
                 ]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'POST method required']);
