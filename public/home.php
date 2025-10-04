@@ -54,12 +54,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
                     if (isset($user['is_active']) && $user['is_active'] == 0) {
                         $loginError = "Your account has been archived. Please contact an administrator.";
                     } else {
-                    // Set session variables regardless of email verification status
-                    $_SESSION['user_id'] = $user['user_id'];
-                    $_SESSION['username'] = $user['username'];
-                    $_SESSION['email'] = $user['email'];
-                    $_SESSION['is_admin'] = false;
-                    
+                    // Check email verification status
+                    if ($user['email_verified'] == 1) {
+                        // Set session variables only if email is verified
+                        $_SESSION['user_id'] = $user['user_id'];
+                        $_SESSION['username'] = $user['username'];
+                        $_SESSION['email'] = $user['email'];
+                        $_SESSION['is_admin'] = false;
+                        
                         // Update last login
                         $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
                         $updateStmt->execute([$user['user_id']]);
@@ -67,6 +69,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
                         // Redirect to dashboard
                         header("Location: /dash");
                         exit;
+                    } else {
+                        $loginError = "Please verify your email before logging in";
+                    }
                     }
                 } else {
                     $loginError = "Invalid username/email or password";
@@ -217,12 +222,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
                 // Ensure username is unique
                 $originalUsername = $username;
                 $counter = 1;
-                while (true) {
+                $maxAttempts = 50;
+                $attempts = 0;
+                while ($attempts < $maxAttempts) {
                     $stmt = $pdo->prepare("SELECT user_id FROM users WHERE username = ?");
                     $stmt->execute([$username]);
                     if (!$stmt->fetch()) break;
                     $username = $originalUsername . $counter;
                     $counter++;
+                    $attempts++;
+                }
+                if ($attempts >= $maxAttempts) {
+                    // If we can't find unique username, use random one
+                    $username = 'user' . rand(1000, 9999);
                 }
                 
                 // Generate a random password for Google OAuth users (they won't use it)
@@ -348,12 +360,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
                 // Ensure username is unique
                 $originalUsername = $username;
                 $counter = 1;
-                while (true) {
+                $maxAttempts = 50;
+                $attempts = 0;
+                while ($attempts < $maxAttempts) {
                     $stmt = $pdo->prepare("SELECT user_id FROM users WHERE username = ?");
                     $stmt->execute([$username]);
                     if (!$stmt->fetch()) break;
                     $username = $originalUsername . $counter;
                     $counter++;
+                    $attempts++;
+                }
+                if ($attempts >= $maxAttempts) {
+                    // If we can't find unique username, use random one
+                    $username = 'user' . rand(1000, 9999);
                 }
                 
                 // Generate a random password for Google OAuth users (they won't use it)
@@ -415,18 +434,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                         exit;
                     }
                     
-                    // Set session variables
-                    $_SESSION['user_id'] = $user['user_id'];
-                    $_SESSION['username'] = $user['username'];
-                    $_SESSION['email'] = $user['email'];
-                    $_SESSION['is_admin'] = false;
-                    
-                    // Update last login
-                    $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
-                    $updateStmt->execute([$user['user_id']]);
-                    
-                    echo json_encode(['success' => true, 'message' => 'Login successful', 'user_type' => 'user', 'data' => $user]);
-                    exit;
+                    // Check email verification status
+                    if ($user['email_verified'] == 1) {
+                        // Set session variables only if email is verified
+                        $_SESSION['user_id'] = $user['user_id'];
+                        $_SESSION['username'] = $user['username'];
+                        $_SESSION['email'] = $user['email'];
+                        $_SESSION['is_admin'] = false;
+                        
+                        // Update last login
+                        $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
+                        $updateStmt->execute([$user['user_id']]);
+                        
+                        echo json_encode(['success' => true, 'message' => 'Login successful', 'user_type' => 'user', 'data' => $user]);
+                        exit;
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Please verify your email before logging in']);
+                        exit;
+                    }
                 } else {
                     echo json_encode(['success' => false, 'message' => 'Invalid username/email or password']);
                     exit;
