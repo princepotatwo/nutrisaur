@@ -9244,12 +9244,13 @@ body {
             }
             
             updateCommunityMetrics.debounceTimer = setTimeout(async () => {
-            // Prevent concurrent updates
-            if (dashboardState.updateInProgress) {
-                console.log('⏳ Update already in progress, skipping...');
-                return;
-            }
-            dashboardState.updateInProgress = true;
+                // Prevent concurrent updates
+                if (dashboardState.updateInProgress) {
+                    console.log('⏳ Update already in progress, skipping...');
+                    return;
+                }
+                dashboardState.updateInProgress = true;
+                
                 // Set a timeout to reset the flag in case something goes wrong
                 let resetTimeout = setTimeout(() => {
                     if (dashboardState.updateInProgress) {
@@ -11332,9 +11333,9 @@ body {
                     }
                 }
                 
-                // Show loading state only if chart doesn't exist
+                // Show loading state only if chart doesn't exist and we're creating a new chart
                 const chartContainer = document.querySelector('.age-classification-chart-container');
-                if (chartContainer && !ageCanvas) {
+                if (chartContainer && !ageCanvas && !ageClassificationLineChart) {
                     chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Loading age classification chart...</div>';
                 }
 
@@ -11848,7 +11849,7 @@ body {
             try {
                 console.log('Fetching barangay distribution data for:', { barangay });
                 
-                const url = `/api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=${barangay}`;
+                const url = `/api/DatabaseAPI.php?action=get_barangay_distribution_bulk`;
                 console.log('Barangay API URL:', url);
                 
                 const response = await fetch(url);
