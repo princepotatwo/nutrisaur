@@ -13424,11 +13424,11 @@ body {
             initNavigation();
         }
 
-        // Seamless real-time dashboard updates (every 10 seconds)
+        // Seamless real-time dashboard updates (every 3 seconds)
         let realtimeUpdateInterval = null;
         let isRealtimeActive = false;
         let lastUpdateTime = 0;
-        const UPDATE_INTERVAL = 10000; // 10 seconds for smoother experience
+        const UPDATE_INTERVAL = 3000; // 3 seconds for more frequent updates
         
         // Function to start seamless real-time updates
         function startRealtimeUpdates() {
@@ -13437,7 +13437,7 @@ body {
                 return;
             }
             
-            console.log('🚀 Starting seamless dashboard updates (10-second interval)');
+            console.log('🚀 Starting seamless dashboard updates (3-second interval)');
             console.log('🔍 Dashboard state:', dashboardState);
             console.log('🔍 Current barangay:', currentSelectedBarangay);
             console.log('🔍 Document visibility:', document.visibilityState);
