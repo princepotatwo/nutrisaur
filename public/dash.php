@@ -11407,9 +11407,21 @@ body {
                     console.log('✅ Updated age classification chart with data:', { ageLabels, datasets, totalUsers });
                     console.log('📊 Chart data after update:', ageClassificationLineChart.data);
                     
-                    // Force chart to re-render by calling resize
+                    // Force chart to re-render by calling resize and ensure canvas has proper dimensions
                     setTimeout(() => {
-                        if (ageClassificationLineChart) {
+                        if (ageClassificationLineChart && ageClassificationLineChart.canvas) {
+                            const canvas = ageClassificationLineChart.canvas;
+                            const container = canvas.parentElement;
+                            
+                            // Force canvas to have proper dimensions
+                            if (container) {
+                                canvas.style.width = '100%';
+                                canvas.style.height = '100%';
+                                canvas.width = container.clientWidth;
+                                canvas.height = container.clientHeight;
+                                console.log('📊 Canvas dimensions fixed:', { width: canvas.width, height: canvas.height });
+                            }
+                            
                             ageClassificationLineChart.resize();
                             console.log('📊 Chart resized after update');
                         }
@@ -11433,6 +11445,17 @@ body {
                     
                 if (canvas) {
                     console.log('📊 Canvas dimensions before chart creation:', { width: canvas.width, height: canvas.height, clientWidth: canvas.clientWidth, clientHeight: canvas.clientHeight });
+                    
+                    // Ensure canvas has proper dimensions before creating chart
+                    const container = canvas.parentElement;
+                    if (container) {
+                        canvas.style.width = '100%';
+                        canvas.style.height = '100%';
+                        canvas.width = container.clientWidth || 400;
+                        canvas.height = container.clientHeight || 300;
+                        console.log('📊 Canvas dimensions set:', { width: canvas.width, height: canvas.height });
+                    }
+                    
                     const ctx = canvas.getContext('2d');
                     console.log('📊 Canvas context:', ctx);
                     console.log('📊 Creating new age classification chart with data:', { ageLabels, datasets, totalUsers });
