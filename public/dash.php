@@ -11406,6 +11406,14 @@ body {
                     ageClassificationLineChart.update('active');
                     console.log('✅ Updated age classification chart with data:', { ageLabels, datasets, totalUsers });
                     console.log('📊 Chart data after update:', ageClassificationLineChart.data);
+                    
+                    // Force chart to re-render by calling resize
+                    setTimeout(() => {
+                        if (ageClassificationLineChart) {
+                            ageClassificationLineChart.resize();
+                            console.log('📊 Chart resized after update');
+                        }
+                    }, 100);
                     return; // Exit early if chart exists
                 }
                 
