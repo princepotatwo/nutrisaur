@@ -820,7 +820,6 @@ if (isset($_GET['logout'])) {
     <script src="https://cdn.jsdelivr.net/npm/chart.js?v=<?php echo time(); ?>"></script>
     
     <!-- Event-driven dashboard system -->
-    <link rel="stylesheet" href="css/event_indicators.css">
     
     <!-- IMMEDIATE FIX: Disable 3-second refresh -->
     <script>
@@ -11080,8 +11079,8 @@ body {
                 const trendsChartContainer = document.getElementById('trends-chart-container');
                 if (trendsChartContainer) {
                     trendsChartContainer.innerHTML = '<canvas id="trendsLineChart"></canvas>';
-                    const canvas = document.getElementById('trendsLineChart');
-                    const ctx = canvas.getContext('2d');
+                    const trendsCanvas = document.getElementById('trendsLineChart');
+                    const ctx = trendsCanvas.getContext('2d');
                     
                     // Destroy existing chart
                     if (trendsLineChart) {
@@ -11251,15 +11250,15 @@ body {
             
             try {
                 // Check if canvas exists, if not, restore it
-                let canvas = document.getElementById('ageClassificationLineChart');
-                if (!canvas) {
+                let ageCanvas = document.getElementById('ageClassificationLineChart');
+                if (!ageCanvas) {
                     console.log('Canvas not found, restoring...');
                     const chartContainer = document.querySelector('.age-classification-chart-container');
                     if (chartContainer) {
                         chartContainer.innerHTML = '<canvas id="ageClassificationLineChart"></canvas>';
-                        canvas = document.getElementById('ageClassificationLineChart');
+                        ageCanvas = document.getElementById('ageClassificationLineChart');
                     }
-                    if (!canvas) {
+                    if (!ageCanvas) {
                         console.error('Age classification line chart canvas not found and could not be restored');
                         return;
                     }
@@ -12114,14 +12113,14 @@ body {
             // Add window resize listener to resize chart
             window.addEventListener('resize', () => {
                 if (ageClassificationChartInstance) {
-                    const canvas = document.getElementById('ageClassificationChart');
-                    if (canvas) {
-                        const container = canvas.parentElement;
+                    const resizeCanvas = document.getElementById('ageClassificationChart');
+                    if (resizeCanvas) {
+                        const container = resizeCanvas.parentElement;
                         const containerRect = container.getBoundingClientRect();
                         const availableWidth = Math.max(300, containerRect.width - 20);
                         const availableHeight = Math.max(250, containerRect.height - 20);
-                        canvas.width = availableWidth;
-                        canvas.height = availableHeight;
+                        resizeCanvas.width = availableWidth;
+                        resizeCanvas.height = availableHeight;
                         ageClassificationChartInstance.resize();
                     }
                 }
@@ -13455,6 +13454,3 @@ body {
     </div>
 
     <!-- Event-driven dashboard scripts -->
-    <script src="js/CommunityEventDashboardManager.js"></script>
-    <script src="js/dashboard_integration.js"></script>
-    <script src="js/dash_fix_3second.js"></script>
