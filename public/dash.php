@@ -13582,17 +13582,10 @@ body {
             }
         }
         
-        // Show subtle refresh indicator
+        // Show subtle refresh indicator - DISABLED
         function showSeamlessRefreshIndicator() {
-            let indicator = document.getElementById('seamless-refresh-indicator');
-            if (!indicator) {
-                indicator = document.createElement('div');
-                indicator.id = 'seamless-refresh-indicator';
-                indicator.className = 'seamless-refresh-indicator';
-                indicator.innerHTML = '🔄';
-                document.body.appendChild(indicator);
-            }
-            indicator.classList.add('show');
+            // Disabled - no refresh indicator shown
+            return;
         }
         
         // Hide refresh indicator
