@@ -11314,9 +11314,9 @@ body {
                     }
                 }
                 
-                // Show loading state
+                // Show loading state only if chart doesn't exist
                 const chartContainer = document.querySelector('.age-classification-chart-container');
-                if (chartContainer) {
+                if (chartContainer && !ageCanvas) {
                     chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Loading age classification chart...</div>';
                 }
 
@@ -13405,11 +13405,11 @@ body {
             initNavigation();
         }
 
-        // Seamless real-time dashboard updates (every 5 seconds)
+        // Seamless real-time dashboard updates (every 10 seconds)
         let realtimeUpdateInterval = null;
         let isRealtimeActive = false;
         let lastUpdateTime = 0;
-        const UPDATE_INTERVAL = 5000; // 5 seconds for smoother experience
+        const UPDATE_INTERVAL = 10000; // 10 seconds for smoother experience
         
         // Function to start seamless real-time updates
         function startRealtimeUpdates() {
@@ -13418,7 +13418,7 @@ body {
                 return;
             }
             
-            console.log('🚀 Starting seamless dashboard updates (5-second interval)');
+            console.log('🚀 Starting seamless dashboard updates (10-second interval)');
             console.log('🔍 Dashboard state:', dashboardState);
             console.log('🔍 Current barangay:', currentSelectedBarangay);
             console.log('🔍 Document visibility:', document.visibilityState);
@@ -13480,9 +13480,6 @@ body {
         // Seamless dashboard update function
         async function seamlessDashboardUpdate(barangay) {
             try {
-                // Add smooth updating class to prevent flickering
-                document.body.classList.add('seamless-updating');
-                
                 // Update components in sequence with smooth transitions
                 await Promise.all([
                     seamlessUpdateCommunityMetrics(barangay),
@@ -13491,13 +13488,10 @@ body {
                 ]);
                 
                 // Small delay to ensure smooth visual transition
-                await new Promise(resolve => setTimeout(resolve, 300));
+                await new Promise(resolve => setTimeout(resolve, 100));
                 
             } catch (error) {
                 console.error('Error in seamless dashboard update:', error);
-            } finally {
-                // Remove updating class
-                document.body.classList.remove('seamless-updating');
             }
         }
         
