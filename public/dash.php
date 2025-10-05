@@ -11070,12 +11070,12 @@ body {
                 
                 console.log('📊 Trends Chart Filters:', { fromDate, toDate, barangay, whoStandard });
                 
+                // Get chart container for all operations
+                const chartContainer = document.getElementById('trends-chart-container');
+                
                 // Only show loading state if chart doesn't exist yet
-                if (!trendsLineChart) {
-                    const chartContainer = document.getElementById('trends-chart-container');
-                    if (chartContainer) {
-                        chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Loading trends chart...</div>';
-                    }
+                if (!trendsLineChart && chartContainer) {
+                    chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">Loading trends chart...</div>';
                 }
                 
                 // Fetch screening data with date range
