@@ -1,432 +1,247 @@
-2025-10-03 07:57:01.937 21199-21199 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759449421937
-2025-10-03 07:57:01.972 21199-21199 Ingredient...ryActivity com.example.nutrisaur11              D  Refreshing recommendations for Seafood
-2025-10-03 07:57:01.977 21199-26389 GeminiService           com.example.nutrisaur11              D  Force refresh requested, making API call for category Seafood
-2025-10-03 07:57:01.977 21199-26389 GeminiService           com.example.nutrisaur11              D  === buildCategoryPrompt DEBUG ===
-2025-10-03 07:57:01.977 21199-26389 GeminiService           com.example.nutrisaur11              D  Category: Seafood
-2025-10-03 07:57:01.977 21199-26389 GeminiService           com.example.nutrisaur11              D  UserData received: {is_pregnant=N/A, birthday=2005-10-03, muac_category=, notes=null, nutritional_risk=, weight_kg=90, height_cm=150, sex=Male, municipality=MARIVELES, muac_cm=, screening_date=2025-10-02 20:25:04, bmi_category=, name=jsjej, barangay=Alion, age=, email=uejej@je.e, bmi=}
-2025-10-03 07:57:01.977 21199-26389 GeminiService           com.example.nutrisaur11              D  UserData isEmpty: false
-2025-10-03 07:57:01.977 21199-26389 GeminiService           com.example.nutrisaur11              D  === FOOD PREFERENCES DEBUG ===
-2025-10-03 07:57:01.977 21199-26389 GeminiService           com.example.nutrisaur11              D  User email: uejej@je.e
-2025-10-03 07:57:01.978 21199-26389 GeminiService           com.example.nutrisaur11              D  Combined preferences: Food Identity: VEGAN. Food Allergies: FISH, SHELLFISH. Daily Food Budget: ₱300-500 per day.
-2025-10-03 07:57:01.978 21199-26389 GeminiService           com.example.nutrisaur11              D  Preferences isEmpty: false
-2025-10-03 07:57:01.978 21199-26389 GeminiService           com.example.nutrisaur11              D  Gemini API attempt 1 of 3
-2025-10-03 07:57:03.142 21199-21199 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-03 07:57:03.142 21199-21199 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-03 07:57:03.142 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
-2025-10-03 07:57:03.143 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-03 07:57:03.143 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
-2025-10-03 07:57:03.143 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-03 07:57:03.143 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 0ms
-2025-10-03 07:57:03.143 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
-2025-10-03 07:57:03.146 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
-2025-10-03 07:57:03.146 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-03 07:57:03.147 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
-2025-10-03 07:57:03.147 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-03 07:57:03.147 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-03 07:57:03.147 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
-2025-10-03 07:57:06.150 21199-21199 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-03 07:57:06.151 21199-21199 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-03 07:57:06.151 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
-2025-10-03 07:57:06.151 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-03 07:57:06.152 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
-2025-10-03 07:57:06.152 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-03 07:57:06.152 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-03 07:57:06.153 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
-2025-10-03 07:57:06.157 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
-2025-10-03 07:57:06.157 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-03 07:57:06.158 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
-2025-10-03 07:57:06.158 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-03 07:57:06.158 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-03 07:57:06.158 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
-2025-10-03 07:57:09.163 21199-21199 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-03 07:57:09.163 21199-21199 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-03 07:57:09.164 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
-2025-10-03 07:57:09.164 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-03 07:57:09.164 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
-2025-10-03 07:57:09.164 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-03 07:57:09.165 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-03 07:57:09.165 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
-2025-10-03 07:57:09.170 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
-2025-10-03 07:57:09.170 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-03 07:57:09.171 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
-2025-10-03 07:57:09.171 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-03 07:57:09.171 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-03 07:57:09.171 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
-2025-10-03 07:57:11.555 21199-26389 GeminiService           com.example.nutrisaur11              D  Gemini API Response Code: 200
-2025-10-03 07:57:11.556 21199-26389 GeminiService           com.example.nutrisaur11              D  Gemini API Response: {  "candidates": [    {      "content": {        "parts": [          {            "text": "```json\n[\n  {\n    \"food_name\": \"Tofu Scramble with Spinach and Mushrooms\",\n    \"calories\": 100,\n    \"protein\": 8,\n    \"fat\": 5,\n    \"carbs\": 7,\n    \"serving_size\": \"half cup\",\n    \"description\": \"Provides plant-based protein and fiber while being low in calories. Spinach and mushrooms add volume and nutrients without excessive calories.\",\n    \"emoji\": \"🍳\"\n  },\n  {\n    \"food_name\": \"Lentil Soup\",\n    \"calories\": 90,\n    \"protein\": 7,\n    \"fat\": 0.5,\n    \"carbs\": 15,\n    \"serving_size\": \"small bowl\",\n    \"description\": \"High in fiber and protein, promoting satiety and aiding in weight management. Low in fat and provides essential nutrients.\",\n    \"emoji\": \"🍲\"\n  },\n  {\n    \"food_name\": \"Steamed Broccoli\",\n    \"calories\": 30,\n    \"protein\": 2,\n    \"fat\": 0.3,\n    \"carbs\": 6,\n    \"serving_size\": \"1 cup\",\n    \"description\": \"Very low in calories and high in fiber, providing a feeling of fullness. Rich in vitamins and minerals.\",\n    \"emoji\": \"🥦\"\n  },\n  {\n    \"food_name\": \"Edamame\",\n    \"calories\": 80,\n    \"protein\": 7,\n    \"fat\": 5,\n    \"carbs\": 6,\n    \"serving_size\": \"half cup\",\n    \"description\": \"A good source of plant-based protein and fiber, helping to control appetite and blood sugar levels.\",\n    \"emoji\": \"🌱\"\n  },\n  {\n    \"food_name\": \"Mushroom Stir-fry with Tofu\",\n    \"calories\": 110,\n    \"protein\": 9,\n    \"fat\": 6,\n    \"carbs\": 5,\n    \"serving_size\": \"half cup\",\n    \"description\": \"Provides a good source of protein and fiber with minimal calories. Mushrooms add bulk and nutrients.\",\n    \"emoji\": \"🍄\"\n  },\n  {\n    \"food_name\": \"Vegan Chili\",\n    \"calories\": 120,\n    \"protein\": 8,\n    \"fat\": 3,\n    \"carbs\": 18,\n    \"serving_size\": \"small bowl\",\n    \"description\": \"Rich in fiber and plant-based protein, promoting satiety and aiding in weight management.\",\n    \"emoji\": \"🌶️\"\n  },\n  {\n    \"food_name\": \"Vegetable Skewers (Grilled)\",\n    \"calories\": 70,\n    \"protein\": 2,\n    \"fat\": 1,\n    \"carbs\": 15,\n    \"serving_size\": \"2 skewers\",\n    \"description\": \"Low-calorie and high in fiber, providing a feeling of fullness. A variety of vegetables provides essential nutrients.\",\n    \"emoji\": \"🍢\"\n  },\n  {\n    \"food_name\": \"Clear Noodle Soup with Vegetables and Tofu\",\n    \"calories\": 60,\n    \"protein\": 4,\n    \"fat\": 1,\n    \"carbs\": 10,\n    \"serving_size\": \"small bowl\",\n    \"description\": \"Broth-based soup is very low in calories and filling. Vegetables and tofu add nutrients and a small amount of protein.\",\n    \"emoji\": \"🍜\"\n  },\n  {\n    \"food_name\": \"Seaweed Salad (Wakame)\",\n    \"calories\": 45,\n    \"protein\": 1,\n    \"fat\": 3,\n    \"carbs\": 4,\n    \"serving_size\": \"half cup\",\n    \"description\": \"Low in calories and rich in minerals, including iodine. Provides a unique texture and flavor.\",\n    \"emoji\": \"🥗\"\n  },\n  {\n    \"food_name\": \"Tofu and Vegetable Lettuce Wraps\",\n    \"calories\": 80,\n    \"protein\": 6,\n    \"fat\": 4,\n    \"carbs\": 5,\n    \"serving_size\": \"2 wraps\",\n    \"description\": \"Low in calories and carbohydrates, providing a satisfying meal with minimal impact on blood sugar levels.\",\n    \"emoji\": \"🥬\"\n  },\n  {\n    \"food_name\": \"Roasted Eggplant\",\n    \"calories\": 50,\n    \"protein\": 1,\n    \"fat\": 0.5,\n    \"carbs\": 12,\n    \"serving_size\": \"half cup\",\n    \"description\": \"Very low in calories and high in fiber, providing a feeling of fullness. Roasting enhances the flavor.\",\n    \"emoji\": \"🍆\"\n  },\n  {\n    \"food_name\": \"Hearts of Palm Salad\",\n    \"calories\": 60,\n    \"protein\": 1,\n    \"fat\": 0.5,\n    \"carbs\": 12,\n    \"serving_size\": \"half cup\",\n    \"description\"
-2025-10-03 07:57:11.565 21199-26389 GeminiService           com.example.nutrisaur11              D  Extracted category text: ```json
-                                                                                                    [
-                                                                                                      {
-                                                                                                        "food_name": "Tofu Scramble with Spinach and Mushrooms",
-                                                                                                        "calories": 100,
-                                                                                                        "protein": 8,
-                                                                                                        "fat": 5,
-                                                                                                        "carbs": 7,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Provides plant-based protein and fiber while being low in calories. Spinach and mushrooms add volume and nutrients without excessive calories.",
-                                                                                                        "emoji": "🍳"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Lentil Soup",
-                                                                                                        "calories": 90,
-                                                                                                        "protein": 7,
-                                                                                                        "fat": 0.5,
-                                                                                                        "carbs": 15,
-                                                                                                        "serving_size": "small bowl",
-                                                                                                        "description": "High in fiber and protein, promoting satiety and aiding in weight management. Low in fat and provides essential nutrients.",
-                                                                                                        "emoji": "🍲"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Steamed Broccoli",
-                                                                                                        "calories": 30,
-                                                                                                        "protein": 2,
-                                                                                                        "fat": 0.3,
-                                                                                                        "carbs": 6,
-                                                                                                        "serving_size": "1 cup",
-                                                                                                        "description": "Very low in calories and high in fiber, providing a feeling of fullness. Rich in vitamins and minerals.",
-                                                                                                        "emoji": "🥦"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Edamame",
-                                                                                                        "calories": 80,
-                                                                                                        "protein": 7,
-                                                                                                        "fat": 5,
-                                                                                                        "carbs": 6,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "A good source of plant-based protein and fiber, helping to control appetite and blood sugar levels.",
-                                                                                                        "emoji": "🌱"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Mushroom Stir-fry with Tofu",
-                                                                                                        "calories": 110,
-                                                                                                        "protein": 9,
-                                                                                                        "fat": 6,
-                                                                                                        "carbs": 5,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Provides a good source of protein and fiber with minimal calories. Mushrooms add bulk and nutrients.",
-                                                                                                        "emoji": "🍄"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Vegan Chili",
-                                                                                                        "calories": 120,
-                                                                                                        "protein": 8,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 18,
-                                                                                                        "serving_size": "small bowl",
-                                                                                                        "description": "Rich in fiber and plant-based protein, promoting satiety and aiding in weight management.",
-                                                                                                        "emoji": "🌶️"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Vegetable Skewers (Grilled)",
-                                                                                                        "calories": 70,
-                                                                                                        "protein": 2,
-                                                                                                        "fat": 1,
-                                                                                                        "carbs": 15,
-                                                                                                        "serving_size": "2 skewers",
-                                                                                                        "description": "Low-calorie and high in fiber, providing a feeling of fullness. A variety of vegetables provides essential nutrients.",
-                                                                                                        "emoji": "🍢"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Clear Noodle Soup with Vegetables and Tofu",
-                                                                                                        "calories": 60,
-                                                                                                        "protein": 4,
-                                                                                                        "fat": 1,
-                                                                                                        "carbs": 10,
-                                                                                                        "serving_size": "small bowl",
-                                                                                                        "description": "Broth-based soup is very low in calories and filling. Vegetables and tofu add nutrients and a small amount of protein.",
-                                                                                                        "emoji": "🍜"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Seaweed Salad (Wakame)",
-                                                                                                        "calories": 45,
-                                                                                                        "protein": 1,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 4,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Low in calories and rich in minerals, including iodine. Provides a unique texture and flavor.",
-                                                                                                        "emoji": "🥗"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Tofu and Vegetable Lettuce Wraps",
-                                                                                                        "calories": 80,
-                                                                                                        "protein": 6,
-                                                                                                        "fat": 4,
-                                                                                                        "carbs": 5,
-                                                                                                        "serving_size": "2 wraps",
-                                                                                                        "description": "Low in calories and carbohydrates, providing a satisfying meal with minimal impact on blood sugar levels.",
-                                                                                                        "emoji": "🥬"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Roasted Eggplant",
-                                                                                                        "calories": 50,
-                                                                                                        "protein": 1,
-                                                                                                        "fat": 0.5,
-                                                                                                        "carbs": 12,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Very low in calories and high in fiber, providing a feeling of fullness. Roasting enhances the flavor.",
-                                                                                                        "emoji": "🍆"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Hearts of Palm Salad",
-                                                                                                        "calories": 60,
-                                                                                                        "protein": 1,
-                                                                                                        "fat": 0.5,
-                                                                                                        "carbs": 12,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Very low in calories, and provide some fiber and nutrients. A good option for adding bulk to a meal.",
-                                                                                                        "emoji": "🌴"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Vegan Spring Rolls (fresh, not fried)",
-                                                                                                        "calories": 75,
-                                                                                                        "protein": 2,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 10,
-                                                                                                        "serving_size": "2 rolls",
-                                                                                                        "description": "Fresh spring rolls are low in calories and filled with vegetables, providing fiber and nutrients.",
-                                                                                                        "emoji": "🌯"
-                                                                                                      },
-                                                                                                      {
-2025-10-03 07:57:11.565 21199-26389 GeminiService           com.example.nutrisaur11              D      "food_name": "Cauliflower Rice Stir-fry with Vegetables",
-                                                                                                        "calories": 70,
-                                                                                                        "protein": 3,
-                                                                                                        "fat": 2,
-                                                                                                        "carbs": 10,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Cauliflower rice is very low in calories and carbohydrates, making it an excellent base for a stir-fry. Vegetables add fiber and nutrients.",
-                                                                                                        "emoji": "🍚"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Okra Stew",
-                                                                                                        "calories": 80,
-                                                                                                        "protein": 2,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 10,
-                                                                                                        "serving_size": "small bowl",
-                                                                                                        "description": "Okra is low in calories and high in fiber, providing a feeling of fullness. Stewing adds flavor and moisture.",
-                                                                                                        "emoji": "🍲"
-                                                                                                      }
-                                                                                                    ]
-                                                                                                    ```
-2025-10-03 07:57:11.565 21199-26389 GeminiService           com.example.nutrisaur11              D  Extracted category JSON: [
-                                                                                                      {
-                                                                                                        "food_name": "Tofu Scramble with Spinach and Mushrooms",
-                                                                                                        "calories": 100,
-                                                                                                        "protein": 8,
-                                                                                                        "fat": 5,
-                                                                                                        "carbs": 7,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Provides plant-based protein and fiber while being low in calories. Spinach and mushrooms add volume and nutrients without excessive calories.",
-                                                                                                        "emoji": "🍳"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Lentil Soup",
-                                                                                                        "calories": 90,
-                                                                                                        "protein": 7,
-                                                                                                        "fat": 0.5,
-                                                                                                        "carbs": 15,
-                                                                                                        "serving_size": "small bowl",
-                                                                                                        "description": "High in fiber and protein, promoting satiety and aiding in weight management. Low in fat and provides essential nutrients.",
-                                                                                                        "emoji": "🍲"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Steamed Broccoli",
-                                                                                                        "calories": 30,
-                                                                                                        "protein": 2,
-                                                                                                        "fat": 0.3,
-                                                                                                        "carbs": 6,
-                                                                                                        "serving_size": "1 cup",
-                                                                                                        "description": "Very low in calories and high in fiber, providing a feeling of fullness. Rich in vitamins and minerals.",
-                                                                                                        "emoji": "🥦"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Edamame",
-                                                                                                        "calories": 80,
-                                                                                                        "protein": 7,
-                                                                                                        "fat": 5,
-                                                                                                        "carbs": 6,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "A good source of plant-based protein and fiber, helping to control appetite and blood sugar levels.",
-                                                                                                        "emoji": "🌱"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Mushroom Stir-fry with Tofu",
-                                                                                                        "calories": 110,
-                                                                                                        "protein": 9,
-                                                                                                        "fat": 6,
-                                                                                                        "carbs": 5,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Provides a good source of protein and fiber with minimal calories. Mushrooms add bulk and nutrients.",
-                                                                                                        "emoji": "🍄"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Vegan Chili",
-                                                                                                        "calories": 120,
-                                                                                                        "protein": 8,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 18,
-                                                                                                        "serving_size": "small bowl",
-                                                                                                        "description": "Rich in fiber and plant-based protein, promoting satiety and aiding in weight management.",
-                                                                                                        "emoji": "🌶️"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Vegetable Skewers (Grilled)",
-                                                                                                        "calories": 70,
-                                                                                                        "protein": 2,
-                                                                                                        "fat": 1,
-                                                                                                        "carbs": 15,
-                                                                                                        "serving_size": "2 skewers",
-                                                                                                        "description": "Low-calorie and high in fiber, providing a feeling of fullness. A variety of vegetables provides essential nutrients.",
-                                                                                                        "emoji": "🍢"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Clear Noodle Soup with Vegetables and Tofu",
-                                                                                                        "calories": 60,
-                                                                                                        "protein": 4,
-                                                                                                        "fat": 1,
-                                                                                                        "carbs": 10,
-                                                                                                        "serving_size": "small bowl",
-                                                                                                        "description": "Broth-based soup is very low in calories and filling. Vegetables and tofu add nutrients and a small amount of protein.",
-                                                                                                        "emoji": "🍜"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Seaweed Salad (Wakame)",
-                                                                                                        "calories": 45,
-                                                                                                        "protein": 1,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 4,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Low in calories and rich in minerals, including iodine. Provides a unique texture and flavor.",
-                                                                                                        "emoji": "🥗"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Tofu and Vegetable Lettuce Wraps",
-                                                                                                        "calories": 80,
-                                                                                                        "protein": 6,
-                                                                                                        "fat": 4,
-                                                                                                        "carbs": 5,
-                                                                                                        "serving_size": "2 wraps",
-                                                                                                        "description": "Low in calories and carbohydrates, providing a satisfying meal with minimal impact on blood sugar levels.",
-                                                                                                        "emoji": "🥬"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Roasted Eggplant",
-                                                                                                        "calories": 50,
-                                                                                                        "protein": 1,
-                                                                                                        "fat": 0.5,
-                                                                                                        "carbs": 12,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Very low in calories and high in fiber, providing a feeling of fullness. Roasting enhances the flavor.",
-                                                                                                        "emoji": "🍆"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Hearts of Palm Salad",
-                                                                                                        "calories": 60,
-                                                                                                        "protein": 1,
-                                                                                                        "fat": 0.5,
-                                                                                                        "carbs": 12,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Very low in calories, and provide some fiber and nutrients. A good option for adding bulk to a meal.",
-                                                                                                        "emoji": "🌴"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Vegan Spring Rolls (fresh, not fried)",
-                                                                                                        "calories": 75,
-                                                                                                        "protein": 2,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 10,
-                                                                                                        "serving_size": "2 rolls",
-                                                                                                        "description": "Fresh spring rolls are low in calories and filled with vegetables, providing fiber and nutrients.",
-                                                                                                        "emoji": "🌯"
-                                                                                                      },
-                                                                                                      {
-2025-10-03 07:57:11.565 21199-26389 GeminiService           com.example.nutrisaur11              D      "food_name": "Cauliflower Rice Stir-fry with Vegetables",
-                                                                                                        "calories": 70,
-                                                                                                        "protein": 3,
-                                                                                                        "fat": 2,
-                                                                                                        "carbs": 10,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Cauliflower rice is very low in calories and carbohydrates, making it an excellent base for a stir-fry. Vegetables add fiber and nutrients.",
-                                                                                                        "emoji": "🍚"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Okra Stew",
-                                                                                                        "calories": 80,
-                                                                                                        "protein": 2,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 10,
-                                                                                                        "serving_size": "small bowl",
-                                                                                                        "description": "Okra is low in calories and high in fiber, providing a feeling of fullness. Stewing adds flavor and moisture.",
-                                                                                                        "emoji": "🍲"
-                                                                                                      }
-                                                                                                    ]
-2025-10-03 07:57:11.568 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Tofu Scramble with Spinach and Mushrooms (🍳)
-2025-10-03 07:57:11.568 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Lentil Soup (🍲)
-2025-10-03 07:57:11.568 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Steamed Broccoli (🥦)
-2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Edamame (🌱)
-2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Mushroom Stir-fry with Tofu (🍄)
-2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Vegan Chili (🌶️)
-2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Vegetable Skewers (Grilled) (🍢)
-2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Clear Noodle Soup with Vegetables and Tofu (🍜)
-2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Seaweed Salad (Wakame) (🥗)
-2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Tofu and Vegetable Lettuce Wraps (🥬)
-2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Roasted Eggplant (🍆)
-2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Hearts of Palm Salad (🌴)
-2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Vegan Spring Rolls (fresh, not fried) (🌯)
-2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Cauliflower Rice Stir-fry with Vegetables (🍚)
-2025-10-03 07:57:11.569 21199-26389 GeminiService           com.example.nutrisaur11              D  Added category food: Okra Stew (🍲)
-2025-10-03 07:57:11.572 21199-26389 GeminiService           com.example.nutrisaur11              D  Calculated age from birthday '2005-10-03': 20
-2025-10-03 07:57:11.572 21199-26389 GeminiService           com.example.nutrisaur11              D  Created user profile from database data: jsjej (Age: 20, Weight: 90.0, Height: 150.0, Gender: Male, Activity: Moderate)
-2025-10-03 07:57:11.589 21199-26389 GeminiCacheManager      com.example.nutrisaur11              D  Cached persistent recommendations for Seafood (user: 20_Male_90.0_150.0, ingredient: null)
-2025-10-03 07:57:11.589 21199-26389 GeminiService           com.example.nutrisaur11              D  Cached category recommendations for Seafood
-2025-10-03 07:57:11.592 21199-21199 Ingredient...ryActivity com.example.nutrisaur11              D  Refreshed 15 recommendations for Seafood
-2025-10-03 07:57:11.630 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 0 meal categories for 2025-10-03
-2025-10-03 07:57:11.631 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  No foods found in daily storage system for 2025-10-03
-2025-10-03 07:57:11.631 21199-21199 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Tofu Scramble with Spinach and Mushrooms isAdded check: false (final: false)
-2025-10-03 07:57:11.640 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 0 meal categories for 2025-10-03
-2025-10-03 07:57:11.640 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  No foods found in daily storage system for 2025-10-03
-2025-10-03 07:57:11.640 21199-21199 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Lentil Soup isAdded check: false (final: false)
-2025-10-03 07:57:11.646 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 0 meal categories for 2025-10-03
-2025-10-03 07:57:11.646 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  No foods found in daily storage system for 2025-10-03
-2025-10-03 07:57:11.646 21199-21199 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Steamed Broccoli isAdded check: false (final: false)
-2025-10-03 07:57:11.652 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 0 meal categories for 2025-10-03
-2025-10-03 07:57:11.652 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  No foods found in daily storage system for 2025-10-03
-2025-10-03 07:57:11.653 21199-21199 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Edamame isAdded check: false (final: false)
-2025-10-03 07:57:11.658 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 0 meal categories for 2025-10-03
-2025-10-03 07:57:11.658 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  No foods found in daily storage system for 2025-10-03
-2025-10-03 07:57:11.659 21199-21199 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Mushroom Stir-fry with Tofu isAdded check: false (final: false)
-2025-10-03 07:57:11.664 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 0 meal categories for 2025-10-03
-2025-10-03 07:57:11.664 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  No foods found in daily storage system for 2025-10-03
-2025-10-03 07:57:11.664 21199-21199 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Vegan Chili isAdded check: false (final: false)
-2025-10-03 07:57:11.668 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 0 meal categories for 2025-10-03
-2025-10-03 07:57:11.669 21199-21199 AddedFoodManager        com.example.nutrisaur11              D  No foods found in daily storage system for 2025-10-03
-2025-10-03 07:57:11.669 21199-21199 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Vegetable Skewers (Grilled) isAdded check: false (final: false)
-2025-10-03 07:57:12.174 21199-21199 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-03 07:57:12.174 21199-21199 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-03 07:57:12.175 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
-2025-10-03 07:57:12.175 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-03 07:57:12.175 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
-2025-10-03 07:57:12.176 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-03 07:57:12.176 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-03 07:57:12.177 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
-2025-10-03 07:57:12.181 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
-2025-10-03 07:57:12.181 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-03 07:57:12.182 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
-2025-10-03 07:57:12.182 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-03 07:57:12.182 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-03 07:57:12.183 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
-2025-10-03 07:57:13.242 21199-21217 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223236265084ms; Flags=0, FrameTimelineVsyncId=5674723, IntendedVsync=135771770162577, Vsync=135771770162577, InputEventId=0, HandleInputStart=135771771723413, AnimationStart=135771771736538, PerformTraversalsStart=135771771743569, DrawStart=135771772349454, FrameDeadline=135771786829243, FrameInterval=135771771647527, FrameStartTime=16666666, SyncQueued=135771774140704, SyncStart=135771774220756, IssueDrawCommandsStart=135771775450392, SwapBuffers=135771782863725, FrameCompleted=9223372036854775807, DequeueBufferDuration=102916, QueueBufferDuration=2601927, GpuCompleted=9223372036854775807, SwapBuffersCompleted=135771786874975, DisplayPresentTime=0, 
-2025-10-03 07:57:15.187 21199-21199 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-03 07:57:15.188 21199-21199 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-03 07:57:15.188 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
-2025-10-03 07:57:15.188 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-03 07:57:15.189 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
-2025-10-03 07:57:15.189 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-03 07:57:15.190 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
-2025-10-03 07:57:15.190 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
-2025-10-03 07:57:15.195 21199-21199 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: uejej@je.e
-2025-10-03 07:57:15.195 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-03 07:57:15.196 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: uejej@je.e
-2025-10-03 07:57:15.196 21199-21199 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-03 07:57:15.196 21199-21199 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-03 07:57:15.197 21199-21199 SessionManager          com.example.nutrisaur11              D  User exists and is valid: uejej@je.e
+ 🔍 Dashboard Metrics - Using donut chart logic:
+   - Total Screened: 14
+   - Severely Underweight (WFA): 2
+   - Severely Stunted (HFA): 4
+   - Severely Wasted (WFH): 2
+ 🔍 WFA Classifications: Object
+ 🔍 HFA Classifications: Object
+ 🔍 WFH Classifications: Object
+ 🛑 Disabling 3-second refresh...
+ ✅ 3-second refresh blocked
+ 📊 Nutritional Statistics loaded: Object
+ 🌍 Pre-loaded Geographic Distribution Data: Array(0)
+ 🛑 Disabling 3-second refresh system...
+ ✅ 3-second refresh system disabled
+ DOM Content Loaded - Initializing WHO dropdown
+ 📅 Set from date to: 2025-01-01
+ 📅 Set to date to: 2025-10-09
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=weight-for-age
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: 
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: weight-for-age
+ 📊 Severe cases - Dropdown value at time of call: weight-for-age
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=weight-for-age
+ WHO dropdown found, setting up event listener
+ 🔄 Starting WHO standard change handler...
+ 📊 WHO Standard selected: weight-for-age
+ 📊 Dropdown element found: true
+ 📊 Dropdown value: weight-for-age
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📡 Fetching WHO data with active filters...
+ 📊 Active filters: Object
+ Fetching WHO data for: Object
+ API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=weight-for-age
+ 🚀 Initializing municipality and barangay dropdown functionality...
+ 🚀 Initializing modern mobile top navigation...
+ 📱 Desktop navbar exists: true
+ 📱 Initializing mobile dropdown functionality...
+ 📱 Found select headers: 2
+ 📱 Found dropdown contents: 2
+ 📱 Found option items: 247
+ ✅ Mobile dropdown functionality initialized
+ ✅ Modern mobile top navigation system initialized successfully
+ 🚀 Initializing event-driven dashboard...
+ 🔄 Connecting to event stream: events_api.php?action=event_stream&barangay=
+ ✅ Event-driven dashboard initialized
+ 🚀 Starting event-driven dashboard system...
+ 🔄 Connecting to event stream: events_api.php?action=event_stream&barangay=
+ ✅ Event-driven system active - no more 3-second polling!
+ 📊 Trends API response: Object
+ 📊 Chart data analysis: Object
+ No chartable datasets available - showing message with user count
+ Severe cases data received: Object
+ Found 2 severe cases
+ 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
+ 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
+ ✅ Severe cases list updated successfully with 2 cases
+dash:1 EventSource's response has a MIME type ("text/html") that is not "text/event-stream". Aborting the connection.
+ ❌ Community event stream disconnected
+ 🔄 Reconnecting community event stream... (1/5)
+dash:1 EventSource's response has a MIME type ("text/html") that is not "text/event-stream". Aborting the connection.
+ ❌ Community event stream disconnected
+ 🔄 Reconnecting community event stream... (2/5)
+ Bulk API Response: Object
+ Mapping weight-for-age to weight_for_age: Object
+ Classification values: Array(6)
+ Calculated total: 6
+ Original total_users: 14
+ Extracted weight-for-age data: Object
+ Processed data for donut chart: Object
+ 📊 Data received for chart update: Object
+ 🎨 Updating chart...
+ WHO Chart Update - Data received: Object
+ Data type: object
+ Data classifications: Object
+ Data total: 6
+ Chart elements found:
+   - chartBg (risk-chart-bg): 
+   - centerText (risk-center-text): 
+   - segments (risk-segments): 
+ Processing classifications: Object
+ Classifications keys: Array(6)
+ Classifications values: Array(6)
+ Total users: 6
+ Has data (non-zero counts): true
+ Chart segments: Array(3)
+ Chart segments length: 3
+ Chart segments details: Array(3)
+ Creating gradient: conic-gradient(#E91E63 0% 33.33333333333333%, #FFC107 33.33333333333333% 66.66666666666666%, #4CAF50 66.66666666666666% 99.99999999999999%)
+ Chart background set to: conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 33.3333%, rgb(255, 193, 7) 33.3333%, rgb(255, 193, 7) 66.6667%, rgb(76, 175, 80) 66.6667%, rgb(76, 175, 80) 100%)
+ Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 33.3333%, rgb(255, 193, 7) 33.3333%, rgb(255, 193, 7) 66.6667%, rgb(76, 175, 80) 66.6667%, rgb(76, 175, 80) 100%) repeat scroll 0% 0% / auto padding-box border-box
+ Computed opacity: 1
+ Element dimensions: Object
+ WHO chart updated successfully
+ 🎨 Updating age classification chart...
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: weight-for-age
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
+ 📍 Found 13 municipality options
+ 📍 Found 234 barangay options
+ ✅ Municipality and barangay dropdown functionality initialized
+ 📊 Age classification API response: Object
+ 📊 Age Classification Line Chart Data: Object
+ 📊 Creating Chart.js line chart with data: Object
+ ✅ Age Classification Line Chart created successfully
+ 🎨 Updating trends chart...
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=weight-for-age
+ 📊 Trends API response: Object
+ 📊 Chart data analysis: Object
+ No chartable datasets available - showing message with user count
+ 🎨 Updating severe cases list...
+ 📊 WHO Standard before severe cases call: weight-for-age
+ 📊 Dropdown value before severe cases call: weight-for-age
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: 
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: weight-for-age
+ 📊 Severe cases - Dropdown value at time of call: weight-for-age
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=weight-for-age
+ 🔍 Card Debug - Checking card elements:
+ Card Container: 
+ Number of cards found: 4
+ Card 1: 
+ Card 1 display: flex
+ Card 1 visibility: visible
+ Card 1 opacity: 1
+ Card 2: 
+ Card 2 display: flex
+ Card 2 visibility: visible
+ Card 2 opacity: 1
+ Card 3: 
+ Card 3 display: flex
+ Card 3 visibility: visible
+ Card 3 opacity: 1
+ Card 4: 
+ Card 4 display: flex
+ Card 4 visibility: visible
+ Card 4 opacity: 1
+ 🔍 Initial Dashboard Metrics (Page Load):
+   - Total Screened: 14
+   - High Risk (Severely Underweight): 2
+   - SAM Cases (Severely Stunted): 4
+   - Critical MUAC (Severely Wasted): 2
+ Severe cases data received: Object
+ Found 2 severe cases
+ 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
+ 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
+ ✅ Severe cases list updated successfully with 2 cases
+ ✅ Chart update completed
+ 🏁 WHO classification loading completed
+ 📊 Loading initial trends chart...
+ 📊 updateTrendsChart function exists: function
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+dash:8261 🔍 Final filter value: 
+dash:10182 📊 Trends Chart Filters: Object
+dash:10192 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=weight-for-age
+dash:10197 📊 Trends API response: Object
+dash:10209 📊 Chart data analysis: Object
+dash:10224 No chartable datasets available - showing message with user count
+dash:11349 📊 Trends chart loaded successfully
+dash:11356 📊 Loading initial age classification chart...
+dash:10406 📊 Updating Age Classification Line Chart...
+dash:10434 📊 Using WHO Standard: weight-for-age
+dash:10435 📊 Using Barangay: 
+dash:10439 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
+dash:10444 📊 Age classification API response: Object
+dash:10462 📊 Age Classification Line Chart Data: Object
+dash:10475 📊 Creating Chart.js line chart with data: Object
+dash:10612 ✅ Age Classification Line Chart created successfully
+dash:11361 🔄 Loading initial dashboard metrics and geographic distribution...
+dash:8352 🔄 updateCommunityMetrics called with barangay: 
+dash:11365 🔄 Loading barangay distribution data...
+dash:10927 Fetching barangay distribution data for: Object
+dash:10930 Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=
+dash:10939 Barangay API Response: Object
+dash:11043 Updating barangay distribution display: Object
+dash:11370 🔄 Loading gender distribution data...
+dash:10961 Fetching gender distribution data for: Object
+dash:10964 Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
+dash_fix_3second.js:14 🛑 3-second refresh disabled - using event-driven system instead
+dash:8374 🔄 Starting community metrics update...
+dash:9507 Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php
+CommunityEventDashboardManager.js:21 🔄 Connecting to event stream: events_api.php?action=event_stream&barangay=
+dash:10973 Gender API Response: Object
+dash:10993 Updating gender distribution display: Object
+dash:11375 🌍 Loading geographic distribution with pre-loaded data...
+dash:11380 🌍 No pre-loaded geographic data available
+dash:8645 🌍 updateGeographicChartDisplay called with data: Array(0)
+dash:8648 ❌ Geographic chart container not found!
+updateGeographicChartDisplay @ dash:8648
+dash_fix_3second.js:61 ⚠️ Event system not working, enabling fallback polling (30 seconds)
+dash:9519 DatabaseAPI response for dashboard_assessment_stats : Object
+dash:9529 Returning data: Object
+dash:8386 📊 Community Metrics Data: Object
+dash:8387 📊 Data type: object
+dash:8388 📊 Data keys: Array(2)
+dash:8395 Total Screened Element: <div class=​"metric-value" id=​"community-total-screened">​14​</div>​flex
+dash:8396 Screened Change Element: <div class=​"metric-change" id=​"community-screened-change">​14​</div>​
+dash:8397 Total Users: 14
+dash:8398 Recent Registrations: 14
+dash:8404 📊 Total screened element: <div class=​"metric-value" id=​"community-total-screened">​14​</div>​flex
+dash:8405 📊 Total screened from API (data.data.total_screened): 14
+dash:8406 📊 Total users from API (data.data.total_users): undefined
+dash:8407 📊 Total users from API (data.total_users): undefined
+dash:8408 📊 Total users from API (data.processed_users): undefined
+dash:8409 📊 Final total users value: 14
+dash:8412 📊 Setting total screened to: 14
+dash:8416 📊 Setting screened change to: 14
+dash:8425 📊 Severely cases will be updated by WHO classification data
+dash:1 EventSource's response has a MIME type ("text/html") that is not "text/event-stream". Aborting the connection.
+CommunityEventDashboardManager.js:42 ❌ Community event stream disconnected
+CommunityEventDashboardManager.js:218 🔄 Reconnecting community event stream... (3/5)
+CommunityEventDashboardManager.js:21 🔄 Connecting to event stream: events_api.php?action=event_stream&barangay=
+dash:1 EventSource's response has a MIME type ("text/html") that is not "text/event-stream". Aborting the connection.
+CommunityEventDashboardManager.js:42 ❌ Community event stream disconnected
+CommunityEventDashboardManager.js:218 🔄 Reconnecting community event stream... (4/5)
+dash:8369 🔧 Auto-resetting stuck updateInProgress flag
+CommunityEventDashboardManager.js:21 🔄 Connecting to event stream: events_api.php?action=event_stream&barangay=
+dash:1 EventSource's response has a MIME type ("text/html") that is not "text/event-stream". Aborting the connection.
+CommunityEventDashboardManager.js:42 ❌ Community event stream disconnected
+CommunityEventDashboardManager.js:218 🔄 Reconnecting community event stream... (5/5)
+dash:12587 ▶️ Resuming real-time updates (page visible)
+dash_fix_3second.js:14 🛑 3-second refresh disabled - using event-driven system instead
+CommunityEventDashboardManager.js:21 🔄 Connecting to event stream: events_api.php?action=event_stream&barangay=
+dash:1 EventSource's response has a MIME type ("text/html") that is not "text/event-stream". Aborting the connection.
+CommunityEventDashboardManager.js:42 ❌ Community event stream disconnected
+CommunityEventDashboardManager.js:224 ❌ Max reconnection attempts reached
+reconnect @ CommunityEventDashboardManager.js:224
