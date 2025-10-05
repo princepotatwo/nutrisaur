@@ -11083,6 +11083,14 @@ body {
                 const data = await response.json();
                 
                 console.log('📊 Trends API response:', data);
+                console.log('📊 Trends API data structure:', {
+                    success: data.success,
+                    hasData: !!data.data,
+                    dataKeys: data.data ? Object.keys(data.data) : [],
+                    timeLabels: data.data?.timeLabels,
+                    datasets: data.data?.datasets,
+                    totalUsers: data.data?.totalUsers
+                });
                 
                 if (!data.success) {
                     console.error('Failed to fetch trends data:', data.message);
