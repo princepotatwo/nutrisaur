@@ -821,30 +821,7 @@ if (isset($_GET['logout'])) {
     
     <!-- Event-driven dashboard system -->
     
-    <!-- IMMEDIATE FIX: Disable 3-second refresh -->
-    <script>
-    (function() {
-        console.log("🛑 Disabling 3-second refresh...");
-        
-        // Block the 3-second interval
-        const originalSetInterval = window.setInterval;
-        window.setInterval = function(callback, delay) {
-            if (delay === 3000) {
-                console.log("🛑 Blocked 3-second interval - using event-driven system");
-                return null;
-            }
-            return originalSetInterval(callback, delay);
-        };
-        
-        // Disable the startRealtimeUpdates function
-        window.startRealtimeUpdates = function() {
-            console.log("🛑 3-second refresh disabled - using event-driven system");
-            return;
-        };
-        
-        console.log("✅ 3-second refresh blocked");
-    })();
-    </script>
+    <!-- Auto refresh is now enabled -->
 </head><style>
 /* Dark Theme - Default */
 :root {
@@ -6528,6 +6505,70 @@ header .user-info {
     transform: translateY(0);
 }
 
+/* Seamless Refresh Styles */
+.seamless-updating {
+    pointer-events: none;
+}
+
+.seamless-updating .stat-card,
+.seamless-updating .chart-card,
+.seamless-updating .program-card {
+    opacity: 0.95;
+    transform: scale(0.99);
+    transition: all 0.3s ease;
+}
+
+.seamless-refresh-indicator {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--color-highlight);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-20px) scale(0.8);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
+}
+
+.seamless-refresh-indicator.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    animation: seamlessPulse 1s ease-in-out infinite;
+}
+
+@keyframes seamlessPulse {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(0) scale(1.1); }
+}
+
+/* Smooth number animations */
+.stat-number {
+    transition: all 0.3s ease;
+}
+
+.seamless-updating .stat-number {
+    color: var(--color-highlight);
+    font-weight: 600;
+}
+
+/* Chart smooth updates */
+.chart-container {
+    position: relative;
+    transition: opacity 0.3s ease;
+}
+
+.seamless-updating .chart-container {
+    opacity: 0.9;
+}
+
 .btn-icon {
     font-size: 16px;
 }
@@ -11086,12 +11127,17 @@ body {
                     const trendsCanvas = document.getElementById('trendsLineChart');
                     const ctx = trendsCanvas.getContext('2d');
                     
-                    // Destroy existing chart
+                    // Update existing chart or create new one
                     if (trendsLineChart) {
-                        trendsLineChart.destroy();
+                        // Update existing chart data seamlessly
+                        trendsLineChart.data.labels = timeLabels;
+                        trendsLineChart.data.datasets = datasets;
+                        trendsLineChart.update('active');
+                        console.log('📊 Updated trends line chart with data:', { timeLabels, datasets, totalUsers });
+                        return; // Exit early if chart exists
                     }
                     
-                    console.log('📊 Creating trends line chart with data:', { timeLabels, datasets, totalUsers });
+                    console.log('📊 Creating new trends line chart with data:', { timeLabels, datasets, totalUsers });
                     
                     // Get theme-aware colors
                     const isLightTheme = document.body.classList.contains('light-theme');
@@ -11308,18 +11354,29 @@ body {
 
                 console.log('📊 Age Classification Line Chart Data:', { ageLabels, datasets, totalUsers, totalPopulation: data.totalPopulation });
 
-                // Destroy existing chart
+                // Update existing chart or create new one
                 if (ageClassificationLineChart) {
-                    ageClassificationLineChart.destroy();
+                    // Update existing chart data seamlessly
+                    ageClassificationLineChart.data.labels = ageLabels;
+                    ageClassificationLineChart.data.datasets = datasets;
+                    ageClassificationLineChart.update('active');
+                    console.log('📊 Updated age classification chart with data:', { ageLabels, datasets, totalUsers });
+                    return; // Exit early if chart exists
                 }
                 
-                // Restore canvas element
-                if (chartContainer) {
-                    chartContainer.innerHTML = '<canvas id="ageClassificationLineChart"></canvas>';
-                    const newCanvas = document.getElementById('ageClassificationLineChart');
-                    const newCtx = newCanvas.getContext('2d');
-                    
-                    console.log('📊 Creating Chart.js line chart with data:', { ageLabels, datasets, totalUsers });
+                // Create new chart only if it doesn't exist
+                let canvas = document.getElementById('ageClassificationLineChart');
+                if (!canvas) {
+                    const chartContainer = document.querySelector('.age-classification-chart-container');
+                    if (chartContainer) {
+                        chartContainer.innerHTML = '<canvas id="ageClassificationLineChart"></canvas>';
+                        canvas = document.getElementById('ageClassificationLineChart');
+                    }
+                }
+                
+                if (canvas) {
+                    const ctx = canvas.getContext('2d');
+                    console.log('📊 Creating new age classification chart with data:', { ageLabels, datasets, totalUsers });
                     
                     // Get theme-aware colors for age classification chart
                     const isLightTheme = document.body.classList.contains('light-theme');
@@ -13348,18 +13405,20 @@ body {
             initNavigation();
         }
 
-        // Real-time dashboard updates (every 3 seconds)
+        // Seamless real-time dashboard updates (every 5 seconds)
         let realtimeUpdateInterval = null;
         let isRealtimeActive = false;
+        let lastUpdateTime = 0;
+        const UPDATE_INTERVAL = 5000; // 5 seconds for smoother experience
         
-        // Function to start real-time updates
+        // Function to start seamless real-time updates
         function startRealtimeUpdates() {
             if (isRealtimeActive) {
                 console.log('🔄 Real-time updates already active');
                 return;
             }
             
-            console.log('🚀 Starting real-time dashboard updates (3-second interval)');
+            console.log('🚀 Starting seamless dashboard updates (5-second interval)');
             console.log('🔍 Dashboard state:', dashboardState);
             console.log('🔍 Current barangay:', currentSelectedBarangay);
             console.log('🔍 Document visibility:', document.visibilityState);
@@ -13370,29 +13429,39 @@ body {
                 try {
                     // Get current selected barangay
                     const currentBarangay = currentSelectedBarangay || '';
+                    const now = Date.now();
                     
-                    console.log('⏰ Real-time interval triggered');
+                    // Skip if too soon since last update
+                    if (now - lastUpdateTime < UPDATE_INTERVAL) {
+                        return;
+                    }
+                    
+                    console.log('⏰ Seamless update triggered');
                     console.log('🔍 Visibility state:', document.visibilityState);
                     console.log('🔍 Update in progress:', dashboardState.updateInProgress);
                     console.log('🔍 Current barangay:', currentBarangay);
                     
                     // Only update if dashboard is visible and not in loading state
                     if (document.visibilityState === 'visible' && !dashboardState.updateInProgress) {
-                        console.log('🔄 Real-time update for barangay:', currentBarangay);
+                        console.log('🔄 Seamless update for barangay:', currentBarangay);
+                        
+                        // Show subtle refresh indicator
+                        showSeamlessRefreshIndicator();
                         
                         // Get current WHO standard to maintain filter
                         const currentWHOStandard = document.getElementById('whoStandardSelect')?.value || 'weight-for-age';
-                        console.log('🔄 Real-time update with WHO standard:', currentWHOStandard);
+                        console.log('🔄 Seamless update with WHO standard:', currentWHOStandard);
                         
-                        // Update dashboard components silently with current filters
-                        await updateDashboardForBarangay(currentBarangay);
+                        // Update dashboard components seamlessly
+                        await seamlessDashboardUpdate(currentBarangay);
                         
-                        // Also update WHO chart to respect current WHO standard filter
-                        await handleWHOStandardChange();
+                        // Hide refresh indicator
+                        hideSeamlessRefreshIndicator();
                         
-                        console.log('✅ Real-time update completed');
+                        lastUpdateTime = now;
+                        console.log('✅ Seamless update completed');
                     } else {
-                        console.log('⏸️ Skipping real-time update - visibility:', document.visibilityState, 'updateInProgress:', dashboardState.updateInProgress);
+                        console.log('⏸️ Skipping seamless update - visibility:', document.visibilityState, 'updateInProgress:', dashboardState.updateInProgress);
                         
                         // If updateInProgress is stuck as true, reset it after a reasonable time
                         if (dashboardState.updateInProgress) {
@@ -13401,10 +13470,124 @@ body {
                         }
                     }
                 } catch (error) {
-                    console.error('❌ Real-time update error:', error);
+                    console.error('❌ Seamless update error:', error);
+                    hideSeamlessRefreshIndicator();
                     // Don't stop real-time updates on individual errors
                 }
-            }, 3000); // 3 seconds
+            }, UPDATE_INTERVAL);
+        }
+        
+        // Seamless dashboard update function
+        async function seamlessDashboardUpdate(barangay) {
+            try {
+                // Add smooth updating class to prevent flickering
+                document.body.classList.add('seamless-updating');
+                
+                // Update components in sequence with smooth transitions
+                await Promise.all([
+                    seamlessUpdateCommunityMetrics(barangay),
+                    seamlessUpdateCharts(barangay),
+                    seamlessUpdateIntelligentPrograms(barangay)
+                ]);
+                
+                // Small delay to ensure smooth visual transition
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+            } catch (error) {
+                console.error('Error in seamless dashboard update:', error);
+            } finally {
+                // Remove updating class
+                document.body.classList.remove('seamless-updating');
+            }
+        }
+        
+        // Seamless community metrics update
+        async function seamlessUpdateCommunityMetrics(barangay) {
+            try {
+                const params = {};
+                if (barangay && barangay !== '') {
+                    params.barangay = barangay;
+                }
+                
+                const data = await fetchDataFromAPI('dashboard_assessment_stats', params);
+                
+                if (data && data.success && data.data) {
+                    // Update with smooth number animation
+                    await animateNumberUpdate('community-total-screened', data.data.total_screened || 0);
+                    await animateNumberUpdate('community-screened-change', data.data.total_screened || 0);
+                }
+            } catch (error) {
+                console.error('Error updating community metrics:', error);
+            }
+        }
+        
+        // Seamless charts update
+        async function seamlessUpdateCharts(barangay) {
+            try {
+                // Update charts without destroying them
+                if (typeof updateTrendsChart === 'function') {
+                    await updateTrendsChart();
+                }
+                if (typeof updateAgeClassificationChart === 'function') {
+                    await updateAgeClassificationChart(barangay);
+                }
+            } catch (error) {
+                console.error('Error updating charts:', error);
+            }
+        }
+        
+        // Seamless intelligent programs update
+        async function seamlessUpdateIntelligentPrograms(barangay) {
+            try {
+                if (typeof updateIntelligentPrograms === 'function') {
+                    await updateIntelligentPrograms(barangay);
+                }
+            } catch (error) {
+                console.error('Error updating intelligent programs:', error);
+            }
+        }
+        
+        // Animate number updates smoothly
+        async function animateNumberUpdate(elementId, newValue) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const currentValue = parseInt(element.textContent) || 0;
+            const difference = newValue - currentValue;
+            
+            if (difference === 0) return; // No change needed
+            
+            const duration = 500; // 500ms animation
+            const steps = 20;
+            const stepDuration = duration / steps;
+            const stepValue = difference / steps;
+            
+            for (let i = 0; i <= steps; i++) {
+                const value = Math.round(currentValue + (stepValue * i));
+                element.textContent = value;
+                await new Promise(resolve => setTimeout(resolve, stepDuration));
+            }
+        }
+        
+        // Show subtle refresh indicator
+        function showSeamlessRefreshIndicator() {
+            let indicator = document.getElementById('seamless-refresh-indicator');
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.id = 'seamless-refresh-indicator';
+                indicator.className = 'seamless-refresh-indicator';
+                indicator.innerHTML = '🔄';
+                document.body.appendChild(indicator);
+            }
+            indicator.classList.add('show');
+        }
+        
+        // Hide refresh indicator
+        function hideSeamlessRefreshIndicator() {
+            const indicator = document.getElementById('seamless-refresh-indicator');
+            if (indicator) {
+                indicator.classList.remove('show');
+            }
         }
         
         // Function to stop real-time updates
