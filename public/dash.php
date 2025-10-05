@@ -8952,6 +8952,10 @@ body {
             console.log('🔄 Updating trends chart for barangay:', barangay);
             await updateTrendsChart();
             
+            // Update age classification chart with new barangay filter
+            console.log('🔄 Updating age classification chart for barangay:', barangay);
+            await updateAgeClassificationChart(barangay);
+            
             // Update severe cases list with new barangay filter
             console.log('🔄 Updating severe cases list for barangay:', barangay);
             await updateSevereCasesList(barangay);
