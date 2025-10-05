@@ -636,6 +636,134 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 echo json_encode(['success' => false, 'message' => 'Failed to resend verification: ' . $e->getMessage()]);
             }
             exit;
+            
+        case 'forgot_password':
+            $email = trim($_POST['email']);
+            
+            if (empty($email)) {
+                echo json_encode(['success' => false, 'message' => 'Please provide email address']);
+                exit;
+            }
+            
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                echo json_encode(['success' => false, 'message' => 'Please enter a valid email address']);
+                exit;
+            }
+            
+            if ($pdo === null) {
+                echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
+                exit;
+            }
+            
+            try {
+                // Check if user exists
+                $stmt = $pdo->prepare("SELECT user_id, username FROM users WHERE email = ?");
+                $stmt->execute([$email]);
+                $user = $stmt->fetch();
+                
+                if ($user) {
+                    // Generate reset code
+                    $resetCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+                    $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+                    
+                    // Update reset code
+                    $updateStmt = $pdo->prepare("UPDATE users SET password_reset_code = ?, password_reset_expires = ? WHERE user_id = ?");
+                    $updateStmt->execute([$resetCode, $expiresAt, $user['user_id']]);
+                    
+                    // Send reset email
+                    $emailSent = sendPasswordResetEmail($email, $user['username'], $resetCode);
+                    
+                    if ($emailSent) {
+                        echo json_encode(['success' => true, 'message' => 'Password reset code sent to your email!']);
+                    } else {
+                        echo json_encode(['success' => true, 'message' => 'Password reset code: ' . $resetCode]);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'No account found with this email address']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => 'Failed to send reset code: ' . $e->getMessage()]);
+            }
+            exit;
+            
+        case 'verify_reset_code':
+            $email = trim($_POST['email']);
+            $resetCode = trim($_POST['reset_code']);
+            
+            if (empty($email) || empty($resetCode)) {
+                echo json_encode(['success' => false, 'message' => 'Please provide email and reset code']);
+                exit;
+            }
+            
+            if ($pdo === null) {
+                echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
+                exit;
+            }
+            
+            try {
+                // Check if reset code is valid and not expired
+                $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? AND password_reset_code = ? AND password_reset_expires > NOW()");
+                $stmt->execute([$email, $resetCode]);
+                $user = $stmt->fetch();
+                
+                if ($user) {
+                    echo json_encode(['success' => true, 'message' => 'Reset code verified successfully!']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Invalid or expired reset code']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => 'Verification failed: ' . $e->getMessage()]);
+            }
+            exit;
+            
+        case 'update_password':
+            $email = trim($_POST['email']);
+            $resetCode = trim($_POST['reset_code']);
+            $newPassword = $_POST['new_password'];
+            $confirmPassword = $_POST['confirm_password'];
+            
+            if (empty($email) || empty($resetCode) || empty($newPassword) || empty($confirmPassword)) {
+                echo json_encode(['success' => false, 'message' => 'Please fill in all fields']);
+                exit;
+            }
+            
+            if ($newPassword !== $confirmPassword) {
+                echo json_encode(['success' => false, 'message' => 'Passwords do not match']);
+                exit;
+            }
+            
+            if (strlen($newPassword) < 6) {
+                echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
+                exit;
+            }
+            
+            if ($pdo === null) {
+                echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
+                exit;
+            }
+            
+            try {
+                // Verify reset code again
+                $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? AND password_reset_code = ? AND password_reset_expires > NOW()");
+                $stmt->execute([$email, $resetCode]);
+                $user = $stmt->fetch();
+                
+                if ($user) {
+                    // Hash new password
+                    $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+                    
+                    // Update password and clear reset code
+                    $updateStmt = $pdo->prepare("UPDATE users SET password = ?, password_reset_code = NULL, password_reset_expires = NULL WHERE user_id = ?");
+                    $updateStmt->execute([$hashedPassword, $user['user_id']]);
+                    
+                    echo json_encode(['success' => true, 'message' => 'Password updated successfully! You can now login with your new password.']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Invalid or expired reset code']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => 'Password update failed: ' . $e->getMessage()]);
+            }
+            exit;
     }
 }
 
@@ -812,6 +940,99 @@ function sendVerificationEmail($email, $username, $verificationCode) {
     }
     
     error_log("SendGrid API failed. HTTP Code: $httpCode, Response: $response");
+    return false;
+}
+
+/**
+ * Send password reset email using SendGrid API
+ */
+function sendPasswordResetEmail($email, $username, $resetCode) {
+    // SendGrid API configuration
+    $apiKey = $_ENV['SENDGRID_API_KEY'] ?? 'YOUR_SENDGRID_API_KEY_HERE';
+    $apiUrl = 'https://api.sendgrid.com/v3/mail/send';
+    
+    $emailData = [
+        'personalizations' => [
+            [
+                'to' => [
+                    ['email' => $email, 'name' => $username]
+                ],
+                'subject' => 'NUTRISAUR - Password Reset Code'
+            ]
+        ],
+        'from' => [
+            'email' => 'noreply.nutrisaur@gmail.com',
+            'name' => 'NUTRISAUR'
+        ],
+        'content' => [
+            [
+                'type' => 'text/plain',
+                'value' => "Hello " . htmlspecialchars($username) . ",\n\nYou requested a password reset for your NUTRISAUR account. Please use the reset code below:\n\nReset Code: " . $resetCode . "\n\nThis code will expire in 15 minutes.\n\nIf you did not request this password reset, please ignore this email.\n\nBest regards,\nNUTRISAUR Team"
+            ],
+            [
+                'type' => 'text/html',
+                'value' => "
+                <html>
+                <head>
+                    <title>NUTRISAUR Password Reset</title>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                </head>
+                <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4;'>
+                    <div style='max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);'>
+                        <div style='text-align: center; background-color: #2A3326; color: #A1B454; padding: 20px; border-radius: 8px 8px 0 0; margin: -20px -20px 20px -20px;'>
+                            <h1 style='margin: 0; font-size: 24px;'>NUTRISAUR</h1>
+                        </div>
+                        <div style='padding: 20px 0;'>
+                            <p>Hello " . htmlspecialchars($username) . ",</p>
+                            <p>You requested a password reset for your NUTRISAUR account. Please use the reset code below:</p>
+                            <div style='background-color: #f8f9fa; border: 2px solid #2A3326; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px;'>
+                                <span style='font-size: 28px; font-weight: bold; color: #2A3326; letter-spacing: 4px;'>" . $resetCode . "</span>
+                            </div>
+                            <p><strong>This code will expire in 15 minutes.</strong></p>
+                            <p>If you did not request this password reset, please ignore this email.</p>
+                        </div>
+                        <div style='text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 14px;'>
+                            <p>Best regards,<br>NUTRISAUR Team</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                "
+            ]
+        ]
+    ];
+    
+    // Send email via SendGrid API
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $apiKey
+    ]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+    
+    // Enhanced error logging
+    error_log("SendGrid Password Reset API Response: HTTP $httpCode, Response: $response, Error: " . ($curlError ?: 'None'));
+    
+    if ($curlError) {
+        error_log("SendGrid password reset cURL error: " . $curlError);
+        return false;
+    }
+    
+    if ($httpCode >= 200 && $httpCode < 300) {
+        error_log("Password reset email sent successfully via SendGrid API");
+        return true;
+    }
+    
+    error_log("SendGrid password reset API failed. HTTP Code: $httpCode, Response: $response");
     return false;
 }
 ?>
@@ -1681,6 +1902,7 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                     </button>
                 </div>
                 <button type="submit" class="auth-btn" id="auth-btn" name="login">Login</button>
+                <a href="#" class="toggle-link" id="forgot-password-link" style="margin-top: 10px; display: block; text-align: center;">Forgot Password?</a>
                 <button type="button" class="google-btn" data-mode="login">
                     <svg width="18" height="18" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -1741,6 +1963,53 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                 <button type="submit" class="auth-btn" id="verify-btn">Verify Email</button>
                 <button type="button" class="google-btn" id="resend-btn">Resend Code</button>
                 <a href="#" class="toggle-link" id="back-to-login">Back to Login</a>
+            </form>
+            
+            <!-- Hidden forgot password form -->
+            <form id="forgot-password-form" method="post" action="" style="display: none;">
+                <div class="input-group">
+                    <label for="forgot_email">Email</label>
+                    <input type="email" id="forgot_email" name="forgot_email" required autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                </div>
+                <button type="submit" class="auth-btn" id="send-reset-btn">Send Reset Code</button>
+                <a href="#" class="toggle-link" id="back-to-login-from-forgot">Back to Login</a>
+            </form>
+            
+            <!-- Hidden reset code verification form -->
+            <form id="reset-code-form" method="post" action="" style="display: none;">
+                <div class="input-group">
+                    <label for="reset_email">Email</label>
+                    <input type="email" id="reset_email" name="reset_email" readonly autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                </div>
+                <div class="input-group">
+                    <label for="reset_code">Reset Code</label>
+                    <input type="text" id="reset_code" name="reset_code" placeholder="Enter 4-digit code" maxlength="4" pattern="[0-9]{4}" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                </div>
+                <button type="submit" class="auth-btn" id="verify-reset-btn">Verify Code</button>
+                <button type="button" class="google-btn" id="resend-reset-btn">Resend Code</button>
+                <a href="#" class="toggle-link" id="back-to-forgot">Back to Forgot Password</a>
+            </form>
+            
+            <!-- Hidden new password form -->
+            <form id="new-password-form" method="post" action="" style="display: none;">
+                <div class="input-group">
+                    <label for="new_password">New Password</label>
+                    <input type="password" id="new_password" name="new_password" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                </div>
+                <div class="input-group password-field">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <button type="button" class="password-toggle" id="toggle-password-confirm" data-target="confirm_password" aria-label="Toggle password visibility" title="Show/Hide password">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                        <svg class="eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                            <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
+                        </svg>
+                    </button>
+                </div>
+                <button type="submit" class="auth-btn" id="update-password-btn">Update Password</button>
+                <a href="#" class="toggle-link" id="back-to-login-from-password">Back to Login</a>
             </form>
         </div>
     </div>
@@ -2338,6 +2607,68 @@ function sendVerificationEmail($email, $username, $verificationCode) {
                     };
                 }
             }
+            
+            // Setup for confirm password field
+            const confirmPassword = document.getElementById('confirm_password');
+            const confirmToggle = document.getElementById('toggle-password-confirm');
+            const confirmIconShow = confirmToggle?.querySelector('.eye-icon');
+            const confirmIconHide = confirmToggle?.querySelector('.eye-slash-icon');
+
+            if (confirmPassword && confirmToggle) {
+                // Store the current state to prevent auto-hide
+                let isPasswordVisible = false;
+                
+                confirmToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Toggle the input type
+                    isPasswordVisible = !isPasswordVisible;
+                    confirmPassword.type = isPasswordVisible ? 'text' : 'password';
+
+                    // Update aria attributes
+                    confirmToggle.setAttribute('aria-pressed', isPasswordVisible ? 'true' : 'false');
+                    confirmToggle.setAttribute('aria-label', isPasswordVisible ? 'Hide password' : 'Show password');
+                    confirmToggle.title = isPasswordVisible ? 'Hide password' : 'Show password';
+
+                    // Swap icons
+                    if (isPasswordVisible) {
+                        if (confirmIconShow) confirmIconShow.style.display = 'none';
+                        if (confirmIconHide) confirmIconHide.style.display = 'inline';
+                    } else {
+                        if (confirmIconShow) confirmIconShow.style.display = 'inline';
+                        if (confirmIconHide) confirmIconHide.style.display = 'none';
+                    }
+
+                    // Keep focus on the input after toggling for better UX
+                    setTimeout(() => confirmPassword.focus(), 10);
+                });
+
+                // Allow keyboard activation
+                confirmToggle.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        confirmToggle.click();
+                    }
+                });
+
+                // Prevent form reset from affecting password visibility
+                const originalReset = confirmPassword.form.reset;
+                if (originalReset) {
+                    confirmPassword.form.reset = function() {
+                        originalReset.call(this);
+                        // Restore password visibility state after reset
+                        setTimeout(() => {
+                            if (isPasswordVisible) {
+                                confirmPassword.type = 'text';
+                                if (confirmIconShow) confirmIconShow.style.display = 'none';
+                                if (confirmIconHide) confirmIconHide.style.display = 'inline';
+                            }
+                        }, 10);
+                    };
+                }
+            }
         }
 
         // Setup verification form event listeners
@@ -2379,7 +2710,246 @@ function sendVerificationEmail($email, $username, $verificationCode) {
             createParticles();
             setupPasswordToggles();
             setupVerificationForm();
+            setupForgotPasswordForm();
         });
+        
+        // Setup forgot password functionality
+        function setupForgotPasswordForm() {
+            const forgotPasswordLink = document.getElementById('forgot-password-link');
+            const forgotPasswordForm = document.getElementById('forgot-password-form');
+            const resetCodeForm = document.getElementById('reset-code-form');
+            const newPasswordForm = document.getElementById('new-password-form');
+            const authForm = document.getElementById('auth-form');
+            const registerForm = document.getElementById('register-form');
+            const verificationForm = document.getElementById('verification-form');
+            const authTitle = document.getElementById('auth-title');
+            
+            // Forgot password link click
+            if (forgotPasswordLink) {
+                forgotPasswordLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hideAllForms();
+                    forgotPasswordForm.style.display = 'block';
+                    authTitle.textContent = 'Forgot Password';
+                });
+            }
+            
+            // Back to login from forgot password
+            const backToLoginFromForgot = document.getElementById('back-to-login-from-forgot');
+            if (backToLoginFromForgot) {
+                backToLoginFromForgot.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hideAllForms();
+                    authForm.style.display = 'block';
+                    authTitle.textContent = 'Login';
+                });
+            }
+            
+            // Back to forgot password from reset code
+            const backToForgot = document.getElementById('back-to-forgot');
+            if (backToForgot) {
+                backToForgot.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hideAllForms();
+                    forgotPasswordForm.style.display = 'block';
+                    authTitle.textContent = 'Forgot Password';
+                });
+            }
+            
+            // Back to login from new password
+            const backToLoginFromPassword = document.getElementById('back-to-login-from-password');
+            if (backToLoginFromPassword) {
+                backToLoginFromPassword.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hideAllForms();
+                    authForm.style.display = 'block';
+                    authTitle.textContent = 'Login';
+                });
+            }
+            
+            // Forgot password form submission
+            if (forgotPasswordForm) {
+                forgotPasswordForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('forgot_email').value;
+                    
+                    if (!email) {
+                        showMessage('Please enter your email address', 'error');
+                        return;
+                    }
+                    
+                    if (!validateEmail(email)) {
+                        showMessage('Please enter a valid email address', 'error');
+                        return;
+                    }
+                    
+                    await sendPasswordResetCode(email);
+                });
+            }
+            
+            // Reset code form submission
+            if (resetCodeForm) {
+                resetCodeForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('reset_email').value;
+                    const resetCode = document.getElementById('reset_code').value;
+                    
+                    if (!resetCode || resetCode.length !== 4) {
+                        showMessage('Please enter a valid 4-digit reset code', 'error');
+                        return;
+                    }
+                    
+                    await verifyResetCode(email, resetCode);
+                });
+            }
+            
+            // New password form submission
+            if (newPasswordForm) {
+                newPasswordForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('reset_email').value;
+                    const resetCode = document.getElementById('reset_code').value;
+                    const newPassword = document.getElementById('new_password').value;
+                    const confirmPassword = document.getElementById('confirm_password').value;
+                    
+                    if (!newPassword || !confirmPassword) {
+                        showMessage('Please fill in all password fields', 'error');
+                        return;
+                    }
+                    
+                    if (newPassword !== confirmPassword) {
+                        showMessage('Passwords do not match', 'error');
+                        return;
+                    }
+                    
+                    if (newPassword.length < 6) {
+                        showMessage('Password must be at least 6 characters long', 'error');
+                        return;
+                    }
+                    
+                    await updatePassword(email, resetCode, newPassword, confirmPassword);
+                });
+            }
+            
+            // Resend reset code
+            const resendResetBtn = document.getElementById('resend-reset-btn');
+            if (resendResetBtn) {
+                resendResetBtn.addEventListener('click', async () => {
+                    const email = document.getElementById('reset_email').value;
+                    await sendPasswordResetCode(email);
+                });
+            }
+        }
+        
+        // Hide all forms
+        function hideAllForms() {
+            const forms = ['auth-form', 'register-form', 'verification-form', 'forgot-password-form', 'reset-code-form', 'new-password-form'];
+            forms.forEach(formId => {
+                const form = document.getElementById(formId);
+                if (form) form.style.display = 'none';
+            });
+        }
+        
+        // Send password reset code
+        async function sendPasswordResetCode(email) {
+            try {
+                showMessage('Sending reset code...', 'info');
+                
+                const formData = new FormData();
+                formData.append('email', email);
+                formData.append('ajax_action', 'forgot_password');
+                
+                const response = await fetch('/home.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('Reset code sent to your email!', 'success');
+                    // Switch to reset code form
+                    hideAllForms();
+                    document.getElementById('reset-code-form').style.display = 'block';
+                    document.getElementById('reset_email').value = email;
+                    document.getElementById('auth-title').textContent = 'Enter Reset Code';
+                } else {
+                    showMessage(data.message || 'Failed to send reset code', 'error');
+                }
+            } catch (error) {
+                showMessage('An error occurred. Please try again later.', 'error');
+                console.error('Send reset code error:', error);
+            }
+        }
+        
+        // Verify reset code
+        async function verifyResetCode(email, resetCode) {
+            try {
+                showMessage('Verifying reset code...', 'info');
+                
+                const formData = new FormData();
+                formData.append('email', email);
+                formData.append('reset_code', resetCode);
+                formData.append('ajax_action', 'verify_reset_code');
+                
+                const response = await fetch('/home.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('Reset code verified! Please enter your new password.', 'success');
+                    // Switch to new password form
+                    hideAllForms();
+                    document.getElementById('new-password-form').style.display = 'block';
+                    document.getElementById('auth-title').textContent = 'Set New Password';
+                } else {
+                    showMessage(data.message || 'Invalid or expired reset code', 'error');
+                }
+            } catch (error) {
+                showMessage('An error occurred. Please try again later.', 'error');
+                console.error('Verify reset code error:', error);
+            }
+        }
+        
+        // Update password
+        async function updatePassword(email, resetCode, newPassword, confirmPassword) {
+            try {
+                showMessage('Updating password...', 'info');
+                
+                const formData = new FormData();
+                formData.append('email', email);
+                formData.append('reset_code', resetCode);
+                formData.append('new_password', newPassword);
+                formData.append('confirm_password', confirmPassword);
+                formData.append('ajax_action', 'update_password');
+                
+                const response = await fetch('/home.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('Password updated successfully! You can now login with your new password.', 'success');
+                    // Switch back to login form
+                    setTimeout(() => {
+                        hideAllForms();
+                        document.getElementById('auth-form').style.display = 'block';
+                        document.getElementById('auth-title').textContent = 'Login';
+                        clearMessage();
+                    }, 2000);
+                } else {
+                    showMessage(data.message || 'Failed to update password', 'error');
+                }
+            } catch (error) {
+                showMessage('An error occurred. Please try again later.', 'error');
+                console.error('Update password error:', error);
+            }
+        }
 
 
     </script>
