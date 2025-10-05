@@ -11382,7 +11382,7 @@ body {
                     const isLightTheme = document.body.classList.contains('light-theme');
                     const textColor = isLightTheme ? '#000000' : '#FFFFFF';
                     
-                    ageClassificationLineChart = new Chart(newCtx, {
+                    ageClassificationLineChart = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: ageLabels,
