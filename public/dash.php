@@ -11141,10 +11141,14 @@ body {
                 
                 // Create new chart only if it doesn't exist
                 const trendsChartContainer = document.getElementById('trends-chart-container');
+                console.log('📊 Trends chart container found:', !!trendsChartContainer);
                 if (trendsChartContainer) {
+                    console.log('📊 Clearing container and creating canvas...');
                     trendsChartContainer.innerHTML = '<canvas id="trendsLineChart"></canvas>';
                     const trendsCanvas = document.getElementById('trendsLineChart');
+                    console.log('📊 Canvas element found:', !!trendsCanvas);
                     const ctx = trendsCanvas.getContext('2d');
+                    console.log('📊 Canvas context created:', !!ctx);
                     
                     console.log('📊 Creating new trends line chart with data:', { timeLabels, datasets, totalUsers });
                     
@@ -11289,7 +11293,8 @@ body {
                     });
                 }
                 
-                console.log('✅ Trends chart updated successfully');
+                console.log('✅ Trends chart created successfully:', !!trendsLineChart);
+                console.log('✅ Chart instance:', trendsLineChart);
                 
             } catch (error) {
                 console.error('❌ Error updating trends chart:', error);
