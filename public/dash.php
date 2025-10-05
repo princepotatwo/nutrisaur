@@ -818,8 +818,35 @@ if (isset($_GET['logout'])) {
     <meta http-equiv="Expires" content="0">
     <title>NutriSaur Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js?v=<?php echo time(); ?>"></script>
-</head>
-<style>
+    
+    <!-- Event-driven dashboard system -->
+    <link rel="stylesheet" href="css/event_indicators.css">
+    
+    <!-- IMMEDIATE FIX: Disable 3-second refresh -->
+    <script>
+    (function() {
+        console.log("🛑 Disabling 3-second refresh...");
+        
+        // Block the 3-second interval
+        const originalSetInterval = window.setInterval;
+        window.setInterval = function(callback, delay) {
+            if (delay === 3000) {
+                console.log("🛑 Blocked 3-second interval - using event-driven system");
+                return null;
+            }
+            return originalSetInterval(callback, delay);
+        };
+        
+        // Disable the startRealtimeUpdates function
+        window.startRealtimeUpdates = function() {
+            console.log("🛑 3-second refresh disabled - using event-driven system");
+            return;
+        };
+        
+        console.log("✅ 3-second refresh blocked");
+    })();
+    </script>
+</head><style>
 /* Dark Theme - Default */
 :root {
     --color-bg: #1A211A;
@@ -13414,3 +13441,20 @@ body {
     </script>
 </body>
 </html>
+
+    <!-- Event Status Indicators -->
+    <div class="community-event-status">
+        <div id="community-connection" class="connection-indicator">
+            <span class="status-dot"></span>
+            <span class="status-text">Connecting...</span>
+        </div>
+        <div id="community-updates" class="update-indicator" style="display: none;">
+            <span class="update-spinner"></span>
+            <span>Updating...</span>
+        </div>
+    </div>
+
+    <!-- Event-driven dashboard scripts -->
+    <script src="js/CommunityEventDashboardManager.js"></script>
+    <script src="js/dashboard_integration.js"></script>
+    <script src="js/dash_fix_3second.js"></script>
