@@ -12516,30 +12516,42 @@ body {
 
         // Function to handle municipality selection  
         function selectMunicipality(municipalityValue, municipalityText) {
-            console.log('🏛️ Municipality selected:', municipalityValue, municipalityText);
+            console.log('🏛️ MUNICIPALITY SELECTION START');
+            console.log('🏛️ Municipality Value:', municipalityValue);
+            console.log('🏛️ Municipality Text:', municipalityText);
             
             try {
                 // Update municipality display
+                console.log('🏛️ Updating municipality display...');
                 const municipalitySpan = document.getElementById('selected-municipality-option');
                 if (municipalitySpan) {
                     municipalitySpan.textContent = municipalityText;
+                    console.log('✅ Municipality display updated');
+                } else {
+                    console.log('⚠️ Municipality span not found');
                 }
                 
                 // Close municipality dropdown
+                console.log('🏛️ Closing municipality dropdown...');
                 const municipalityDropdown = document.getElementById('municipality-dropdown-content');
                 if (municipalityDropdown) {
                     municipalityDropdown.classList.remove('show');
+                    console.log('✅ Municipality dropdown closed');
+                } else {
+                    console.log('⚠️ Municipality dropdown not found');
                 }
                 
                 // Update barangay dropdown with barangays from selected municipality
+                console.log('🏛️ Updating barangay dropdown for municipality:', municipalityValue);
                 updateBarangayDropdown(municipalityValue);
                 
                 // Update dashboard with all active filters (municipality + WHO standard)
+                console.log('🏛️ Updating dashboard with all filters...');
                 updateDashboardWithAllFilters();
                 
-                console.log('✅ Municipality selection complete, dashboard updated with all filters');
+                console.log('✅ MUNICIPALITY SELECTION COMPLETE - Dashboard updated with all filters');
             } catch (error) {
-                console.error('❌ Error in municipality selection:', error);
+                console.error('❌ MUNICIPALITY SELECTION ERROR:', error);
             }
         }
 
@@ -13498,40 +13510,84 @@ body {
         
         // Seamless dashboard update function
         async function seamlessDashboardUpdate(barangay) {
+            console.log('🔄 SEAMLESS UPDATE START - Barangay:', barangay);
+            const startTime = Date.now();
+            
             try {
                 // Update components in sequence with smooth transitions
-                await Promise.all([
-                    seamlessUpdateCommunityMetrics(barangay),
-                    seamlessUpdateCharts(barangay),
-                    seamlessUpdateIntelligentPrograms(barangay),
-                    seamlessUpdateDistributions(barangay)
+                console.log('🔄 Starting parallel component updates...');
+                const results = await Promise.all([
+                    seamlessUpdateCommunityMetrics(barangay).then(() => {
+                        console.log('✅ Community Metrics updated');
+                        return 'Community Metrics';
+                    }).catch(err => {
+                        console.error('❌ Community Metrics failed:', err);
+                        return 'Community Metrics - FAILED';
+                    }),
+                    seamlessUpdateCharts(barangay).then(() => {
+                        console.log('✅ Charts updated');
+                        return 'Charts';
+                    }).catch(err => {
+                        console.error('❌ Charts failed:', err);
+                        return 'Charts - FAILED';
+                    }),
+                    seamlessUpdateIntelligentPrograms(barangay).then(() => {
+                        console.log('✅ Intelligent Programs updated');
+                        return 'Intelligent Programs';
+                    }).catch(err => {
+                        console.error('❌ Intelligent Programs failed:', err);
+                        return 'Intelligent Programs - FAILED';
+                    }),
+                    seamlessUpdateDistributions(barangay).then(() => {
+                        console.log('✅ Distributions updated');
+                        return 'Distributions';
+                    }).catch(err => {
+                        console.error('❌ Distributions failed:', err);
+                        return 'Distributions - FAILED';
+                    })
                 ]);
+                
+                const duration = Date.now() - startTime;
+                console.log('🔄 SEAMLESS UPDATE COMPLETE - Duration:', duration + 'ms');
+                console.log('📊 Updated components:', results);
                 
                 // Small delay to ensure smooth visual transition
                 await new Promise(resolve => setTimeout(resolve, 100));
                 
             } catch (error) {
-                console.error('Error in seamless dashboard update:', error);
+                console.error('❌ SEAMLESS UPDATE ERROR:', error);
             }
         }
         
         // Seamless community metrics update
         async function seamlessUpdateCommunityMetrics(barangay) {
+            console.log('🔄 [Community Metrics] Starting update for barangay:', barangay);
             try {
                 const params = {};
                 if (barangay && barangay !== '') {
                     params.barangay = barangay;
                 }
                 
+                console.log('🔄 [Community Metrics] Fetching data with params:', params);
                 const data = await fetchDataFromAPI('dashboard_assessment_stats', params);
+                console.log('🔄 [Community Metrics] Data received:', data);
                 
                 if (data && data.success && data.data) {
+                    console.log('🔄 [Community Metrics] Updating metrics with values:', {
+                        total_screened: data.data.total_screened,
+                        high_risk: data.data.high_risk_cases,
+                        sam_cases: data.data.sam_cases,
+                        critical_muac: data.data.critical_muac
+                    });
                     // Update with smooth number animation
                     await animateNumberUpdate('community-total-screened', data.data.total_screened || 0);
                     await animateNumberUpdate('community-screened-change', data.data.total_screened || 0);
+                    console.log('✅ [Community Metrics] Update completed');
+                } else {
+                    console.log('⚠️ [Community Metrics] No valid data received');
                 }
             } catch (error) {
-                console.error('Error updating community metrics:', error);
+                console.error('❌ [Community Metrics] Error:', error);
             }
         }
         
@@ -13563,29 +13619,50 @@ body {
         
         // Seamless distributions update
         async function seamlessUpdateDistributions(barangay) {
+            console.log('🔄 [Distributions] Starting update for barangay:', barangay);
             try {
                 // Update barangay distribution
+                console.log('🔄 [Distributions] Updating barangay distribution...');
                 if (typeof fetchBarangayDistributionData === 'function') {
                     const barangayData = await fetchBarangayDistributionData(barangay);
+                    console.log('🔄 [Distributions] Barangay data received:', barangayData);
                     if (typeof updateBarangayDistributionDisplay === 'function') {
                         updateBarangayDistributionDisplay(barangayData);
+                        console.log('✅ [Distributions] Barangay distribution updated');
+                    } else {
+                        console.log('⚠️ [Distributions] updateBarangayDistributionDisplay function not found');
                     }
+                } else {
+                    console.log('⚠️ [Distributions] fetchBarangayDistributionData function not found');
                 }
                 
                 // Update gender distribution
+                console.log('🔄 [Distributions] Updating gender distribution...');
                 if (typeof fetchGenderDistributionData === 'function') {
                     const genderData = await fetchGenderDistributionData(barangay);
+                    console.log('🔄 [Distributions] Gender data received:', genderData);
                     if (typeof updateGenderDistributionDisplay === 'function') {
                         updateGenderDistributionDisplay(genderData);
+                        console.log('✅ [Distributions] Gender distribution updated');
+                    } else {
+                        console.log('⚠️ [Distributions] updateGenderDistributionDisplay function not found');
                     }
+                } else {
+                    console.log('⚠️ [Distributions] fetchGenderDistributionData function not found');
                 }
                 
                 // Update geographic chart
+                console.log('🔄 [Distributions] Updating geographic chart...');
                 if (typeof updateGeographicChart === 'function') {
                     await updateGeographicChart(barangay);
+                    console.log('✅ [Distributions] Geographic chart updated');
+                } else {
+                    console.log('⚠️ [Distributions] updateGeographicChart function not found');
                 }
+                
+                console.log('✅ [Distributions] All distributions updated successfully');
             } catch (error) {
-                console.error('Error updating distributions:', error);
+                console.error('❌ [Distributions] Error:', error);
             }
         }
         
