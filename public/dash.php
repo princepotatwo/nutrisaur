@@ -11320,7 +11320,12 @@ body {
                 // Check if canvas exists, if not, restore it
                 let ageCanvas = document.getElementById('ageClassificationLineChart');
                 if (!ageCanvas) {
-                    console.log('Canvas not found, restoring...');
+                // If chart instance exists but canvas is gone, destroy it
+                if (ageClassificationLineChart && !ageCanvas) {
+                    console.log('Chart instance exists but canvas is gone - destroying chart');
+                    ageClassificationLineChart.destroy();
+                    ageClassificationLineChart = null;
+                }                    console.log('Canvas not found, restoring...');
                     const chartContainer = document.querySelector('.age-classification-chart-container');
                     if (chartContainer) {
                         chartContainer.innerHTML = '<canvas id="ageClassificationLineChart"></canvas>';
