@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Events API</title>
+</head>
+<body>
+    <h1>Test Events API</h1>
+    <div id="status">Testing...</div>
+    <div id="events"></div>
+    
+    <script>
+    const status = document.getElementById('status');
+    const events = document.getElementById('events');
+    
+    // Test the events API
+    function testEventsAPI() {
+        status.textContent = 'Testing events API...';
+        
+        const eventSource = new EventSource('events_api.php?action=event_stream');
+        
+        eventSource.onopen = function() {
+            status.textContent = '✅ Event stream connected!';
+            status.style.color = 'green';
+        };
+        
+        eventSource.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            events.innerHTML += '<div>' + JSON.stringify(data) + '</div>';
+        };
+        
+        eventSource.onerror = function(error) {
+            status.textContent = '❌ Event stream error: ' + error;
+            status.style.color = 'red';
+        };
+        
+        // Test after 10 seconds
+        setTimeout(() => {
+            eventSource.close();
+            status.textContent += ' (Test completed)';
+        }, 10000);
+    }
+    
+    // Start test
+    testEventsAPI();
+    </script>
+</body>
+</html>
