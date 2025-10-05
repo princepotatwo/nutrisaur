@@ -11396,26 +11396,37 @@ body {
 
                 // Update existing chart or create new one
                 if (ageClassificationLineChart) {
+                    console.log('📊 Updating existing age classification chart...');
+                    console.log('📊 Chart instance:', ageClassificationLineChart);
+                    console.log('📊 Canvas element:', ageClassificationLineChart.canvas);
+                    console.log('📊 Canvas dimensions:', ageClassificationLineChart.canvas ? { width: ageClassificationLineChart.canvas.width, height: ageClassificationLineChart.canvas.height } : 'No canvas');
                     // Update existing chart data seamlessly
                     ageClassificationLineChart.data.labels = ageLabels;
                     ageClassificationLineChart.data.datasets = datasets;
                     ageClassificationLineChart.update('active');
-                    console.log('📊 Updated age classification chart with data:', { ageLabels, datasets, totalUsers });
+                    console.log('✅ Updated age classification chart with data:', { ageLabels, datasets, totalUsers });
+                    console.log('📊 Chart data after update:', ageClassificationLineChart.data);
                     return; // Exit early if chart exists
                 }
                 
                 // Create new chart only if it doesn't exist
                 let canvas = document.getElementById('ageClassificationLineChart');
+                console.log('📊 Canvas element found:', canvas);
                 if (!canvas) {
+                    console.log('📊 Canvas not found, creating new one...');
                     const chartContainer = document.querySelector('.age-classification-chart-container');
+                    console.log('📊 Chart container found:', chartContainer);
                 if (chartContainer) {
                     chartContainer.innerHTML = '<canvas id="ageClassificationLineChart"></canvas>';
                         canvas = document.getElementById('ageClassificationLineChart');
+                        console.log('📊 New canvas created:', canvas);
                     }
                 }
                     
                 if (canvas) {
+                    console.log('📊 Canvas dimensions before chart creation:', { width: canvas.width, height: canvas.height, clientWidth: canvas.clientWidth, clientHeight: canvas.clientHeight });
                     const ctx = canvas.getContext('2d');
+                    console.log('📊 Canvas context:', ctx);
                     console.log('📊 Creating new age classification chart with data:', { ageLabels, datasets, totalUsers });
                     
                     // Get theme-aware colors for age classification chart
@@ -11554,6 +11565,10 @@ body {
                     });
                     
                     console.log('✅ Age Classification Line Chart created successfully');
+                    console.log('📊 Chart instance after creation:', ageClassificationLineChart);
+                    console.log('📊 Chart canvas after creation:', ageClassificationLineChart.canvas);
+                    console.log('📊 Chart data after creation:', ageClassificationLineChart.data);
+                    console.log('📊 Canvas dimensions after creation:', ageClassificationLineChart.canvas ? { width: ageClassificationLineChart.canvas.width, height: ageClassificationLineChart.canvas.height, clientWidth: ageClassificationLineChart.canvas.clientWidth, clientHeight: ageClassificationLineChart.canvas.clientHeight } : 'No canvas');
                 }
 
             } catch (error) {
