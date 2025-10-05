@@ -11128,22 +11128,22 @@ body {
                     return;
                 }
                 
-                // Create chart - target the specific container for the trends line chart
+                // Update existing chart or create new one
+                if (trendsLineChart) {
+                    // Update existing chart data seamlessly
+                    trendsLineChart.data.labels = timeLabels;
+                    trendsLineChart.data.datasets = datasets;
+                    trendsLineChart.update('active');
+                    console.log('📊 Updated trends line chart with data:', { timeLabels, datasets, totalUsers });
+                    return; // Exit early if chart exists
+                }
+                
+                // Create new chart only if it doesn't exist
                 const trendsChartContainer = document.getElementById('trends-chart-container');
                 if (trendsChartContainer) {
                     trendsChartContainer.innerHTML = '<canvas id="trendsLineChart"></canvas>';
                     const trendsCanvas = document.getElementById('trendsLineChart');
                     const ctx = trendsCanvas.getContext('2d');
-                    
-                    // Update existing chart or create new one
-                    if (trendsLineChart) {
-                        // Update existing chart data seamlessly
-                        trendsLineChart.data.labels = timeLabels;
-                        trendsLineChart.data.datasets = datasets;
-                        trendsLineChart.update('active');
-                        console.log('📊 Updated trends line chart with data:', { timeLabels, datasets, totalUsers });
-                        return; // Exit early if chart exists
-                    }
                     
                     console.log('📊 Creating new trends line chart with data:', { timeLabels, datasets, totalUsers });
                     
