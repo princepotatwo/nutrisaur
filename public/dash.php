@@ -13643,7 +13643,7 @@ body {
 
     <!-- Event Status Indicators -->
     <div class="community-event-status">
-        <div id="community-connection" class="connection-indicator">
+        <div id="community-connection" class="connection-indicator" style="display: none;">
             <span class="status-dot"></span>
             <span class="status-text">Connecting...</span>
         </div>
