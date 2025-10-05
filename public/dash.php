@@ -9243,13 +9243,13 @@ body {
                 clearTimeout(updateCommunityMetrics.debounceTimer);
             }
             
-            // Set a timeout to reset the flag in case something goes wrong
-            let resetTimeout = setTimeout(() => {
-                if (dashboardState.updateInProgress) {
-                    console.log('🔧 Auto-resetting stuck updateInProgress flag');
-                    dashboardState.updateInProgress = false;
-                }
-            }, 5000); // 5 seconds timeout
+                // Set a timeout to reset the flag in case something goes wrong
+                let resetTimeout = setTimeout(() => {
+                    if (dashboardState.updateInProgress) {
+                        console.log('🔧 Auto-resetting stuck updateInProgress flag');
+                        dashboardState.updateInProgress = false;
+                    }
+                }, 5000); // 5 seconds timeout
             
             updateCommunityMetrics.debounceTimer = setTimeout(async () => {
                 // Prevent concurrent updates
@@ -13503,7 +13503,8 @@ body {
                 await Promise.all([
                     seamlessUpdateCommunityMetrics(barangay),
                     seamlessUpdateCharts(barangay),
-                    seamlessUpdateIntelligentPrograms(barangay)
+                    seamlessUpdateIntelligentPrograms(barangay),
+                    seamlessUpdateDistributions(barangay)
                 ]);
                 
                 // Small delay to ensure smooth visual transition
@@ -13557,6 +13558,34 @@ body {
                 }
             } catch (error) {
                 console.error('Error updating intelligent programs:', error);
+            }
+        }
+        
+        // Seamless distributions update
+        async function seamlessUpdateDistributions(barangay) {
+            try {
+                // Update barangay distribution
+                if (typeof fetchBarangayDistributionData === 'function') {
+                    const barangayData = await fetchBarangayDistributionData(barangay);
+                    if (typeof updateBarangayDistributionDisplay === 'function') {
+                        updateBarangayDistributionDisplay(barangayData);
+                    }
+                }
+                
+                // Update gender distribution
+                if (typeof fetchGenderDistributionData === 'function') {
+                    const genderData = await fetchGenderDistributionData(barangay);
+                    if (typeof updateGenderDistributionDisplay === 'function') {
+                        updateGenderDistributionDisplay(genderData);
+                    }
+                }
+                
+                // Update geographic chart
+                if (typeof updateGeographicChart === 'function') {
+                    await updateGeographicChart(barangay);
+                }
+            } catch (error) {
+                console.error('Error updating distributions:', error);
             }
         }
         
