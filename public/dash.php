@@ -9243,6 +9243,7 @@ body {
                 clearTimeout(updateCommunityMetrics.debounceTimer);
             }
             
+            updateCommunityMetrics.debounceTimer = setTimeout(async () => {
                 // Set a timeout to reset the flag in case something goes wrong
                 let resetTimeout = setTimeout(() => {
                     if (dashboardState.updateInProgress) {
@@ -9250,8 +9251,6 @@ body {
                         dashboardState.updateInProgress = false;
                     }
                 }, 5000); // 5 seconds timeout
-            
-            updateCommunityMetrics.debounceTimer = setTimeout(async () => {
                 // Prevent concurrent updates
                 if (dashboardState.updateInProgress) {
                     console.log('⏳ Update already in progress, skipping...');
@@ -11354,6 +11353,12 @@ body {
                 const data = await response.json();
                 
                 console.log('📊 Age classification API response:', data);
+                console.log('📊 Age Classification Data Analysis:', {
+                    success: data.success,
+                    hasData: data.success && data.data,
+                    dataKeys: data.success ? Object.keys(data.data || {}) : [],
+                    fullData: data.success ? data.data : null
+                });
                 
                 if (!data.success) {
                     console.error('Failed to fetch age classification line chart data:', data.message);
@@ -11362,8 +11367,24 @@ body {
                 
                 const { ageLabels, datasets, totalUsers, whoStandard: returnedStandard } = data.data;
                 
+                console.log('📊 Age Classification Data Breakdown:', {
+                    ageLabels: ageLabels,
+                    datasets: datasets,
+                    totalUsers: totalUsers,
+                    ageLabelsLength: ageLabels?.length,
+                    datasetsLength: datasets?.length,
+                    ageLabelsType: typeof ageLabels,
+                    datasetsType: typeof datasets
+                });
+                
                 if (!ageLabels || ageLabels.length === 0 || !datasets || datasets.length === 0) {
-                    console.log('No age classification line chart data available');
+                    console.log('❌ No age classification line chart data available');
+                    console.log('❌ Missing data details:', {
+                        ageLabels: ageLabels,
+                        datasets: datasets,
+                        ageLabelsLength: ageLabels?.length,
+                        datasetsLength: datasets?.length
+                    });
                     // Show a message in the chart container
                     if (chartContainer) {
                         chartContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--color-text); font-size: 16px; text-align: center;">No data available for age classification chart</div>';
