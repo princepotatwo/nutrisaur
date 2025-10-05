@@ -78,6 +78,13 @@ class CommunityEventDashboardManager {
                 case 'physical_data_updated':
                     await this.handlePhysicalDataUpdated(eventData.data);
                     break;
+                case 'who_standard_changed':
+                    await this.handleWHOStandardChanged(eventData.data);
+                    break;
+                case 'connected':
+                case 'heartbeat':
+                    // These are connection events, no action needed
+                    break;
                 default:
                     console.log('Unknown community event type:', eventData.type);
             }
@@ -262,6 +269,23 @@ class CommunityEventDashboardManager {
             this.stop();
             this.start();
         }
+    }
+    
+    // Method to handle WHO standard changes directly
+    async handleWHOStandardChanged(data) {
+        console.log('🔄 WHO standard changed:', data);
+        
+        // Update current WHO standard
+        this.currentWHOStandard = data.who_standard;
+        
+        // Update all components that depend on WHO standard
+        await Promise.all([
+            this.updateWHOClassifications(data.barangay),
+            this.updateAgeClassificationChart(data.barangay),
+            this.updateSevereCasesList(data.barangay),
+            this.updateTrendsChart(),
+            this.updateCommunityMetrics(data.barangay)
+        ]);
     }
 }
 
