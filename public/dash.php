@@ -10428,8 +10428,9 @@ body {
             }
         }
 
-        // Function to update trends chart with WHO standard counts using same data as donut chart
-        async function updateTrendsChart(barangay = '') {
+        // REMOVED: Old trends chart function that was causing conflicts
+        // The new updateTrendsChart() function below handles trends chart updates seamlessly
+        async function updateTrendsChart_OLD(barangay = '') {
             console.log('📊 Updating trends chart with WHO standard counts...');
             console.log('📊 Trends chart function called with barangay:', barangay);
             
@@ -10441,8 +10442,8 @@ body {
                     return;
                 }
 
-                // Clear previous chart
-                trendsChart.innerHTML = '';
+                // DISABLED: Clear previous chart - this was causing trends chart to disappear
+                // trendsChart.innerHTML = '';
 
                 // Get current filter values
                 const barangayValue = barangay || '';
