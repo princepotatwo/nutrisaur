@@ -9243,22 +9243,20 @@ body {
                 clearTimeout(updateCommunityMetrics.debounceTimer);
             }
             
+            updateCommunityMetrics.debounceTimer = setTimeout(async () => {
             // Prevent concurrent updates
             if (dashboardState.updateInProgress) {
                 console.log('⏳ Update already in progress, skipping...');
                 return;
             }
             dashboardState.updateInProgress = true;
-            
-            // Set a timeout to reset the flag in case something goes wrong
-            let resetTimeout = setTimeout(() => {
-                if (dashboardState.updateInProgress) {
-                    console.log('🔧 Auto-resetting stuck updateInProgress flag');
-                    dashboardState.updateInProgress = false;
-                }
-            }, 5000); // 5 seconds timeout
-            
-            updateCommunityMetrics.debounceTimer = setTimeout(async () => {
+                // Set a timeout to reset the flag in case something goes wrong
+                let resetTimeout = setTimeout(() => {
+                    if (dashboardState.updateInProgress) {
+                        console.log('🔧 Auto-resetting stuck updateInProgress flag');
+                        dashboardState.updateInProgress = false;
+                    }
+                }, 5000); // 5 seconds timeout
                 try {
                     console.log('🔄 Starting community metrics update...');
                 
@@ -11388,12 +11386,12 @@ body {
                 let canvas = document.getElementById('ageClassificationLineChart');
                 if (!canvas) {
                     const chartContainer = document.querySelector('.age-classification-chart-container');
-                    if (chartContainer) {
-                        chartContainer.innerHTML = '<canvas id="ageClassificationLineChart"></canvas>';
+                if (chartContainer) {
+                    chartContainer.innerHTML = '<canvas id="ageClassificationLineChart"></canvas>';
                         canvas = document.getElementById('ageClassificationLineChart');
                     }
                 }
-                
+                    
                 if (canvas) {
                     const ctx = canvas.getContext('2d');
                     console.log('📊 Creating new age classification chart with data:', { ageLabels, datasets, totalUsers });

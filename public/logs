@@ -164,7 +164,8 @@
  🌍 No pre-loaded geographic data available
  🌍 updateGeographicChartDisplay called with data: Array(0)
  ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8692
+updateGeographicChartDisplay @ dash:8693
+ 🔽 Municipality dropdown toggled
  🔍 Card Debug - Checking card elements:
  Card Container: 
  Number of cards found: 4
@@ -213,247 +214,6 @@ updateGeographicChartDisplay @ dash:8692
  🔍 Dashboard state: Object
  🔍 Current barangay: 
  🔍 Document visibility: visible
- 🔽 Municipality dropdown toggled
- 🏛️ Municipality selected:  All Municipalities
- 🏘️ Updating barangay dropdown for municipality: 
- ⚠️ No barangays found for municipality: 
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Final filter value: 
- 🔄 Updating dashboard with all filters: Object
- ✅ Municipality selection complete, dashboard updated with all filters
- 🔄 updateCommunityMetrics called with barangay: 
- ⏳ Update already in progress, skipping...
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=analysis_data
-dash:12556 Uncaught 
- 🏛️ Municipality option clicked:  All Municipalities
- 🏛️ Municipality selected:  All Municipalities
- 🏘️ Updating barangay dropdown for municipality: 
- ⚠️ No barangays found for municipality: 
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Final filter value: 
- 🔄 Updating dashboard with all filters: Object
- ✅ Municipality selection complete, dashboard updated with all filters
- 🔄 updateCommunityMetrics called with barangay: 
- ⏳ Update already in progress, skipping...
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=analysis_data
-dash:12556 Uncaught (in promise) 
- DatabaseAPI response for analysis_data : Object
- 🌐 Cached fresh data for analysis_data
- Returning data: Object
- 🌍 updateGeographicChart called with barangay: 
- 🌍 Using pre-loaded Geographic Data in updateGeographicChart: Array(0)
- No geographic data available
- 🌍 updateGeographicChartDisplay called with data: Array(0)
- ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8692
- 🔄 Updating barangay distribution for: 
- Fetching barangay distribution data for: Object
- Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=
- DatabaseAPI response for analysis_data : Object
- 🌐 Cached fresh data for analysis_data
- Returning data: Object
- 🌍 updateGeographicChart called with barangay: 
- 🌍 Using pre-loaded Geographic Data in updateGeographicChart: Array(0)
- No geographic data available
- 🌍 updateGeographicChartDisplay called with data: Array(0)
- ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8692
- 🔄 Updating barangay distribution for: 
- Fetching barangay distribution data for: Object
- Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=
- Barangay API Response: Object
- Updating barangay distribution display: Object
- 🔄 Updating gender distribution for: 
- Fetching gender distribution data for: Object
- Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
- Barangay API Response: Object
- Updating barangay distribution display: Object
- 🔄 Updating gender distribution for: 
- Fetching gender distribution data for: Object
- Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
- Gender API Response: Object
- Updating gender distribution display: Object
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=intelligent_programs
- Gender API Response: Object
- Updating gender distribution display: Object
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=intelligent_programs
- DatabaseAPI response for intelligent_programs : Object
- 🌐 Cached fresh data for intelligent_programs
- Returning data: Array(0)
- 🔄 Updating trends chart for barangay: 
- 📊 Updating Trends Chart...
- 📅 Date inputs found: Object
- 📅 Current date values: Object
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Final filter value: 
- 📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=weight-for-age
- DatabaseAPI response for intelligent_programs : Object
- 🌐 Cached fresh data for intelligent_programs
- Returning data: Array(0)
- 🔄 Updating trends chart for barangay: 
- 📊 Updating Trends Chart...
- 📅 Date inputs found: Object
- 📅 Current date values: Object
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Final filter value: 
- 📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=weight-for-age
- 📊 Trends API response: Object
- 📊 Trends API data structure: Object
- 📊 Chart data analysis: Object
- No chartable datasets available - showing message with user count
- 🔄 Updating age classification chart for barangay: 
- 📊 Updating Age Classification Line Chart...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: 
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
- 📊 Trends API response: Object
- 📊 Trends API data structure: Object
- 📊 Chart data analysis: Object
- No chartable datasets available - showing message with user count
- 🔄 Updating age classification chart for barangay: 
- 📊 Updating Age Classification Line Chart...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: 
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
- 📊 Age classification API response: Object
- 📊 Age Classification Line Chart Data: Object
- 📊 Updated age classification chart with data: Object
- 🔄 Updating severe cases list for barangay: 
- 📊 Updating severe cases list...
- 📊 Severe cases function called with barangay: 
- 📊 Severe cases list element found: 
- 📊 Severe cases - WHO Standard Select element: 
- 📊 Severe cases - WHO Standard value: weight-for-age
- 📊 Severe cases - Dropdown value at time of call: weight-for-age
- 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=weight-for-age
- 📊 Age classification API response: Object
- 📊 Age Classification Line Chart Data: Object
- 📊 Updated age classification chart with data: Object
- 🔄 Updating severe cases list for barangay: 
- 📊 Updating severe cases list...
- 📊 Severe cases function called with barangay: 
- 📊 Severe cases list element found: 
- 📊 Severe cases - WHO Standard Select element: 
- 📊 Severe cases - WHO Standard value: weight-for-age
- 📊 Severe cases - Dropdown value at time of call: weight-for-age
- 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=weight-for-age
- Severe cases data received: Object
- Found 2 severe cases
- 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
- 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
- ✅ Severe cases list updated successfully with 2 cases
- 🔄 Starting WHO standard change handler...
- 📊 WHO Standard selected: weight-for-age
- 📊 Dropdown element found: true
- 📊 Dropdown value: weight-for-age
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Final filter value: 
- 📡 Fetching WHO data with active filters...
- 📊 Active filters: Object
- Fetching WHO data for: Object
- API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=weight-for-age
- Severe cases data received: Object
- Found 2 severe cases
- 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
- 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
- ✅ Severe cases list updated successfully with 2 cases
- WHO classification already loading, skipping...
- Bulk API Response: Object
- Mapping weight-for-age to weight_for_age: Object
- Classification values: Array(6)
- Calculated total: 6
- Original total_users: 15
- Extracted weight-for-age data: Object
- Processed data for donut chart: Object
- 📊 Data received for chart update: Object
- 🎨 Updating chart...
- WHO Chart Update - Data received: Object
- Data type: object
- Data classifications: Object
- Data total: 6
- Chart elements found:
-   - chartBg (risk-chart-bg): 
-   - centerText (risk-center-text): 
-   - segments (risk-segments): 
- Processing classifications: Object
- Classifications keys: Array(6)
- Classifications values: Array(6)
- Total users: 6
- Has data (non-zero counts): true
- Chart segments: Array(3)
- Chart segments length: 3
- Chart segments details: Array(3)
- Creating gradient: conic-gradient(#E91E63 0% 33.33333333333333%, #FFC107 33.33333333333333% 66.66666666666666%, #4CAF50 66.66666666666666% 99.99999999999999%)
- Chart background set to: conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 33.3333%, rgb(255, 193, 7) 33.3333%, rgb(255, 193, 7) 66.6667%, rgb(76, 175, 80) 66.6667%, rgb(76, 175, 80) 100%)
- Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 33.3333%, rgb(255, 193, 7) 33.3333%, rgb(255, 193, 7) 66.6667%, rgb(76, 175, 80) 66.6667%, rgb(76, 175, 80) 100%) repeat scroll 0% 0% / auto padding-box border-box
- Computed opacity: 1
- Element dimensions: Object
- WHO chart updated successfully
- 🎨 Updating age classification chart...
- 📊 Updating Age Classification Line Chart...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: 
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
- 📊 Age classification API response: Object
- 📊 Age Classification Line Chart Data: Object
- 📊 Updated age classification chart with data: Object
- 🎨 Updating trends chart...
- 📊 Updating Trends Chart...
- 📅 Date inputs found: Object
- 📅 Current date values: Object
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Final filter value: 
- 📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=weight-for-age
- 📊 Trends API response: Object
- 📊 Trends API data structure: Object
- 📊 Chart data analysis: Object
- No chartable datasets available - showing message with user count
- 🎨 Updating severe cases list...
- 📊 WHO Standard before severe cases call: weight-for-age
- 📊 Dropdown value before severe cases call: weight-for-age
- 📊 Updating severe cases list...
- 📊 Severe cases function called with barangay: 
- 📊 Severe cases list element found: 
- 📊 Severe cases - WHO Standard Select element: 
- 📊 Severe cases - WHO Standard value: weight-for-age
- 📊 Severe cases - Dropdown value at time of call: weight-for-age
- 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=weight-for-age
- Severe cases data received: Object
- Found 2 severe cases
- 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
- 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
- ✅ Severe cases list updated successfully with 2 cases
- ✅ Chart update completed
- 🏁 WHO classification loading completed
- 🔄 updateCharts called with barangay: 
- 🔍 Current Dashboard Metrics:
-   - Total Screened: 15
-   - High Risk (Severely Underweight): 2
-   - SAM Cases (Severely Stunted): 4
-   - Critical MUAC (Severely Wasted): 2
- 📈 Risk distribution data now handled by WHO classification system
- 📈 Risk Distribution Data (RAW): Object
- 📈 Risk Data Type: object
- 📈 Risk Data Keys: Array(1)
- 📈 Risk Data Success: false
- 📈 Risk Data Data: undefined
- 📈 High Risk Cases: undefined
- 📈 SAM Cases: undefined
- 📈 Critical MUAC: undefined
- 🔄 Updating Nutritional Statistics...
- 🔄 Updating Nutritional Statistics Display: Object
- 🌍 Using pre-loaded Geographic Distribution data...
- 🌍 Geographic Data: Array(0)
- 🌍 No geographic data, showing empty display
- 🌍 updateGeographicChartDisplay called with data: Array(0)
- ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8692
- 🎯 Dashboard first load completed - state management now active
-dash:8660 Uncaught (in promise) 
- 🔽 Municipality dropdown toggled
  🏛️ Municipality selected: ABUCAY ABUCAY
  🏘️ Updating barangay dropdown for municipality: ABUCAY
  ✅ Added 10 barangays for ABUCAY
@@ -465,7 +225,7 @@ dash:8660 Uncaught (in promise)
  🔄 updateCommunityMetrics called with barangay: ABUCAY
  ⏳ Update already in progress, skipping...
  Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=analysis_data&barangay=ABUCAY
-dash:12556 Uncaught 
+dash:12557 Uncaught 
  🏛️ Municipality option clicked: ABUCAY ABUCAY
  🏛️ Municipality selected: ABUCAY ABUCAY
  🏘️ Updating barangay dropdown for municipality: ABUCAY
@@ -478,7 +238,7 @@ dash:12556 Uncaught
  🔄 updateCommunityMetrics called with barangay: ABUCAY
  ⏳ Update already in progress, skipping...
  Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=analysis_data&barangay=ABUCAY
-dash:12556 Uncaught (in promise) 
+dash:12557 Uncaught (in promise) 
  DatabaseAPI response for analysis_data : Object
  🌐 Cached fresh data for analysis_data
  Returning data: Object
@@ -487,16 +247,10 @@ dash:12556 Uncaught (in promise)
  No geographic data available
  🌍 updateGeographicChartDisplay called with data: Array(0)
  ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8692
+updateGeographicChartDisplay @ dash:8693
  🔄 Updating barangay distribution for: ABUCAY
  Fetching barangay distribution data for: Object
  Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=ABUCAY
- ⏰ Seamless update triggered
- 🔍 Visibility state: visible
- 🔍 Update in progress: true
- 🔍 Current barangay: ABUCAY
- ⏸️ Skipping seamless update - visibility: visible updateInProgress: true
- 🔧 Resetting stuck updateInProgress flag
  DatabaseAPI response for analysis_data : Object
  🌐 Cached fresh data for analysis_data
  Returning data: Object
@@ -505,7 +259,7 @@ updateGeographicChartDisplay @ dash:8692
  No geographic data available
  🌍 updateGeographicChartDisplay called with data: Array(0)
  ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8692
+updateGeographicChartDisplay @ dash:8693
  🔄 Updating barangay distribution for: ABUCAY
  Fetching barangay distribution data for: Object
  Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=ABUCAY
@@ -677,50 +431,242 @@ updateGeographicChartDisplay @ dash:8692
  🌍 No geographic data, showing empty display
  🌍 updateGeographicChartDisplay called with data: Array(0)
  ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8692
-dash:8660 Uncaught (in promise) 
+updateGeographicChartDisplay @ dash:8693
+ 🎯 Dashboard first load completed - state management now active
+dash:8661 Uncaught (in promise) 
  🔽 Municipality dropdown toggled
  ⏰ Seamless update triggered
  🔍 Visibility state: visible
- 🔍 Update in progress: false
+ 🔍 Update in progress: true
  🔍 Current barangay: ABUCAY
- 🔄 Seamless update for barangay: ABUCAY
- 🔄 Seamless update with WHO standard: weight-for-age
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php&barangay=ABUCAY
+ ⏸️ Skipping seamless update - visibility: visible updateInProgress: true
+ 🔧 Resetting stuck updateInProgress flag
+ 🏛️ Municipality selected: ORION ORION
+ 🏘️ Updating barangay dropdown for municipality: ORION
+ ✅ Added 23 barangays for ORION
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Using municipality as filter: ORION
+ 🔍 Final filter value: ORION
+ 🔄 Updating dashboard with all filters: Object
+ ✅ Municipality selection complete, dashboard updated with all filters
+ 🔄 updateCommunityMetrics called with barangay: ORION
+ Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=analysis_data&barangay=ORION
+dash:12557 Uncaught 
+ 🏛️ Municipality option clicked: ORION ORION
+ 🏛️ Municipality selected: ORION ORION
+ 🏘️ Updating barangay dropdown for municipality: ORION
+ ✅ Added 23 barangays for ORION
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Using municipality as filter: ORION
+ 🔍 Final filter value: ORION
+ 🔄 Updating dashboard with all filters: Object
+ ✅ Municipality selection complete, dashboard updated with all filters
+ 🔄 updateCommunityMetrics called with barangay: ORION
+ ⏳ Update already in progress, skipping...
+ Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=analysis_data&barangay=ORION
+dash:12557 Uncaught (in promise) 
+ DatabaseAPI response for analysis_data : Object
+ 🌐 Cached fresh data for analysis_data
+ Returning data: Object
+ 🌍 updateGeographicChart called with barangay: ORION
+ 🌍 Using pre-loaded Geographic Data in updateGeographicChart: Array(0)
+ No geographic data available
+ 🌍 updateGeographicChartDisplay called with data: Array(0)
+ ❌ Geographic chart container not found!
+updateGeographicChartDisplay @ dash:8693
+ 🔄 Updating barangay distribution for: ORION
+ Fetching barangay distribution data for: Object
+ Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=ORION
+ DatabaseAPI response for analysis_data : Object
+ 🌐 Cached fresh data for analysis_data
+ Returning data: Object
+ 🌍 updateGeographicChart called with barangay: ORION
+ 🌍 Using pre-loaded Geographic Data in updateGeographicChart: Array(0)
+ No geographic data available
+ 🌍 updateGeographicChartDisplay called with data: Array(0)
+ ❌ Geographic chart container not found!
+updateGeographicChartDisplay @ dash:8693
+ 🔄 Updating barangay distribution for: ORION
+ Fetching barangay distribution data for: Object
+ Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=ORION
+ Barangay API Response: Object
+ Updating barangay distribution display: Object
+ 🔄 Updating gender distribution for: ORION
+ Fetching gender distribution data for: Object
+ Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=ORION
+ Barangay API Response: Object
+ Updating barangay distribution display: Object
+ 🔄 Updating gender distribution for: ORION
+ Fetching gender distribution data for: Object
+ Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=ORION
+ Gender API Response: Object
+ Updating gender distribution display: Object
+ Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=intelligent_programs&barangay=ORION
+ Gender API Response: Object
+ Updating gender distribution display: Object
+ Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=intelligent_programs&barangay=ORION
+ DatabaseAPI response for intelligent_programs : Object
+ 🌐 Cached fresh data for intelligent_programs
+ Returning data: Array(0)
+ 🔄 Updating trends chart for barangay: ORION
  📊 Updating Trends Chart...
  📅 Date inputs found: Object
  📅 Current date values: Object
  🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ABUCAY
- 🔍 Final filter value: ABUCAY
+ 🔍 Using municipality as filter: ORION
+ 🔍 Final filter value: ORION
  📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ABUCAY&who_standard=weight-for-age
- 📦 Using cached data for intelligent_programs
-api/dashboard_assessment_stats.php&barangay=ABUCAY:1  Failed to load resource: the server responded with a status of 404 ()
- Response not OK: 404 
-fetchDataFromAPI @ dash:9556
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORION&who_standard=weight-for-age
+ DatabaseAPI response for intelligent_programs : Object
+ 🌐 Cached fresh data for intelligent_programs
+ Returning data: Array(0)
+ 🔄 Updating trends chart for barangay: ORION
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Using municipality as filter: ORION
+ 🔍 Final filter value: ORION
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORION&who_standard=weight-for-age
  📊 Trends API response: Object
  📊 Trends API data structure: Object
  📊 Chart data analysis: Object
  No time labels available
+ 🔄 Updating age classification chart for barangay: ORION
  📊 Updating Age Classification Line Chart...
  Canvas not found, restoring...
  📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: ABUCAY
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ABUCAY
- Error response body: <!doctype html><html><head><title>404 Not Found</title><style>
-body { background-color: #fcfcfc; color: #333333; margin: 0; padding:0; }
-h1 { font-size: 1.5em; font-weight: normal; background-color: #9999cc; min-height:2em; line-height:2em; border-bottom: 1px inset black; margin: 0; }
-h1, p { padding-left: 10px; }
-code.url { background-color: #eeeeee; font-family:monospace; padding:0 2px;}
-</style>
-</head><body><h1>Not Found</h1><p>The requested resource <code class="url">/api/dashboard_assessment_stats.php&amp;barangay=ABUCAY</code> was not found on this server.</p></body></html>
-fetchDataFromAPI @ dash:9558
- DatabaseAPI error for dashboard_assessment_stats : 
-fetchDataFromAPI @ dash:9582
+ 📊 Using Barangay: ORION
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORION
+ 📊 Trends API response: Object
+ 📊 Trends API data structure: Object
+ 📊 Chart data analysis: Object
+ No time labels available
+ 🔄 Updating age classification chart for barangay: ORION
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: weight-for-age
+ 📊 Using Barangay: ORION
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORION
  📊 Age classification API response: Object
  No age classification line chart data available
- ✅ Seamless update completed
+ 🔄 Updating severe cases list for barangay: ORION
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: ORION
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: weight-for-age
+ 📊 Severe cases - Dropdown value at time of call: weight-for-age
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=ORION&who_standard=weight-for-age
+ 📊 Age classification API response: Object
+ No age classification line chart data available
+ 🔄 Updating severe cases list for barangay: ORION
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: ORION
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: weight-for-age
+ 📊 Severe cases - Dropdown value at time of call: weight-for-age
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=ORION&who_standard=weight-for-age
+ Severe cases data received: Object
+ No severe cases found
+ 🔄 Starting WHO standard change handler...
+ 📊 WHO Standard selected: weight-for-age
+ 📊 Dropdown element found: true
+ 📊 Dropdown value: weight-for-age
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Using municipality as filter: ORION
+ 🔍 Final filter value: ORION
+ 📡 Fetching WHO data with active filters...
+ 📊 Active filters: Object
+ Fetching WHO data for: Object
+ API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=ORION&who_standard=weight-for-age
+ Severe cases data received: Object
+ No severe cases found
+ WHO classification already loading, skipping...
+ Bulk API Response: Object
+ Mapping weight-for-age to weight_for_age: Object
+ Classification values: Array(6)
+ Calculated total: 0
+ Original total_users: 0
+ Extracted weight-for-age data: Object
+ Processed data for donut chart: Object
+ 📊 Data received for chart update: Object
+ 🎨 Updating chart...
+ WHO Chart Update - Data received: Object
+ Data type: object
+ Data classifications: Object
+ Data total: 0
+ Chart elements found:
+   - chartBg (risk-chart-bg): 
+   - centerText (risk-center-text): 
+   - segments (risk-segments): 
+ 🎨 Updating age classification chart...
+ 📊 Updating Age Classification Line Chart...
+ Canvas not found, restoring...
+ 📊 Using WHO Standard: weight-for-age
+ 📊 Using Barangay: ORION
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORION
+ 📊 Age classification API response: Object
+ No age classification line chart data available
+ 🎨 Updating trends chart...
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Using municipality as filter: ORION
+ 🔍 Final filter value: ORION
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORION&who_standard=weight-for-age
+ 📊 Trends API response: Object
+ 📊 Trends API data structure: Object
+ 📊 Chart data analysis: Object
+ No time labels available
+ 🎨 Updating severe cases list...
+ 📊 WHO Standard before severe cases call: weight-for-age
+ 📊 Dropdown value before severe cases call: weight-for-age
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: ORION
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: weight-for-age
+ 📊 Severe cases - Dropdown value at time of call: weight-for-age
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=ORION&who_standard=weight-for-age
+ Severe cases data received: Object
+ No severe cases found
+ ✅ Chart update completed
+ 🏁 WHO classification loading completed
+ 🔄 updateCharts called with barangay: ORION
+ 🔍 Current Dashboard Metrics:
+   - Total Screened: 15
+   - High Risk (Severely Underweight): 2
+   - SAM Cases (Severely Stunted): 4
+   - Critical MUAC (Severely Wasted): 2
+ 📈 Risk distribution data now handled by WHO classification system
+ 📈 Risk Distribution Data (RAW): Object
+ 📈 Risk Data Type: object
+ 📈 Risk Data Keys: Array(1)
+ 📈 Risk Data Success: false
+ 📈 Risk Data Data: undefined
+ 📈 High Risk Cases: undefined
+ 📈 SAM Cases: undefined
+ 📈 Critical MUAC: undefined
+ 🔄 Updating Nutritional Statistics...
+ 🔄 Updating Nutritional Statistics Display: Object
+ 🌍 Using pre-loaded Geographic Distribution data...
+ 🌍 Geographic Data: Array(0)
+ 🌍 No geographic data, showing empty display
+ 🌍 updateGeographicChartDisplay called with data: Array(0)
+ ❌ Geographic chart container not found!
+updateGeographicChartDisplay @ dash:8693
+dash:8661 Uncaught (in promise) 
+ 🔽 Municipality dropdown toggled
+ ⏰ Seamless update triggered
+ 🔍 Visibility state: visible
+ 🔍 Update in progress: true
+ 🔍 Current barangay: ORION
+ ⏸️ Skipping seamless update - visibility: visible updateInProgress: true
+ 🔧 Resetting stuck updateInProgress flag
  🏛️ Municipality selected: ORANI ORANI
  🏘️ Updating barangay dropdown for municipality: ORANI
  ✅ Added 28 barangays for ORANI
@@ -731,7 +677,7 @@ fetchDataFromAPI @ dash:9582
  ✅ Municipality selection complete, dashboard updated with all filters
  🔄 updateCommunityMetrics called with barangay: ORANI
  Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=analysis_data&barangay=ORANI
-dash:12556 Uncaught 
+dash:12557 Uncaught 
  🏛️ Municipality option clicked: ORANI ORANI
  🏛️ Municipality selected: ORANI ORANI
  🏘️ Updating barangay dropdown for municipality: ORANI
@@ -744,7 +690,7 @@ dash:12556 Uncaught
  🔄 updateCommunityMetrics called with barangay: ORANI
  ⏳ Update already in progress, skipping...
  Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=analysis_data&barangay=ORANI
-dash:12556 Uncaught (in promise) 
+dash:12557 Uncaught (in promise) 
  DatabaseAPI response for analysis_data : Object
  🌐 Cached fresh data for analysis_data
  Returning data: Object
@@ -753,7 +699,7 @@ dash:12556 Uncaught (in promise)
  No geographic data available
  🌍 updateGeographicChartDisplay called with data: Array(0)
  ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8692
+updateGeographicChartDisplay @ dash:8693
  🔄 Updating barangay distribution for: ORANI
  Fetching barangay distribution data for: Object
  Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=ORANI
@@ -765,7 +711,7 @@ updateGeographicChartDisplay @ dash:8692
  No geographic data available
  🌍 updateGeographicChartDisplay called with data: Array(0)
  ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8692
+updateGeographicChartDisplay @ dash:8693
  🔄 Updating barangay distribution for: ORANI
  Fetching barangay distribution data for: Object
  Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=ORANI
@@ -892,230 +838,148 @@ updateGeographicChartDisplay @ dash:8692
  Chart segments length: 1
  Chart segments details: Array(1)
  Creating gradient: conic-gradient(#4CAF50 0% 100%)
-dash:10813 Chart background set to: conic-gradient(rgb(76, 175, 80) 0%, rgb(76, 175, 80) 100%)
-dash:10817 Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(76, 175, 80) 0%, rgb(76, 175, 80) 100%) repeat scroll 0% 0% / auto padding-box border-box
-dash:10818 Computed opacity: 0.3
-dash:10819 Element dimensions: Object
-dash:10843 WHO chart updated successfully
-dash:10903 🎨 Updating age classification chart...
-dash:10474 📊 Updating Age Classification Line Chart...
-dash:10502 📊 Using WHO Standard: weight-for-age
-dash:10503 📊 Using Barangay: ORANI
-dash:10507 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI
-dash:10512 📊 Age classification API response: Object
-dash:10530 📊 Age Classification Line Chart Data: Object
-dash:10538 📊 Updated age classification chart with data: Object
-dash:10907 🎨 Updating trends chart...
-dash:10206 📊 Updating Trends Chart...
-dash:10214 📅 Date inputs found: Object
-dash:10215 📅 Current date values: Object
+dash:10814 Chart background set to: conic-gradient(rgb(76, 175, 80) 0%, rgb(76, 175, 80) 100%)
+dash:10818 Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(76, 175, 80) 0%, rgb(76, 175, 80) 100%) repeat scroll 0% 0% / auto padding-box border-box
+dash:10819 Computed opacity: 0.3
+dash:10820 Element dimensions: Object
+dash:10844 WHO chart updated successfully
+dash:10904 🎨 Updating age classification chart...
+dash:10475 📊 Updating Age Classification Line Chart...
+dash:10503 📊 Using WHO Standard: weight-for-age
+dash:10504 📊 Using Barangay: ORANI
+dash:10508 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI
+dash:10513 📊 Age classification API response: Object
+dash:10531 📊 Age Classification Line Chart Data: Object
+dash:10539 📊 Updated age classification chart with data: Object
+dash:10908 🎨 Updating trends chart...
+dash:10207 📊 Updating Trends Chart...
+dash:10215 📅 Date inputs found: Object
+dash:10216 📅 Current date values: Object
 dash:8289 🔍 getAllActiveFilters - Raw values: Object
 dash:8302 🔍 Using municipality as filter: ORANI
 dash:8305 🔍 Final filter value: ORANI
-dash:10227 📊 Trends Chart Filters: Object
-dash:10239 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age
-dash:10244 📊 Trends API response: Object
-dash:10245 📊 Trends API data structure: Object
-dash:10264 📊 Chart data analysis: Object
-dash:10271 No time labels available
-dash:10911 🎨 Updating severe cases list...
-dash:10912 📊 WHO Standard before severe cases call: weight-for-age
-dash:10913 📊 Dropdown value before severe cases call: weight-for-age
-dash:12284 📊 Updating severe cases list...
-dash:12285 📊 Severe cases function called with barangay: ORANI
-dash:12289 📊 Severe cases list element found: <div class=​"severe-cases-list" id=​"severe-cases-list">​…​</div>​flex
-dash:12304 📊 Severe cases - WHO Standard Select element: <select id=​"whoStandardSelect" style=​"padding:​ 8px 12px;​ border:​ 1px solid #ddd;​ border-radius:​ 6px;​ background:​ white;​ color:​ #333;​ font-size:​ 14px;​">​…​</select>​
-dash:12305 📊 Severe cases - WHO Standard value: weight-for-age
-dash:12306 📊 Severe cases - Dropdown value at time of call: weight-for-age
-dash:12310 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=ORANI&who_standard=weight-for-age
-dash:8489 🔄 updateCharts called with barangay: ORANI
-dash:8497 🔍 Current Dashboard Metrics:
-dash:8498   - Total Screened: 15
-dash:8499   - High Risk (Severely Underweight): 2
-dash:8500   - SAM Cases (Severely Stunted): 4
-dash:8501   - Critical MUAC (Severely Wasted): 2
-dash:8511 📈 Risk distribution data now handled by WHO classification system
-dash:8513 📈 Risk Distribution Data (RAW): Object
-dash:8514 📈 Risk Data Type: object
-dash:8515 📈 Risk Data Keys: Array(1)
-dash:8516 📈 Risk Data Success: false
-dash:8517 📈 Risk Data Data: undefined
-dash:8518 📈 High Risk Cases: undefined
-dash:8519 📈 SAM Cases: undefined
-dash:8520 📈 Critical MUAC: undefined
-dash:8627 🔄 Updating Nutritional Statistics...
-dash:11536 🔄 Updating Nutritional Statistics Display: Object
-dash:8635 🌍 Using pre-loaded Geographic Distribution data...
-dash:8636 🌍 Geographic Data: Array(0)
-dash:8641 🌍 No geographic data, showing empty display
-dash:8689 🌍 updateGeographicChartDisplay called with data: Array(0)
-dash:8692 ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8692
-dash:8660 Uncaught (in promise) ReferenceError: resetTimeout is not defined
-    at dash:8660:30
-dash:12318 Severe cases data received: Object
-dash:12321 No severe cases found
-dash:10916 ✅ Chart update completed
-dash:10922 🏁 WHO classification loading completed
-dash:12614 ⏰ Seamless update triggered
-dash:12615 🔍 Visibility state: visible
-dash:12616 🔍 Update in progress: true
-dash:12617 🔍 Current barangay: ORANI
-dash:12639 ⏸️ Skipping seamless update - visibility: visible updateInProgress: true
-dash:12643 🔧 Resetting stuck updateInProgress flag
-dash:12614 ⏰ Seamless update triggered
-dash:12615 🔍 Visibility state: visible
-dash:12616 🔍 Update in progress: false
-dash:12617 🔍 Current barangay: ORANI
-dash:12621 🔄 Seamless update for barangay: ORANI
-dash:12628 🔄 Seamless update with WHO standard: weight-for-age
-dash:9551 Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php&barangay=ORANI
-dash:10206 📊 Updating Trends Chart...
-dash:10214 📅 Date inputs found: {fromDateInput: true, toDateInput: true}
-dash:10215 📅 Current date values: {fromDate: '2025-01-01', toDate: '2025-10-09'}
+dash:10228 📊 Trends Chart Filters: Object
+dash:10240 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age
+dash:10245 📊 Trends API response: Object
+dash:10246 📊 Trends API data structure: Object
+dash:10265 📊 Chart data analysis: Object
+dash:10272 No time labels available
+dash:10912 🎨 Updating severe cases list...
+dash:10913 📊 WHO Standard before severe cases call: weight-for-age
+dash:10914 📊 Dropdown value before severe cases call: weight-for-age
+dash:12285 📊 Updating severe cases list...
+dash:12286 📊 Severe cases function called with barangay: ORANI
+dash:12290 📊 Severe cases list element found: <div class=​"severe-cases-list" id=​"severe-cases-list">​…​</div>​flex
+dash:12305 📊 Severe cases - WHO Standard Select element: <select id=​"whoStandardSelect" style=​"padding:​ 8px 12px;​ border:​ 1px solid #ddd;​ border-radius:​ 6px;​ background:​ white;​ color:​ #333;​ font-size:​ 14px;​">​…​</select>​
+dash:12306 📊 Severe cases - WHO Standard value: weight-for-age
+dash:12307 📊 Severe cases - Dropdown value at time of call: weight-for-age
+dash:12311 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=ORANI&who_standard=weight-for-age
+dash:12319 Severe cases data received: Object
+dash:12322 No severe cases found
+dash:10917 ✅ Chart update completed
+dash:10923 🏁 WHO classification loading completed
+dash:8490 🔄 updateCharts called with barangay: ORANI
+dash:8498 🔍 Current Dashboard Metrics:
+dash:8499   - Total Screened: 15
+dash:8500   - High Risk (Severely Underweight): 2
+dash:8501   - SAM Cases (Severely Stunted): 4
+dash:8502   - Critical MUAC (Severely Wasted): 2
+dash:8512 📈 Risk distribution data now handled by WHO classification system
+dash:8514 📈 Risk Distribution Data (RAW): Object
+dash:8515 📈 Risk Data Type: object
+dash:8516 📈 Risk Data Keys: Array(1)
+dash:8517 📈 Risk Data Success: false
+dash:8518 📈 Risk Data Data: undefined
+dash:8519 📈 High Risk Cases: undefined
+dash:8520 📈 SAM Cases: undefined
+dash:8521 📈 Critical MUAC: undefined
+dash:8628 🔄 Updating Nutritional Statistics...
+dash:11537 🔄 Updating Nutritional Statistics Display: Object
+dash:8636 🌍 Using pre-loaded Geographic Distribution data...
+dash:8637 🌍 Geographic Data: Array(0)
+dash:8642 🌍 No geographic data, showing empty display
+dash:8690 🌍 updateGeographicChartDisplay called with data: Array(0)
+dash:8693 ❌ Geographic chart container not found!
+updateGeographicChartDisplay @ dash:8693
+dash:8661 Uncaught (in promise) ReferenceError: resetTimeout is not defined
+    at dash:8661:30
+dash:12615 ⏰ Seamless update triggered
+dash:12616 🔍 Visibility state: visible
+dash:12617 🔍 Update in progress: true
+dash:12618 🔍 Current barangay: ORANI
+dash:12640 ⏸️ Skipping seamless update - visibility: visible updateInProgress: true
+dash:12644 🔧 Resetting stuck updateInProgress flag
+dash:12615 ⏰ Seamless update triggered
+dash:12616 🔍 Visibility state: visible
+dash:12617 🔍 Update in progress: false
+dash:12618 🔍 Current barangay: ORANI
+dash:12622 🔄 Seamless update for barangay: ORANI
+dash:12629 🔄 Seamless update with WHO standard: weight-for-age
+dash:9552 Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php?barangay=ORANI
+dash:10207 📊 Updating Trends Chart...
+dash:10215 📅 Date inputs found: {fromDateInput: true, toDateInput: true}
+dash:10216 📅 Current date values: {fromDate: '2025-01-01', toDate: '2025-10-09'}
 dash:8289 🔍 getAllActiveFilters - Raw values: {municipality: 'ORANI', barangay: 'Select Barangay', whoStandard: 'weight-for-age'}
 dash:8302 🔍 Using municipality as filter: ORANI
 dash:8305 🔍 Final filter value: ORANI
-dash:10227 📊 Trends Chart Filters: {fromDate: '2025-01-01', toDate: '2025-10-09', barangay: 'ORANI', whoStandard: 'weight-for-age'}
-dash:10239 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age
-dash:9531 📦 Using cached data for intelligent_programs
-dash:9553  GET https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php&barangay=ORANI 404 (Not Found)
-fetchDataFromAPI @ dash:9553
-seamlessUpdateCommunityMetrics @ dash:12681
-seamlessDashboardUpdate @ dash:12660
-(anonymous) @ dash:12631
-dash:9556 Response not OK: 404 
-fetchDataFromAPI @ dash:9556
-await in fetchDataFromAPI
-seamlessUpdateCommunityMetrics @ dash:12681
-seamlessDashboardUpdate @ dash:12660
-(anonymous) @ dash:12631
-dash:10244 📊 Trends API response: {success: true, data: {…}}
-dash:10245 📊 Trends API data structure: {success: true, hasData: true, dataKeys: Array(3), timeLabels: Array(0), datasets: Array(0), …}
-dash:10264 📊 Chart data analysis: {timeLabels: 0, datasets: 0, totalUsers: 0}
-dash:10271 No time labels available
-dash:10474 📊 Updating Age Classification Line Chart...
-dash:10502 📊 Using WHO Standard: weight-for-age
-dash:10503 📊 Using Barangay: ORANI
-dash:10507 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI
-dash:9558 Error response body: <!doctype html><html><head><title>404 Not Found</title><style>
-body { background-color: #fcfcfc; color: #333333; margin: 0; padding:0; }
-h1 { font-size: 1.5em; font-weight: normal; background-color: #9999cc; min-height:2em; line-height:2em; border-bottom: 1px inset black; margin: 0; }
-h1, p { padding-left: 10px; }
-code.url { background-color: #eeeeee; font-family:monospace; padding:0 2px;}
-</style>
-</head><body><h1>Not Found</h1><p>The requested resource <code class="url">/api/dashboard_assessment_stats.php&amp;barangay=ORANI</code> was not found on this server.</p></body></html>
-fetchDataFromAPI @ dash:9558
-await in fetchDataFromAPI
-seamlessUpdateCommunityMetrics @ dash:12681
-seamlessDashboardUpdate @ dash:12660
-(anonymous) @ dash:12631
-dash:9582 DatabaseAPI error for dashboard_assessment_stats : Error: HTTP error! status: 404
-    at fetchDataFromAPI (dash:9559:27)
-    at async seamlessUpdateCommunityMetrics (dash:12681:30)
-    at async Promise.all (index 0)
-    at async seamlessDashboardUpdate (dash:12659:17)
-    at async dash:12631:25
-fetchDataFromAPI @ dash:9582
-await in fetchDataFromAPI
-seamlessUpdateCommunityMetrics @ dash:12681
-seamlessDashboardUpdate @ dash:12660
-(anonymous) @ dash:12631
-dash:10241 Fetch finished loading: GET "https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age".
-updateTrendsChart @ dash:10241
-seamlessUpdateCharts @ dash:12698
+dash:10228 📊 Trends Chart Filters: {fromDate: '2025-01-01', toDate: '2025-10-09', barangay: 'ORANI', whoStandard: 'weight-for-age'}
+dash:10240 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age
+dash:9532 📦 Using cached data for intelligent_programs
+dash:10245 📊 Trends API response: {success: true, data: {…}}
+dash:10246 📊 Trends API data structure: {success: true, hasData: true, dataKeys: Array(3), timeLabels: Array(0), datasets: Array(0), …}
+dash:10265 📊 Chart data analysis: {timeLabels: 0, datasets: 0, totalUsers: 0}
+dash:10272 No time labels available
+dash:10475 📊 Updating Age Classification Line Chart...
+dash:10503 📊 Using WHO Standard: weight-for-age
+dash:10504 📊 Using Barangay: ORANI
+dash:10508 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI
+dash:10242 Fetch finished loading: GET "https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age".
+updateTrendsChart @ dash:10242
+seamlessUpdateCharts @ dash:12699
+seamlessDashboardUpdate @ dash:12662
+(anonymous) @ dash:12632
+dash:9564 DatabaseAPI response for dashboard_assessment_stats : {success: true, data: {…}}
+dash:9574 Returning data: {total_screened: 1, high_risk_cases: 1, sam_cases: 1, critical_muac: 1, risk_levels: {…}, …}
+dash:9554 Fetch finished loading: GET "https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php?barangay=ORANI".
+fetchDataFromAPI @ dash:9554
+seamlessUpdateCommunityMetrics @ dash:12682
 seamlessDashboardUpdate @ dash:12661
-(anonymous) @ dash:12631
-dash:9553 Fetch failed loading: GET "https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php&barangay=ORANI".
-fetchDataFromAPI @ dash:9553
-seamlessUpdateCommunityMetrics @ dash:12681
-seamlessDashboardUpdate @ dash:12660
-(anonymous) @ dash:12631
-dash:10509 Fetch finished loading: GET "https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI".
-updateAgeClassificationChart @ dash:10509
-seamlessUpdateCharts @ dash:12701
+(anonymous) @ dash:12632
+dash:10513 📊 Age classification API response: {success: true, data: {…}}
+dash:10531 📊 Age Classification Line Chart Data: {ageLabels: Array(10), datasets: Array(1), totalUsers: 1, totalPopulation: undefined}
+dash:10539 📊 Updated age classification chart with data: {ageLabels: Array(10), datasets: Array(1), totalUsers: 1}
+dash:10510 Fetch finished loading: GET "https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI".
+updateAgeClassificationChart @ dash:10510
+seamlessUpdateCharts @ dash:12702
 await in seamlessUpdateCharts
-seamlessDashboardUpdate @ dash:12661
-(anonymous) @ dash:12631
-dash:10512 📊 Age classification API response: {success: true, data: {…}}
-dash:10530 📊 Age Classification Line Chart Data: {ageLabels: Array(10), datasets: Array(1), totalUsers: 1, totalPopulation: undefined}
-dash:10538 📊 Updated age classification chart with data: {ageLabels: Array(10), datasets: Array(1), totalUsers: 1}
-dash:12637 ✅ Seamless update completed
-dash:12614 ⏰ Seamless update triggered
-dash:12615 🔍 Visibility state: visible
-dash:12616 🔍 Update in progress: false
-dash:12617 🔍 Current barangay: ORANI
-dash:12621 🔄 Seamless update for barangay: ORANI
-dash:12628 🔄 Seamless update with WHO standard: weight-for-age
-dash:9551 Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php&barangay=ORANI
-dash:10206 📊 Updating Trends Chart...
-dash:10214 📅 Date inputs found: {fromDateInput: true, toDateInput: true}
-dash:10215 📅 Current date values: {fromDate: '2025-01-01', toDate: '2025-10-09'}
-dash:8289 🔍 getAllActiveFilters - Raw values: {municipality: 'ORANI', barangay: 'Select Barangay', whoStandard: 'weight-for-age'}
-dash:8302 🔍 Using municipality as filter: ORANI
-dash:8305 🔍 Final filter value: ORANI
-dash:10227 📊 Trends Chart Filters: {fromDate: '2025-01-01', toDate: '2025-10-09', barangay: 'ORANI', whoStandard: 'weight-for-age'}
-dash:10239 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age
-dash:9531 📦 Using cached data for intelligent_programs
-dash:9553  GET https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php&barangay=ORANI 404 (Not Found)
-fetchDataFromAPI @ dash:9553
-seamlessUpdateCommunityMetrics @ dash:12681
-seamlessDashboardUpdate @ dash:12660
-(anonymous) @ dash:12631
-dash:9556 Response not OK: 404 
-fetchDataFromAPI @ dash:9556
-await in fetchDataFromAPI
-seamlessUpdateCommunityMetrics @ dash:12681
-seamlessDashboardUpdate @ dash:12660
-(anonymous) @ dash:12631
-dash:10244 📊 Trends API response: {success: true, data: {…}}
-dash:10245 📊 Trends API data structure: {success: true, hasData: true, dataKeys: Array(3), timeLabels: Array(0), datasets: Array(0), …}
-dash:10241 Fetch finished loading: GET "https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age".
-updateTrendsChart @ dash:10241
-seamlessUpdateCharts @ dash:12698
-seamlessDashboardUpdate @ dash:12661
-(anonymous) @ dash:12631
-dash:10264 📊 Chart data analysis: {timeLabels: 0, datasets: 0, totalUsers: 0}
-dash:10271 No time labels available
-dash:10474 📊 Updating Age Classification Line Chart...
-dash:10502 📊 Using WHO Standard: weight-for-age
-dash:10503 📊 Using Barangay: ORANI
-dash:10507 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI
-dash:9558 Error response body: <!doctype html><html><head><title>404 Not Found</title><style>
-body { background-color: #fcfcfc; color: #333333; margin: 0; padding:0; }
-h1 { font-size: 1.5em; font-weight: normal; background-color: #9999cc; min-height:2em; line-height:2em; border-bottom: 1px inset black; margin: 0; }
-h1, p { padding-left: 10px; }
-code.url { background-color: #eeeeee; font-family:monospace; padding:0 2px;}
-</style>
-</head><body><h1>Not Found</h1><p>The requested resource <code class="url">/api/dashboard_assessment_stats.php&amp;barangay=ORANI</code> was not found on this server.</p></body></html>
-fetchDataFromAPI @ dash:9558
-await in fetchDataFromAPI
-seamlessUpdateCommunityMetrics @ dash:12681
-seamlessDashboardUpdate @ dash:12660
-(anonymous) @ dash:12631
-dash:9582 DatabaseAPI error for dashboard_assessment_stats : Error: HTTP error! status: 404
-    at fetchDataFromAPI (dash:9559:27)
-    at async seamlessUpdateCommunityMetrics (dash:12681:30)
-    at async Promise.all (index 0)
-    at async seamlessDashboardUpdate (dash:12659:17)
-    at async dash:12631:25
-fetchDataFromAPI @ dash:9582
-await in fetchDataFromAPI
-seamlessUpdateCommunityMetrics @ dash:12681
-seamlessDashboardUpdate @ dash:12660
-(anonymous) @ dash:12631
-dash:9553 Fetch failed loading: GET "https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php&barangay=ORANI".
-fetchDataFromAPI @ dash:9553
-seamlessUpdateCommunityMetrics @ dash:12681
-seamlessDashboardUpdate @ dash:12660
-(anonymous) @ dash:12631
-dash:10512 📊 Age classification API response: {success: true, data: {…}}
-dash:10530 📊 Age Classification Line Chart Data: {ageLabels: Array(10), datasets: Array(1), totalUsers: 1, totalPopulation: undefined}
-dash:10509 Fetch finished loading: GET "https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI".
-updateAgeClassificationChart @ dash:10509
-seamlessUpdateCharts @ dash:12701
-await in seamlessUpdateCharts
-seamlessDashboardUpdate @ dash:12661
-(anonymous) @ dash:12631
-dash:10538 📊 Updated age classification chart with data: {ageLabels: Array(10), datasets: Array(1), totalUsers: 1}
-dash:12637 ✅ Seamless update completed
+seamlessDashboardUpdate @ dash:12662
+(anonymous) @ dash:12632
+dash:12638 ✅ Seamless update completed
+ ⏰ Seamless update triggered
+ 🔍 Visibility state: visible
+ 🔍 Update in progress: false
+ 🔍 Current barangay: ORANI
+ 🔄 Seamless update for barangay: ORANI
+ 🔄 Seamless update with WHO standard: weight-for-age
+ Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php?barangay=ORANI
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: {fromDateInput: true, toDateInput: true}
+ 📅 Current date values: {fromDate: '2025-01-01', toDate: '2025-10-09'}
+ 🔍 getAllActiveFilters - Raw values: {municipality: 'ORANI', barangay: 'Select Barangay', whoStandard: 'weight-for-age'}
+ 🔍 Using municipality as filter: ORANI
+ 🔍 Final filter value: ORANI
+ 📊 Trends Chart Filters: {fromDate: '2025-01-01', toDate: '2025-10-09', barangay: 'ORANI', whoStandard: 'weight-for-age'}
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age
+ 📦 Using cached data for intelligent_programs
+ 📊 Trends API response: {success: true, data: {…}}
+ 📊 Trends API data structure: {success: true, hasData: true, dataKeys: Array(3), timeLabels: Array(0), datasets: Array(0), …}
+ 📊 Chart data analysis: {timeLabels: 0, datasets: 0, totalUsers: 0}
+ No time labels available
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: weight-for-age
+ 📊 Using Barangay: ORANI
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI
+ DatabaseAPI response for dashboard_assessment_stats : {success: true, data: {…}}
+ Returning data: {total_screened: 1, high_risk_cases: 1, sam_cases: 1, critical_muac: 1, risk_levels: {…}, …}
+ 📊 Updated age classification chart with data: {ageLabels: Array(10), datasets: Array(1), totalUsers: 1}
+ ✅ Seamless update completed
