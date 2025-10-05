@@ -5137,10 +5137,7 @@ header:hover {
                         'Content-Type': 'application/x-www-form-urlencoded',
                             'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: new URLSearchParams({
-                        'action': 'query',
-                        'sql': 'SELECT * FROM programs ORDER BY program_id DESC LIMIT 10'
-                    })
+                    body: 'action=query&sql=SELECT * FROM programs ORDER BY program_id DESC LIMIT 10'
                 });
                 const result = await response.json();
                 console.log('📊 Programs table (last 10 events):', result);
