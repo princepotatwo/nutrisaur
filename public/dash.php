@@ -9250,14 +9250,15 @@ body {
             }
             dashboardState.updateInProgress = true;
             
+            // Set a timeout to reset the flag in case something goes wrong
+            let resetTimeout = setTimeout(() => {
+                if (dashboardState.updateInProgress) {
+                    console.log('🔧 Auto-resetting stuck updateInProgress flag');
+                    dashboardState.updateInProgress = false;
+                }
+            }, 5000); // 5 seconds timeout
+            
             updateCommunityMetrics.debounceTimer = setTimeout(async () => {
-                // Set a timeout to reset the flag in case something goes wrong
-                let resetTimeout = setTimeout(() => {
-                    if (dashboardState.updateInProgress) {
-                        console.log('🔧 Auto-resetting stuck updateInProgress flag');
-                        dashboardState.updateInProgress = false;
-                    }
-                }, 5000); // 5 seconds timeout
                 try {
                     console.log('🔄 Starting community metrics update...');
                 
@@ -10389,7 +10390,7 @@ body {
                 // Add query parameters if any
                 if (Object.keys(params).length > 0) {
                     const queryString = new URLSearchParams(params).toString();
-                    url += `&${queryString}`;
+                    url += url.includes('?') ? `&${queryString}` : `?${queryString}`;
                 }
                 
                 console.log('Fetching from centralized DatabaseAPI:', url);
