@@ -4362,7 +4362,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $pdo = $db->getPDO();
                     
                     // Check if user already exists
-                    $checkStmt = $pdo->prepare("SELECT id FROM community_users WHERE email = ?");
+                    $checkStmt = $pdo->prepare("SELECT email FROM community_users WHERE email = ?");
                     $checkStmt->execute([$email]);
                     if ($checkStmt->fetch()) {
                         echo json_encode(['success' => false, 'message' => 'User with this email already exists']);
