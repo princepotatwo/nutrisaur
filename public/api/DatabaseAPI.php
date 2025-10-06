@@ -4369,18 +4369,13 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         break;
                     }
                     
-                    // Calculate age from birthday
-                    $birthDate = new DateTime($birthday);
-                    $today = new DateTime();
-                    $age = $today->diff($birthDate)->y;
-                    
                     // Calculate BMI
                     $heightInMeters = $height / 100;
                     $bmi = $weight / ($heightInMeters * $heightInMeters);
                     
                     // Insert new community user
-                    $stmt = $pdo->prepare("INSERT INTO community_users (name, email, municipality, barangay, sex, birthday, age, weight, height, is_pregnant, bmi, screening_date, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
-                    $result = $stmt->execute([$name, $email, $municipality, $barangay, $sex, $birthday, $age, $weight, $height, $isPregnant, $bmi]);
+                    $stmt = $pdo->prepare("INSERT INTO community_users (name, email, municipality, barangay, sex, birthday, weight, height, is_pregnant, bmi, screening_date, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+                    $result = $stmt->execute([$name, $email, $municipality, $barangay, $sex, $birthday, $weight, $height, $isPregnant, $bmi]);
                     
                     if ($result) {
                         echo json_encode([
