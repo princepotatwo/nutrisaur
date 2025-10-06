@@ -6928,6 +6928,34 @@ body {
     color: #FFFFFF !important;
 }
 
+/* Segment labels theme support - specific for donut chart labels */
+.light-theme .segment-label,
+.light-theme .segment-label *,
+.light-theme .text-box-label,
+.light-theme .text-box-label * {
+    color: #000000 !important;
+}
+
+.dark-theme .segment-label,
+.dark-theme .segment-label *,
+.dark-theme .text-box-label,
+.dark-theme .text-box-label * {
+    color: #FFFFFF !important;
+}
+
+/* Ensure segment labels are visible in light theme */
+.light-theme .segments .segment-label,
+.light-theme .segments .text-box-label,
+.light-theme .segments .simple-text-box .text-box-label {
+    color: #000000 !important;
+}
+
+.dark-theme .segments .segment-label,
+.dark-theme .segments .text-box-label,
+.dark-theme .segments .simple-text-box .text-box-label {
+    color: #FFFFFF !important;
+}
+
 /* ===== BARANGAY DROPDOWN FUNCTIONALITY CSS ===== */
 .dropdown-content {
     display: none;
@@ -12584,7 +12612,33 @@ body {
                 });
             });
             
+            // Update segment labels (donut chart labels)
+            const segmentLabels = document.querySelectorAll('.segment-label, .text-box-label');
+            segmentLabels.forEach(label => {
+                label.style.color = `${textColor} !important`;
+                // Also update any child elements
+                const children = label.querySelectorAll('*');
+                children.forEach(child => {
+                    child.style.color = `${textColor} !important`;
+                });
+            });
+            
+            // Update segments container labels
+            const segmentsContainer = document.querySelector('.segments');
+            if (segmentsContainer) {
+                const segmentsLabels = segmentsContainer.querySelectorAll('.segment-label, .text-box-label, .simple-text-box .text-box-label');
+                segmentsLabels.forEach(label => {
+                    label.style.color = `${textColor} !important`;
+                    const children = label.querySelectorAll('*');
+                    children.forEach(child => {
+                        child.style.color = `${textColor} !important`;
+                    });
+                });
+                console.log('🎨 Updated segments labels:', segmentsLabels.length);
+            }
+            
             console.log('🎨 Updated all legend items:', allLegendItems.length);
+            console.log('🎨 Updated segment labels:', segmentLabels.length);
         }
 
         // Theme toggle function
