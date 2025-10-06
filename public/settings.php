@@ -3322,8 +3322,8 @@ header {
             overflow: hidden;
             width: 100%;
             max-width: calc(100% - 60px);
-            margin-left: auto;
-            margin-right: auto;
+            margin-left: 0;
+            margin-right: 0;
         }
 
         /* Dark theme specific styles for profile card */
@@ -5010,10 +5010,9 @@ header {
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Current User Profile Card -->
-        <div class="profile-card">
+            
+            <!-- Current User Profile Card -->
+            <div class="profile-card">
             <div class="profile-header">
                 <h3>My Profile</h3>
                 <button class="btn-edit-profile" onclick="toggleProfileEdit()">
@@ -5069,6 +5068,7 @@ header {
                     </button>
                 </div>
             </div>
+        </div>
         </div>
         
         <!-- CSV Import Modal -->
