@@ -3805,8 +3805,8 @@ class DatabaseAPI {
             // Debug logging
             error_log("🔍 getSevereCasesAllStandards called with barangay: '$barangay'");
 
-            // Use the same method as other bulk APIs - get all users (no time filtering)
-            $users = $this->getDetailedScreeningResponses('1d', $barangay);
+            // Use the same method as the regular severe cases API - get all users without time filtering
+            $users = $this->getDetailedScreeningResponses('all', $barangay);
             
             // Debug logging
             error_log("🔍 getSevereCasesAllStandards found " . count($users) . " users after filtering");
@@ -3832,31 +3832,39 @@ class DatabaseAPI {
             $severelyWasted = 0;
             
             foreach ($users as $user) {
-                // Calculate WHO classification for ALL standards
+                // Calculate WHO classification for ALL standards - use exact same logic as getSevereCasesBulk
                 $assessment = $who->getComprehensiveAssessment(
-                    $user['weight'],
-                    $user['height'],
+                    floatval($user['weight']),
+                    floatval($user['height']),
                     $user['birthday'],
-                    $user['screening_date'],
-                    $user['sex']
+                    $user['sex'],
+                    $user['screening_date']
                 );
-                
-                // Check Weight-for-Age (Severely Underweight)
-                if (isset($assessment['results']['weight_for_age']['classification']) && 
-                    $assessment['results']['weight_for_age']['classification'] === 'Severely Underweight') {
-                    $severelyUnderweight++;
-                }
-                
-                // Check Height-for-Age (Severely Stunted)
-                if (isset($assessment['results']['height_for_age']['classification']) && 
-                    $assessment['results']['height_for_age']['classification'] === 'Severely Stunted') {
-                    $severelyStunted++;
-                }
-                
-                // Check Weight-for-Height (Severely Wasted)
-                if (isset($assessment['results']['weight_for_height']['classification']) && 
-                    $assessment['results']['weight_for_height']['classification'] === 'Severely Wasted') {
-                    $severelyWasted++;
+
+                if ($assessment['success'] && isset($assessment['results'])) {
+                    // Check Weight-for-Age (Severely Underweight)
+                    if (isset($assessment['results']['weight_for_age']['classification'])) {
+                        $wfaClassification = $assessment['results']['weight_for_age']['classification'];
+                        if ($wfaClassification === 'Severely Underweight') {
+                            $severelyUnderweight++;
+                        }
+                    }
+                    
+                    // Check Height-for-Age (Severely Stunted)
+                    if (isset($assessment['results']['height_for_age']['classification'])) {
+                        $hfaClassification = $assessment['results']['height_for_age']['classification'];
+                        if ($hfaClassification === 'Severely Stunted') {
+                            $severelyStunted++;
+                        }
+                    }
+                    
+                    // Check Weight-for-Height (Severely Wasted)
+                    if (isset($assessment['results']['weight_for_height']['classification'])) {
+                        $wfhClassification = $assessment['results']['weight_for_height']['classification'];
+                        if ($wfhClassification === 'Severely Wasted') {
+                            $severelyWasted++;
+                        }
+                    }
                 }
             }
 
@@ -5095,6 +5103,23 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             
             try {
                 $result = $db->getSevereCasesBulk($barangay, $whoStandard);
+                // TEMPORARY: Add counts to the response for testing
+                if ($result['success'] && isset($result['data']['severe_cases'])) {
+                    $result['data']['counts'] = [
+                        'severely_underweight' => 0,
+                        'severely_stunted' => 0,
+                        'severely_wasted' => 0
+                    ];
+                    foreach ($result['data']['severe_cases'] as $case) {
+                        if ($case['classification'] === 'Severely Underweight') {
+                            $result['data']['counts']['severely_underweight']++;
+                        } elseif ($case['classification'] === 'Severely Stunted') {
+                            $result['data']['counts']['severely_stunted']++;
+                        } elseif ($case['classification'] === 'Severely Wasted') {
+                            $result['data']['counts']['severely_wasted']++;
+                        }
+                    }
+                }
                 echo json_encode($result);
             } catch (Exception $e) {
                 error_log("Severe cases error: " . $e->getMessage());
