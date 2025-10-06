@@ -893,28 +893,26 @@ header {
 
 /* Dashboard Header Styles */
 .dashboard-header {
-    background-color: var(--color-card);
-    border-radius: 12px;
-    padding: 18px 22px;
-    margin-bottom: 25px;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    /* Removed card styling - no background, padding, border-radius, or box-shadow */
+    padding: 0;
+    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid rgba(161, 180, 84, 0.2);
-    transition: all 0.3s ease;
 }
 
-.dashboard-header:hover {
-    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.12);
-    transform: translateY(-1px);
-}
-
-.dashboard-title h1 {
-    color: var(--color-highlight);
-    font-size: 22px;
-    font-weight: 600;
+.dashboard-header h1 {
     margin: 0;
+    color: var(--color-text);
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.light-theme .dashboard-header h1 {
+    color: #1B3A1B;
+    font-size: 36px;
+    font-weight: 700;
 }
 
 .dashboard-header .user-info {
@@ -4287,8 +4285,8 @@ header {
     </div>
 
     <div class="dashboard">
-        <header class="dashboard-header fade-in">
-            <div class="dashboard-title">
+        <header>
+            <div class="dashboard-header">
                 <h1>Settings and Admin</h1>
             </div>
             <div class="user-info">
@@ -4353,11 +4351,11 @@ header {
                             </div>
 
                             <div class="filter-item">
-                                <label>AGE RANGE</label>
-                                <div class="age-input-group">
-                                    <input type="number" id="minAge" placeholder="Min" class="age-input" onchange="filterByAgeRange()">
-                                    <span class="age-separator">-</span>
-                                    <input type="number" id="maxAge" placeholder="Max" class="age-input" onchange="filterByAgeRange()">
+                                <label>SCREENING DATE RANGE</label>
+                                <div class="date-input-group">
+                                    <input type="date" id="fromDate" class="date-input" onchange="filterByDateRange()">
+                                    <span class="date-separator">to</span>
+                                    <input type="date" id="toDate" class="date-input" onchange="filterByDateRange()">
                                 </div>
                             </div>
 
@@ -4387,6 +4385,7 @@ header {
                         <th>BARANGAY</th>
                         <th>SEX</th>
                         <th>BIRTHDAY</th>
+                        <th>SCREENING DATE</th>
                         <th>ACTIONS</th>
                     </tr>
                 </thead>
@@ -4417,6 +4416,7 @@ header {
                                     echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['birthday'] ?? 'N/A') . '</td>';
+                                    echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
                                     echo '<td class="action-buttons">';
                                     echo '<button class="btn-edit" onclick="editUser(\'' . $userIdentifier . '\')" title="Edit User">';
                                     echo 'Edit';
@@ -5239,6 +5239,7 @@ header {
                 <th>BARANGAY</th>
                 <th>SEX</th>
                 <th>BIRTHDAY</th>
+                <th>SCREENING DATE</th>
                 <th>ACTIONS</th>
             `;
             
@@ -5362,6 +5363,7 @@ header {
                         <th>BARANGAY</th>
                         <th>SEX</th>
                         <th>BIRTHDAY</th>
+                        <th>SCREENING DATE</th>
                         <th>ACTIONS</th>
                     `;
                     
@@ -5374,6 +5376,7 @@ header {
                             <td>${user.barangay || 'N/A'}</td>
                             <td>${user.sex || 'N/A'}</td>
                             <td>${user.birthday || 'N/A'}</td>
+                            <td>${user.screening_date || 'N/A'}</td>
                             <td class="action-buttons">
                                 <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
                                     Edit
@@ -5446,6 +5449,7 @@ header {
                     <th>BARANGAY</th>
                     <th>SEX</th>
                     <th>BIRTHDAY</th>
+                    <th>SCREENING DATE</th>
                     <th>ACTIONS</th>
                 `;
                 
@@ -5458,6 +5462,7 @@ header {
                         <td>${user.barangay || 'N/A'}</td>
                         <td>${user.sex || 'N/A'}</td>
                         <td>${user.birthday || 'N/A'}</td>
+                        <td>${user.screening_date || 'N/A'}</td>
                         <td class="action-buttons">
                             <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
                                 Edit
