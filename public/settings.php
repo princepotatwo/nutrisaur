@@ -1242,7 +1242,8 @@ header {
     font-weight: 500;
 }
 
-.search-container {
+/* Search container styles applied to div containing search input */
+.control-row-1 > div:last-child {
     display: flex;
     align-items: center;
     background: var(--color-card);
@@ -1412,7 +1413,7 @@ header {
         min-width: 120px;
     }
 
-    .search-container {
+    .control-row-1 > div:last-child {
         min-width: 250px;
         max-width: 100%;
     }
@@ -1443,7 +1444,7 @@ header {
         justify-content: center;
     }
 
-    .search-container {
+    .control-row-1 > div:last-child {
         min-width: 200px;
     }
 }
@@ -4367,7 +4368,7 @@ header {
                                 <span class="btn-text">Delete All Users</span>
                             </button>
                         </div>
-                        <div class="search-container">
+                        <div>
                             <input type="text" id="searchInput" placeholder="Search by name, email, location, or gender..." class="search-input">
                             <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
                         </div>
@@ -5221,9 +5222,9 @@ header {
             const btn = document.getElementById('tableToggleBtn');
             if (btn) {
                 if (currentTableType === 'users') {
-                    btn.querySelector('.btn-text').textContent = 'Switch to Admin';
-                } else {
                     btn.querySelector('.btn-text').textContent = 'Switch to Community';
+                } else {
+                    btn.querySelector('.btn-text').textContent = 'Switch to Admin';
                 }
             }
             
