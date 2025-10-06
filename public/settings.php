@@ -5035,10 +5035,6 @@ header {
                         <label>Role:</label>
                         <span id="profileRole"><?php echo htmlspecialchars($_SESSION['role'] ?? 'Admin'); ?></span>
                     </div>
-                    <div class="profile-field">
-                        <label>Last Login:</label>
-                        <span id="profileLastLogin"><?php echo htmlspecialchars($_SESSION['last_login'] ?? 'N/A'); ?></span>
-                    </div>
                 </div>
 
                 <div class="profile-edit" id="profileEdit" style="display: none;">
@@ -5057,15 +5053,11 @@ header {
                         <div class="form-actions">
                             <button type="button" class="btn-cancel" onclick="cancelProfileEdit()">Cancel</button>
                             <button type="submit" class="btn-save">Save Changes</button>
+                            <button type="button" class="btn-change-password" onclick="showChangePasswordModal()">
+                                <span class="btn-text">Change Password</span>
+                            </button>
                         </div>
                     </form>
-                </div>
-
-                <div class="profile-actions">
-                    <button class="btn-change-password" onclick="showChangePasswordModal()">
-                        <span class="btn-icon">🔒</span>
-                        <span class="btn-text">Change Password</span>
-                    </button>
                 </div>
             </div>
         </div>
@@ -6066,9 +6058,13 @@ header {
             // Toggle between community_users table and users table
             if (currentTableType === 'community_users') {
                 // Switch to users table
+                currentTableType = 'users';
+                updateTableToggleButton(); // Update button text immediately
                 loadUsersTable();
             } else {
                 // Switch back to community_users table
+                currentTableType = 'community_users';
+                updateTableToggleButton(); // Update button text immediately
                 loadCommunityUsersTable();
             }
         }
