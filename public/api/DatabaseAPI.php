@@ -4326,19 +4326,26 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $input = file_get_contents('php://input');
                     $data = json_decode($input, true);
                     
-                    $name = $data['name'] ?? '';
-                    $email = $data['email'] ?? '';
-                    $municipality = $data['municipality'] ?? '';
-                    $barangay = $data['barangay'] ?? '';
-                    $sex = $data['sex'] ?? '';
-                    $birthday = $data['birthday'] ?? '';
-                    $weight = $data['weight'] ?? 0;
-                    $height = $data['height'] ?? 0;
-                    $isPregnant = $data['is_pregnant'] ?? 0;
+                   $name = $data['name'] ?? '';
+                   $email = $data['email'] ?? '';
+                   $password = $data['password'] ?? '';
+                   $municipality = $data['municipality'] ?? '';
+                   $barangay = $data['barangay'] ?? '';
+                   $sex = $data['sex'] ?? '';
+                   $birthday = $data['birthday'] ?? '';
+                   $weight = $data['weight'] ?? 0;
+                   $height = $data['height'] ?? 0;
+                   $isPregnant = $data['is_pregnant'] ?? 0;
                     
                     // Validate required fields
-                    if (empty($name) || empty($email) || empty($municipality) || empty($barangay) || empty($sex) || empty($birthday)) {
+                    if (empty($name) || empty($email) || empty($password) || empty($municipality) || empty($barangay) || empty($sex) || empty($birthday)) {
                         echo json_encode(['success' => false, 'message' => 'All required fields must be filled']);
+                        break;
+                    }
+                    
+                    // Validate password
+                    if (strlen($password) < 6) {
+                        echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
                         break;
                     }
                     
@@ -4369,9 +4376,12 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         break;
                     }
                     
+                    // Hash the password
+                    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                    
                     // Insert new community user
-                    $stmt = $pdo->prepare("INSERT INTO community_users (name, email, municipality, barangay, sex, birthday, is_pregnant, weight, height, screening_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-                    $result = $stmt->execute([$name, $email, $municipality, $barangay, $sex, $birthday, $isPregnant, $weight, $height]);
+                    $stmt = $pdo->prepare("INSERT INTO community_users (name, email, password, municipality, barangay, sex, birthday, is_pregnant, weight, height, screening_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+                    $result = $stmt->execute([$name, $email, $hashedPassword, $municipality, $barangay, $sex, $birthday, $isPregnant, $weight, $height]);
                     
                     if ($result) {
                         echo json_encode([

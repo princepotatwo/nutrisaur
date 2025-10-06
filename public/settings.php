@@ -5244,6 +5244,12 @@ header {
                     </div>
                     
                     <div class="form-group">
+                        <label for="addPassword">Password *</label>
+                        <input type="password" id="addPassword" name="password" required>
+                        <small style="color: #666; font-size: 12px;">Default password: password123</small>
+                    </div>
+                    
+                    <div class="form-group">
                         <label for="addMunicipality">Municipality *</label>
                         <select id="addMunicipality" name="municipality" required onchange="updateAddBarangayOptions()">
                             <option value="">Select Municipality</option>
@@ -6725,6 +6731,9 @@ header {
             // Reset form
             document.getElementById('addCommunityUserForm').reset();
             
+            // Set default password
+            document.getElementById('addPassword').value = 'password123';
+            
             // Clear any previous error messages
             const emailErrorElement = document.getElementById('addEmailError');
             if (emailErrorElement) {
@@ -6867,6 +6876,7 @@ header {
             // Validate form
             const name = document.getElementById('addName').value.trim();
             const email = document.getElementById('addEmail').value.trim();
+            const password = document.getElementById('addPassword').value.trim();
             const municipality = document.getElementById('addMunicipality').value;
             const barangay = document.getElementById('addBarangay').value;
             const sex = document.getElementById('addSex').value;
@@ -6887,6 +6897,16 @@ header {
             }
             
             if (!validateAddEmail()) {
+                return;
+            }
+            
+            if (!password) {
+                alert('Please enter a password');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long');
                 return;
             }
             
@@ -6924,6 +6944,7 @@ header {
             const userData = {
                 name: name,
                 email: email,
+                password: password,
                 municipality: municipality,
                 barangay: barangay,
                 sex: sex,
