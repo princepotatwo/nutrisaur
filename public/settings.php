@@ -4446,7 +4446,20 @@ header {
                                     echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['birthday'] ?? 'N/A') . '</td>';
-                                    echo '<td>' . htmlspecialchars($user['screening_date'] ?? 'N/A') . '</td>';
+                                    // Check if screening_date exists, if not show 'Not Available'
+                                    $screeningDate = $user['screening_date'] ?? null;
+                                    if ($screeningDate && $screeningDate !== 'N/A' && $screeningDate !== '') {
+                                        // Format the date to show only the date part
+                                        try {
+                                            $date = new DateTime($screeningDate);
+                                            $formattedDate = $date->format('Y-m-d');
+                                        } catch (Exception $e) {
+                                            $formattedDate = 'Invalid Date';
+                                        }
+                                    } else {
+                                        $formattedDate = 'Not Available';
+                                    }
+                                    echo '<td>' . htmlspecialchars($formattedDate) . '</td>';
                                     echo '<td class="action-buttons">';
                                     echo '<button class="btn-edit" onclick="editUser(\'' . $userIdentifier . '\')" title="Edit User">';
                                     echo 'Edit';
@@ -5406,7 +5419,15 @@ header {
                             <td>${user.barangay || 'N/A'}</td>
                             <td>${user.sex || 'N/A'}</td>
                             <td>${user.birthday || 'N/A'}</td>
-                            <td>${user.screening_date || 'N/A'}</td>
+                            <td>${user.screening_date && user.screening_date !== 'N/A' && user.screening_date !== '' ? 
+                                (() => {
+                                    try {
+                                        const date = new Date(user.screening_date);
+                                        return date.toISOString().split('T')[0];
+                                    } catch (e) {
+                                        return 'Invalid Date';
+                                    }
+                                })() : 'Not Available'}</td>
                             <td class="action-buttons">
                                 <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
                                     Edit
@@ -5492,7 +5513,15 @@ header {
                         <td>${user.barangay || 'N/A'}</td>
                         <td>${user.sex || 'N/A'}</td>
                         <td>${user.birthday || 'N/A'}</td>
-                        <td>${user.screening_date || 'N/A'}</td>
+                        <td>${user.screening_date && user.screening_date !== 'N/A' && user.screening_date !== '' ? 
+                            (() => {
+                                try {
+                                    const date = new Date(user.screening_date);
+                                    return date.toISOString().split('T')[0];
+                                } catch (e) {
+                                    return 'Invalid Date';
+                                }
+                            })() : 'Not Available'}</td>
                         <td class="action-buttons">
                             <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
                                 Edit
@@ -6920,10 +6949,12 @@ header {
                 
                 // Date range filter (screening date)
                 if (fromDate || toDate) {
-                    const screeningDateText = row.cells[6].textContent; // Screening date is now column 6
+                    // Get the screening date text content, trim whitespace
+                    const screeningDateText = row.cells[6].textContent.trim();
                     console.log('Date filter - screeningDateText:', screeningDateText, 'fromDate:', fromDate, 'toDate:', toDate);
                     
-                    if (screeningDateText && screeningDateText !== 'N/A') {
+                    // Check if we have a valid date (not N/A, not empty, not just whitespace)
+                    if (screeningDateText && screeningDateText !== 'N/A' && screeningDateText !== '') {
                         const screeningDate = new Date(screeningDateText);
                         console.log('Date filter - parsed screeningDate:', screeningDate);
                         
@@ -6943,11 +6974,14 @@ header {
                                     showRow = false;
                                 }
                             }
+                        } else {
+                            console.log('Date filter - invalid date, hiding row');
+                            showRow = false;
                         }
                     } else {
                         // If screening date is N/A or empty, hide the row when date filters are active
                         if (fromDate || toDate) {
-                            console.log('Date filter - hiding row with N/A screening date');
+                            console.log('Date filter - hiding row with N/A or empty screening date');
                             showRow = false;
                         }
                     }
