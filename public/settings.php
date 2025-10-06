@@ -1323,23 +1323,35 @@ header {
     box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
 }
 
-/* Age input group styling */
-.age-input-group {
+/* Date input group styling */
+.date-input-group {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
-.age-input {
+.date-input {
     flex: 1;
-    text-align: center;
-    font-family: 'Courier New', monospace;
+    padding: 8px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: 14px;
+    transition: border-color 0.3s ease;
 }
 
-.age-separator {
+.date-input:focus {
+    outline: none;
+    border-color: var(--color-highlight);
+    box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
+}
+
+.date-separator {
     color: var(--color-text-secondary);
     font-weight: 500;
     font-size: 14px;
+    white-space: nowrap;
 }
 
 /* Light theme adjustments */
@@ -6842,7 +6854,7 @@ header {
             applyAllFilters();
         }
 
-        function filterByAgeRange() {
+        function filterByDateRange() {
             applyAllFilters();
         }
 
@@ -6850,8 +6862,8 @@ header {
         function applyAllFilters() {
             const municipalityFilter = document.getElementById('municipalityFilter').value;
             const barangayFilter = document.getElementById('barangayFilter').value;
-            const minAge = document.getElementById('minAge').value;
-            const maxAge = document.getElementById('maxAge').value;
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
             const sexFilter = document.getElementById('sexFilter').value;
             const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             
@@ -6888,17 +6900,24 @@ header {
                     showRow = false;
                 }
                 
-                // Age range filter
-                if (minAge || maxAge) {
-                    const ageText = row.cells[5].textContent;
-                    const age = parseInt(ageText);
+                // Date range filter (screening date)
+                if (fromDate || toDate) {
+                    const screeningDateText = row.cells[6].textContent; // Screening date is now column 6
+                    const screeningDate = new Date(screeningDateText);
                     
-                    if (!isNaN(age)) {
-                        if (minAge && age < parseInt(minAge)) {
-                            showRow = false;
+                    if (!isNaN(screeningDate.getTime())) {
+                        if (fromDate) {
+                            const fromDateObj = new Date(fromDate);
+                            if (screeningDate < fromDateObj) {
+                                showRow = false;
+                            }
                         }
-                        if (maxAge && age > parseInt(maxAge)) {
-                            showRow = false;
+                        if (toDate) {
+                            const toDateObj = new Date(toDate);
+                            toDateObj.setHours(23, 59, 59, 999); // Include the entire day
+                            if (screeningDate > toDateObj) {
+                                showRow = false;
+                            }
                         }
                     }
                 }
