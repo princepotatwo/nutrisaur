@@ -96,8 +96,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
         $registrationError = "Please enter a valid email address";
     } elseif (strlen($password) < 6) {
         $registrationError = "Password must be at least 6 characters long";
+    } elseif (strlen($password) > 20) {
+        $registrationError = "Password must be 20 characters or less";
+    } elseif (!preg_match('/[A-Z]/', $password)) {
+        $registrationError = "Password must contain at least one uppercase letter";
+    } elseif (!preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $password)) {
+        $registrationError = "Password must contain at least one symbol (!@#$%^&*()_+-=[]{}|;\':\",./<>?)";
     } elseif (strlen($username) < 3) {
         $registrationError = "Username must be at least 3 characters long";
+    } elseif (strlen($username) > 20) {
+        $registrationError = "Username must be 20 characters or less";
     } else {
         if ($pdo === null) {
             $registrationError = "Database connection unavailable. Please try again later.";
@@ -481,8 +489,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 exit;
             }
             
+            if (strlen($password) > 20) {
+                echo json_encode(['success' => false, 'message' => 'Password must be 20 characters or less']);
+                exit;
+            }
+            
+            // Check for at least one uppercase letter
+            if (!preg_match('/[A-Z]/', $password)) {
+                echo json_encode(['success' => false, 'message' => 'Password must contain at least one uppercase letter']);
+                exit;
+            }
+            
+            // Check for at least one symbol
+            if (!preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $password)) {
+                echo json_encode(['success' => false, 'message' => 'Password must contain at least one symbol (!@#$%^&*()_+-=[]{}|;\':",./<>?)']);
+                exit;
+            }
+            
             if (strlen($username) < 3) {
                 echo json_encode(['success' => false, 'message' => 'Username must be at least 3 characters long']);
+                exit;
+            }
+            
+            if (strlen($username) > 20) {
+                echo json_encode(['success' => false, 'message' => 'Username must be 20 characters or less']);
                 exit;
             }
             
@@ -734,6 +764,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             
             if (strlen($newPassword) < 6) {
                 echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
+                exit;
+            }
+            
+            if (strlen($newPassword) > 20) {
+                echo json_encode(['success' => false, 'message' => 'Password must be 20 characters or less']);
+                exit;
+            }
+            
+            // Check for at least one uppercase letter
+            if (!preg_match('/[A-Z]/', $newPassword)) {
+                echo json_encode(['success' => false, 'message' => 'Password must contain at least one uppercase letter']);
+                exit;
+            }
+            
+            // Check for at least one symbol
+            if (!preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $newPassword)) {
+                echo json_encode(['success' => false, 'message' => 'Password must contain at least one symbol (!@#$%^&*()_+-=[]{}|;\':",./<>?)']);
                 exit;
             }
             
