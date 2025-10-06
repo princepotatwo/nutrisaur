@@ -3310,7 +3310,7 @@ header {
             text-overflow: ellipsis;
         }
 
-        /* Profile Card Styles - Match user-management-container */
+        /* Profile Card Styles - Match user-management-container exactly */
         .profile-card {
             background-color: var(--color-card);
             border-radius: 20px;
@@ -3324,7 +3324,6 @@ header {
             max-width: calc(100% - 60px);
             margin-left: 0;
             margin-right: 0;
-            margin-top: 20px;
         }
 
         /* Dark theme specific styles for profile card */
