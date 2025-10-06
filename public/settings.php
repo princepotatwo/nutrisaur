@@ -7396,8 +7396,14 @@ header {
                 }
                 
                 // Clear any previous error messages
-                document.getElementById('emailError').textContent = '';
-                document.getElementById('editEmail').style.borderColor = '';
+                const emailErrorElement = document.getElementById('modalEmailError');
+                if (emailErrorElement) {
+                    emailErrorElement.textContent = '';
+                }
+                const editEmailElement = document.getElementById('modalEditEmail');
+                if (editEmailElement) {
+                    editEmailElement.style.borderColor = '';
+                }
                 
                 // Show modal
                 console.log('Showing edit modal for user:', finalUserData);
@@ -7809,25 +7815,37 @@ header {
         }
 
         function validateEmail() {
-            const email = document.getElementById('editEmail').value.trim();
-            const emailError = document.getElementById('emailError');
-            const emailInput = document.getElementById('editEmail');
+            const email = document.getElementById('modalEditEmail').value.trim();
+            const emailError = document.getElementById('modalEmailError');
+            const emailInput = document.getElementById('modalEditEmail');
             
             // Clear previous error
-            emailError.textContent = '';
-            emailInput.style.borderColor = '';
+            if (emailError) {
+                emailError.textContent = '';
+            }
+            if (emailInput) {
+                emailInput.style.borderColor = '';
+            }
             
             if (!email) {
-                emailError.textContent = 'Email is required';
-                emailInput.style.borderColor = 'red';
+                if (emailError) {
+                    emailError.textContent = 'Email is required';
+                }
+                if (emailInput) {
+                    emailInput.style.borderColor = 'red';
+                }
                 return false;
             }
             
             // Basic email format validation
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-                emailError.textContent = 'Please enter a valid email address';
-                emailInput.style.borderColor = 'red';
+                if (emailError) {
+                    emailError.textContent = 'Please enter a valid email address';
+                }
+                if (emailInput) {
+                    emailInput.style.borderColor = 'red';
+                }
                 return false;
             }
             
