@@ -9168,6 +9168,72 @@ body {
             await handleWHOStandardChange();
         }
 
+        // Function to update severely cases cards with data from ALL WHO standards
+        async function updateSeverelyCasesCardsAllStandards(barangay = '') {
+            console.log('📊 Updating severely cases cards for all WHO standards, barangay:', barangay);
+            
+            try {
+                // Fetch severely cases data across ALL WHO standards for the current location
+                const url = `/api/DatabaseAPI.php?action=get_severe_cases_all_standards&barangay=${encodeURIComponent(barangay)}`;
+                console.log('📊 Fetching severely cases data from:', url);
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('📊 All standards severely cases data received:', data);
+                
+                if (!data.success || !data.data) {
+                    console.log('❌ No severely cases data available');
+                    return;
+                }
+                
+                // Get severely cases counts from the response
+                const severelyUnderweight = data.data.severely_underweight || 0;
+                const severelyStunted = data.data.severely_stunted || 0;
+                const severelyWasted = data.data.severely_wasted || 0;
+                
+                console.log('📊 All Standards Severely Cases:');
+                console.log('  - Severely Underweight (WFA):', severelyUnderweight);
+                console.log('  - Severely Stunted (HFA):', severelyStunted);
+                console.log('  - Severely Wasted (WFH):', severelyWasted);
+                
+                // Update Severely Underweight card
+                const highRisk = document.getElementById('community-high-risk');
+                const riskChange = document.getElementById('community-risk-change');
+                if (highRisk && riskChange) {
+                    console.log('📊 Setting severely underweight to:', severelyUnderweight);
+                    highRisk.textContent = severelyUnderweight;
+                    riskChange.textContent = severelyUnderweight;
+                    dashboardState.highRisk = severelyUnderweight;
+                }
+                
+                // Update Severely Stunted card
+                const samCases = document.getElementById('community-sam-cases');
+                const samChange = document.getElementById('community-sam-change');
+                if (samCases && samChange) {
+                    console.log('📊 Setting severely stunted to:', severelyStunted);
+                    samCases.textContent = severelyStunted;
+                    samChange.textContent = severelyStunted;
+                    dashboardState.samCases = severelyStunted;
+                }
+                
+                // Update Severely Wasted card
+                const criticalMuac = document.getElementById('community-critical-muac');
+                const muacChange = document.getElementById('community-muac-change');
+                if (criticalMuac && muacChange) {
+                    console.log('📊 Setting severely wasted to:', severelyWasted);
+                    criticalMuac.textContent = severelyWasted;
+                    muacChange.textContent = severelyWasted;
+                    dashboardState.criticalMuac = severelyWasted;
+                }
+            } catch (error) {
+                console.error('❌ Error updating severely cases cards:', error);
+            }
+        }
+
         // Function to update severely cases cards with WHO classification data
         function updateSeverelyCasesCards(whoData) {
             console.log('📊 Updating severely cases cards with WHO data:', whoData);
@@ -13655,9 +13721,10 @@ body {
                     await animateNumberUpdate('community-total-screened', data.data.total_screened || 0);
                     await animateNumberUpdate('community-screened-change', data.data.total_screened || 0);
                     
-                    // Note: Severe cases cards are updated by WHO classification data, not dashboard stats
-                    // The dashboard_assessment_stats.php uses different logic than WHO standards
-                    // We rely on the WHO classification system for accurate severely cases counts
+                    // Update severely cases cards with data from ALL WHO standards
+                    if (typeof updateSeverelyCasesCardsAllStandards === 'function') {
+                        await updateSeverelyCasesCardsAllStandards(barangay);
+                    }
                     
                     console.log('✅ [Community Metrics] Update completed');
                 } else {

@@ -3790,6 +3790,99 @@ class DatabaseAPI {
     }
 
     /**
+     * Get severe malnutrition cases across ALL WHO standards for a location
+     * This returns counts of severely underweight, stunted, and wasted across all standards
+     */
+    public function getSevereCasesAllStandards($barangay = '') {
+        try {
+            if (!$this->isDatabaseAvailable()) {
+                return [
+                    'success' => false,
+                    'message' => 'Database connection not available'
+                ];
+            }
+
+            // Debug logging
+            error_log("🔍 getSevereCasesAllStandards called with barangay: '$barangay'");
+
+            // Use the same method as other bulk APIs - get all users (no time filtering)
+            $users = $this->getDetailedScreeningResponses('1d', $barangay);
+            
+            // Debug logging
+            error_log("🔍 getSevereCasesAllStandards found " . count($users) . " users after filtering");
+            
+            if (empty($users)) {
+                return [
+                    'success' => true,
+                    'data' => [
+                        'severely_underweight' => 0,
+                        'severely_stunted' => 0,
+                        'severely_wasted' => 0,
+                        'total_users' => 0
+                    ]
+                ];
+            }
+
+            // Process users and count severe cases across ALL WHO standards
+            require_once __DIR__ . '/../../who_growth_standards.php';
+            $who = new WHOGrowthStandards();
+            
+            $severelyUnderweight = 0;
+            $severelyStunted = 0;
+            $severelyWasted = 0;
+            
+            foreach ($users as $user) {
+                // Calculate WHO classification for ALL standards
+                $assessment = $who->getComprehensiveAssessment(
+                    $user['weight'],
+                    $user['height'],
+                    $user['birthday'],
+                    $user['screening_date'],
+                    $user['sex']
+                );
+                
+                // Check Weight-for-Age (Severely Underweight)
+                if (isset($assessment['results']['weight_for_age']['classification']) && 
+                    $assessment['results']['weight_for_age']['classification'] === 'Severely Underweight') {
+                    $severelyUnderweight++;
+                }
+                
+                // Check Height-for-Age (Severely Stunted)
+                if (isset($assessment['results']['height_for_age']['classification']) && 
+                    $assessment['results']['height_for_age']['classification'] === 'Severely Stunted') {
+                    $severelyStunted++;
+                }
+                
+                // Check Weight-for-Height (Severely Wasted)
+                if (isset($assessment['results']['weight_for_height']['classification']) && 
+                    $assessment['results']['weight_for_height']['classification'] === 'Severely Wasted') {
+                    $severelyWasted++;
+                }
+            }
+
+            // Debug logging
+            error_log("🔍 getSevereCasesAllStandards counts - Underweight: $severelyUnderweight, Stunted: $severelyStunted, Wasted: $severelyWasted");
+
+            return [
+                'success' => true,
+                'data' => [
+                    'severely_underweight' => $severelyUnderweight,
+                    'severely_stunted' => $severelyStunted,
+                    'severely_wasted' => $severelyWasted,
+                    'total_users' => count($users)
+                ]
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Severe cases all standards error: " . $e->getMessage());
+            return [
+                'success' => false, 
+                'message' => 'All standards processing failed: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
      * OPTIMIZED: Get gender distribution data in bulk (no time frame)
      * This follows the same efficient pattern as getAllWHOClassificationsBulk
      */
@@ -5008,6 +5101,21 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 echo json_encode([
                     'success' => false,
                     'message' => 'Error fetching severe cases: ' . $e->getMessage()
+                ]);
+            }
+            break;
+            
+        case 'get_severe_cases_all_standards':
+            $barangay = $_GET['barangay'] ?? $_POST['barangay'] ?? '';
+            
+            try {
+                $result = $db->getSevereCasesAllStandards($barangay);
+                echo json_encode($result);
+            } catch (Exception $e) {
+                error_log("Severe cases all standards error: " . $e->getMessage());
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Error fetching severe cases across all standards: ' . $e->getMessage()
                 ]);
             }
             break;
