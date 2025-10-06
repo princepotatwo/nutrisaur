@@ -13654,6 +13654,20 @@ body {
                     // Update with smooth number animation
                     await animateNumberUpdate('community-total-screened', data.data.total_screened || 0);
                     await animateNumberUpdate('community-screened-change', data.data.total_screened || 0);
+                    
+                    // Update severe cases cards if data is available
+                    if (typeof updateSeverelyCasesCards === 'function') {
+                        // Create a mock WHO data structure for severe cases cards
+                        const mockWHOData = {
+                            data: {
+                                weight_for_age: { 'Severely Underweight': data.data.high_risk_cases || 0 },
+                                height_for_age: { 'Severely Stunted': data.data.sam_cases || 0 },
+                                weight_for_height: { 'Severely Wasted': data.data.critical_muac || 0 }
+                            }
+                        };
+                        updateSeverelyCasesCards(mockWHOData);
+                    }
+                    
                     console.log('✅ [Community Metrics] Update completed');
                 } else {
                     console.log('⚠️ [Community Metrics] No valid data received');
@@ -13672,6 +13686,14 @@ body {
                 }
                 if (typeof updateAgeClassificationChart === 'function') {
                     await updateAgeClassificationChart(barangay);
+                }
+                // Update WHO donut chart
+                if (typeof handleWHOStandardChange === 'function') {
+                    await handleWHOStandardChange();
+                }
+                // Update severe cases list
+                if (typeof updateSevereCasesList === 'function') {
+                    await updateSevereCasesList(barangay);
                 }
             } catch (error) {
                 console.error('Error updating charts:', error);
