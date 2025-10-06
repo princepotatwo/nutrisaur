@@ -4283,6 +4283,12 @@ header {
         .dark-theme .search-input {
             background: transparent;
             color: var(--color-text);
+            border-bottom: 2px solid #4CAF50; /* Green line for dark theme */
+            transition: border-color 0.3s ease;
+        }
+
+        .dark-theme .search-input:focus {
+            border-bottom-color: #66BB6A; /* Lighter green on focus */
         }
 
         .dark-theme .search-input::placeholder {
@@ -4293,6 +4299,12 @@ header {
         .light-theme .search-input {
             background: transparent;
             color: var(--color-text);
+            border-bottom: 2px solid #333; /* Black line for light theme */
+            transition: border-color 0.3s ease;
+        }
+
+        .light-theme .search-input:focus {
+            border-bottom-color: #000; /* Darker black on focus */
         }
 
         .light-theme .search-input::placeholder {
