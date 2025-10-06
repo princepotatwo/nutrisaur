@@ -4930,7 +4930,7 @@ header {
                             <button class="btn-add" id="tableToggleBtn" onclick="downloadCSVTemplate()">
                                 <span class="btn-text">Switch to Admin</span>
                             </button>
-                            <button class="btn-secondary" onclick="showUserImportModal()">
+                            <button class="btn-secondary" onclick="showAddUserModal()">
                                 <span class="btn-icon">➕</span>
                                 <span class="btn-text">Add User</span>
                             </button>
@@ -5197,11 +5197,11 @@ header {
         </div>
     </div>
 
-    <!-- User Import Modal -->
+    <!-- User Import Modal (Admin Users) -->
     <div id="userImportModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeUserImportModal()">&times;</span>
-            <h2>Add New User</h2>
+            <h2>Add New Admin User</h2>
             <form id="userForm">
                 <div class="input-group">
                     <label for="username">Username</label>
@@ -5216,10 +5216,86 @@ header {
                     <input type="password" id="password" name="password" required>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-submit" onclick="addNewUser()">Add User</button>
+                    <button type="button" class="btn btn-submit" onclick="addNewUser()">Add Admin User</button>
                     <button type="button" class="btn btn-cancel" onclick="closeUserImportModal()">Cancel</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Add Community User Modal -->
+    <div id="addCommunityUserModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Community User</h2>
+                <span class="close" onclick="closeAddCommunityUserModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addCommunityUserForm">
+                    <div class="form-group">
+                        <label for="addName">Full Name *</label>
+                        <input type="text" id="addName" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addEmail">Email *</label>
+                        <input type="email" id="addEmail" name="email" required onblur="validateAddEmail()">
+                        <small id="addEmailError" style="color: red; font-size: 12px;"></small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addMunicipality">Municipality *</label>
+                        <select id="addMunicipality" name="municipality" required onchange="updateAddBarangayOptions()">
+                            <option value="">Select Municipality</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addBarangay">Barangay *</label>
+                        <select id="addBarangay" name="barangay" required>
+                            <option value="">Select Barangay</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addSex">Sex *</label>
+                        <select id="addSex" name="sex" required onchange="toggleAddPregnancyField()">
+                            <option value="">Select Sex</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addBirthday">Birthday *</label>
+                        <input type="date" id="addBirthday" name="birthday" required onchange="calculateAddAge()">
+                        <small id="addAgeDisplay" style="color: #666; font-size: 12px;"></small>
+                    </div>
+                    
+                    <div class="form-group" id="addPregnancyGroup" style="display: none;">
+                        <label for="addPregnancy">Are you pregnant? *</label>
+                        <select id="addPregnancy" name="is_pregnant">
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addWeight">Weight (kg) *</label>
+                        <input type="number" id="addWeight" name="weight" step="0.1" min="0.1" max="1000" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addHeight">Height (cm) *</label>
+                        <input type="number" id="addHeight" name="height" step="0.1" min="1" max="300" required>
+                    </div>
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="addCommunityUser()">Add Community User</button>
+                <button type="button" class="btn btn-secondary" onclick="closeAddCommunityUserModal()">Cancel</button>
+            </div>
         </div>
     </div>
 
@@ -6624,6 +6700,265 @@ header {
                 modal.style.display = 'none';
                 resetUserForm();
             }
+        }
+
+        // Show appropriate add user modal based on current table type
+        function showAddUserModal() {
+            if (currentTableType === 'users') {
+                showUserImportModal();
+            } else {
+                showAddCommunityUserModal();
+            }
+        }
+
+        // Add Community User Modal Functions
+        function showAddCommunityUserModal() {
+            console.log('Showing Add Community User Modal');
+            
+            const modal = document.getElementById('addCommunityUserModal');
+            if (!modal) {
+                console.error('addCommunityUserModal not found');
+                alert('Add Community User modal not found. Please refresh the page.');
+                return;
+            }
+            
+            // Reset form
+            document.getElementById('addCommunityUserForm').reset();
+            
+            // Clear any previous error messages
+            const emailErrorElement = document.getElementById('addEmailError');
+            if (emailErrorElement) {
+                emailErrorElement.textContent = '';
+            }
+            
+            // Initialize municipality dropdown
+            initializeAddMunicipalityDropdown();
+            
+            // Hide pregnancy field initially
+            document.getElementById('addPregnancyGroup').style.display = 'none';
+            
+            // Show modal
+            modal.style.display = 'block';
+        }
+
+        function closeAddCommunityUserModal() {
+            const modal = document.getElementById('addCommunityUserModal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.getElementById('addCommunityUserForm').reset();
+            }
+        }
+
+        function initializeAddMunicipalityDropdown() {
+            const municipalitySelect = document.getElementById('addMunicipality');
+            if (!municipalitySelect) return;
+            
+            // Clear existing options except the first one
+            municipalitySelect.innerHTML = '<option value="">Select Municipality</option>';
+            
+            // Add municipality options
+            Object.keys(municipalities).forEach(municipality => {
+                const option = document.createElement('option');
+                option.value = municipality;
+                option.textContent = municipality;
+                municipalitySelect.appendChild(option);
+            });
+        }
+
+        function updateAddBarangayOptions() {
+            const municipalitySelect = document.getElementById('addMunicipality');
+            const barangaySelect = document.getElementById('addBarangay');
+            
+            if (!municipalitySelect || !barangaySelect) return;
+            
+            const selectedMunicipality = municipalitySelect.value;
+            
+            // Clear existing options except the first one
+            barangaySelect.innerHTML = '<option value="">Select Barangay</option>';
+            
+            if (selectedMunicipality && municipalities[selectedMunicipality]) {
+                municipalities[selectedMunicipality].forEach(barangay => {
+                    const option = document.createElement('option');
+                    option.value = barangay;
+                    option.textContent = barangay;
+                    barangaySelect.appendChild(option);
+                });
+            }
+        }
+
+        function toggleAddPregnancyField() {
+            const sexSelect = document.getElementById('addSex');
+            const pregnancyGroup = document.getElementById('addPregnancyGroup');
+            
+            if (!sexSelect || !pregnancyGroup) return;
+            
+            if (sexSelect.value === 'Female') {
+                pregnancyGroup.style.display = 'block';
+            } else {
+                pregnancyGroup.style.display = 'none';
+                document.getElementById('addPregnancy').value = 'No';
+            }
+        }
+
+        function calculateAddAge() {
+            const birthdayInput = document.getElementById('addBirthday');
+            const ageDisplay = document.getElementById('addAgeDisplay');
+            
+            if (!birthdayInput || !ageDisplay) return;
+            
+            const birthday = new Date(birthdayInput.value);
+            const today = new Date();
+            const age = today.getFullYear() - birthday.getFullYear();
+            const monthDiff = today.getMonth() - birthday.getMonth();
+            
+            let calculatedAge = age;
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthday.getDate())) {
+                calculatedAge--;
+            }
+            
+            if (birthdayInput.value && calculatedAge >= 0) {
+                ageDisplay.textContent = `Age: ${calculatedAge} years`;
+            } else {
+                ageDisplay.textContent = '';
+            }
+        }
+
+        function validateAddEmail() {
+            const email = document.getElementById('addEmail').value.trim();
+            const emailError = document.getElementById('addEmailError');
+            const emailInput = document.getElementById('addEmail');
+            
+            // Clear previous error
+            if (emailError) {
+                emailError.textContent = '';
+            }
+            if (emailInput) {
+                emailInput.style.borderColor = '';
+            }
+            
+            if (!email) {
+                if (emailError) {
+                    emailError.textContent = 'Email is required';
+                }
+                if (emailInput) {
+                    emailInput.style.borderColor = 'red';
+                }
+                return false;
+            }
+            
+            // Basic email format validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                if (emailError) {
+                    emailError.textContent = 'Please enter a valid email address';
+                }
+                if (emailInput) {
+                    emailInput.style.borderColor = 'red';
+                }
+                return false;
+            }
+            
+            return true;
+        }
+
+        function addCommunityUser() {
+            console.log('Adding community user...');
+            
+            // Validate form
+            const name = document.getElementById('addName').value.trim();
+            const email = document.getElementById('addEmail').value.trim();
+            const municipality = document.getElementById('addMunicipality').value;
+            const barangay = document.getElementById('addBarangay').value;
+            const sex = document.getElementById('addSex').value;
+            const birthday = document.getElementById('addBirthday').value;
+            const weight = document.getElementById('addWeight').value;
+            const height = document.getElementById('addHeight').value;
+            const isPregnant = document.getElementById('addPregnancy').value;
+            
+            // Basic validation
+            if (!name) {
+                alert('Please enter a name');
+                return;
+            }
+            
+            if (!email) {
+                alert('Please enter an email');
+                return;
+            }
+            
+            if (!validateAddEmail()) {
+                return;
+            }
+            
+            if (!municipality) {
+                alert('Please select a municipality');
+                return;
+            }
+            
+            if (!barangay) {
+                alert('Please select a barangay');
+                return;
+            }
+            
+            if (!sex) {
+                alert('Please select sex');
+                return;
+            }
+            
+            if (!birthday) {
+                alert('Please select a birthday');
+                return;
+            }
+            
+            if (!weight || isNaN(weight) || parseFloat(weight) <= 0 || parseFloat(weight) > 1000) {
+                alert('Please enter a valid weight between 0.1 and 1000 kg');
+                return;
+            }
+            
+            if (!height || isNaN(height) || parseFloat(height) <= 0 || parseFloat(height) > 300) {
+                alert('Please enter a valid height between 1 and 300 cm');
+                return;
+            }
+            
+            // Prepare data
+            const userData = {
+                name: name,
+                email: email,
+                municipality: municipality,
+                barangay: barangay,
+                sex: sex,
+                birthday: birthday,
+                weight: parseFloat(weight),
+                height: parseFloat(height),
+                is_pregnant: isPregnant === 'Yes' ? 1 : 0
+            };
+            
+            console.log('Submitting community user data:', userData);
+            
+            // Submit to API
+            fetch('api/DatabaseAPI.php?action=add_community_user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Add community user response:', data);
+                if (data.success) {
+                    showMessage('Community user added successfully!', 'success');
+                    closeAddCommunityUserModal();
+                    // Reload the community users table
+                    loadCommunityUsersTable();
+                } else {
+                    showMessage('Failed to add community user: ' + (data.message || data.error), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error adding community user:', error);
+                showMessage('Error adding community user. Please try again.', 'error');
+            });
         }
 
         function addNewUser() {
