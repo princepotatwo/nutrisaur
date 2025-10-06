@@ -6764,8 +6764,8 @@ header {
                 };
                 console.log('Extracted community user data:', userData);
                 
-                // Show edit modal for community_users table
-                showEditUserModal(userData);
+                // Show edit modal for community_users table with basic data
+                showEditUserModalSimple(userData);
             }
         }
 
@@ -7170,6 +7170,88 @@ header {
                     }
                 }, 300);
             }, 3000);
+        }
+
+        // Simple Edit User Modal Function (for community users)
+        function showEditUserModalSimple(userData) {
+            console.log('showEditUserModalSimple called with userData:', userData);
+            
+            // Check if modal exists
+            const modal = document.getElementById('editUserModal');
+            if (!modal) {
+                console.error('editUserModal not found');
+                alert('Edit modal not found. Please refresh the page.');
+                return;
+            }
+            
+            // Populate form with the basic user data from table
+            document.getElementById('editName').value = userData.name || '';
+            document.getElementById('editEmail').value = userData.email || '';
+            document.getElementById('editSex').value = userData.sex || '';
+            document.getElementById('editBirthday').value = userData.birthday || '';
+            
+            // Set default values for weight and height (will be fetched from database on save)
+            document.getElementById('editWeight').value = '';
+            document.getElementById('editHeight').value = '';
+            
+            // Store original email for comparison
+            document.getElementById('editEmail').setAttribute('data-original-email', userData.email);
+            
+            // Initialize municipality and barangay dropdowns
+            initializeMunicipalityDropdown();
+            document.getElementById('editMunicipality').value = userData.municipality || '';
+            updateBarangayOptions();
+            
+            // Set barangay after options are loaded
+            setTimeout(() => {
+                document.getElementById('editBarangay').value = userData.barangay || '';
+            }, 100);
+            
+            // Calculate and display age
+            calculateAge();
+            
+            // Toggle pregnancy field based on sex
+            togglePregnancyField();
+            
+            // Set pregnancy status to default
+            document.getElementById('editPregnancy').value = 'No';
+            
+            // Show the modal
+            console.log('Showing edit modal for user:', userData);
+            modal.style.display = 'block';
+            
+            // Ensure modal is visible and centered
+            setTimeout(() => {
+                const modal = document.getElementById('editUserModal');
+                const modalContent = modal.querySelector('.modal-content');
+                const saveButton = modal.querySelector('.btn-primary');
+                
+                if (modal.style.display === 'block') {
+                    console.log('Modal is visible');
+                    console.log('Modal content:', modalContent);
+                    console.log('Save button:', saveButton);
+                    
+                    // Force center the modal
+                    if (modalContent) {
+                        modalContent.style.position = 'fixed';
+                        modalContent.style.top = '50%';
+                        modalContent.style.left = '50%';
+                        modalContent.style.transform = 'translate(-50%, -50%)';
+                        modalContent.style.zIndex = '1001';
+                    }
+                    
+                    // Ensure save button is visible
+                    if (saveButton) {
+                        console.log('Save button found and visible');
+                        saveButton.style.display = 'block';
+                        saveButton.style.visibility = 'visible';
+                    } else {
+                        console.log('Save button not found!');
+                    }
+                } else {
+                    console.log('Modal display issue');
+                }
+            }, 100);
         }
 
         // Edit User Modal Functions
