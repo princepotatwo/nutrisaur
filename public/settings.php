@@ -25,6 +25,97 @@ if (!$db->isAvailable()) {
 $username = $_SESSION['username'] ?? 'Unknown User';
 $user_id = $_SESSION['user_id'] ?? $_SESSION['admin_id'] ?? null;
 
+// Email sending function using SendGrid API (consistent with home.php)
+function sendVerificationEmail($email, $username, $verificationCode, $subject = 'Email Verification') {
+    // SendGrid API configuration
+    $apiKey = $_ENV['SENDGRID_API_KEY'] ?? 'YOUR_SENDGRID_API_KEY_HERE';
+    $apiUrl = 'https://api.sendgrid.com/v3/mail/send';
+    
+    $emailData = [
+        'personalizations' => [
+            [
+                'to' => [
+                    ['email' => $email, 'name' => $username]
+                ],
+                'subject' => 'NUTRISAUR - ' . $subject
+            ]
+        ],
+        'from' => [
+            'email' => 'noreply.nutrisaur@gmail.com',
+            'name' => 'NUTRISAUR'
+        ],
+        'content' => [
+            [
+                'type' => 'text/plain',
+                'value' => "Hello " . htmlspecialchars($username) . ",\n\nYour verification code is: " . $verificationCode . "\n\nThis code will expire in 10 minutes.\n\nIf you did not request this verification code, please ignore this email.\n\nBest regards,\nNUTRISAUR Team"
+            ],
+            [
+                'type' => 'text/html',
+                'value' => "
+                <html>
+                <head>
+                    <title>NUTRISAUR - $subject</title>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                </head>
+                <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4;'>
+                    <div style='max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);'>
+                        <div style='text-align: center; background-color: #2A3326; color: #A1B454; padding: 20px; border-radius: 8px 8px 0 0; margin: -20px -20px 20px -20px;'>
+                            <h1 style='margin: 0; font-size: 24px;'>NUTRISAUR</h1>
+                        </div>
+                        <div style='padding: 20px 0;'>
+                            <p>Hello " . htmlspecialchars($username) . ",</p>
+                            <p>Your verification code is:</p>
+                            <div style='background-color: #f8f9fa; border: 2px solid #2A3326; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px;'>
+                                <span style='font-size: 28px; font-weight: bold; color: #2A3326; letter-spacing: 4px;'>" . $verificationCode . "</span>
+                            </div>
+                            <p><strong>This code will expire in 10 minutes.</strong></p>
+                            <p>If you did not request this verification code, please ignore this email.</p>
+                        </div>
+                        <div style='text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 14px;'>
+                            <p>Best regards,<br>NUTRISAUR Team</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                "
+            ]
+        ]
+    ];
+    
+    // Send email via SendGrid API
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $apiKey
+    ]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+    
+    // Enhanced error logging
+    error_log("SendGrid API Response: HTTP $httpCode, Response: $response, Error: " . ($curlError ?: 'None'));
+    
+    if ($curlError) {
+        error_log("SendGrid cURL error: " . $curlError);
+        return false;
+    }
+    
+    if ($httpCode >= 200 && $httpCode < 300) {
+        error_log("Email sent successfully via SendGrid API");
+        return true;
+    }
+    
+    error_log("SendGrid API failed. HTTP Code: $httpCode, Response: $response");
+    return false;
+}
+
 // Municipalities and Barangays data
 $municipalities = [
     'ABUCAY' => ['Bangkal', 'Calaylayan (Pob.)', 'Capitangan', 'Gabon', 'Laon (Pob.)', 'Mabatang', 'Omboy', 'Salian', 'Wawa (Pob.)'],
@@ -150,12 +241,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                 $_SESSION['verification_code'] = $verificationCode;
                 $_SESSION['verification_expires'] = time() + 600; // 10 minutes
                 
-                // Send email (simplified - you can integrate with your email service)
-                $subject = 'Password Change Verification Code';
-                $message = "Your verification code is: $verificationCode\n\nThis code will expire in 10 minutes.";
-                $headers = 'From: noreply@nutrisaur.com';
-                
-                if (mail($email, $subject, $message, $headers)) {
+                // Send email using Resend API
+                if (sendVerificationEmail($email, $username, $verificationCode, 'Password Change Verification Code')) {
                     echo json_encode(['success' => true, 'message' => 'Verification code sent']);
                 } else {
                     echo json_encode(['success' => false, 'error' => 'Failed to send email']);
@@ -256,12 +343,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                 $_SESSION['email_verification_expires'] = time() + 600; // 10 minutes
                 $_SESSION['pending_email'] = $newEmail;
                 
-                // Send email (simplified - you can integrate with your email service)
-                $subject = 'Email Change Verification Code';
-                $message = "Your verification code for changing email is: $verificationCode\n\nThis code will expire in 10 minutes.";
-                $headers = 'From: noreply@nutrisaur.com';
-                
-                if (mail($newEmail, $subject, $message, $headers)) {
+                // Send email using Resend API
+                if (sendVerificationEmail($newEmail, $username, $verificationCode, 'Email Change Verification Code')) {
                     echo json_encode(['success' => true, 'message' => 'Verification code sent to new email']);
                 } else {
                     echo json_encode(['success' => false, 'error' => 'Failed to send email']);
