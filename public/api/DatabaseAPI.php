@@ -3850,14 +3850,6 @@ class DatabaseAPI {
                         }
                     }
                     
-                    // Check BMI Adult (Severely Underweight) - for adults
-                    if (isset($assessment['results']['bmi_adult']['classification'])) {
-                        $bmiAdultClassification = $assessment['results']['bmi_adult']['classification'];
-                        if ($bmiAdultClassification === 'Severely Underweight') {
-                            $severelyUnderweight++;
-                        }
-                    }
-                    
                     // Check Height-for-Age (Severely Stunted)
                     if (isset($assessment['results']['height_for_age']['classification'])) {
                         $hfaClassification = $assessment['results']['height_for_age']['classification'];
@@ -3871,6 +3863,20 @@ class DatabaseAPI {
                         $wfhClassification = $assessment['results']['weight_for_height']['classification'];
                         if ($wfhClassification === 'Severely Wasted') {
                             $severelyWasted++;
+                        }
+                    }
+                }
+                
+                // Calculate BMI Adult classification separately (for adults 19+ years)
+                $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date']);
+                if ($ageInMonths >= 228) { // 19+ years
+                    $weight = floatval($user['weight']);
+                    $height = floatval($user['height']);
+                    
+                    if ($weight > 0 && $height > 0) {
+                        $bmi = $weight / pow($height / 100, 2);
+                        if ($bmi < 16.0) {
+                            $severelyUnderweight++; // BMI Adult Severely Underweight
                         }
                     }
                 }
