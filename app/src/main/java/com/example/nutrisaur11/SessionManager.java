@@ -579,7 +579,7 @@ public class SessionManager {
      */
     private void redirectToLogin(Activity activity) {
         try {
-            Intent intent = new Intent(activity, FoodActivity.class);
+            Intent intent = new Intent(activity, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             activity.startActivity(intent);
             activity.finish();
