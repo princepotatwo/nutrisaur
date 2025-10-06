@@ -4426,13 +4426,6 @@ header {
                         // Get community_users data directly from database
                     if ($db->isAvailable()) {
                         try {
-                            // Debug: Check if screening_assessments table exists and has data
-                            $testResult = $db->select('screening_assessments', 'COUNT(*) as count', '', [], '', '1');
-                            error_log("Screening assessments table test: " . json_encode($testResult));
-                            
-                            // Debug: Get a sample of screening_assessments data
-                            $sampleResult = $db->select('screening_assessments', 'email, screening_date', '', [], 'screening_date DESC', '5');
-                            error_log("Sample screening assessments data: " . json_encode($sampleResult));
                             // Use Universal DatabaseAPI to get users for HTML display
                             // First get all community users
                             $result = $db->select(
@@ -4450,45 +4443,15 @@ header {
                                     // Use email as the identifier since it's the primary key
                                     $userIdentifier = htmlspecialchars($user['email'] ?? '');
                                     
-                                    // Get the latest screening date for this user from screening assessments
+                                    // Get screening date directly from community_users table
                                     $screeningDate = 'Not Available';
-                                    try {
-                                        // Debug: Log the email we're searching for
-                                        error_log("Searching for screening date for email: " . $userIdentifier);
-                                        
-                                        $screeningResult = $db->select(
-                                            'screening_assessments',
-                                            'screening_date',
-                                            'email = ?',
-                                            [$userIdentifier],
-                                            'screening_date DESC',
-                                            '1' // Limit to 1 record
-                                        );
-                                        
-                                        // Debug: Log the query result
-                                        error_log("Screening query result for " . $userIdentifier . ": " . json_encode($screeningResult));
-                                        
-                                        if ($screeningResult['success'] && !empty($screeningResult['data'])) {
-                                            $latestScreening = $screeningResult['data'][0];
-                                            error_log("Latest screening data: " . json_encode($latestScreening));
-                                            
-                                            if (isset($latestScreening['screening_date']) && $latestScreening['screening_date']) {
-                                                try {
-                                                    $date = new DateTime($latestScreening['screening_date']);
-                                                    $screeningDate = $date->format('Y-m-d');
-                                                    error_log("Formatted screening date: " . $screeningDate);
-                                                } catch (Exception $e) {
-                                                    $screeningDate = 'Invalid Date';
-                                                    error_log("Date formatting error: " . $e->getMessage());
-                                                }
-                                            } else {
-                                                error_log("No screening_date field in result");
-                                            }
-                                        } else {
-                                            error_log("No screening data found for " . $userIdentifier);
+                                    if (isset($user['screening_date']) && $user['screening_date'] && $user['screening_date'] !== 'N/A') {
+                                        try {
+                                            $date = new DateTime($user['screening_date']);
+                                            $screeningDate = $date->format('Y-m-d');
+                                        } catch (Exception $e) {
+                                            $screeningDate = 'Invalid Date';
                                         }
-                                    } catch (Exception $e) {
-                                        error_log("Database error getting screening date: " . $e->getMessage());
                                     }
                                     
                                     echo '<tr data-user-email="' . $userIdentifier . '">';
