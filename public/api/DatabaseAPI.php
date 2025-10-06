@@ -7401,6 +7401,152 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
+        // COMMUNITY USERS FORGOT PASSWORD API
+        // ========================================
+        case 'forgot_password_community':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $email = trim($_POST['email'] ?? '');
+                
+                if (empty($email)) {
+                    echo json_encode(['success' => false, 'message' => 'Please provide email address']);
+                    break;
+                }
+                
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    echo json_encode(['success' => false, 'message' => 'Please enter a valid email address']);
+                    break;
+                }
+                
+                try {
+                    $pdo = $db->getPDO();
+                    if (!$pdo) {
+                        echo json_encode(['success' => false, 'message' => 'Database connection not available']);
+                        break;
+                    }
+                    
+                    // Check if user exists in community_users table
+                    $stmt = $pdo->prepare("SELECT id, email, name FROM community_users WHERE email = ?");
+                    $stmt->execute([$email]);
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($user) {
+                        // Generate reset code
+                        $resetCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+                        $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+                        
+                        // Update reset code in community_users table
+                        $updateStmt = $pdo->prepare("UPDATE community_users SET password_reset_code = ?, password_reset_expires = ? WHERE email = ?");
+                        $updateStmt->execute([$resetCode, $expiresAt, $email]);
+                        
+                        // Send reset email
+                        $emailSent = sendPasswordResetEmail($email, $user['name'], $resetCode);
+                        
+                        if ($emailSent) {
+                            echo json_encode(['success' => true, 'message' => 'Password reset code sent to your email!']);
+                        } else {
+                            echo json_encode(['success' => true, 'message' => 'Password reset code: ' . $resetCode]);
+                        }
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'No account found with this email address']);
+                    }
+                } catch (Exception $e) {
+                    echo json_encode(['success' => false, 'message' => 'Failed to send reset code: ' . $e->getMessage()]);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            }
+            break;
+            
+        case 'verify_reset_code_community':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $email = trim($_POST['email'] ?? '');
+                $resetCode = trim($_POST['reset_code'] ?? '');
+                
+                if (empty($email) || empty($resetCode)) {
+                    echo json_encode(['success' => false, 'message' => 'Please provide email and reset code']);
+                    break;
+                }
+                
+                try {
+                    $pdo = $db->getPDO();
+                    if (!$pdo) {
+                        echo json_encode(['success' => false, 'message' => 'Database connection not available']);
+                        break;
+                    }
+                    
+                    // Check if reset code is valid and not expired
+                    $stmt = $pdo->prepare("SELECT id FROM community_users WHERE email = ? AND password_reset_code = ? AND password_reset_expires > NOW()");
+                    $stmt->execute([$email, $resetCode]);
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($user) {
+                        echo json_encode(['success' => true, 'message' => 'Reset code verified successfully!']);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Invalid or expired reset code']);
+                    }
+                } catch (Exception $e) {
+                    echo json_encode(['success' => false, 'message' => 'Verification failed: ' . $e->getMessage()]);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            }
+            break;
+            
+        case 'update_password_community':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $email = trim($_POST['email'] ?? '');
+                $resetCode = trim($_POST['reset_code'] ?? '');
+                $newPassword = $_POST['new_password'] ?? '';
+                $confirmPassword = $_POST['confirm_password'] ?? '';
+                
+                if (empty($email) || empty($resetCode) || empty($newPassword) || empty($confirmPassword)) {
+                    echo json_encode(['success' => false, 'message' => 'Please fill in all fields']);
+                    break;
+                }
+                
+                if ($newPassword !== $confirmPassword) {
+                    echo json_encode(['success' => false, 'message' => 'Passwords do not match']);
+                    break;
+                }
+                
+                if (strlen($newPassword) < 6) {
+                    echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
+                    break;
+                }
+                
+                try {
+                    $pdo = $db->getPDO();
+                    if (!$pdo) {
+                        echo json_encode(['success' => false, 'message' => 'Database connection not available']);
+                        break;
+                    }
+                    
+                    // Verify reset code again
+                    $stmt = $pdo->prepare("SELECT id FROM community_users WHERE email = ? AND password_reset_code = ? AND password_reset_expires > NOW()");
+                    $stmt->execute([$email, $resetCode]);
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($user) {
+                        // Hash new password
+                        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+                        
+                        // Update password and clear reset code
+                        $updateStmt = $pdo->prepare("UPDATE community_users SET password = ?, password_reset_code = NULL, password_reset_expires = NULL WHERE email = ?");
+                        $updateStmt->execute([$hashedPassword, $email]);
+                        
+                        echo json_encode(['success' => true, 'message' => 'Password updated successfully! You can now login with your new password.']);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Invalid or expired reset code']);
+                    }
+                } catch (Exception $e) {
+                    echo json_encode(['success' => false, 'message' => 'Password update failed: ' . $e->getMessage()]);
+                }
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+            }
+            break;
+
+        // ========================================
         // DEFAULT: SHOW USAGE - Fixed syntax errors
         // ========================================
         default:

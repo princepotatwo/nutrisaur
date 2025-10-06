@@ -1,409 +1,1571 @@
-2025-10-06 13:30:57.605 27496-27496 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759728657605
-2025-10-06 13:30:57.706 27496-27496 FoodActivity            com.example.nutrisaur11              D  Asian card clicked
-2025-10-06 13:30:57.706 27496-27496 FoodActivity            com.example.nutrisaur11              D  Selected cuisine category: Asian
-2025-10-06 13:30:57.706 27496-27496 FoodActivity            com.example.nutrisaur11              D  Passing user data to CuisineCategoryActivity: isjejs (BMI: )
-2025-10-06 13:30:57.749 27496-27496 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759728657749
-2025-10-06 13:30:57.750 27496-27496 SessionManager          com.example.nutrisaur11              D  User marked as idle
-2025-10-06 13:30:57.764 27496-27513 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223358250756ms; Flags=0, FrameTimelineVsyncId=684349, IntendedVsync=13786098648666, Vsync=13786131981998, InputEventId=0, HandleInputStart=13786134414062, AnimationStart=13786134416458, PerformTraversalsStart=13786134519218, DrawStart=13786134596145, FrameDeadline=13786131981998, FrameInterval=13786134400208, FrameStartTime=16666666, SyncQueued=13786134839374, SyncStart=13786134917031, IssueDrawCommandsStart=13786135150468, SwapBuffers=13786136719583, FrameCompleted=9223372036854775807, DequeueBufferDuration=20886, QueueBufferDuration=1028594, GpuCompleted=9223372036854775807, SwapBuffersCompleted=13786138196406, DisplayPresentTime=0, 
-2025-10-06 13:30:57.772 27496-27496 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759728657772
-2025-10-06 13:30:57.772 27496-27496 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
-2025-10-06 13:30:57.772 27496-27496 SessionManager          com.example.nutrisaur11              D  Using cached valid session
-2025-10-06 13:30:57.774 27496-27496 IS_CTS_MODE             com.example.nutrisaur11              D  false
-2025-10-06 13:30:57.774 27496-27496 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
-2025-10-06 13:30:57.777 27496-27496 DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
-2025-10-06 13:30:57.807 27496-27496 DailyResetManager       com.example.nutrisaur11              D  Same day, no reset needed. Current: 2025-10-06
-2025-10-06 13:30:57.808 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Date navigation initialized with passed date: 2025-10-06
-2025-10-06 13:30:57.808 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Using passed date from FoodActivity: 2025-10-06
-2025-10-06 13:30:57.808 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  FoodCategoryActivity initialized for category: Asian, date: 2025-10-06
-2025-10-06 13:30:57.808 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Received user data from database: isjejs (BMI: )
-2025-10-06 13:30:57.809 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Creating user profile from community_users table data...
-2025-10-06 13:30:57.810 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Calculated age from birthday '2005-10-06': 20
-2025-10-06 13:30:57.810 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Database user data: name=isjejs, age=20, weight=90.0, height=150.0, gender=Male
-2025-10-06 13:30:57.810 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Created user profile from database data: isjejs (BMI: 40.0)
-2025-10-06 13:30:57.811 27496-27496 CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1742.5 for isjejs
-2025-10-06 13:30:57.811 27496-27496 CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2700.875 (BMR: 1742.5 × Activity: 1.55)
-2025-10-06 13:30:57.811 27496-27496 CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 1700 (TDEE: 2700.875 + Adjustment: -1000.0)
-2025-10-06 13:30:57.811 27496-27496 CalorieCal...ionService com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=425, Lunch=595, Dinner=510, Snacks=170
-2025-10-06 13:30:57.811 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Set meal distribution - Breakfast: 425, Lunch: 595, Dinner: 510, Snacks: 170
-2025-10-06 13:30:57.812 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  setActiveTab() called with tab: recent
-2025-10-06 13:30:57.812 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Tab data cleared, switching to: recent
-2025-10-06 13:30:57.856 27496-27496 GeminiCacheManager      com.example.nutrisaur11              D  No cached recommendations found for Asian on 2025-10-06 (ingredient: 2025-10-06) - will make fresh API call
-2025-10-06 13:30:57.857 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Loading initial data for category: Asian
-2025-10-06 13:30:57.857 27496-28489 CuisineCategoryActivity com.example.nutrisaur11              D  Starting Gemini API call for Asian
-2025-10-06 13:30:57.857 27496-28489 GeminiService           com.example.nutrisaur11              D  Calculated age from birthday '2005-10-06': 20
-2025-10-06 13:30:57.857 27496-28489 GeminiService           com.example.nutrisaur11              D  Created user profile from database data: isjejs (Age: 20, Weight: 90.0, Height: 150.0, Gender: Male, Activity: Moderate)
-2025-10-06 13:30:57.861  3053-3339  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=10420   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.SplashActivity }
-2025-10-06 13:30:57.897 27496-27496 GeminiCacheManager      com.example.nutrisaur11              D  No cached recommendations found for Asian on 2025-10-06 (ingredient: 2025-10-06) - will make fresh API call
-2025-10-06 13:30:57.900 27496-28490 CuisineCategoryActivity com.example.nutrisaur11              D  Starting Gemini API call for Asian
-2025-10-06 13:30:57.901 27496-28490 GeminiService           com.example.nutrisaur11              D  Calculated age from birthday '2005-10-06': 20
-2025-10-06 13:30:57.901 27496-28490 GeminiService           com.example.nutrisaur11              D  Created user profile from database data: isjejs (Age: 20, Weight: 90.0, Height: 150.0, Gender: Male, Activity: Moderate)
-2025-10-06 13:30:57.902 27496-27496 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759728657902
-2025-10-06 13:30:57.902 27496-27496 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
-2025-10-06 13:30:57.903 27496-27496 SessionManager          com.example.nutrisaur11              D  Using cached valid session
-2025-10-06 13:30:57.903 27496-27496 CommunityUserManager    com.example.nutrisaur11              D  === CHECKING ARCHIVE STATUS ===
-2025-10-06 13:30:57.903 27496-27496 CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
-2025-10-06 13:30:57.903 27496-27496 CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: jejei@idj.ee
-2025-10-06 13:30:57.905 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
-2025-10-06 13:30:57.905 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"jejei@idj.ee"}
-2025-10-06 13:30:57.930 27496-27511 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223358250689ms; Flags=0, FrameTimelineVsyncId=684359, IntendedVsync=13786165315330, Vsync=13786281981992, InputEventId=0, HandleInputStart=13786297889530, AnimationStart=13786297891405, PerformTraversalsStart=13786297892708, DrawStart=13786297947916, FrameDeadline=13786198648662, FrameInterval=13786297880416, FrameStartTime=16666666, SyncQueued=13786298530885, SyncStart=13786298574478, IssueDrawCommandsStart=13786299677135, SwapBuffers=13786301312343, FrameCompleted=9223372036854775807, DequeueBufferDuration=16302, QueueBufferDuration=510208, GpuCompleted=9223372036854775807, SwapBuffersCompleted=13786302096614, DisplayPresentTime=0, 
-2025-10-06 13:30:57.956 27496-27496 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
-2025-10-06 13:30:57.980 27496-27513 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223358250556ms; Flags=0, FrameTimelineVsyncId=684364, IntendedVsync=13786298644518, Vsync=13786331977850, InputEventId=0, HandleInputStart=13786347996614, AnimationStart=13786348001614, PerformTraversalsStart=13786348324062, DrawStart=13786348463176, FrameDeadline=13786331977850, FrameInterval=13786347973072, FrameStartTime=16666666, SyncQueued=13786353967343, SyncStart=13786354083801, IssueDrawCommandsStart=13786354304739, SwapBuffers=13786355470728, FrameCompleted=9223372036854775807, DequeueBufferDuration=16719, QueueBufferDuration=512812, GpuCompleted=9223372036854775807, SwapBuffersCompleted=13786356322864, DisplayPresentTime=0, 
-2025-10-06 13:30:57.981 27496-27513 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223358250555ms; Flags=0, FrameTimelineVsyncId=684364, IntendedVsync=13786298644518, Vsync=13786331977850, InputEventId=0, HandleInputStart=13786347996614, AnimationStart=13786348001614, PerformTraversalsStart=13786348324062, DrawStart=13786356257135, FrameDeadline=13786331977850, FrameInterval=13786347973072, FrameStartTime=16666666, SyncQueued=13786358250260, SyncStart=13786358420364, IssueDrawCommandsStart=13786358521562, SwapBuffers=13786359841405, FrameCompleted=9223372036854775807, DequeueBufferDuration=15468, QueueBufferDuration=647760, GpuCompleted=9223372036854775807, SwapBuffersCompleted=13786360964062, DisplayPresentTime=-72057592879976448, 
-2025-10-06 13:30:57.997 27496-28498 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223358250489ms; Flags=0, FrameTimelineVsyncId=684374, IntendedVsync=13786365517890, Vsync=13786365517890, InputEventId=0, HandleInputStart=13786365982968, AnimationStart=13786365987812, PerformTraversalsStart=13786367010260, DrawStart=13786372352187, FrameDeadline=13786398851222, FrameInterval=13786365957499, FrameStartTime=16666666, SyncQueued=13786372633072, SyncStart=13786372687343, IssueDrawCommandsStart=13786372760520, SwapBuffers=13786373835728, FrameCompleted=9223372036854775807, DequeueBufferDuration=12812, QueueBufferDuration=673750, GpuCompleted=9223372036854775807, SwapBuffersCompleted=13786374752864, DisplayPresentTime=4973363772440510464, 
-2025-10-06 13:30:57.998 27496-28489 GeminiCacheManager      com.example.nutrisaur11              D  No cached recommendations found for Asian on 2025-10-06 (ingredient: null) - will make fresh API call
-2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  No cached category recommendations found for Asian, making API call
-2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  === buildCategoryPrompt DEBUG ===
-2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  Category: Asian
-2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  UserData received: {is_pregnant=N/A, birthday=2005-10-06, muac_category=, notes=, nutritional_risk=, weight_kg=90, height_cm=150, sex=Male, municipality=HERMOSA, muac_cm=, screening_date=2025-10-06 00:16:31, bmi_category=, name=isjejs, barangay=Burgos-Soliman, age=, email=jejei@idj.ee, status=1, bmi=}
-2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  UserData isEmpty: false
-2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  === FOOD PREFERENCES DEBUG ===
-2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  User email: jejei@idj.ee
-2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  Combined preferences: 
-2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  Preferences isEmpty: true
-2025-10-06 13:30:58.000 27496-28489 GeminiService           com.example.nutrisaur11              D  Gemini API attempt 1 of 3
-2025-10-06 13:30:58.004 27496-27496 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
-2025-10-06 13:30:58.005 27496-28490 GeminiCacheManager      com.example.nutrisaur11              D  No cached recommendations found for Asian on 2025-10-06 (ingredient: null) - will make fresh API call
-2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  No cached category recommendations found for Asian, making API call
-2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  === buildCategoryPrompt DEBUG ===
-2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  Category: Asian
-2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  UserData received: {is_pregnant=N/A, birthday=2005-10-06, muac_category=, notes=, nutritional_risk=, weight_kg=90, height_cm=150, sex=Male, municipality=HERMOSA, muac_cm=, screening_date=2025-10-06 00:16:31, bmi_category=, name=isjejs, barangay=Burgos-Soliman, age=, email=jejei@idj.ee, status=1, bmi=}
-2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  UserData isEmpty: false
-2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  === FOOD PREFERENCES DEBUG ===
-2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  User email: jejei@idj.ee
-2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  Combined preferences: 
-2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  Preferences isEmpty: true
-2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  Gemini API attempt 1 of 3
-2025-10-06 13:30:58.012 27496-27496 SessionManager          com.example.nutrisaur11              D  User marked as idle
-2025-10-06 13:30:58.281 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
-2025-10-06 13:30:58.281 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  API response message: 
-2025-10-06 13:30:58.283 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"isjejs","email":"jejei@idj.ee","municipality":"HERMOSA","barangay":"Burgos-Soliman","sex":"Male","birthday":"2005-10-06","is_pregnant":"N\/A","weight":"90","height":"150","screening_date":"2025-10-06 00:16:31","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bHfMpNoFUy4SixU6aZEFkU8_bjbsOOobkRTfvfTqwUPjoUf-UytM5K6aE7QrDPYfSAKF-o_LxjjGNyPxJG1yyAE0mgKQ20qdFvhDopmRzg5sevlKW0","bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
-2025-10-06 13:30:58.284 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: jejei@idj.ee
-2025-10-06 13:30:58.284 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-06, is_pregnant=N/A, muac_category=, notes=, weight_kg=90, nutritional_risk=, height_cm=150, sex=Male, municipality=HERMOSA, muac_cm=, screening_date=2025-10-06 00:16:31, bmi_category=, name=isjejs, barangay=Burgos-Soliman, email=jejei@idj.ee, age=, bmi=, status=1}
-2025-10-06 13:30:58.284 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  User status: 1
-2025-10-06 13:30:58.285 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  User is active (status = 1)
-2025-10-06 13:30:58.368 27496-27496 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-06 13:31:01.369 27496-27496 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-06 13:31:04.372 27496-27496 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-06 13:31:06.012 27496-28490 GeminiService           com.example.nutrisaur11              D  Gemini API Response Code: 200
-2025-10-06 13:31:06.012 27496-28490 GeminiService           com.example.nutrisaur11              D  Gemini API Response: {  "candidates": [    {      "content": {        "parts": [          {            "text": "```json\n[\n  {\n    \"food_name\": \"Sinigang (Pork)\",\n    \"calories\": 120,\n    \"protein\": 10,\n    \"fat\": 5,\n    \"carbs\": 8,\n    \"serving_size\": \"half cup\",\n    \"description\": \"A flavorful, broth-based soup that is low in calories and high in volume, promoting satiety with lean pork.\",\n    \"emoji\": \"🍲\"\n  },\n  {\n    \"food_name\": \"Ginisang Repolyo (Sauteed Cabbage)\",\n    \"calories\": 60,\n    \"protein\": 2,\n    \"fat\": 3,\n    \"carbs\": 8,\n    \"serving_size\": \"three-quarters cup\",\n    \"description\": \"A simple, low-calorie vegetable dish that adds fiber and nutrients to the diet.\",\n    \"emoji\": \"🥗\"\n  },\n  {\n    \"food_name\": \"Nilagang Baka (Boiled Beef Soup)\",\n    \"calories\": 110,\n    \"protein\": 12,\n    \"fat\": 4,\n    \"carbs\": 6,\n    \"serving_size\": \"half cup\",\n    \"description\": \"A clear soup with lean beef and vegetables, providing protein and hydration with minimal calories.\",\n    \"emoji\": \"🍖\"\n  },\n  {\n    \"food_name\": \"Steamed Fish (e.g., Tilapia)\",\n    \"calories\": 90,\n    \"protein\": 18,\n    \"fat\": 2,\n    \"carbs\": 0,\n    \"serving_size\": \"small fillet\",\n    \"description\": \"A lean source of protein that is low in fat and calories, supporting muscle maintenance.\",\n    \"emoji\": \"🐟\"\n  },\n  {\n    \"food_name\": \"Chicken Tinola (Chicken Soup with Ginger)\",\n    \"calories\": 80,\n    \"protein\": 10,\n    \"fat\": 3,\n    \"carbs\": 4,\n    \"serving_size\": \"half cup\",\n    \"description\": \"A light and flavorful soup with chicken and vegetables, providing protein and hydration.\",\n    \"emoji\": \"🍗\"\n  },\n  {\n    \"food_name\": \"Pinakbet (Vegetable Stew)\",\n    \"calories\": 70,\n    \"protein\": 3,\n    \"fat\": 4,\n    \"carbs\": 7,\n    \"serving_size\": \"three-quarters cup\",\n    \"description\": \"A vegetable-rich stew with minimal added fat, providing fiber and nutrients.\",\n    \"emoji\": \"🥘\"\n  },\n  {\n    \"food_name\": \"Tofu Stir-fry with Vegetables\",\n    \"calories\": 100,\n    \"protein\": 8,\n    \"fat\": 5,\n    \"carbs\": 6,\n    \"serving_size\": \"half cup\",\n    \"description\": \"A plant-based protein source with lots of vegetables that is low in calories and high in nutrients.\",\n    \"emoji\": \"🍲\"\n  },\n  {\n    \"food_name\": \"Mung Bean Soup (Monggo)\",\n    \"calories\": 110,\n    \"protein\": 7,\n    \"fat\": 3,\n    \"carbs\": 14,\n    \"serving_size\": \"half cup\",\n    \"description\": \"Provides fiber and protein to promote satiety and healthy digestion.\",\n    \"emoji\": \"🍛\"\n  },\n  {\n    \"food_name\": \"Pancit Bihon (Thin Rice Noodles with Vegetables and Lean Protein)\",\n    \"calories\": 120,\n    \"protein\": 6,\n    \"fat\": 4,\n    \"carbs\": 16,\n    \"serving_size\": \"half cup\",\n    \"description\": \"Noodles with vegetables and lean protein. Use less oil when stir-frying.\",\n    \"emoji\": \"🍜\"\n  },\n  {\n    \"food_name\": \"Ukoy (Shrimp Fritters - Baked, not Fried)\",\n    \"calories\": 90,\n    \"protein\": 5,\n    \"fat\": 3,\n    \"carbs\": 10,\n    \"serving_size\": \"1 piece\",\n    \"description\": \"Baked shrimp fritters offer some protein and vegetables. Baking instead of frying reduces the fat content.\",\n    \"emoji\": \"🍤\"\n  },\n  {\n    \"food_name\": \"Lumpiang Sariwa (Fresh Spring Rolls)\",\n    \"calories\": 80,\n    \"protein\": 4,\n    \"fat\": 2,\n    \"carbs\": 12,\n    \"serving_size\": \"1 roll\",\n    \"description\": \"Fresh spring rolls filled with vegetables offer fiber and hydration.\",\n    \"emoji\": \"🥗\"\n  },\n  {\n    \"food_name\": \"Adobong Sitaw (String Beans Adobo - Less Oil)\",\n    \"calories\": 60,\n    \"protein\": 3,\n    \"fat\": 2,\n    \"carbs\": 8,\n    \"serving_size\": \"three-quarters cup\",\n    \"description\": \"String beans cooked in adobo style with reduced oil is a flavorful and lo
-2025-10-06 13:31:06.015 27496-28490 GeminiService           com.example.nutrisaur11              D  Extracted category text: ```json
-                                                                                                    [
-                                                                                                      {
-                                                                                                        "food_name": "Sinigang (Pork)",
-                                                                                                        "calories": 120,
-                                                                                                        "protein": 10,
-                                                                                                        "fat": 5,
-                                                                                                        "carbs": 8,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "A flavorful, broth-based soup that is low in calories and high in volume, promoting satiety with lean pork.",
-                                                                                                        "emoji": "🍲"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Ginisang Repolyo (Sauteed Cabbage)",
-                                                                                                        "calories": 60,
-                                                                                                        "protein": 2,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 8,
-                                                                                                        "serving_size": "three-quarters cup",
-                                                                                                        "description": "A simple, low-calorie vegetable dish that adds fiber and nutrients to the diet.",
-                                                                                                        "emoji": "🥗"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Nilagang Baka (Boiled Beef Soup)",
-                                                                                                        "calories": 110,
-                                                                                                        "protein": 12,
-                                                                                                        "fat": 4,
-                                                                                                        "carbs": 6,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "A clear soup with lean beef and vegetables, providing protein and hydration with minimal calories.",
-                                                                                                        "emoji": "🍖"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Steamed Fish (e.g., Tilapia)",
-                                                                                                        "calories": 90,
-                                                                                                        "protein": 18,
-                                                                                                        "fat": 2,
-                                                                                                        "carbs": 0,
-                                                                                                        "serving_size": "small fillet",
-                                                                                                        "description": "A lean source of protein that is low in fat and calories, supporting muscle maintenance.",
-                                                                                                        "emoji": "🐟"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Chicken Tinola (Chicken Soup with Ginger)",
-                                                                                                        "calories": 80,
-                                                                                                        "protein": 10,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 4,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "A light and flavorful soup with chicken and vegetables, providing protein and hydration.",
-                                                                                                        "emoji": "🍗"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Pinakbet (Vegetable Stew)",
-                                                                                                        "calories": 70,
-                                                                                                        "protein": 3,
-                                                                                                        "fat": 4,
-                                                                                                        "carbs": 7,
-                                                                                                        "serving_size": "three-quarters cup",
-                                                                                                        "description": "A vegetable-rich stew with minimal added fat, providing fiber and nutrients.",
-                                                                                                        "emoji": "🥘"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Tofu Stir-fry with Vegetables",
-                                                                                                        "calories": 100,
-                                                                                                        "protein": 8,
-                                                                                                        "fat": 5,
-                                                                                                        "carbs": 6,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "A plant-based protein source with lots of vegetables that is low in calories and high in nutrients.",
-                                                                                                        "emoji": "🍲"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Mung Bean Soup (Monggo)",
-                                                                                                        "calories": 110,
-                                                                                                        "protein": 7,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 14,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Provides fiber and protein to promote satiety and healthy digestion.",
-                                                                                                        "emoji": "🍛"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Pancit Bihon (Thin Rice Noodles with Vegetables and Lean Protein)",
-                                                                                                        "calories": 120,
-                                                                                                        "protein": 6,
-                                                                                                        "fat": 4,
-                                                                                                        "carbs": 16,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Noodles with vegetables and lean protein. Use less oil when stir-frying.",
-                                                                                                        "emoji": "🍜"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Ukoy (Shrimp Fritters - Baked, not Fried)",
-                                                                                                        "calories": 90,
-                                                                                                        "protein": 5,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 10,
-                                                                                                        "serving_size": "1 piece",
-                                                                                                        "description": "Baked shrimp fritters offer some protein and vegetables. Baking instead of frying reduces the fat content.",
-                                                                                                        "emoji": "🍤"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Lumpiang Sariwa (Fresh Spring Rolls)",
-                                                                                                        "calories": 80,
-                                                                                                        "protein": 4,
-                                                                                                        "fat": 2,
-                                                                                                        "carbs": 12,
-                                                                                                        "serving_size": "1 roll",
-                                                                                                        "description": "Fresh spring rolls filled with vegetables offer fiber and hydration.",
-                                                                                                        "emoji": "🥗"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Adobong Sitaw (String Beans Adobo - Less Oil)",
-                                                                                                        "calories": 60,
-                                                                                                        "protein": 3,
-                                                                                                        "fat": 2,
-                                                                                                        "carbs": 8,
-                                                                                                        "serving_size": "three-quarters cup",
-                                                                                                        "description": "String beans cooked in adobo style with reduced oil is a flavorful and low-calorie vegetable dish.",
-                                                                                                        "emoji": "🥗"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Sinabawang Gulay (Vegetable Soup)",
-                                                                                                        "calories": 50,
-                                                                                                        "protein": 2,
-                                                                                                        "fat": 1,
-                                                                                                        "carbs": 8,
-                                                                                                        "serving_size": "one cup",
-                                                                                                        "description": "A light and hydrating vegetable soup that is low in calories and rich in nutrients.",
-                                                                                                        "emoji": "🍲"
-                                                                                                      }
-                                                                                                    ]
-                                                                                                    ```
-2025-10-06 13:31:06.016 27496-28490 GeminiService           com.example.nutrisaur11              D  Extracted category JSON: [
-                                                                                                      {
-                                                                                                        "food_name": "Sinigang (Pork)",
-                                                                                                        "calories": 120,
-                                                                                                        "protein": 10,
-                                                                                                        "fat": 5,
-                                                                                                        "carbs": 8,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "A flavorful, broth-based soup that is low in calories and high in volume, promoting satiety with lean pork.",
-                                                                                                        "emoji": "🍲"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Ginisang Repolyo (Sauteed Cabbage)",
-                                                                                                        "calories": 60,
-                                                                                                        "protein": 2,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 8,
-                                                                                                        "serving_size": "three-quarters cup",
-                                                                                                        "description": "A simple, low-calorie vegetable dish that adds fiber and nutrients to the diet.",
-                                                                                                        "emoji": "🥗"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Nilagang Baka (Boiled Beef Soup)",
-                                                                                                        "calories": 110,
-                                                                                                        "protein": 12,
-                                                                                                        "fat": 4,
-                                                                                                        "carbs": 6,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "A clear soup with lean beef and vegetables, providing protein and hydration with minimal calories.",
-                                                                                                        "emoji": "🍖"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Steamed Fish (e.g., Tilapia)",
-                                                                                                        "calories": 90,
-                                                                                                        "protein": 18,
-                                                                                                        "fat": 2,
-                                                                                                        "carbs": 0,
-                                                                                                        "serving_size": "small fillet",
-                                                                                                        "description": "A lean source of protein that is low in fat and calories, supporting muscle maintenance.",
-                                                                                                        "emoji": "🐟"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Chicken Tinola (Chicken Soup with Ginger)",
-                                                                                                        "calories": 80,
-                                                                                                        "protein": 10,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 4,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "A light and flavorful soup with chicken and vegetables, providing protein and hydration.",
-                                                                                                        "emoji": "🍗"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Pinakbet (Vegetable Stew)",
-                                                                                                        "calories": 70,
-                                                                                                        "protein": 3,
-                                                                                                        "fat": 4,
-                                                                                                        "carbs": 7,
-                                                                                                        "serving_size": "three-quarters cup",
-                                                                                                        "description": "A vegetable-rich stew with minimal added fat, providing fiber and nutrients.",
-                                                                                                        "emoji": "🥘"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Tofu Stir-fry with Vegetables",
-                                                                                                        "calories": 100,
-                                                                                                        "protein": 8,
-                                                                                                        "fat": 5,
-                                                                                                        "carbs": 6,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "A plant-based protein source with lots of vegetables that is low in calories and high in nutrients.",
-                                                                                                        "emoji": "🍲"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Mung Bean Soup (Monggo)",
-                                                                                                        "calories": 110,
-                                                                                                        "protein": 7,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 14,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Provides fiber and protein to promote satiety and healthy digestion.",
-                                                                                                        "emoji": "🍛"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Pancit Bihon (Thin Rice Noodles with Vegetables and Lean Protein)",
-                                                                                                        "calories": 120,
-                                                                                                        "protein": 6,
-                                                                                                        "fat": 4,
-                                                                                                        "carbs": 16,
-                                                                                                        "serving_size": "half cup",
-                                                                                                        "description": "Noodles with vegetables and lean protein. Use less oil when stir-frying.",
-                                                                                                        "emoji": "🍜"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Ukoy (Shrimp Fritters - Baked, not Fried)",
-                                                                                                        "calories": 90,
-                                                                                                        "protein": 5,
-                                                                                                        "fat": 3,
-                                                                                                        "carbs": 10,
-                                                                                                        "serving_size": "1 piece",
-                                                                                                        "description": "Baked shrimp fritters offer some protein and vegetables. Baking instead of frying reduces the fat content.",
-                                                                                                        "emoji": "🍤"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Lumpiang Sariwa (Fresh Spring Rolls)",
-                                                                                                        "calories": 80,
-                                                                                                        "protein": 4,
-                                                                                                        "fat": 2,
-                                                                                                        "carbs": 12,
-                                                                                                        "serving_size": "1 roll",
-                                                                                                        "description": "Fresh spring rolls filled with vegetables offer fiber and hydration.",
-                                                                                                        "emoji": "🥗"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Adobong Sitaw (String Beans Adobo - Less Oil)",
-                                                                                                        "calories": 60,
-                                                                                                        "protein": 3,
-                                                                                                        "fat": 2,
-                                                                                                        "carbs": 8,
-                                                                                                        "serving_size": "three-quarters cup",
-                                                                                                        "description": "String beans cooked in adobo style with reduced oil is a flavorful and low-calorie vegetable dish.",
-                                                                                                        "emoji": "🥗"
-                                                                                                      },
-                                                                                                      {
-                                                                                                        "food_name": "Sinabawang Gulay (Vegetable Soup)",
-                                                                                                        "calories": 50,
-                                                                                                        "protein": 2,
-                                                                                                        "fat": 1,
-                                                                                                        "carbs": 8,
-                                                                                                        "serving_size": "one cup",
-                                                                                                        "description": "A light and hydrating vegetable soup that is low in calories and rich in nutrients.",
-                                                                                                        "emoji": "🍲"
-                                                                                                      }
-                                                                                                    ]
-2025-10-06 13:31:06.016 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Sinigang (Pork) (🍲)
-2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Ginisang Repolyo (Sauteed Cabbage) (🥗)
-2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Nilagang Baka (Boiled Beef Soup) (🍖)
-2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Steamed Fish (e.g., Tilapia) (🐟)
-2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Chicken Tinola (Chicken Soup with Ginger) (🍗)
-2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Pinakbet (Vegetable Stew) (🥘)
-2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Tofu Stir-fry with Vegetables (🍲)
-2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Mung Bean Soup (Monggo) (🍛)
-2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Pancit Bihon (Thin Rice Noodles with Vegetables and Lean Protein) (🍜)
-2025-10-06 13:31:06.018 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Ukoy (Shrimp Fritters - Baked, not Fried) (🍤)
-2025-10-06 13:31:06.018 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Lumpiang Sariwa (Fresh Spring Rolls) (🥗)
-2025-10-06 13:31:06.018 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Adobong Sitaw (String Beans Adobo - Less Oil) (🥗)
-2025-10-06 13:31:06.018 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Sinabawang Gulay (Vegetable Soup) (🍲)
-2025-10-06 13:31:06.019 27496-28490 GeminiService           com.example.nutrisaur11              D  Calculated age from birthday '2005-10-06': 20
-2025-10-06 13:31:06.019 27496-28490 GeminiService           com.example.nutrisaur11              D  Created user profile from database data: isjejs (Age: 20, Weight: 90.0, Height: 150.0, Gender: Male, Activity: Moderate)
-2025-10-06 13:31:06.083 27496-28490 GeminiCacheManager      com.example.nutrisaur11              D  Cached persistent recommendations for Asian (user: 20_Male_90.0_150.0, ingredient: null)
-2025-10-06 13:31:06.083 27496-28490 GeminiService           com.example.nutrisaur11              D  Cached category recommendations for Asian
-2025-10-06 13:31:06.132 27496-28490 GeminiCacheManager      com.example.nutrisaur11              D  Cached persistent recommendations for Asian (user: 20_Male_90.0_150.0, ingredient: 2025-10-06)
-2025-10-06 13:31:06.132 27496-28490 CuisineCategoryActivity com.example.nutrisaur11              D  Cached 13 recommendations for Asian (UI update may be ignored)
-2025-10-06 13:31:06.134 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Loaded and displayed 13 recommendations for Asian
-2025-10-06 13:31:06.170 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-06
-2025-10-06 13:31:06.170 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-06 13:31:06.170 27496-27496 AddedFoodManager        com.example.nutrisaur11              D    - Pasta Salad with Pesto, Mozzarella, and Cherry Tomatoes in Breakfast
-2025-10-06 13:31:06.170 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 1 foods from daily storage for 2025-10-06
-2025-10-06 13:31:06.170 27496-27496 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Sinigang (Pork) isAdded check: false (final: false)
-2025-10-06 13:31:06.178 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-06
-2025-10-06 13:31:06.178 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-06 13:31:06.178 27496-27496 AddedFoodManager        com.example.nutrisaur11              D    - Pasta Salad with Pesto, Mozzarella, and Cherry Tomatoes in Breakfast
-2025-10-06 13:31:06.178 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 1 foods from daily storage for 2025-10-06
-2025-10-06 13:31:06.178 27496-27496 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Ginisang Repolyo (Sauteed Cabbage) isAdded check: false (final: false)
-2025-10-06 13:31:06.186 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-06
-2025-10-06 13:31:06.186 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-06 13:31:06.186 27496-27496 AddedFoodManager        com.example.nutrisaur11              D    - Pasta Salad with Pesto, Mozzarella, and Cherry Tomatoes in Breakfast
-2025-10-06 13:31:06.186 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 1 foods from daily storage for 2025-10-06
-2025-10-06 13:31:06.186 27496-27496 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Nilagang Baka (Boiled Beef Soup) isAdded check: false (final: false)
-2025-10-06 13:31:06.195 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-06
-2025-10-06 13:31:06.195 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-06 13:31:06.195 27496-27496 AddedFoodManager        com.example.nutrisaur11              D    - Pasta Salad with Pesto, Mozzarella, and Cherry Tomatoes in Breakfast
-2025-10-06 13:31:06.195 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 1 foods from daily storage for 2025-10-06
-2025-10-06 13:31:06.195 27496-27496 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Steamed Fish (e.g., Tilapia) isAdded check: false (final: false)
-2025-10-06 13:31:06.202 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-06
-2025-10-06 13:31:06.202 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-06 13:31:06.202 27496-27496 AddedFoodManager        com.example.nutrisaur11              D    - Pasta Salad with Pesto, Mozzarella, and Cherry Tomatoes in Breakfast
-2025-10-06 13:31:06.202 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 1 foods from daily storage for 2025-10-06
-2025-10-06 13:31:06.202 27496-27496 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Chicken Tinola (Chicken Soup with Ginger) isAdded check: false (final: false)
-2025-10-06 13:31:06.208 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-06
-2025-10-06 13:31:06.208 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-06 13:31:06.208 27496-27496 AddedFoodManager        com.example.nutrisaur11              D    - Pasta Salad with Pesto, Mozzarella, and Cherry Tomatoes in Breakfast
-2025-10-06 13:31:06.208 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 1 foods from daily storage for 2025-10-06
-2025-10-06 13:31:06.208 27496-27496 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Pinakbet (Vegetable Stew) isAdded check: false (final: false)
-2025-10-06 13:31:06.215 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-06
-2025-10-06 13:31:06.215 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-06 13:31:06.215 27496-27496 AddedFoodManager        com.example.nutrisaur11              D    - Pasta Salad with Pesto, Mozzarella, and Cherry Tomatoes in Breakfast
-2025-10-06 13:31:06.215 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 1 foods from daily storage for 2025-10-06
-2025-10-06 13:31:06.215 27496-27496 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Tofu Stir-fry with Vegetables isAdded check: false (final: false)
+ Chart segments: Array(3)
+ Chart segments length: 3
+ Chart segments details: Array(3)
+ Creating gradient: conic-gradient(#E91E63 0% 33.33333333333333%, #FFC107 33.33333333333333% 66.66666666666666%, #4CAF50 66.66666666666666% 99.99999999999999%)
+ Chart background set to: conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 33.3333%, rgb(255, 193, 7) 33.3333%, rgb(255, 193, 7) 66.6667%, rgb(76, 175, 80) 66.6667%, rgb(76, 175, 80) 100%)
+ Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 33.3333%, rgb(255, 193, 7) 33.3333%, rgb(255, 193, 7) 66.6667%, rgb(76, 175, 80) 66.6667%, rgb(76, 175, 80) 100%) repeat scroll 0% 0% / auto padding-box border-box
+ Computed opacity: 1
+ Element dimensions: Object
+ WHO chart updated successfully
+ 🎨 Updating age classification chart...
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: weight-for-age
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
+ 📊 Trends API response: Object
+ 📊 Trends API data structure: Object
+ 📊 Chart data analysis: Object
+ No chartable datasets available - showing message with user count
+ 📊 Age classification API response: Object
+ 📊 Age Classification Data Analysis: Object
+ 📊 Age Classification Data Breakdown: Object
+ 📊 Age Classification Line Chart Data: Object
+ 📊 Canvas element found: 
+ 📊 Canvas dimensions before chart creation: Object
+ 📊 Canvas dimensions set: Object
+ 📊 Canvas context: CanvasRenderingContext2D
+ 📊 Creating new age classification chart with data: Object
+ ✅ Age Classification Line Chart created successfully
+ 📊 Chart instance after creation: Tn
+ 📊 Chart canvas after creation: 
+ 📊 Chart data after creation: Object
+ 📊 Canvas dimensions after creation: Object
+ 🎨 Updating trends chart...
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=weight-for-age
+ 📍 Found 13 municipality options
+ 📍 Found 234 barangay options
+ ✅ Municipality and barangay dropdown functionality initialized
+ 📊 Trends API response: Object
+ 📊 Trends API data structure: Object
+ 📊 Chart data analysis: Object
+ No chartable datasets available - showing message with user count
+ 🎨 Updating severe cases list...
+ 📊 WHO Standard before severe cases call: weight-for-age
+ 📊 Dropdown value before severe cases call: weight-for-age
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: 
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: weight-for-age
+ 📊 Severe cases - Dropdown value at time of call: weight-for-age
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=weight-for-age
+ Severe cases data received: Object
+ Found 2 severe cases
+ 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
+ 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
+ ✅ Severe cases list updated successfully with 2 cases
+ ✅ Chart update completed
+ 🏁 WHO classification loading completed
+ 📊 Loading initial trends chart...
+ 📊 updateTrendsChart function exists: function
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=weight-for-age
+ 📊 Trends API response: Object
+ 📊 Trends API data structure: Object
+ 📊 Chart data analysis: Object
+ No chartable datasets available - showing message with user count
+ 📊 Trends chart loaded successfully
+ 📊 Loading initial age classification chart...
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: weight-for-age
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
+ 📊 Age classification API response: Object
+ 📊 Age Classification Data Analysis: Object
+ 📊 Age Classification Data Breakdown: Object
+ 📊 Age Classification Line Chart Data: Object
+ 📊 Updating existing age classification chart...
+ 📊 Chart instance: Tn
+ 📊 Canvas element: 
+ 📊 Canvas dimensions: Object
+ ✅ Updated age classification chart with data: Object
+ 📊 Chart data after update: Object
+ 🔄 Loading initial dashboard metrics and geographic distribution...
+ 🔄 updateCommunityMetrics called with barangay: 
+ 🔄 Loading barangay distribution data...
+ Fetching barangay distribution data for: Object
+ Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk
+ Barangay API Response: Object
+ Updating barangay distribution display: Object
+ 🔄 Loading gender distribution data...
+ Fetching gender distribution data for: Object
+ Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
+ 📊 Canvas dimensions fixed: Object
+ 📊 Chart resized after update
+ Gender API Response: Object
+ Updating gender distribution display: Object
+ 🌍 Loading geographic distribution with pre-loaded data...
+ 🌍 No pre-loaded geographic data available
+ 🌍 updateGeographicChartDisplay called with data: Array(0)
+ ❌ Geographic chart container not found!
+updateGeographicChartDisplay @ dash:8757
+ 🔍 Card Debug - Checking card elements:
+ Card Container: 
+ Number of cards found: 4
+ Card 1: 
+ Card 1 display: flex
+ Card 1 visibility: visible
+ Card 1 opacity: 1
+ Card 2: 
+ Card 2 display: flex
+ Card 2 visibility: visible
+ Card 2 opacity: 1
+ Card 3: 
+ Card 3 display: flex
+ Card 3 visibility: visible
+ Card 3 opacity: 1
+ Card 4: 
+ Card 4 display: flex
+ Card 4 visibility: visible
+ Card 4 opacity: 1
+ 🔍 Initial Dashboard Metrics (Page Load):
+   - Total Screened: 20
+   - High Risk (Severely Underweight): 2
+   - SAM Cases (Severely Stunted): 4
+   - Critical MUAC (Severely Wasted): 2
+ 🔄 Starting community metrics update...
+ Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php
+ DatabaseAPI response for dashboard_assessment_stats : Object
+ Returning data: Object
+ 📊 Community Metrics Data: Object
+ 📊 Data type: object
+ 📊 Data keys: Array(2)
+ Total Screened Element: 
+ Screened Change Element: 
+ Total Users: 20
+ Recent Registrations: 20
+ 📊 Total screened element: 
+ 📊 Total screened from API (data.data.total_screened): 20
+ 📊 Total users from API (data.data.total_users): undefined
+ 📊 Total users from API (data.total_users): undefined
+ 📊 Total users from API (data.processed_users): undefined
+ 📊 Final total users value: 20
+ 📊 Setting total screened to: 20
+ 📊 Setting screened change to: 20
+ 📊 Severely cases will be updated by WHO classification data
+ 🚀 Starting seamless dashboard updates (3-second interval)
+ 🔍 Dashboard state: Object
+ 🔍 Current barangay: 
+ 🔍 Document visibility: visible
+ ⏰ Seamless update triggered
+ 🔍 Visibility state: visible
+ 🔍 Update in progress: true
+ 🔍 Current barangay: 
+ ⏸️ Skipping seamless update - visibility: visible updateInProgress: true
+ 🔧 Resetting stuck updateInProgress flag
+ WHO dropdown changed to: bmi-adult
+ 🔄 Starting WHO standard change handler...
+ 📊 WHO Standard selected: bmi-adult
+ 📊 Dropdown element found: true
+ 📊 Dropdown value: bmi-adult
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📡 Fetching WHO data with active filters...
+ 📊 Active filters: Object
+ Fetching WHO data for: Object
+ API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=bmi-adult
+ Bulk API Response: Object
+ Mapping bmi-adult to bmi_adult: Object
+ Classification values: Array(6)
+ Calculated total: 13
+ Original total_users: 20
+ Extracted bmi-adult data: Object
+ Processed data for donut chart: Object
+ 📊 Data received for chart update: Object
+ 🎨 Updating chart...
+ WHO Chart Update - Data received: Object
+ Data type: object
+ Data classifications: Object
+ Data total: 13
+ Chart elements found:
+   - chartBg (risk-chart-bg): 
+   - centerText (risk-center-text): 
+   - segments (risk-segments): 
+ Processing classifications: Object
+ Classifications keys: Array(6)
+ Classifications values: Array(6)
+ Total users: 13
+ Has data (non-zero counts): true
+ Chart segments: Array(4)
+ Chart segments length: 4
+ Chart segments details: Array(4)
+ Creating gradient: conic-gradient(#E91E63 0% 15.384615384615385%, #FFC107 15.384615384615385% 61.53846153846154%, #4CAF50 61.53846153846154% 69.23076923076923%, #F44336 69.23076923076923% 100%)
+ Chart background set to: conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 15.3846%, rgb(255, 193, 7) 15.3846%, rgb(255, 193, 7) 61.5385%, rgb(76, 175, 80) 61.5385%, rgb(76, 175, 80) 69.2308%, rgb(244, 67, 54) 69.2308%, rgb(244, 67, 54) 100%)
+ Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 15.3846%, rgb(255, 193, 7) 15.3846%, rgb(255, 193, 7) 61.5385%, rgb(76, 175, 80) 61.5385%, rgb(76, 175, 80) 69.2308%, rgb(244, 67, 54) 69.2308%, rgb(244, 67, 54) 100%) repeat scroll 0% 0% / auto padding-box border-box
+ Computed opacity: 1
+ Element dimensions: Object
+ WHO chart updated successfully
+ 🎨 Updating age classification chart...
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: bmi-adult
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=
+ 📊 Age classification API response: Object
+ 📊 Age Classification Data Analysis: Object
+ 📊 Age Classification Data Breakdown: Object
+ 📊 Age Classification Line Chart Data: Object
+ 📊 Updating existing age classification chart...
+ 📊 Chart instance: Tn
+ 📊 Canvas element: 
+ 📊 Canvas dimensions: Object
+ ✅ Updated age classification chart with data: Object
+ 📊 Chart data after update: Object
+ 🎨 Updating trends chart...
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-adult
+ 📊 Canvas dimensions fixed: Object
+ 📊 Chart resized after update
+ 📊 Trends API response: Object
+ 📊 Trends API data structure: Object
+ 📊 Chart data analysis: Object
+ 📊 Trends chart container found: true
+ 📊 Clearing container and creating canvas...
+ 📊 Canvas element found: true
+ 📊 Canvas context created: true
+ 📊 Creating new trends line chart with data: Object
+ ✅ Trends chart created successfully: true
+ ✅ Chart instance: Tn
+ 📊 Chart creation completed - loading state should be cleared by canvas creation
+ 🎨 Updating severe cases list...
+ 📊 WHO Standard before severe cases call: bmi-adult
+ 📊 Dropdown value before severe cases call: bmi-adult
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: 
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: bmi-adult
+ 📊 Severe cases - Dropdown value at time of call: bmi-adult
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-adult
+ Severe cases data received: Object
+ Found 2 severe cases
+ 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+ 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+ ✅ Severe cases list updated successfully with 2 cases
+ ✅ Chart update completed
+ 🏁 WHO classification loading completed
+ ⏰ Seamless update triggered
+ 🔍 Visibility state: visible
+ 🔍 Update in progress: false
+ 🔍 Current barangay: 
+ 🔄 Seamless update for barangay: 
+ 🔄 Seamless update with WHO standard: bmi-adult
+ 🔄 SEAMLESS UPDATE START - Barangay: 
+ 🔄 Starting parallel component updates...
+ 🔄 [Community Metrics] Starting update for barangay: 
+ 🔄 [Community Metrics] Fetching data with params: Object
+ Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-adult
+ Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=intelligent_programs
+ 🔄 [Distributions] Starting update for barangay: 
+ 🔄 [Distributions] Updating barangay distribution...
+ Fetching barangay distribution data for: Object
+ Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk
+ DatabaseAPI response for dashboard_assessment_stats : Object
+ Returning data: Object
+ 🔄 [Community Metrics] Data received: Object
+ 🔄 [Community Metrics] Updating metrics with values: Object
+ 📊 Updating severely cases cards for all WHO standards, barangay: 
+ 📊 Fetching severely cases data from: /api/DatabaseAPI.php?action=get_severe_cases_all_standards&barangay=
+ 📊 Trends API response: Object
+ 📊 Trends API data structure: Object
+ 📊 Chart data analysis: Object
+ 📊 Updated trends line chart with data: Object
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: bmi-adult
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=
+ DatabaseAPI response for intelligent_programs : Object
+ 🌐 Cached fresh data for intelligent_programs
+ Returning data: Array(0)
+ ✅ Intelligent Programs updated
+ Barangay API Response: Object
+ 🔄 [Distributions] Barangay data received: Object
+ Updating barangay distribution display: Object
+ ✅ [Distributions] Barangay distribution updated
+ 🔄 [Distributions] Updating gender distribution...
+ Fetching gender distribution data for: Object
+ Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
+ 📊 All standards severely cases data received: Object
+ 📊 All Standards Severely Cases:
+   - Severely Underweight (WFA): 4
+   - Severely Stunted (HFA): 4
+   - Severely Wasted (WFH): 2
+ 📊 Setting severely underweight to: 4
+ 📊 Setting severely stunted to: 4
+ 📊 Setting severely wasted to: 2
+ ✅ [Community Metrics] Update completed
+ ✅ Community Metrics updated
+ 📊 Age classification API response: Object
+ 📊 Age Classification Data Analysis: Object
+ 📊 Age Classification Data Breakdown: Object
+ 📊 Age Classification Line Chart Data: Object
+ 📊 Updating existing age classification chart...
+ 📊 Chart instance: Tn
+ 📊 Canvas element: 
+ 📊 Canvas dimensions: Object
+ ✅ Updated age classification chart with data: Object
+ 📊 Chart data after update: Object
+ 🔄 Starting WHO standard change handler...
+ 📊 WHO Standard selected: bmi-adult
+ 📊 Dropdown element found: true
+ 📊 Dropdown value: bmi-adult
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📡 Fetching WHO data with active filters...
+ 📊 Active filters: Object
+ Fetching WHO data for: Object
+ API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=bmi-adult
+ Gender API Response: Object
+ 🔄 [Distributions] Gender data received: Object
+ Updating gender distribution display: Object
+ ✅ [Distributions] Gender distribution updated
+ 🔄 [Distributions] Updating geographic chart...
+ 🌍 updateGeographicChart called with barangay: 
+ 🌍 Using pre-loaded Geographic Data in updateGeographicChart: Array(0)
+ No geographic data available
+ 🌍 updateGeographicChartDisplay called with data: Array(0)
+ ❌ Geographic chart container not found!
+updateGeographicChartDisplay @ dash:8757
+ ✅ [Distributions] Geographic chart updated
+ ✅ [Distributions] All distributions updated successfully
+ ✅ Distributions updated
+ Bulk API Response: Object
+ Mapping bmi-adult to bmi_adult: Object
+ Classification values: Array(6)
+ Calculated total: 13
+ Original total_users: 20
+ Extracted bmi-adult data: Object
+ Processed data for donut chart: Object
+ 📊 Data received for chart update: Object
+ 🎨 Updating chart...
+ WHO Chart Update - Data received: Object
+ Data type: object
+ Data classifications: Object
+ Data total: 13
+ Chart elements found:
+   - chartBg (risk-chart-bg): 
+   - centerText (risk-center-text): 
+   - segments (risk-segments): 
+ Processing classifications: Object
+ Classifications keys: Array(6)
+ Classifications values: Array(6)
+ Total users: 13
+ Has data (non-zero counts): true
+ Chart segments: Array(4)
+ Chart segments length: 4
+ Chart segments details: Array(4)
+ Creating gradient: conic-gradient(#E91E63 0% 15.384615384615385%, #FFC107 15.384615384615385% 61.53846153846154%, #4CAF50 61.53846153846154% 69.23076923076923%, #F44336 69.23076923076923% 100%)
+ Chart background set to: conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 15.3846%, rgb(255, 193, 7) 15.3846%, rgb(255, 193, 7) 61.5385%, rgb(76, 175, 80) 61.5385%, rgb(76, 175, 80) 69.2308%, rgb(244, 67, 54) 69.2308%, rgb(244, 67, 54) 100%)
+ Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 15.3846%, rgb(255, 193, 7) 15.3846%, rgb(255, 193, 7) 61.5385%, rgb(76, 175, 80) 61.5385%, rgb(76, 175, 80) 69.2308%, rgb(244, 67, 54) 69.2308%, rgb(244, 67, 54) 100%) repeat scroll 0% 0% / auto padding-box border-box
+ Computed opacity: 1
+ Element dimensions: Object
+ WHO chart updated successfully
+ 🎨 Updating age classification chart...
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: bmi-adult
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=
+ 📊 Canvas dimensions fixed: Object
+ 📊 Chart resized after update
+ 📊 Age classification API response: Object
+ 📊 Age Classification Data Analysis: Object
+ 📊 Age Classification Data Breakdown: Object
+ 📊 Age Classification Line Chart Data: Object
+ 📊 Updating existing age classification chart...
+ 📊 Chart instance: Tn
+ 📊 Canvas element: 
+ 📊 Canvas dimensions: Object
+ ✅ Updated age classification chart with data: Object
+ 📊 Chart data after update: Object
+ 🎨 Updating trends chart...
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-adult
+ 📊 Trends API response: Object
+ 📊 Trends API data structure: Object
+ 📊 Chart data analysis: Object
+ 📊 Updated trends line chart with data: Object
+ 🎨 Updating severe cases list...
+ 📊 WHO Standard before severe cases call: bmi-adult
+ 📊 Dropdown value before severe cases call: bmi-adult
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: 
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: bmi-adult
+ 📊 Severe cases - Dropdown value at time of call: bmi-adult
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-adult
+ 📊 Canvas dimensions fixed: Object
+ 📊 Chart resized after update
+ Severe cases data received: Object
+ Found 2 severe cases
+ 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+ 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+ ✅ Severe cases list updated successfully with 2 cases
+ ✅ Chart update completed
+ 🏁 WHO classification loading completed
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: 
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: bmi-adult
+ 📊 Severe cases - Dropdown value at time of call: bmi-adult
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-adult
+ Severe cases data received: Object
+ Found 2 severe cases
+ 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+ 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+ ✅ Severe cases list updated successfully with 2 cases
+ ✅ Charts updated
+ 🔄 SEAMLESS UPDATE COMPLETE - Duration: 616ms
+ 📊 Updated components: Array(4)
+ ✅ Seamless update completed
+ WHO dropdown changed to: bmi-for-age
+ 🔄 Starting WHO standard change handler...
+ 📊 WHO Standard selected: bmi-for-age
+ 📊 Dropdown element found: true
+ 📊 Dropdown value: bmi-for-age
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📡 Fetching WHO data with active filters...
+ 📊 Active filters: Object
+ Fetching WHO data for: Object
+ API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=bmi-for-age
+ ⏰ Seamless update triggered
+ 🔍 Visibility state: visible
+ 🔍 Update in progress: false
+ 🔍 Current barangay: 
+ 🔄 Seamless update for barangay: 
+ 🔄 Seamless update with WHO standard: bmi-for-age
+ 🔄 SEAMLESS UPDATE START - Barangay: 
+ 🔄 Starting parallel component updates...
+ 🔄 [Community Metrics] Starting update for barangay: 
+ 🔄 [Community Metrics] Fetching data with params: Object
+ Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-for-age
+ 📦 Using cached data for intelligent_programs
+ 🔄 [Distributions] Starting update for barangay: 
+ 🔄 [Distributions] Updating barangay distribution...
+ Fetching barangay distribution data for: Object
+ Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk
+ ✅ Intelligent Programs updated
+ Bulk API Response: Object
+ Mapping bmi-for-age to bmi_for_age: Object
+ Classification values: Array(5)
+ Calculated total: 0
+ Original total_users: 20
+ Extracted bmi-for-age data: Object
+ Processed data for donut chart: Object
+ 📊 Data received for chart update: Object
+ 🎨 Updating chart...
+ WHO Chart Update - Data received: Object
+ Data type: object
+ Data classifications: Object
+ Data total: 0
+ Chart elements found:
+   - chartBg (risk-chart-bg): 
+   - centerText (risk-center-text): 
+   - segments (risk-segments): 
+ 🎨 Updating age classification chart...
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: bmi-for-age
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-for-age&barangay=
+ 📊 Trends API response: Object
+ 📊 Trends API data structure: Object
+ 📊 Chart data analysis: Object
+ No chartable datasets available - showing message with user count
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: bmi-for-age
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-for-age&barangay=
+ Barangay API Response: Object
+ 🔄 [Distributions] Barangay data received: Object
+ Updating barangay distribution display: Object
+ ✅ [Distributions] Barangay distribution updated
+ 🔄 [Distributions] Updating gender distribution...
+ Fetching gender distribution data for: Object
+ Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
+ DatabaseAPI response for dashboard_assessment_stats : Object
+ Returning data: Object
+ 🔄 [Community Metrics] Data received: Object
+ 🔄 [Community Metrics] Updating metrics with values: Object
+ 📊 Updating severely cases cards for all WHO standards, barangay: 
+ 📊 Fetching severely cases data from: /api/DatabaseAPI.php?action=get_severe_cases_all_standards&barangay=
+ 📊 Age classification API response: Object
+ 📊 Age Classification Data Analysis: Object
+ 📊 Age Classification Data Breakdown: Object
+ ❌ No age classification line chart data available
+ ❌ Missing data details: Object
+ 🎨 Updating trends chart...
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-for-age
+ Gender API Response: Object
+ 🔄 [Distributions] Gender data received: Object
+ Updating gender distribution display: Object
+ ✅ [Distributions] Gender distribution updated
+ 🔄 [Distributions] Updating geographic chart...
+ 🌍 updateGeographicChart called with barangay: 
+ 🌍 Using pre-loaded Geographic Data in updateGeographicChart: Array(0)
+ No geographic data available
+ 🌍 updateGeographicChartDisplay called with data: Array(0)
+ ❌ Geographic chart container not found!
+updateGeographicChartDisplay @ dash:8757
+ ✅ [Distributions] Geographic chart updated
+ ✅ [Distributions] All distributions updated successfully
+ ✅ Distributions updated
+ 📊 All standards severely cases data received: Object
+ 📊 All Standards Severely Cases:
+   - Severely Underweight (WFA): 4
+   - Severely Stunted (HFA): 4
+   - Severely Wasted (WFH): 2
+ 📊 Setting severely underweight to: 4
+ 📊 Setting severely stunted to: 4
+ 📊 Setting severely wasted to: 2
+ ✅ [Community Metrics] Update completed
+ ✅ Community Metrics updated
+ 📊 Age classification API response: Object
+ 📊 Age Classification Data Analysis: Object
+ 📊 Age Classification Data Breakdown: Object
+ ❌ No age classification line chart data available
+ ❌ Missing data details: Object
+ WHO classification already loading, skipping...
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: 
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: bmi-for-age
+ 📊 Severe cases - Dropdown value at time of call: bmi-for-age
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-for-age
+ 📊 Trends API response: Object
+ 📊 Trends API data structure: Object
+ 📊 Chart data analysis: Object
+ No chartable datasets available - showing message with user count
+ 🎨 Updating severe cases list...
+ 📊 WHO Standard before severe cases call: bmi-for-age
+ 📊 Dropdown value before severe cases call: bmi-for-age
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: 
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: bmi-for-age
+ 📊 Severe cases - Dropdown value at time of call: bmi-for-age
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-for-age
+ Severe cases data received: Object
+ No severe cases found
+ ✅ Charts updated
+ 🔄 SEAMLESS UPDATE COMPLETE - Duration: 364ms
+ 📊 Updated components: Array(4)
+ Severe cases data received: Object
+ No severe cases found
+ ✅ Chart update completed
+ 🏁 WHO classification loading completed
+ ✅ Seamless update completed
+ ⏰ Seamless update triggered
+ 🔍 Visibility state: visible
+ 🔍 Update in progress: false
+ 🔍 Current barangay: 
+ 🔄 Seamless update for barangay: 
+ 🔄 Seamless update with WHO standard: bmi-for-age
+ 🔄 SEAMLESS UPDATE START - Barangay: 
+ 🔄 Starting parallel component updates...
+ 🔄 [Community Metrics] Starting update for barangay: 
+ 🔄 [Community Metrics] Fetching data with params: Object
+ Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-for-age
+ 📦 Using cached data for intelligent_programs
+ 🔄 [Distributions] Starting update for barangay: 
+ 🔄 [Distributions] Updating barangay distribution...
+ Fetching barangay distribution data for: Object
+ Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk
+ ✅ Intelligent Programs updated
+ Barangay API Response: Object
+ 🔄 [Distributions] Barangay data received: Object
+ Updating barangay distribution display: Object
+ ✅ [Distributions] Barangay distribution updated
+ 🔄 [Distributions] Updating gender distribution...
+ Fetching gender distribution data for: Object
+ Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
+ DatabaseAPI response for dashboard_assessment_stats : Object
+ Returning data: Object
+ 🔄 [Community Metrics] Data received: Object
+ 🔄 [Community Metrics] Updating metrics with values: Object
+ 📊 Updating severely cases cards for all WHO standards, barangay: 
+ 📊 Fetching severely cases data from: /api/DatabaseAPI.php?action=get_severe_cases_all_standards&barangay=
+ 📊 Trends API response: Object
+ 📊 Trends API data structure: Object
+ 📊 Chart data analysis: Object
+ No chartable datasets available - showing message with user count
+ 📊 Updating Age Classification Line Chart...
+ Chart instance exists but canvas is gone - destroying chart
+ Canvas not found, restoring...
+ 📊 Using WHO Standard: bmi-for-age
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-for-age&barangay=
+ Gender API Response: Object
+ 🔄 [Distributions] Gender data received: Object
+ Updating gender distribution display: Object
+ ✅ [Distributions] Gender distribution updated
+ 🔄 [Distributions] Updating geographic chart...
+ 🌍 updateGeographicChart called with barangay: 
+ 🌍 Using pre-loaded Geographic Data in updateGeographicChart: Array(0)
+ No geographic data available
+ 🌍 updateGeographicChartDisplay called with data: Array(0)
+ ❌ Geographic chart container not found!
+updateGeographicChartDisplay @ dash:8757
+ ✅ [Distributions] Geographic chart updated
+ ✅ [Distributions] All distributions updated successfully
+ ✅ Distributions updated
+ 📊 All standards severely cases data received: Object
+ 📊 All Standards Severely Cases:
+   - Severely Underweight (WFA): 4
+   - Severely Stunted (HFA): 4
+   - Severely Wasted (WFH): 2
+ 📊 Setting severely underweight to: 4
+ 📊 Setting severely stunted to: 4
+ 📊 Setting severely wasted to: 2
+ ✅ [Community Metrics] Update completed
+ ✅ Community Metrics updated
+ 📊 Age classification API response: Object
+ 📊 Age Classification Data Analysis: Object
+ 📊 Age Classification Data Breakdown: Object
+ ❌ No age classification line chart data available
+ ❌ Missing data details: Object
+ 🔄 Starting WHO standard change handler...
+ 📊 WHO Standard selected: bmi-for-age
+ 📊 Dropdown element found: true
+ 📊 Dropdown value: bmi-for-age
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📡 Fetching WHO data with active filters...
+ 📊 Active filters: Object
+ Fetching WHO data for: Object
+ API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=bmi-for-age
+ Bulk API Response: Object
+ Mapping bmi-for-age to bmi_for_age: Object
+ Classification values: Array(5)
+ Calculated total: 0
+ Original total_users: 20
+ Extracted bmi-for-age data: Object
+ Processed data for donut chart: Object
+ 📊 Data received for chart update: Object
+ 🎨 Updating chart...
+ WHO Chart Update - Data received: Object
+ Data type: object
+ Data classifications: Object
+ Data total: 0
+ Chart elements found:
+   - chartBg (risk-chart-bg): 
+   - centerText (risk-center-text): 
+   - segments (risk-segments): 
+ 🎨 Updating age classification chart...
+ 📊 Updating Age Classification Line Chart...
+ Canvas not found, restoring...
+ 📊 Using WHO Standard: bmi-for-age
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-for-age&barangay=
+ 📊 Age classification API response: Object
+ 📊 Age Classification Data Analysis: Object
+ 📊 Age Classification Data Breakdown: Object
+ ❌ No age classification line chart data available
+ ❌ Missing data details: Object
+ 🎨 Updating trends chart...
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-for-age
+ 📊 Trends API response: Object
+ 📊 Trends API data structure: Object
+ 📊 Chart data analysis: Object
+ No chartable datasets available - showing message with user count
+ 🎨 Updating severe cases list...
+ 📊 WHO Standard before severe cases call: bmi-for-age
+ 📊 Dropdown value before severe cases call: bmi-for-age
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: 
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: bmi-for-age
+ 📊 Severe cases - Dropdown value at time of call: bmi-for-age
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-for-age
+ Severe cases data received: Object
+ No severe cases found
+ ✅ Chart update completed
+ 🏁 WHO classification loading completed
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: 
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: bmi-for-age
+ 📊 Severe cases - Dropdown value at time of call: bmi-for-age
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-for-age
+ Severe cases data received: Object
+ No severe cases found
+ ✅ Charts updated
+ 🔄 SEAMLESS UPDATE COMPLETE - Duration: 719ms
+ 📊 Updated components: Array(4)
+ ✅ Seamless update completed
+ WHO dropdown changed to: bmi-adult
+ 🔄 Starting WHO standard change handler...
+ 📊 WHO Standard selected: bmi-adult
+ 📊 Dropdown element found: true
+ 📊 Dropdown value: bmi-adult
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📡 Fetching WHO data with active filters...
+ 📊 Active filters: Object
+ Fetching WHO data for: Object
+ API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=bmi-adult
+ Bulk API Response: Object
+ Mapping bmi-adult to bmi_adult: Object
+ Classification values: Array(6)
+ Calculated total: 13
+ Original total_users: 20
+ Extracted bmi-adult data: Object
+ Processed data for donut chart: Object
+ 📊 Data received for chart update: Object
+ 🎨 Updating chart...
+ WHO Chart Update - Data received: Object
+ Data type: object
+ Data classifications: Object
+ Data total: 13
+ Chart elements found:
+   - chartBg (risk-chart-bg): 
+   - centerText (risk-center-text): 
+   - segments (risk-segments): 
+ Processing classifications: Object
+ Classifications keys: Array(6)
+ Classifications values: Array(6)
+ Total users: 13
+ Has data (non-zero counts): true
+ Chart segments: Array(4)
+ Chart segments length: 4
+ Chart segments details: Array(4)
+ Creating gradient: conic-gradient(#E91E63 0% 15.384615384615385%, #FFC107 15.384615384615385% 61.53846153846154%, #4CAF50 61.53846153846154% 69.23076923076923%, #F44336 69.23076923076923% 100%)
+ Chart background set to: conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 15.3846%, rgb(255, 193, 7) 15.3846%, rgb(255, 193, 7) 61.5385%, rgb(76, 175, 80) 61.5385%, rgb(76, 175, 80) 69.2308%, rgb(244, 67, 54) 69.2308%, rgb(244, 67, 54) 100%)
+ Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 15.3846%, rgb(255, 193, 7) 15.3846%, rgb(255, 193, 7) 61.5385%, rgb(76, 175, 80) 61.5385%, rgb(76, 175, 80) 69.2308%, rgb(244, 67, 54) 69.2308%, rgb(244, 67, 54) 100%) repeat scroll 0% 0% / auto padding-box border-box
+ Computed opacity: 0.3
+ Element dimensions: Object
+ WHO chart updated successfully
+ 🎨 Updating age classification chart...
+ 📊 Updating Age Classification Line Chart...
+ Canvas not found, restoring...
+ 📊 Using WHO Standard: bmi-adult
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=
+ 📊 Age classification API response: Object
+ 📊 Age Classification Data Analysis: Object
+ 📊 Age Classification Data Breakdown: Object
+ 📊 Age Classification Line Chart Data: Object
+ 📊 Canvas element found: 
+ 📊 Canvas dimensions before chart creation: Object
+ 📊 Canvas dimensions set: Object
+ 📊 Canvas context: CanvasRenderingContext2D
+ 📊 Creating new age classification chart with data: Object
+ ✅ Age Classification Line Chart created successfully
+ 📊 Chart instance after creation: Tn
+ 📊 Chart canvas after creation: 
+ 📊 Chart data after creation: Object
+ 📊 Canvas dimensions after creation: Object
+ 🎨 Updating trends chart...
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-adult
+ 📊 Trends API response: Object
+ 📊 Trends API data structure: Object
+ 📊 Chart data analysis: Object
+ 📊 Updated trends line chart with data: Object
+ 🎨 Updating severe cases list...
+ 📊 WHO Standard before severe cases call: bmi-adult
+ 📊 Dropdown value before severe cases call: bmi-adult
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: 
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: bmi-adult
+ 📊 Severe cases - Dropdown value at time of call: bmi-adult
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-adult
+ Severe cases data received: Object
+ Found 2 severe cases
+ 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+ 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+ ✅ Severe cases list updated successfully with 2 cases
+ ✅ Chart update completed
+ 🏁 WHO classification loading completed
+ ⏰ Seamless update triggered
+ 🔍 Visibility state: visible
+ 🔍 Update in progress: false
+ 🔍 Current barangay: 
+ 🔄 Seamless update for barangay: 
+ 🔄 Seamless update with WHO standard: bmi-adult
+ 🔄 SEAMLESS UPDATE START - Barangay: 
+ 🔄 Starting parallel component updates...
+ 🔄 [Community Metrics] Starting update for barangay: 
+ 🔄 [Community Metrics] Fetching data with params: Object
+ Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: Object
+ 📅 Current date values: Object
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: Object
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-adult
+ 📦 Using cached data for intelligent_programs
+ 🔄 [Distributions] Starting update for barangay: 
+ 🔄 [Distributions] Updating barangay distribution...
+ Fetching barangay distribution data for: Object
+ Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk
+ ✅ Intelligent Programs updated
+ Barangay API Response: Object
+ 🔄 [Distributions] Barangay data received: Object
+ Updating barangay distribution display: Object
+ ✅ [Distributions] Barangay distribution updated
+ 🔄 [Distributions] Updating gender distribution...
+ Fetching gender distribution data for: Object
+ Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
+ DatabaseAPI response for dashboard_assessment_stats : Object
+ Returning data: Object
+ 🔄 [Community Metrics] Data received: Object
+ 🔄 [Community Metrics] Updating metrics with values: Object
+ 📊 Updating severely cases cards for all WHO standards, barangay: 
+ 📊 Fetching severely cases data from: /api/DatabaseAPI.php?action=get_severe_cases_all_standards&barangay=
+ 📊 Trends API response: Object
+ 📊 Trends API data structure: Object
+ 📊 Chart data analysis: Object
+ 📊 Updated trends line chart with data: Object
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: bmi-adult
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=
+ Gender API Response: Object
+ 🔄 [Distributions] Gender data received: Object
+ Updating gender distribution display: Object
+ ✅ [Distributions] Gender distribution updated
+ 🔄 [Distributions] Updating geographic chart...
+ 🌍 updateGeographicChart called with barangay: 
+ 🌍 Using pre-loaded Geographic Data in updateGeographicChart: Array(0)
+ No geographic data available
+ 🌍 updateGeographicChartDisplay called with data: Array(0)
+ ❌ Geographic chart container not found!
+updateGeographicChartDisplay @ dash:8757
+ ✅ [Distributions] Geographic chart updated
+ ✅ [Distributions] All distributions updated successfully
+ ✅ Distributions updated
+ 📊 All standards severely cases data received: Object
+ 📊 All Standards Severely Cases:
+   - Severely Underweight (WFA): 4
+   - Severely Stunted (HFA): 4
+   - Severely Wasted (WFH): 2
+ 📊 Setting severely underweight to: 4
+ 📊 Setting severely stunted to: 4
+ 📊 Setting severely wasted to: 2
+ ✅ [Community Metrics] Update completed
+ ✅ Community Metrics updated
+ 📊 Age classification API response: Object
+ 📊 Age Classification Data Analysis: Object
+ 📊 Age Classification Data Breakdown: Object
+ 📊 Age Classification Line Chart Data: Object
+ 📊 Updating existing age classification chart...
+ 📊 Chart instance: Tn
+ 📊 Canvas element: 
+ 📊 Canvas dimensions: Object
+ ✅ Updated age classification chart with data: Object
+ 📊 Chart data after update: Object
+ 🔄 Starting WHO standard change handler...
+ 📊 WHO Standard selected: bmi-adult
+ 📊 Dropdown element found: true
+ 📊 Dropdown value: bmi-adult
+ 🔍 getAllActiveFilters - Raw values: Object
+ 🔍 Final filter value: 
+ 📡 Fetching WHO data with active filters...
+ 📊 Active filters: Object
+ Fetching WHO data for: Object
+ API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=bmi-adult
+dash:11080 Bulk API Response: Object
+dash:11106 Mapping bmi-adult to bmi_adult: Object
+dash:11107 Classification values: Array(6)
+dash:11108 Calculated total: 13
+dash:11109 Original total_users: 20
+dash:11111 Extracted bmi-adult data: Object
+dash:11122 Processed data for donut chart: Object
+dash:11033 📊 Data received for chart update: Object
+dash:11036 🎨 Updating chart...
+dash:10853 WHO Chart Update - Data received: Object
+dash:10854 Data type: object
+dash:10855 Data classifications: Object
+dash:10856 Data total: 13
+dash:10864 Chart elements found:
+dash:10865   - chartBg (risk-chart-bg): <div class=​"donut-chart-bg" id=​"risk-chart-bg" style=​"opacity:​ 1;​ background:​ conic-gradient(rgb(233, 30, 99)​ 0%, rgb(233, 30, 99)​ 15.3846%, rgb(255, 193, 7)​ 15.3846%, rgb(255, 193, 7)​ 61.5385%, rgb(76, 175, 80)​ 61.5385%, rgb(76, 175, 80)​ 69.2308%, rgb(244, 67, 54)​ 69.2308%, rgb(244, 67, 54)​ 100%)​;​">​</div>​
+dash:10866   - centerText (risk-center-text): <div class=​"donut-center-text" id=​"risk-center-text" style=​"color:​ rgb(51, 51, 51)​;​">​13​</div>​flex
+dash:10867   - segments (risk-segments): <div class=​"segments" id=​"risk-segments">​…​</div>​
+dash:10891 Processing classifications: Object
+dash:10892 Classifications keys: Array(6)
+dash:10893 Classifications values: Array(6)
+dash:10894 Total users: 13
+dash:10898 Has data (non-zero counts): true
+dash:10934 Chart segments: Array(4)
+dash:10935 Chart segments length: 4
+dash:10936 Chart segments details: Array(4)
+dash:10948 Creating gradient: conic-gradient(#E91E63 0% 15.384615384615385%, #FFC107 15.384615384615385% 61.53846153846154%, #4CAF50 61.53846153846154% 69.23076923076923%, #F44336 69.23076923076923% 100%)
+dash:10951 Chart background set to: conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 15.3846%, rgb(255, 193, 7) 15.3846%, rgb(255, 193, 7) 61.5385%, rgb(76, 175, 80) 61.5385%, rgb(76, 175, 80) 69.2308%, rgb(244, 67, 54) 69.2308%, rgb(244, 67, 54) 100%)
+dash:10955 Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 15.3846%, rgb(255, 193, 7) 15.3846%, rgb(255, 193, 7) 61.5385%, rgb(76, 175, 80) 61.5385%, rgb(76, 175, 80) 69.2308%, rgb(244, 67, 54) 69.2308%, rgb(244, 67, 54) 100%) repeat scroll 0% 0% / auto padding-box border-box
+dash:10956 Computed opacity: 1
+dash:10957 Element dimensions: Object
+dash:10981 WHO chart updated successfully
+dash:11041 🎨 Updating age classification chart...
+dash:10539 📊 Updating Age Classification Line Chart...
+dash:10572 📊 Using WHO Standard: bmi-adult
+dash:10573 📊 Using Barangay: 
+dash:10577 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=
+dash:10649 📊 Canvas dimensions fixed: Object
+dash:10653 📊 Chart resized after update
+dash:10582 📊 Age classification API response: Object
+dash:10583 📊 Age Classification Data Analysis: Object
+dash:10597 📊 Age Classification Data Breakdown: Object
+dash:10622 📊 Age Classification Line Chart Data: Object
+dash:10626 📊 Updating existing age classification chart...
+dash:10627 📊 Chart instance: Tn
+dash:10628 📊 Canvas element: <canvas id=​"ageClassificationLineChart" style=​"width:​ 413px;​ height:​ 136px;​ display:​ block;​ box-sizing:​ border-box;​" width=​"826" height=​"272">​
+dash:10629 📊 Canvas dimensions: Object
+dash:10634 ✅ Updated age classification chart with data: Object
+dash:10635 📊 Chart data after update: Object
+dash:11045 🎨 Updating trends chart...
+dash:10271 📊 Updating Trends Chart...
+dash:10279 📅 Date inputs found: Object
+dash:10280 📅 Current date values: Object
+dash:8289 🔍 getAllActiveFilters - Raw values: Object
+dash:8305 🔍 Final filter value: 
+dash:10292 📊 Trends Chart Filters: Object
+dash:10304 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-adult
+dash:10649 📊 Canvas dimensions fixed: Object
+dash:10653 📊 Chart resized after update
+dash:10309 📊 Trends API response: Object
+dash:10310 📊 Trends API data structure: Object
+dash:10329 📊 Chart data analysis: Object
+dash:10361 📊 Updated trends line chart with data: Object
+dash:11049 🎨 Updating severe cases list...
+dash:11050 📊 WHO Standard before severe cases call: bmi-adult
+dash:11051 📊 Dropdown value before severe cases call: bmi-adult
+dash:12434 📊 Updating severe cases list...
+dash:12435 📊 Severe cases function called with barangay: 
+dash:12439 📊 Severe cases list element found: <div class=​"severe-cases-list" id=​"severe-cases-list">​…​</div>​flex
+dash:12454 📊 Severe cases - WHO Standard Select element: <select id=​"whoStandardSelect" style=​"padding:​ 8px 12px;​ border:​ 1px solid #ddd;​ border-radius:​ 6px;​ background:​ white;​ color:​ #333;​ font-size:​ 14px;​">​…​</select>​
+dash:12455 📊 Severe cases - WHO Standard value: bmi-adult
+dash:12456 📊 Severe cases - Dropdown value at time of call: bmi-adult
+dash:12460 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-adult
+dash:12468 Severe cases data received: {success: true, data: {…}}
+dash:12477 Found 2 severe cases
+dash:12490 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+dash:12490 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+dash:12514 ✅ Severe cases list updated successfully with 2 cases
+dash:11054 ✅ Chart update completed
+dash:11060 🏁 WHO classification loading completed
+dash:12434 📊 Updating severe cases list...
+dash:12435 📊 Severe cases function called with barangay: 
+dash:12439 📊 Severe cases list element found: <div class=​"severe-cases-list" id=​"severe-cases-list">​…​</div>​flex
+dash:12454 📊 Severe cases - WHO Standard Select element: <select id=​"whoStandardSelect" style=​"padding:​ 8px 12px;​ border:​ 1px solid #ddd;​ border-radius:​ 6px;​ background:​ white;​ color:​ #333;​ font-size:​ 14px;​">​…​</select>​
+dash:12455 📊 Severe cases - WHO Standard value: bmi-adult
+dash:12456 📊 Severe cases - Dropdown value at time of call: bmi-adult
+dash:12460 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-adult
+dash:12468 Severe cases data received: {success: true, data: {…}}
+dash:12477 Found 2 severe cases
+dash:12490 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+dash:12490 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+dash:12514 ✅ Severe cases list updated successfully with 2 cases
+dash:12822 ✅ Charts updated
+dash:12845 🔄 SEAMLESS UPDATE COMPLETE - Duration: 948ms
+dash:12846 📊 Updated components: (4) ['Community Metrics', 'Charts', 'Intelligent Programs', 'Distributions']
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+Fetch finished loading: GET "<URL>".
+dash:12787 ✅ Seamless update completed
+dash:12764 ⏰ Seamless update triggered
+dash:12765 🔍 Visibility state: visible
+dash:12766 🔍 Update in progress: false
+dash:12767 🔍 Current barangay: 
+dash:12771 🔄 Seamless update for barangay: 
+dash:12778 🔄 Seamless update with WHO standard: bmi-adult
+dash:12807 🔄 SEAMLESS UPDATE START - Barangay: 
+dash:12812 🔄 Starting parallel component updates...
+dash:12858 🔄 [Community Metrics] Starting update for barangay: 
+dash:12865 🔄 [Community Metrics] Fetching data with params: {}
+dash:9616 Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php
+dash:10271 📊 Updating Trends Chart...
+dash:10279 📅 Date inputs found: {fromDateInput: true, toDateInput: true}
+dash:10280 📅 Current date values: {fromDate: '2025-01-01', toDate: '2025-10-09'}
+dash:8289 🔍 getAllActiveFilters - Raw values: {municipality: 'All Municipalities', barangay: 'All Barangays', whoStandard: 'bmi-adult'}
+dash:8305 🔍 Final filter value: 
+dash:10292 📊 Trends Chart Filters: {fromDate: '2025-01-01', toDate: '2025-10-09', barangay: '', whoStandard: 'bmi-adult'}
+dash:10304 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-adult
+dash:9596 📦 Using cached data for intelligent_programs
+dash:12930 🔄 [Distributions] Starting update for barangay: 
+dash:12933 🔄 [Distributions] Updating barangay distribution...
+dash:11144 Fetching barangay distribution data for: {barangay: ''}
+dash:11147 Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk
+dash:12829 ✅ Intelligent Programs updated
+dash:11156 Barangay API Response: {success: true, data: {…}}
+dash:12936 🔄 [Distributions] Barangay data received: {barangay_distribution: {…}, municipality_distribution: {…}, total_users: 20}
+dash:11260 Updating barangay distribution display: {barangay_distribution: {…}, municipality_distribution: {…}, total_users: 20}
+dash:12939 ✅ [Distributions] Barangay distribution updated
+dash:12948 🔄 [Distributions] Updating gender distribution...
+dash:11178 Fetching gender distribution data for: {barangay: ''}
+dash:11181 Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
+dash:9628 DatabaseAPI response for dashboard_assessment_stats : {success: true, data: {…}}
+dash:9638 Returning data: {total_screened: 20, high_risk_cases: 12, sam_cases: 6, critical_muac: 6, risk_levels: {…}, …}
+dash:12867 🔄 [Community Metrics] Data received: {success: true, data: {…}}
+dash:12870 🔄 [Community Metrics] Updating metrics with values: {total_screened: 20, high_risk: 12, sam_cases: 6, critical_muac: 6}
+dash:8329 📊 Updating severely cases cards for all WHO standards, barangay: 
+dash:8334 📊 Fetching severely cases data from: /api/DatabaseAPI.php?action=get_severe_cases_all_standards&barangay=
+dash:10309 📊 Trends API response: {success: true, data: {…}}
+dash:10310 📊 Trends API data structure: {success: true, hasData: true, dataKeys: Array(3), timeLabels: Array(10), datasets: Array(4), …}
+dash:10329 📊 Chart data analysis: {timeLabels: 10, datasets: 4, totalUsers: 20}
+dash:10361 📊 Updated trends line chart with data: {timeLabels: Array(10), datasets: Array(4), totalUsers: 20}
+dash:10539 📊 Updating Age Classification Line Chart...
+dash:10572 📊 Using WHO Standard: bmi-adult
+dash:10573 📊 Using Barangay: 
+dash:10577 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=
+dash:11190 Gender API Response: {success: true, data: {…}}
+dash:12951 🔄 [Distributions] Gender data received: {gender_distribution: {…}, total_users: 20}
+dash:11210 Updating gender distribution display: {gender_distribution: {…}, total_users: 20}
+dash:12954 ✅ [Distributions] Gender distribution updated
+dash:12963 🔄 [Distributions] Updating geographic chart...
+dash:8734 🌍 updateGeographicChart called with barangay: 
+dash:8736 🌍 Using pre-loaded Geographic Data in updateGeographicChart: []
+dash:8741 No geographic data available
+dash:8754 🌍 updateGeographicChartDisplay called with data: []
+dash:8757 ❌ Geographic chart container not found!
+updateGeographicChartDisplay @ dash:8757
+updateGeographicChart @ dash:8742
+seamlessUpdateDistributions @ dash:12965
+await in seamlessUpdateDistributions
+seamlessDashboardUpdate @ dash:12835
+(anonymous) @ dash:12781
+dash:12966 ✅ [Distributions] Geographic chart updated
+dash:12971 ✅ [Distributions] All distributions updated successfully
+dash:12836 ✅ Distributions updated
+dash:8342 📊 All standards severely cases data received: {success: true, data: {…}}
+dash:8354 📊 All Standards Severely Cases:
+dash:8355   - Severely Underweight (WFA): 4
+dash:8356   - Severely Stunted (HFA): 4
+dash:8357   - Severely Wasted (WFH): 2
+dash:8363 📊 Setting severely underweight to: 4
+dash:8373 📊 Setting severely stunted to: 4
+dash:8383 📊 Setting severely wasted to: 2
+dash:12885 ✅ [Community Metrics] Update completed
+dash:12815 ✅ Community Metrics updated
+dash:10582 📊 Age classification API response: {success: true, data: {…}}
+dash:10583 📊 Age Classification Data Analysis: {success: true, hasData: {…}, dataKeys: Array(5), fullData: {…}}
+dash:10597 📊 Age Classification Data Breakdown: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13, ageLabelsLength: 9, datasetsLength: 4, …}
+dash:10622 📊 Age Classification Line Chart Data: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13, totalPopulation: undefined}
+dash:10626 📊 Updating existing age classification chart...
+dash:10627 📊 Chart instance: Tn {config: _n, $context: {…}, platform: Ss, id: 2, ctx: CanvasRenderingContext2D, …}
+dash:10628 📊 Canvas element: <canvas id=​"ageClassificationLineChart" style=​"width:​ 413px;​ height:​ 136px;​ display:​ block;​ box-sizing:​ border-box;​" width=​"826" height=​"272">​
+dash:10629 📊 Canvas dimensions: {width: 826, height: 272}
+dash:10634 ✅ Updated age classification chart with data: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13}
+dash:10635 📊 Chart data after update: {labels: Array(9), datasets: Array(4)}
+dash:11014 🔄 Starting WHO standard change handler...
+dash:11019 📊 WHO Standard selected: bmi-adult
+dash:11020 📊 Dropdown element found: true
+dash:11021 📊 Dropdown value: bmi-adult
+dash:8289 🔍 getAllActiveFilters - Raw values: {municipality: 'All Municipalities', barangay: 'All Barangays', whoStandard: 'bmi-adult'}
+dash:8305 🔍 Final filter value: 
+dash:11028 📡 Fetching WHO data with active filters...
+dash:11029 📊 Active filters: {municipality: 'All Municipalities', barangay: 'All Barangays', whoStandard: 'bmi-adult', finalFilter: ''}
+dash:11067 Fetching WHO data for: {whoStandard: 'bmi-adult', barangay: ''}
+dash:11071 API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=bmi-adult
+dash:11080 Bulk API Response: {success: true, data: {…}, total_users: 20, processed_users: 19, actual_totals: {…}}
+dash:11106 Mapping bmi-adult to bmi_adult: {Severely Underweight: 2, Underweight: 6, Normal: 1, Overweight: 0, Obese: 4, …}
+dash:11107 Classification values: (6) [2, 6, 1, 0, 4, 7]
+dash:11108 Calculated total: 13
+dash:11109 Original total_users: 20
+dash:11111 Extracted bmi-adult data: {classifications: {…}, total: 13}
+dash:11122 Processed data for donut chart: {success: true, data: {…}}
+dash:11033 📊 Data received for chart update: {classifications: {…}, total: 13}
+dash:11036 🎨 Updating chart...
+dash:10853 WHO Chart Update - Data received: {classifications: {…}, total: 13}
+dash:10854 Data type: object
+dash:10855 Data classifications: {Severely Underweight: 2, Underweight: 6, Normal: 1, Overweight: 0, Obese: 4, …}
+dash:10856 Data total: 13
+dash:10864 Chart elements found:
+dash:10865   - chartBg (risk-chart-bg): <div class=​"donut-chart-bg" id=​"risk-chart-bg" style=​"opacity:​ 1;​ background:​ conic-gradient(rgb(233, 30, 99)​ 0%, rgb(233, 30, 99)​ 15.3846%, rgb(255, 193, 7)​ 15.3846%, rgb(255, 193, 7)​ 61.5385%, rgb(76, 175, 80)​ 61.5385%, rgb(76, 175, 80)​ 69.2308%, rgb(244, 67, 54)​ 69.2308%, rgb(244, 67, 54)​ 100%)​;​">​</div>​
+dash:10866   - centerText (risk-center-text): <div class=​"donut-center-text" id=​"risk-center-text" style=​"color:​ rgb(51, 51, 51)​;​">​13​</div>​flex
+dash:10867   - segments (risk-segments): <div class=​"segments" id=​"risk-segments">​…​</div>​
+dash:10891 Processing classifications: {Severely Underweight: 2, Underweight: 6, Normal: 1, Overweight: 0, Obese: 4, …}
+dash:10892 Classifications keys: (6) ['Severely Underweight', 'Underweight', 'Normal', 'Overweight', 'Obese', 'No Data']
+dash:10893 Classifications values: (6) [2, 6, 1, 0, 4, 7]
+dash:10894 Total users: 13
+dash:10898 Has data (non-zero counts): true
+dash:10934 Chart segments: (4) [{…}, {…}, {…}, {…}]
+dash:10935 Chart segments length: 4
+dash:10936 Chart segments details: (4) [{…}, {…}, {…}, {…}]
+dash:10948 Creating gradient: conic-gradient(#E91E63 0% 15.384615384615385%, #FFC107 15.384615384615385% 61.53846153846154%, #4CAF50 61.53846153846154% 69.23076923076923%, #F44336 69.23076923076923% 100%)
+dash:10951 Chart background set to: conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 15.3846%, rgb(255, 193, 7) 15.3846%, rgb(255, 193, 7) 61.5385%, rgb(76, 175, 80) 61.5385%, rgb(76, 175, 80) 69.2308%, rgb(244, 67, 54) 69.2308%, rgb(244, 67, 54) 100%)
+dash:10955 Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 15.3846%, rgb(255, 193, 7) 15.3846%, rgb(255, 193, 7) 61.5385%, rgb(76, 175, 80) 61.5385%, rgb(76, 175, 80) 69.2308%, rgb(244, 67, 54) 69.2308%, rgb(244, 67, 54) 100%) repeat scroll 0% 0% / auto padding-box border-box
+dash:10956 Computed opacity: 1
+dash:10957 Element dimensions: {width: 120, height: 120, display: 'block', visibility: 'visible'}
+dash:10981 WHO chart updated successfully
+dash:11041 🎨 Updating age classification chart...
+dash:10539 📊 Updating Age Classification Line Chart...
+dash:10572 📊 Using WHO Standard: bmi-adult
+dash:10573 📊 Using Barangay: 
+dash:10577 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=
+dash:10649 📊 Canvas dimensions fixed: {width: 417, height: 140}
+dash:10653 📊 Chart resized after update
+dash:10582 📊 Age classification API response: {success: true, data: {…}}
+dash:10583 📊 Age Classification Data Analysis: {success: true, hasData: {…}, dataKeys: Array(5), fullData: {…}}
+dash:10597 📊 Age Classification Data Breakdown: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13, ageLabelsLength: 9, datasetsLength: 4, …}
+dash:10622 📊 Age Classification Line Chart Data: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13, totalPopulation: undefined}
+dash:10626 📊 Updating existing age classification chart...
+dash:10627 📊 Chart instance: Tn {config: _n, $context: {…}, platform: Ss, id: 2, ctx: CanvasRenderingContext2D, …}
+dash:10628 📊 Canvas element: <canvas id=​"ageClassificationLineChart" style=​"width:​ 413px;​ height:​ 136px;​ display:​ block;​ box-sizing:​ border-box;​" width=​"826" height=​"272">​
+dash:10629 📊 Canvas dimensions: {width: 826, height: 272}
+dash:10634 ✅ Updated age classification chart with data: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13}
+dash:10635 📊 Chart data after update: {labels: Array(9), datasets: Array(4)}
+dash:11045 🎨 Updating trends chart...
+dash:10271 📊 Updating Trends Chart...
+dash:10279 📅 Date inputs found: {fromDateInput: true, toDateInput: true}
+dash:10280 📅 Current date values: {fromDate: '2025-01-01', toDate: '2025-10-09'}
+dash:8289 🔍 getAllActiveFilters - Raw values: {municipality: 'All Municipalities', barangay: 'All Barangays', whoStandard: 'bmi-adult'}
+dash:8305 🔍 Final filter value: 
+dash:10292 📊 Trends Chart Filters: {fromDate: '2025-01-01', toDate: '2025-10-09', barangay: '', whoStandard: 'bmi-adult'}
+dash:10304 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-adult
+dash:10309 📊 Trends API response: {success: true, data: {…}}
+dash:10310 📊 Trends API data structure: {success: true, hasData: true, dataKeys: Array(3), timeLabels: Array(10), datasets: Array(4), …}
+dash:10329 📊 Chart data analysis: {timeLabels: 10, datasets: 4, totalUsers: 20}
+dash:10361 📊 Updated trends line chart with data: {timeLabels: Array(10), datasets: Array(4), totalUsers: 20}
+dash:11049 🎨 Updating severe cases list...
+dash:11050 📊 WHO Standard before severe cases call: bmi-adult
+dash:11051 📊 Dropdown value before severe cases call: bmi-adult
+dash:12434 📊 Updating severe cases list...
+dash:12435 📊 Severe cases function called with barangay: 
+dash:12439 📊 Severe cases list element found: <div class=​"severe-cases-list" id=​"severe-cases-list">​</div>​flex
+dash:12454 📊 Severe cases - WHO Standard Select element: <select id=​"whoStandardSelect" style=​"padding:​ 8px 12px;​ border:​ 1px solid #ddd;​ border-radius:​ 6px;​ background:​ white;​ color:​ #333;​ font-size:​ 14px;​">​…​</select>​
+dash:12455 📊 Severe cases - WHO Standard value: bmi-adult
+dash:12456 📊 Severe cases - Dropdown value at time of call: bmi-adult
+dash:12460 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-adult
+dash:10649 📊 Canvas dimensions fixed: {width: 417, height: 140}
+dash:10653 📊 Chart resized after update
+dash:12468 Severe cases data received: {success: true, data: {…}}
+dash:12477 Found 2 severe cases
+dash:12490 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+dash:12490 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+dash:12514 ✅ Severe cases list updated successfully with 2 cases
+dash:11054 ✅ Chart update completed
+dash:11060 🏁 WHO classification loading completed
+dash:12434 📊 Updating severe cases list...
+dash:12435 📊 Severe cases function called with barangay: 
+dash:12439 📊 Severe cases list element found: <div class=​"severe-cases-list" id=​"severe-cases-list">​</div>​flex
+dash:12454 📊 Severe cases - WHO Standard Select element: <select id=​"whoStandardSelect" style=​"padding:​ 8px 12px;​ border:​ 1px solid #ddd;​ border-radius:​ 6px;​ background:​ white;​ color:​ #333;​ font-size:​ 14px;​">​…​</select>​
+dash:12455 📊 Severe cases - WHO Standard value: bmi-adult
+dash:12456 📊 Severe cases - Dropdown value at time of call: bmi-adult
+dash:12460 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-adult
+dash:12468 Severe cases data received: {success: true, data: {…}}
+dash:12477 Found 2 severe cases
+dash:12490 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+dash:12490 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+dash:12514 ✅ Severe cases list updated successfully with 2 cases
+dash:12822 ✅ Charts updated
+dash:12845 🔄 SEAMLESS UPDATE COMPLETE - Duration: 722ms
+dash:12846 📊 Updated components: (4) ['Community Metrics', 'Charts', 'Intelligent Programs', 'Distributions']
+dash:12787 ✅ Seamless update completed
+dash:12764 ⏰ Seamless update triggered
+dash:12765 🔍 Visibility state: visible
+dash:12766 🔍 Update in progress: false
+dash:12767 🔍 Current barangay: 
+dash:12771 🔄 Seamless update for barangay: 
+dash:12778 🔄 Seamless update with WHO standard: bmi-adult
+dash:12807 🔄 SEAMLESS UPDATE START - Barangay: 
+dash:12812 🔄 Starting parallel component updates...
+dash:12858 🔄 [Community Metrics] Starting update for barangay: 
+dash:12865 🔄 [Community Metrics] Fetching data with params: {}
+dash:9616 Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php
+dash:10271 📊 Updating Trends Chart...
+dash:10279 📅 Date inputs found: {fromDateInput: true, toDateInput: true}
+dash:10280 📅 Current date values: {fromDate: '2025-01-01', toDate: '2025-10-09'}
+dash:8289 🔍 getAllActiveFilters - Raw values: {municipality: 'All Municipalities', barangay: 'All Barangays', whoStandard: 'bmi-adult'}
+dash:8305 🔍 Final filter value: 
+dash:10292 📊 Trends Chart Filters: {fromDate: '2025-01-01', toDate: '2025-10-09', barangay: '', whoStandard: 'bmi-adult'}
+dash:10304 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-adult
+dash:9596 📦 Using cached data for intelligent_programs
+dash:12930 🔄 [Distributions] Starting update for barangay: 
+dash:12933 🔄 [Distributions] Updating barangay distribution...
+dash:11144 Fetching barangay distribution data for: {barangay: ''}
+dash:11147 Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk
+dash:12829 ✅ Intelligent Programs updated
+dash:9628 DatabaseAPI response for dashboard_assessment_stats : {success: true, data: {…}}
+dash:9638 Returning data: {total_screened: 20, high_risk_cases: 12, sam_cases: 6, critical_muac: 6, risk_levels: {…}, …}
+dash:12867 🔄 [Community Metrics] Data received: {success: true, data: {…}}
+dash:12870 🔄 [Community Metrics] Updating metrics with values: {total_screened: 20, high_risk: 12, sam_cases: 6, critical_muac: 6}
+dash:8329 📊 Updating severely cases cards for all WHO standards, barangay: 
+dash:8334 📊 Fetching severely cases data from: /api/DatabaseAPI.php?action=get_severe_cases_all_standards&barangay=
+dash:10309 📊 Trends API response: {success: true, data: {…}}
+dash:10310 📊 Trends API data structure: {success: true, hasData: true, dataKeys: Array(3), timeLabels: Array(10), datasets: Array(4), …}
+dash:10329 📊 Chart data analysis: {timeLabels: 10, datasets: 4, totalUsers: 20}
+dash:10361 📊 Updated trends line chart with data: {timeLabels: Array(10), datasets: Array(4), totalUsers: 20}
+dash:10539 📊 Updating Age Classification Line Chart...
+dash:10572 📊 Using WHO Standard: bmi-adult
+dash:10573 📊 Using Barangay: 
+dash:10577 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=
+dash:11156 Barangay API Response: {success: true, data: {…}}
+dash:12936 🔄 [Distributions] Barangay data received: {barangay_distribution: {…}, municipality_distribution: {…}, total_users: 20}
+dash:11260 Updating barangay distribution display: {barangay_distribution: {…}, municipality_distribution: {…}, total_users: 20}
+dash:12939 ✅ [Distributions] Barangay distribution updated
+dash:12948 🔄 [Distributions] Updating gender distribution...
+dash:11178 Fetching gender distribution data for: {barangay: ''}
+dash:11181 Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
+dash:8342 📊 All standards severely cases data received: {success: true, data: {…}}
+dash:8354 📊 All Standards Severely Cases:
+dash:8355   - Severely Underweight (WFA): 4
+dash:8356   - Severely Stunted (HFA): 4
+dash:8357   - Severely Wasted (WFH): 2
+dash:8363 📊 Setting severely underweight to: 4
+dash:8373 📊 Setting severely stunted to: 4
+dash:8383 📊 Setting severely wasted to: 2
+dash:12885 ✅ [Community Metrics] Update completed
+dash:12815 ✅ Community Metrics updated
+dash:10582 📊 Age classification API response: {success: true, data: {…}}
+dash:10583 📊 Age Classification Data Analysis: {success: true, hasData: {…}, dataKeys: Array(5), fullData: {…}}
+dash:10597 📊 Age Classification Data Breakdown: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13, ageLabelsLength: 9, datasetsLength: 4, …}
+dash:10622 📊 Age Classification Line Chart Data: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13, totalPopulation: undefined}
+dash:10626 📊 Updating existing age classification chart...
+dash:10627 📊 Chart instance: Tn {config: _n, $context: {…}, platform: Ss, id: 2, ctx: CanvasRenderingContext2D, …}
+dash:10628 📊 Canvas element: <canvas id=​"ageClassificationLineChart" style=​"width:​ 413px;​ height:​ 136px;​ display:​ block;​ box-sizing:​ border-box;​" width=​"826" height=​"272">​
+dash:10629 📊 Canvas dimensions: {width: 826, height: 272}
+dash:10634 ✅ Updated age classification chart with data: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13}
+dash:10635 📊 Chart data after update: {labels: Array(9), datasets: Array(4)}
+dash:11014 🔄 Starting WHO standard change handler...
+dash:11019 📊 WHO Standard selected: bmi-adult
+dash:11020 📊 Dropdown element found: true
+dash:11021 📊 Dropdown value: bmi-adult
+dash:8289 🔍 getAllActiveFilters - Raw values: {municipality: 'All Municipalities', barangay: 'All Barangays', whoStandard: 'bmi-adult'}
+dash:8305 🔍 Final filter value: 
+dash:11028 📡 Fetching WHO data with active filters...
+dash:11029 📊 Active filters: {municipality: 'All Municipalities', barangay: 'All Barangays', whoStandard: 'bmi-adult', finalFilter: ''}
+dash:11067 Fetching WHO data for: {whoStandard: 'bmi-adult', barangay: ''}
+dash:11071 API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=bmi-adult
+dash:11190 Gender API Response: {success: true, data: {…}}
+dash:12951 🔄 [Distributions] Gender data received: {gender_distribution: {…}, total_users: 20}
+dash:11210 Updating gender distribution display: {gender_distribution: {…}, total_users: 20}
+dash:12954 ✅ [Distributions] Gender distribution updated
+dash:12963 🔄 [Distributions] Updating geographic chart...
+dash:8734 🌍 updateGeographicChart called with barangay: 
+ 🌍 Using pre-loaded Geographic Data in updateGeographicChart: []
+ No geographic data available
+ 🌍 updateGeographicChartDisplay called with data: []
+ ❌ Geographic chart container not found!
+updateGeographicChartDisplay @ dash:8757
+updateGeographicChart @ dash:8742
+seamlessUpdateDistributions @ dash:12965
+await in seamlessUpdateDistributions
+seamlessDashboardUpdate @ dash:12835
+(anonymous) @ dash:12781
+ ✅ [Distributions] Geographic chart updated
+ ✅ [Distributions] All distributions updated successfully
+ ✅ Distributions updated
+ Bulk API Response: {success: true, data: {…}, total_users: 20, processed_users: 19, actual_totals: {…}}
+ Mapping bmi-adult to bmi_adult: {Severely Underweight: 2, Underweight: 6, Normal: 1, Overweight: 0, Obese: 4, …}
+ Classification values: (6) [2, 6, 1, 0, 4, 7]
+ Calculated total: 13
+ Original total_users: 20
+ Extracted bmi-adult data: {classifications: {…}, total: 13}
+ Processed data for donut chart: {success: true, data: {…}}
+ 📊 Data received for chart update: {classifications: {…}, total: 13}
+ 🎨 Updating chart...
+ WHO Chart Update - Data received: {classifications: {…}, total: 13}
+ Data type: object
+ Data classifications: {Severely Underweight: 2, Underweight: 6, Normal: 1, Overweight: 0, Obese: 4, …}
+ Data total: 13
+ Chart elements found:
+   - chartBg (risk-chart-bg): 
+   - centerText (risk-center-text): 
+   - segments (risk-segments): 
+ Processing classifications: {Severely Underweight: 2, Underweight: 6, Normal: 1, Overweight: 0, Obese: 4, …}
+ Classifications keys: (6) ['Severely Underweight', 'Underweight', 'Normal', 'Overweight', 'Obese', 'No Data']
+ Classifications values: (6) [2, 6, 1, 0, 4, 7]
+ Total users: 13
+ Has data (non-zero counts): true
+ Chart segments: (4) [{…}, {…}, {…}, {…}]
+ Chart segments length: 4
+ Chart segments details: (4) [{…}, {…}, {…}, {…}]
+ Creating gradient: conic-gradient(#E91E63 0% 15.384615384615385%, #FFC107 15.384615384615385% 61.53846153846154%, #4CAF50 61.53846153846154% 69.23076923076923%, #F44336 69.23076923076923% 100%)
+ Chart background set to: conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 15.3846%, rgb(255, 193, 7) 15.3846%, rgb(255, 193, 7) 61.5385%, rgb(76, 175, 80) 61.5385%, rgb(76, 175, 80) 69.2308%, rgb(244, 67, 54) 69.2308%, rgb(244, 67, 54) 100%)
+ Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 15.3846%, rgb(255, 193, 7) 15.3846%, rgb(255, 193, 7) 61.5385%, rgb(76, 175, 80) 61.5385%, rgb(76, 175, 80) 69.2308%, rgb(244, 67, 54) 69.2308%, rgb(244, 67, 54) 100%) repeat scroll 0% 0% / auto padding-box border-box
+ Computed opacity: 1
+ Element dimensions: {width: 120, height: 120, display: 'block', visibility: 'visible'}
+ WHO chart updated successfully
+ 🎨 Updating age classification chart...
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: bmi-adult
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=
+ 📊 Canvas dimensions fixed: {width: 417, height: 140}
+ 📊 Chart resized after update
+ 📊 Age classification API response: {success: true, data: {…}}
+ 📊 Age Classification Data Analysis: {success: true, hasData: {…}, dataKeys: Array(5), fullData: {…}}
+ 📊 Age Classification Data Breakdown: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13, ageLabelsLength: 9, datasetsLength: 4, …}
+ 📊 Age Classification Line Chart Data: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13, totalPopulation: undefined}
+ 📊 Updating existing age classification chart...
+ 📊 Chart instance: Tn {config: _n, $context: {…}, platform: Ss, id: 2, ctx: CanvasRenderingContext2D, …}
+ 📊 Canvas element: 
+ 📊 Canvas dimensions: {width: 826, height: 272}
+ ✅ Updated age classification chart with data: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13}
+ 📊 Chart data after update: {labels: Array(9), datasets: Array(4)}
+ 🎨 Updating trends chart...
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: {fromDateInput: true, toDateInput: true}
+ 📅 Current date values: {fromDate: '2025-01-01', toDate: '2025-10-09'}
+ 🔍 getAllActiveFilters - Raw values: {municipality: 'All Municipalities', barangay: 'All Barangays', whoStandard: 'bmi-adult'}
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: {fromDate: '2025-01-01', toDate: '2025-10-09', barangay: '', whoStandard: 'bmi-adult'}
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-adult
+ 📊 Trends API response: {success: true, data: {…}}
+ 📊 Trends API data structure: {success: true, hasData: true, dataKeys: Array(3), timeLabels: Array(10), datasets: Array(4), …}
+ 📊 Chart data analysis: {timeLabels: 10, datasets: 4, totalUsers: 20}
+ 📊 Updated trends line chart with data: {timeLabels: Array(10), datasets: Array(4), totalUsers: 20}
+ 🎨 Updating severe cases list...
+ 📊 WHO Standard before severe cases call: bmi-adult
+ 📊 Dropdown value before severe cases call: bmi-adult
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: 
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: bmi-adult
+ 📊 Severe cases - Dropdown value at time of call: bmi-adult
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-adult
+ 📊 Canvas dimensions fixed: {width: 417, height: 140}
+ 📊 Chart resized after update
+ Severe cases data received: {success: true, data: {…}}
+ Found 2 severe cases
+ 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+ 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+ ✅ Severe cases list updated successfully with 2 cases
+ ✅ Chart update completed
+ 🏁 WHO classification loading completed
+ 📊 Updating severe cases list...
+ 📊 Severe cases function called with barangay: 
+ 📊 Severe cases list element found: 
+ 📊 Severe cases - WHO Standard Select element: 
+ 📊 Severe cases - WHO Standard value: bmi-adult
+ 📊 Severe cases - Dropdown value at time of call: bmi-adult
+ 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=bmi-adult
+ Severe cases data received: {success: true, data: {…}}
+ Found 2 severe cases
+ 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+ 🔍 Severe case CSS class: severely-underweight-(bmi-adult) for classification: Severely Underweight (BMI Adult)
+ ✅ Severe cases list updated successfully with 2 cases
+ ✅ Charts updated
+ 🔄 SEAMLESS UPDATE COMPLETE - Duration: 612ms
+ 📊 Updated components: (4) ['Community Metrics', 'Charts', 'Intelligent Programs', 'Distributions']
+ ✅ Seamless update completed
+ ⏰ Seamless update triggered
+ 🔍 Visibility state: visible
+ 🔍 Update in progress: false
+ 🔍 Current barangay: 
+ 🔄 Seamless update for barangay: 
+ 🔄 Seamless update with WHO standard: bmi-adult
+ 🔄 SEAMLESS UPDATE START - Barangay: 
+ 🔄 Starting parallel component updates...
+ 🔄 [Community Metrics] Starting update for barangay: 
+ 🔄 [Community Metrics] Fetching data with params: {}
+ Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: {fromDateInput: true, toDateInput: true}
+ 📅 Current date values: {fromDate: '2025-01-01', toDate: '2025-10-09'}
+ 🔍 getAllActiveFilters - Raw values: {municipality: 'All Municipalities', barangay: 'All Barangays', whoStandard: 'bmi-adult'}
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: {fromDate: '2025-01-01', toDate: '2025-10-09', barangay: '', whoStandard: 'bmi-adult'}
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-adult
+ 📦 Using cached data for intelligent_programs
+ 🔄 [Distributions] Starting update for barangay: 
+ 🔄 [Distributions] Updating barangay distribution...
+ Fetching barangay distribution data for: {barangay: ''}
+ Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk
+ ✅ Intelligent Programs updated
+ 🔄 [Community Metrics] Updating metrics with values: {total_screened: 20, high_risk: 12, sam_cases: 6, critical_muac: 6}
+ 📊 Updating severely cases cards for all WHO standards, barangay: 
+ 📊 Fetching severely cases data from: /api/DatabaseAPI.php?action=get_severe_cases_all_standards&barangay=
+ ✅ [Distributions] Barangay distribution updated
+ 🔄 [Distributions] Updating gender distribution...
+ Fetching gender distribution data for: {barangay: ''}
+ Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
+ 📊 Trends API response: {success: true, data: {…}}
+ 📊 Trends API data structure: {success: true, hasData: true, dataKeys: Array(3), timeLabels: Array(10), datasets: Array(4), …}
+ 📊 Chart data analysis: {timeLabels: 10, datasets: 4, totalUsers: 20}
+ 📊 Updated trends line chart with data: {timeLabels: Array(10), datasets: Array(4), totalUsers: 20}
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: bmi-adult
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=
+ 📊 All Standards Severely Cases:
+   - Severely Underweight (WFA): 4
+   - Severely Stunted (HFA): 4
+   - Severely Wasted (WFH): 2
+ 📊 Setting severely underweight to: 4
+ 📊 Setting severely stunted to: 4
+ 📊 Setting severely wasted to: 2
+ ✅ [Community Metrics] Update completed
+ ✅ Community Metrics updated
+ Gender API Response: {success: true, data: {…}}
+ 🔄 [Distributions] Gender data received: {gender_distribution: {…}, total_users: 20}
+ Updating gender distribution display: {gender_distribution: {…}, total_users: 20}
+ ✅ [Distributions] Gender distribution updated
+ 🔄 [Distributions] Updating geographic chart...
+ 🌍 updateGeographicChart called with barangay: 
+ 🌍 Using pre-loaded Geographic Data in updateGeographicChart: []
+ No geographic data available
+ 🌍 updateGeographicChartDisplay called with data: []
+ ❌ Geographic chart container not found!
+updateGeographicChartDisplay @ dash:8757
+updateGeographicChart @ dash:8742
+seamlessUpdateDistributions @ dash:12965
+await in seamlessUpdateDistributions
+seamlessDashboardUpdate @ dash:12835
+(anonymous) @ dash:12781
+ ✅ [Distributions] Geographic chart updated
+ ✅ [Distributions] All distributions updated successfully
+ ✅ Distributions updated
+ 📊 Age classification API response: {success: true, data: {…}}
+ 📊 Age Classification Data Analysis: {success: true, hasData: {…}, dataKeys: Array(5), fullData: {…}}
+ 📊 Age Classification Data Breakdown: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13, ageLabelsLength: 9, datasetsLength: 4, …}
+ 📊 Age Classification Line Chart Data: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13, totalPopulation: undefined}
+ 📊 Updating existing age classification chart...
+ 📊 Chart instance: Tn {config: _n, $context: {…}, platform: Ss, id: 2, ctx: CanvasRenderingContext2D, …}
+ 📊 Canvas element: 
+ 📊 Canvas dimensions: {width: 826, height: 272}
+ ✅ Updated age classification chart with data: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13}
+ 📊 Chart data after update: {labels: Array(9), datasets: Array(4)}
+ 🔄 Starting WHO standard change handler...
+ 📊 WHO Standard selected: bmi-adult
+ 📊 Dropdown element found: true
+ 📊 Dropdown value: bmi-adult
+ 🔍 getAllActiveFilters - Raw values: {municipality: 'All Municipalities', barangay: 'All Barangays', whoStandard: 'bmi-adult'}
+ 🔍 Final filter value: 
+ 📡 Fetching WHO data with active filters...
+ 📊 Active filters: {municipality: 'All Municipalities', barangay: 'All Barangays', whoStandard: 'bmi-adult', finalFilter: ''}
+ Fetching WHO data for: {whoStandard: 'bmi-adult', barangay: ''}
+ API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=bmi-adult
+ Bulk API Response: {success: true, data: {…}, total_users: 20, processed_users: 19, actual_totals: {…}}
+ Mapping bmi-adult to bmi_adult: {Severely Underweight: 2, Underweight: 6, Normal: 1, Overweight: 0, Obese: 4, …}
+ Classification values: (6) [2, 6, 1, 0, 4, 7]
+ Calculated total: 13
+ Original total_users: 20
+ Extracted bmi-adult data: {classifications: {…}, total: 13}
+ Processed data for donut chart: {success: true, data: {…}}
+ 📊 Data received for chart update: {classifications: {…}, total: 13}
+ 🎨 Updating chart...
+ WHO Chart Update - Data received: {classifications: {…}, total: 13}
+ Data type: object
+ Data classifications: {Severely Underweight: 2, Underweight: 6, Normal: 1, Overweight: 0, Obese: 4, …}
+ Data total: 13
+ Chart elements found:
+   - chartBg (risk-chart-bg): 
+   - centerText (risk-center-text): 
+   - segments (risk-segments): 
+ Processing classifications: {Severely Underweight: 2, Underweight: 6, Normal: 1, Overweight: 0, Obese: 4, …}
+ Classifications keys: (6) ['Severely Underweight', 'Underweight', 'Normal', 'Overweight', 'Obese', 'No Data']
+ Classifications values: (6) [2, 6, 1, 0, 4, 7]
+ Total users: 13
+ Has data (non-zero counts): true
+ Chart segments: (4) [{…}, {…}, {…}, {…}]
+ Chart segments length: 4
+ Chart segments details: (4) [{…}, {…}, {…}, {…}]
+ Creating gradient: conic-gradient(#E91E63 0% 15.384615384615385%, #FFC107 15.384615384615385% 61.53846153846154%, #4CAF50 61.53846153846154% 69.23076923076923%, #F44336 69.23076923076923% 100%)
+ Chart background set to: conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 15.3846%, rgb(255, 193, 7) 15.3846%, rgb(255, 193, 7) 61.5385%, rgb(76, 175, 80) 61.5385%, rgb(76, 175, 80) 69.2308%, rgb(244, 67, 54) 69.2308%, rgb(244, 67, 54) 100%)
+ Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 15.3846%, rgb(255, 193, 7) 15.3846%, rgb(255, 193, 7) 61.5385%, rgb(76, 175, 80) 61.5385%, rgb(76, 175, 80) 69.2308%, rgb(244, 67, 54) 69.2308%, rgb(244, 67, 54) 100%) repeat scroll 0% 0% / auto padding-box border-box
+ Computed opacity: 1
+ Element dimensions: {width: 120, height: 120, display: 'block', visibility: 'visible'}
+ WHO chart updated successfully
+ 🎨 Updating age classification chart...
+ 📊 Updating Age Classification Line Chart...
+ 📊 Using WHO Standard: bmi-adult
+ 📊 Using Barangay: 
+ 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=bmi-adult&barangay=
+ 📊 Canvas dimensions fixed: {width: 417, height: 140}
+ 📊 Chart resized after update
+ 📊 Age Classification Data Analysis: {success: true, hasData: {…}, dataKeys: Array(5), fullData: {…}}
+ 📊 Age Classification Data Breakdown: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13, ageLabelsLength: 9, datasetsLength: 4, …}
+ 📊 Age Classification Line Chart Data: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13, totalPopulation: undefined}
+ 📊 Updating existing age classification chart...
+ 📊 Chart instance: Tn {config: _n, $context: {…}, platform: Ss, id: 2, ctx: CanvasRenderingContext2D, …}
+ 📊 Canvas element: 
+ 📊 Canvas dimensions: {width: 826, height: 272}
+ ✅ Updated age classification chart with data: {ageLabels: Array(9), datasets: Array(4), totalUsers: 13}
+ 📊 Chart data after update: {labels: Array(9), datasets: Array(4)}
+ 🎨 Updating trends chart...
+ 📊 Updating Trends Chart...
+ 📅 Date inputs found: {fromDateInput: true, toDateInput: true}
+ 📅 Current date values: {fromDate: '2025-01-01', toDate: '2025-10-09'}
+ 🔍 getAllActiveFilters - Raw values: {municipality: 'All Municipalities', barangay: 'All Barangays', whoStandard: 'bmi-adult'}
+ 🔍 Final filter value: 
+ 📊 Trends Chart Filters: {fromDate: '2025-01-01', toDate: '2025-10-09', barangay: '', whoStandard: 'bmi-adult'}
+ 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=bmi-adult

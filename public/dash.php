@@ -11193,17 +11193,28 @@ body {
                             <div style="font-size: 12px; opacity: 0.5; margin-top: 10px;">Try selecting a different WHO standard or date range</div>
                         </div>`;
                     }
+                    // Clear the chart instance when showing no data message
+                    trendsLineChart = null;
                     return;
                 }
                 
                 // Update existing chart or create new one
                 if (trendsLineChart) {
-                    // Update existing chart data seamlessly
-                    trendsLineChart.data.labels = timeLabels;
-                    trendsLineChart.data.datasets = datasets;
-                    trendsLineChart.update('active');
-                    console.log('📊 Updated trends line chart with data:', { timeLabels, datasets, totalUsers });
-                    return; // Exit early if chart exists
+                    // Check if the chart canvas still exists
+                    const existingCanvas = document.getElementById('trendsLineChart');
+                    if (existingCanvas && trendsLineChart.canvas) {
+                        // Update existing chart data seamlessly
+                        trendsLineChart.data.labels = timeLabels;
+                        trendsLineChart.data.datasets = datasets;
+                        trendsLineChart.update('active');
+                        console.log('📊 Updated trends line chart with data:', { timeLabels, datasets, totalUsers });
+                        return; // Exit early if chart exists and is valid
+                    } else {
+                        // Chart instance exists but canvas is gone, destroy it
+                        console.log('📊 Chart instance exists but canvas is gone - destroying chart');
+                        trendsLineChart.destroy();
+                        trendsLineChart = null;
+                    }
                 }
                 
                 // Create new chart only if it doesn't exist
@@ -11211,6 +11222,8 @@ body {
                 console.log('📊 Trends chart container found:', !!trendsChartContainer);
                 if (trendsChartContainer) {
                     console.log('📊 Clearing container and creating canvas...');
+                    // Clear any existing content and create fresh canvas
+                    trendsChartContainer.innerHTML = '';
                     trendsChartContainer.innerHTML = '<canvas id="trendsLineChart"></canvas>';
                     const trendsCanvas = document.getElementById('trendsLineChart');
                     console.log('📊 Canvas element found:', !!trendsCanvas);
@@ -11386,12 +11399,13 @@ body {
                 // Check if canvas exists, if not, restore it
                 let ageCanvas = document.getElementById('ageClassificationLineChart');
                 if (!ageCanvas) {
-                // If chart instance exists but canvas is gone, destroy it
-                if (ageClassificationLineChart && !ageCanvas) {
-                    console.log('Chart instance exists but canvas is gone - destroying chart');
-                    ageClassificationLineChart.destroy();
-                    ageClassificationLineChart = null;
-                }                    console.log('Canvas not found, restoring...');
+                    // If chart instance exists but canvas is gone, destroy it
+                    if (ageClassificationLineChart && !ageCanvas) {
+                        console.log('Chart instance exists but canvas is gone - destroying chart');
+                        ageClassificationLineChart.destroy();
+                        ageClassificationLineChart = null;
+                    }
+                    console.log('Canvas not found, restoring...');
                     const chartContainer = document.querySelector('.age-classification-chart-container');
                     if (chartContainer) {
                         chartContainer.innerHTML = '<canvas id="ageClassificationLineChart"></canvas>';
