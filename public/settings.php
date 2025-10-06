@@ -3213,15 +3213,35 @@ header {
             text-overflow: ellipsis;
         }
 
-        /* Profile Card Styles */
+        /* Profile Card Styles - Match user-management-container */
         .profile-card {
-            background: var(--color-card);
-            border-radius: 15px;
+            background-color: var(--color-card);
+            border-radius: 20px;
             padding: 25px;
-            margin-top: 20px;
-            box-shadow: 0 4px 20px var(--color-shadow);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+            margin-bottom: 30px;
             border: 1px solid var(--color-border);
-            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: calc(100% - 60px);
+            margin-left: 0;
+            margin-right: 0;
+            margin-top: 20px;
+        }
+
+        /* Dark theme specific styles for profile card */
+        .dark-theme .profile-card {
+            background-color: var(--color-card);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Light theme specific styles for profile card */
+        .light-theme .profile-card {
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 6px 20px var(--color-shadow);
         }
 
         .profile-header {
