@@ -3850,6 +3850,14 @@ class DatabaseAPI {
                         }
                     }
                     
+                    // Check BMI Adult (Severely Underweight) - for adults
+                    if (isset($assessment['results']['bmi_adult']['classification'])) {
+                        $bmiAdultClassification = $assessment['results']['bmi_adult']['classification'];
+                        if ($bmiAdultClassification === 'Severely Underweight') {
+                            $severelyUnderweight++;
+                        }
+                    }
+                    
                     // Check Height-for-Age (Severely Stunted)
                     if (isset($assessment['results']['height_for_age']['classification'])) {
                         $hfaClassification = $assessment['results']['height_for_age']['classification'];
