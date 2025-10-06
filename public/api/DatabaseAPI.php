@@ -5103,23 +5103,6 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             
             try {
                 $result = $db->getSevereCasesBulk($barangay, $whoStandard);
-                // TEMPORARY: Add counts to the response for testing
-                if ($result['success'] && isset($result['data']['severe_cases'])) {
-                    $result['data']['counts'] = [
-                        'severely_underweight' => 0,
-                        'severely_stunted' => 0,
-                        'severely_wasted' => 0
-                    ];
-                    foreach ($result['data']['severe_cases'] as $case) {
-                        if ($case['classification'] === 'Severely Underweight') {
-                            $result['data']['counts']['severely_underweight']++;
-                        } elseif ($case['classification'] === 'Severely Stunted') {
-                            $result['data']['counts']['severely_stunted']++;
-                        } elseif ($case['classification'] === 'Severely Wasted') {
-                            $result['data']['counts']['severely_wasted']++;
-                        }
-                    }
-                }
                 echo json_encode($result);
             } catch (Exception $e) {
                 error_log("Severe cases error: " . $e->getMessage());
