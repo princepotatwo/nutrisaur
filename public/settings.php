@@ -3824,21 +3824,22 @@ header {
 }
 
 /* Dark theme search input styles */
-.dark-theme .search-input {
-    background: var(--color-card);
-    color: var(--color-text);
-    border: 2px solid rgba(161, 180, 84, 0.3);
-    border-radius: 8px;
-    padding: 10px 12px;
-    transition: all 0.3s ease;
-    outline: none; /* Remove default outline */
-}
+        .dark-theme .search-input {
+            background: var(--color-card);
+            color: var(--color-text);
+            border: 2px solid rgba(161, 180, 84, 0.3);
+            border-radius: 8px;
+            padding: 10px 12px;
+            transition: all 0.3s ease;
+            outline: none; /* Remove default outline */
+            box-shadow: none; /* Remove any box-shadow that might create inside outline */
+        }
 
-.dark-theme .search-input:focus {
-    border-color: var(--color-highlight);
-    box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.2);
-    transform: translateY(-2px);
-}
+        .dark-theme .search-input:focus {
+            border-color: var(--color-highlight);
+            box-shadow: none; /* Remove focus box-shadow to eliminate inside outline */
+            transform: translateY(-2px);
+        }
 
 .dark-theme .search-input:hover {
     border-color: var(--color-highlight);
@@ -3849,21 +3850,22 @@ header {
 }
 
 /* Light theme search input styles */
-.light-theme .search-input {
-    background: var(--color-card);
-    color: var(--color-text);
-    border: 2px solid rgba(161, 180, 84, 0.3);
-    border-radius: 8px;
-    padding: 10px 12px;
-    transition: all 0.3s ease;
-    outline: none; /* Remove default outline */
-}
+        .light-theme .search-input {
+            background: var(--color-card);
+            color: var(--color-text);
+            border: 2px solid rgba(161, 180, 84, 0.3);
+            border-radius: 8px;
+            padding: 10px 12px;
+            transition: all 0.3s ease;
+            outline: none; /* Remove default outline */
+            box-shadow: none; /* Remove any box-shadow that might create inside outline */
+        }
 
-.light-theme .search-input:focus {
-    border-color: var(--color-highlight);
-    box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.2);
-    transform: translateY(-2px);
-}
+        .light-theme .search-input:focus {
+            border-color: var(--color-highlight);
+            box-shadow: none; /* Remove focus box-shadow to eliminate inside outline */
+            transform: translateY(-2px);
+        }
 
 .light-theme .search-input:hover {
     border-color: var(--color-highlight);
@@ -4425,12 +4427,13 @@ header {
                     if ($db->isAvailable()) {
                         try {
                             // Use Universal DatabaseAPI to get users for HTML display
+                            // First get all community users
                             $result = $db->select(
                                     'community_users',
                                     '*',
                                 '',
                                 [],
-                                    'screening_date DESC'
+                                    'name ASC'
                             );
                             
                             $users = $result['success'] ? $result['data'] : [];
@@ -4439,6 +4442,34 @@ header {
                                 foreach ($users as $user) {
                                     // Use email as the identifier since it's the primary key
                                     $userIdentifier = htmlspecialchars($user['email'] ?? '');
+                                    
+                                    // Get the latest screening date for this user from screening assessments
+                                    $screeningDate = 'Not Available';
+                                    try {
+                                        $screeningResult = $db->select(
+                                            'screening_assessments',
+                                            'screening_date',
+                                            'email = ?',
+                                            [$userIdentifier],
+                                            'screening_date DESC',
+                                            '1' // Limit to 1 record
+                                        );
+                                        
+                                        if ($screeningResult['success'] && !empty($screeningResult['data'])) {
+                                            $latestScreening = $screeningResult['data'][0];
+                                            if (isset($latestScreening['screening_date']) && $latestScreening['screening_date']) {
+                                                try {
+                                                    $date = new DateTime($latestScreening['screening_date']);
+                                                    $screeningDate = $date->format('Y-m-d');
+                                                } catch (Exception $e) {
+                                                    $screeningDate = 'Invalid Date';
+                                                }
+                                            }
+                                        }
+                                    } catch (Exception $e) {
+                                        // If there's an error getting screening date, keep as 'Not Available'
+                                    }
+                                    
                                     echo '<tr data-user-email="' . $userIdentifier . '">';
                                     echo '<td>' . htmlspecialchars($user['name'] ?? 'N/A') . '</td>';
                                     echo '<td>' . $userIdentifier . '</td>';
@@ -4446,20 +4477,7 @@ header {
                                     echo '<td>' . htmlspecialchars($user['barangay'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['sex'] ?? 'N/A') . '</td>';
                                     echo '<td>' . htmlspecialchars($user['birthday'] ?? 'N/A') . '</td>';
-                                    // Check if screening_date exists, if not show 'Not Available'
-                                    $screeningDate = $user['screening_date'] ?? null;
-                                    if ($screeningDate && $screeningDate !== 'N/A' && $screeningDate !== '') {
-                                        // Format the date to show only the date part
-                                        try {
-                                            $date = new DateTime($screeningDate);
-                                            $formattedDate = $date->format('Y-m-d');
-                                        } catch (Exception $e) {
-                                            $formattedDate = 'Invalid Date';
-                                        }
-                                    } else {
-                                        $formattedDate = 'Not Available';
-                                    }
-                                    echo '<td>' . htmlspecialchars($formattedDate) . '</td>';
+                                    echo '<td>' . htmlspecialchars($screeningDate) . '</td>';
                                     echo '<td class="action-buttons">';
                                     echo '<button class="btn-edit" onclick="editUser(\'' . $userIdentifier . '\')" title="Edit User">';
                                     echo 'Edit';
