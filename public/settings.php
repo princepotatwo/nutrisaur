@@ -3380,6 +3380,7 @@ header {
             border-bottom: 1px solid rgba(161, 180, 84, 0.2);
             font-size: 14px;
             font-weight: 500;
+            vertical-align: middle;
         }
 
         /* Specific styling for screening date column to reduce width */
@@ -3690,6 +3691,7 @@ header {
             padding: 8px 6px;
             box-sizing: border-box;
             min-width: 280px;
+            vertical-align: middle;
         }
 
 
@@ -3760,6 +3762,7 @@ header {
             flex-wrap: nowrap;
             width: 100%;
             box-sizing: border-box;
+            vertical-align: middle;
         }
 
         .action-buttons .btn-edit,

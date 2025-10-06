@@ -4318,6 +4318,145 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
             
         // ========================================
+        // ADD COMMUNITY USER API
+        // ========================================
+        case 'add_community_user':
+            try {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $input = file_get_contents('php://input');
+                    $data = json_decode($input, true);
+                    
+                   $name = $data['name'] ?? '';
+                   $email = $data['email'] ?? '';
+                   $password = $data['password'] ?? '';
+                   $municipality = $data['municipality'] ?? '';
+                   $barangay = $data['barangay'] ?? '';
+                   $sex = $data['sex'] ?? '';
+                   $birthday = $data['birthday'] ?? '';
+                   $weight = $data['weight'] ?? 0;
+                   $height = $data['height'] ?? 0;
+                   $isPregnant = $data['is_pregnant'] ?? 0;
+                    
+                    // Validate required fields
+                    if (empty($name) || empty($email) || empty($password) || empty($municipality) || empty($barangay) || empty($sex) || empty($birthday)) {
+                        echo json_encode(['success' => false, 'message' => 'All required fields must be filled']);
+                        break;
+                    }
+                    
+                    // Validate password
+                    if (strlen($password) < 6) {
+                        echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
+                        break;
+                    }
+                    
+                    // Validate email format
+                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        echo json_encode(['success' => false, 'message' => 'Invalid email format']);
+                        break;
+                    }
+                    
+                    // Validate weight and height
+                    if ($weight <= 0 || $weight > 1000) {
+                        echo json_encode(['success' => false, 'message' => 'Weight must be between 0.1 and 1000 kg']);
+                        break;
+                    }
+                    
+                    if ($height <= 0 || $height > 300) {
+                        echo json_encode(['success' => false, 'message' => 'Height must be between 1 and 300 cm']);
+                        break;
+                    }
+                    
+                    $pdo = $db->getPDO();
+                    
+                    // Check if user already exists
+                    $checkStmt = $pdo->prepare("SELECT email FROM community_users WHERE email = ?");
+                    $checkStmt->execute([$email]);
+                    if ($checkStmt->fetch()) {
+                        echo json_encode(['success' => false, 'message' => 'User with this email already exists']);
+                        break;
+                    }
+                    
+                    // Hash the password
+                    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                    
+                    // Insert new community user
+                    $stmt = $pdo->prepare("INSERT INTO community_users (name, email, password, municipality, barangay, sex, birthday, is_pregnant, weight, height, screening_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+                    $result = $stmt->execute([$name, $email, $hashedPassword, $municipality, $barangay, $sex, $birthday, $isPregnant, $weight, $height]);
+                    
+                    if ($result) {
+                        echo json_encode([
+                            'success' => true,
+                            'message' => 'Community user added successfully',
+                            'email' => $email
+                        ]);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Failed to add community user']);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'POST method required']);
+                }
+            } catch (Exception $e) {
+                error_log("Add community user error: " . $e->getMessage());
+                echo json_encode(['success' => false, 'message' => 'Error adding community user: ' . $e->getMessage()]);
+            }
+            break;
+            
+        // ========================================
+        // GET COMMUNITY USER DATA API
+        // ========================================
+        case 'get_community_user_data':
+            try {
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $input = file_get_contents('php://input');
+                    $data = json_decode($input, true);
+                    $email = $data['email'] ?? '';
+                    
+                    if (empty($email)) {
+                        echo json_encode(['success' => false, 'message' => 'Email is required']);
+                        break;
+                    }
+                    
+                    $pdo = $db->getPDO();
+                    $stmt = $pdo->prepare("SELECT * FROM community_users WHERE email = ?");
+                    $stmt->execute([$email]);
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($user) {
+                        echo json_encode([
+                            'success' => true,
+                            'message' => 'User data retrieved successfully',
+                            'user' => [
+                                'name' => $user['name'] ?? '',
+                                'email' => $user['email'] ?? '',
+                                'municipality' => $user['municipality'] ?? '',
+                                'barangay' => $user['barangay'] ?? '',
+                                'sex' => $user['sex'] ?? '',
+                                'birthday' => $user['birthday'] ?? '',
+                                'is_pregnant' => $user['is_pregnant'] ?? '',
+                                'weight' => $user['weight'] ?? '',
+                                'height' => $user['height'] ?? '',
+                                'screening_date' => $user['screening_date'] ?? '',
+                                'fcm_token' => $user['fcm_token'] ?? '',
+                                'bmi-for-age' => $user['bmi-for-age'] ?? '',
+                                'weight-for-height' => $user['weight-for-height'] ?? '',
+                                'weight-for-age' => $user['weight-for-age'] ?? '',
+                                'weight-for-length' => $user['weight-for-length'] ?? '',
+                                'height-for-age' => $user['height-for-age'] ?? ''
+                            ]
+                        ]);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'User not found']);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'POST method required']);
+                }
+            } catch (Exception $e) {
+                error_log("Get community user data error: " . $e->getMessage());
+                echo json_encode(['success' => false, 'message' => 'Error retrieving user data: ' . $e->getMessage()]);
+            }
+            break;
+            
+        // ========================================
         // LOGIN API
         // ========================================
         case 'login':

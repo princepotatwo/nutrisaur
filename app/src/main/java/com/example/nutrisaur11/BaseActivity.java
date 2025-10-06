@@ -39,6 +39,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         // Check if user is archived (for community users)
         CommunityUserManager userManager = new CommunityUserManager(this);
         userManager.checkArchiveStatusAndLogoutIfNeeded(this);
+        
+        // Check if user still exists in database (handles internet connectivity gracefully)
+        userManager.checkUserExistsAndLogoutIfNeeded(this);
     }
     
     @Override
