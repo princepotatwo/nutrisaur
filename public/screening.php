@@ -4940,6 +4940,10 @@ header {
                             </select>
                         </div>
                         
+                        <div class="search-section">
+                            <input type="text" id="searchInput" placeholder="Search by name, email..." class="search-input">
+                            <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
+                        </div>
                     </div>
 
                     <!-- Row 2: Filter Controls -->

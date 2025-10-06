@@ -3825,14 +3825,23 @@ header {
 
 /* Dark theme search input styles */
 .dark-theme .search-input {
-    background: transparent;
+    background: var(--color-card);
     color: var(--color-text);
-    border-bottom: 2px solid #4CAF50; /* Green line for dark theme */
-    transition: border-color 0.3s ease;
+    border: 2px solid rgba(161, 180, 84, 0.3);
+    border-radius: 8px;
+    padding: 10px 12px;
+    transition: all 0.3s ease;
+    outline: none; /* Remove default outline */
 }
 
 .dark-theme .search-input:focus {
-    border-bottom-color: #66BB6A; /* Lighter green on focus */
+    border-color: var(--color-highlight);
+    box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.2);
+    transform: translateY(-2px);
+}
+
+.dark-theme .search-input:hover {
+    border-color: var(--color-highlight);
 }
 
 .dark-theme .search-input::placeholder {
@@ -3841,14 +3850,23 @@ header {
 
 /* Light theme search input styles */
 .light-theme .search-input {
-    background: transparent;
+    background: var(--color-card);
     color: var(--color-text);
-    border-bottom: 2px solid #333; /* Black line for light theme */
-    transition: border-color 0.3s ease;
+    border: 2px solid rgba(161, 180, 84, 0.3);
+    border-radius: 8px;
+    padding: 10px 12px;
+    transition: all 0.3s ease;
+    outline: none; /* Remove default outline */
 }
 
 .light-theme .search-input:focus {
-    border-bottom-color: #000; /* Darker black on focus */
+    border-color: var(--color-highlight);
+    box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.2);
+    transform: translateY(-2px);
+}
+
+.light-theme .search-input:hover {
+    border-color: var(--color-highlight);
 }
 
 .light-theme .search-input::placeholder {
@@ -6903,21 +6921,34 @@ header {
                 // Date range filter (screening date)
                 if (fromDate || toDate) {
                     const screeningDateText = row.cells[6].textContent; // Screening date is now column 6
-                    const screeningDate = new Date(screeningDateText);
+                    console.log('Date filter - screeningDateText:', screeningDateText, 'fromDate:', fromDate, 'toDate:', toDate);
                     
-                    if (!isNaN(screeningDate.getTime())) {
-                        if (fromDate) {
-                            const fromDateObj = new Date(fromDate);
-                            if (screeningDate < fromDateObj) {
-                                showRow = false;
+                    if (screeningDateText && screeningDateText !== 'N/A') {
+                        const screeningDate = new Date(screeningDateText);
+                        console.log('Date filter - parsed screeningDate:', screeningDate);
+                        
+                        if (!isNaN(screeningDate.getTime())) {
+                            if (fromDate) {
+                                const fromDateObj = new Date(fromDate);
+                                console.log('Date filter - fromDateObj:', fromDateObj, 'screeningDate < fromDateObj:', screeningDate < fromDateObj);
+                                if (screeningDate < fromDateObj) {
+                                    showRow = false;
+                                }
+                            }
+                            if (toDate) {
+                                const toDateObj = new Date(toDate);
+                                toDateObj.setHours(23, 59, 59, 999); // Include the entire day
+                                console.log('Date filter - toDateObj:', toDateObj, 'screeningDate > toDateObj:', screeningDate > toDateObj);
+                                if (screeningDate > toDateObj) {
+                                    showRow = false;
+                                }
                             }
                         }
-                        if (toDate) {
-                            const toDateObj = new Date(toDate);
-                            toDateObj.setHours(23, 59, 59, 999); // Include the entire day
-                            if (screeningDate > toDateObj) {
-                                showRow = false;
-                            }
+                    } else {
+                        // If screening date is N/A or empty, hide the row when date filters are active
+                        if (fromDate || toDate) {
+                            console.log('Date filter - hiding row with N/A screening date');
+                            showRow = false;
                         }
                     }
                 }
