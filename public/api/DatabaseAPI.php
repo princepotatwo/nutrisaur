@@ -7425,7 +7425,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                     
                     // Check if user exists in community_users table
-                    $stmt = $pdo->prepare("SELECT community_user_id, email, name FROM community_users WHERE email = ?");
+                    $stmt = $pdo->prepare("SELECT email, name FROM community_users WHERE email = ?");
                     $stmt->execute([$email]);
                     $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     
@@ -7475,7 +7475,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                     
                     // Check if reset code is valid and not expired
-                    $stmt = $pdo->prepare("SELECT community_user_id FROM community_users WHERE email = ? AND password_reset_code = ? AND password_reset_expires > NOW()");
+                    $stmt = $pdo->prepare("SELECT email FROM community_users WHERE email = ? AND password_reset_code = ? AND password_reset_expires > NOW()");
                     $stmt->execute([$email, $resetCode]);
                     $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     
@@ -7522,7 +7522,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     }
                     
                     // Verify reset code again
-                    $stmt = $pdo->prepare("SELECT community_user_id FROM community_users WHERE email = ? AND password_reset_code = ? AND password_reset_expires > NOW()");
+                    $stmt = $pdo->prepare("SELECT email FROM community_users WHERE email = ? AND password_reset_code = ? AND password_reset_expires > NOW()");
                     $stmt->execute([$email, $resetCode]);
                     $user = $stmt->fetch(PDO::FETCH_ASSOC);
                     
