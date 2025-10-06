@@ -959,10 +959,17 @@ header {
 }
 
 .dashboard-title h1 {
-    color: var(--color-highlight);
-    font-size: 22px;
-    font-weight: 600;
     margin: 0;
+    color: var(--color-text);
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.light-theme .dashboard-title h1 {
+    color: #1B3A1B;
+    font-size: 36px;
+    font-weight: 700;
 }
 
 .dashboard-header .user-info {
