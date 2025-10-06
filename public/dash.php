@@ -6888,6 +6888,46 @@ body {
     color: #000000 !important;
 }
 
+/* Classification labels theme support */
+.light-theme .trends-legend,
+.light-theme .trends-legend *,
+.light-theme .trends-legend div,
+.light-theme .trends-legend span {
+    color: #000000 !important;
+}
+
+.light-theme .legend-item,
+.light-theme .legend-item *,
+.light-theme .legend-item span {
+    color: #000000 !important;
+}
+
+.light-theme .muac-legend-item,
+.light-theme .muac-legend-item *,
+.light-theme .muac-legend-item span {
+    color: #000000 !important;
+}
+
+/* Dark theme classification labels */
+.dark-theme .trends-legend,
+.dark-theme .trends-legend *,
+.dark-theme .trends-legend div,
+.dark-theme .trends-legend span {
+    color: #FFFFFF !important;
+}
+
+.dark-theme .legend-item,
+.dark-theme .legend-item *,
+.dark-theme .legend-item span {
+    color: #FFFFFF !important;
+}
+
+.dark-theme .muac-legend-item,
+.dark-theme .muac-legend-item *,
+.dark-theme .muac-legend-item span {
+    color: #FFFFFF !important;
+}
+
 /* ===== BARANGAY DROPDOWN FUNCTIONALITY CSS ===== */
 .dropdown-content {
     display: none;
@@ -12508,7 +12548,43 @@ body {
                 window.ageClassificationLineChart.update('none'); // Update without animation
             }
             
+            // Update dynamically created legend items (classification labels)
+            updateDynamicLegendColors(textColor);
+            
             console.log('🎨 Chart colors updated for theme:', isLightTheme ? 'light' : 'dark');
+        }
+
+        // Function to update dynamically created legend items
+        function updateDynamicLegendColors(textColor) {
+            console.log('🎨 Updating dynamic legend colors...');
+            
+            // Update trends legend items
+            const trendsLegend = document.querySelector('.trends-legend');
+            if (trendsLegend) {
+                const legendItems = trendsLegend.querySelectorAll('div');
+                legendItems.forEach(item => {
+                    item.style.color = `${textColor} !important`;
+                    // Also update any span elements inside
+                    const spans = item.querySelectorAll('span');
+                    spans.forEach(span => {
+                        span.style.color = `${textColor} !important`;
+                    });
+                });
+                console.log('🎨 Updated trends legend items:', legendItems.length);
+            }
+            
+            // Update any other legend items that might exist
+            const allLegendItems = document.querySelectorAll('.legend-item, .muac-legend-item');
+            allLegendItems.forEach(item => {
+                item.style.color = `${textColor} !important`;
+                // Also update any span elements inside
+                const spans = item.querySelectorAll('span');
+                spans.forEach(span => {
+                    span.style.color = `${textColor} !important`;
+                });
+            });
+            
+            console.log('🎨 Updated all legend items:', allLegendItems.length);
         }
 
         // Theme toggle function
