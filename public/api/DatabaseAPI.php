@@ -4386,7 +4386,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         echo json_encode([
                             'success' => true,
                             'message' => 'Community user added successfully',
-                            'user_id' => $pdo->lastInsertId()
+                            'email' => $email
                         ]);
                     } else {
                         echo json_encode(['success' => false, 'message' => 'Failed to add community user']);

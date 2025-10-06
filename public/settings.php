@@ -6947,7 +6947,7 @@ header {
             .then(data => {
                 console.log('Add community user response:', data);
                 if (data.success) {
-                    showMessage('Community user added successfully!', 'success');
+                    showMessage(`Community user "${name}" (${email}) added successfully!`, 'success');
                     closeAddCommunityUserModal();
                     // Reload the community users table
                     loadCommunityUsersTable();
