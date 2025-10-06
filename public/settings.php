@@ -3057,6 +3057,18 @@ header {
             border-bottom: 1px solid rgba(161, 180, 84, 0.2);
             font-size: 14px;
             font-weight: 500;
+        }
+
+        /* Specific styling for screening date column to reduce width */
+        .user-table th:nth-child(7),
+        .user-table td:nth-child(7) {
+            width: 120px;
+            max-width: 120px;
+            min-width: 100px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
             vertical-align: middle;
             position: relative;
             line-height: 1.4;
@@ -3837,7 +3849,8 @@ header {
 
         .dark-theme .search-input:focus {
             border-color: var(--color-highlight);
-            box-shadow: none; /* Remove focus box-shadow to eliminate inside outline */
+            box-shadow: none !important; /* Remove focus box-shadow to eliminate inside outline */
+            outline: none !important; /* Ensure no outline on focus */
             transform: translateY(-2px);
         }
 
@@ -3863,7 +3876,8 @@ header {
 
         .light-theme .search-input:focus {
             border-color: var(--color-highlight);
-            box-shadow: none; /* Remove focus box-shadow to eliminate inside outline */
+            box-shadow: none !important; /* Remove focus box-shadow to eliminate inside outline */
+            outline: none !important; /* Ensure no outline on focus */
             transform: translateY(-2px);
         }
 
