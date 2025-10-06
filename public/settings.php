@@ -4644,14 +4644,15 @@ header {
             
             rows.forEach(row => {
                 const cells = row.querySelectorAll('td');
-                if (cells.length >= 6) { // Make sure we have enough columns
+                if (cells.length >= 7) { // Make sure we have enough columns including screening date
                     const user = {
                         name: cells[0].textContent.trim(),
                         email: cells[1].textContent.trim(),
                         municipality: cells[2].textContent.trim(),
                         barangay: cells[3].textContent.trim(),
                         sex: cells[4].textContent.trim(),
-                        birthday: cells[5].textContent.trim()
+                        birthday: cells[5].textContent.trim(),
+                        screening_date: cells[6].textContent.trim() // Add screening date
                     };
                     users.push(user);
                 }
@@ -5319,6 +5320,7 @@ header {
                         <td>${user.barangay || 'N/A'}</td>
                         <td>${user.sex || 'N/A'}</td>
                         <td>${user.birthday || 'N/A'}</td>
+                        <td>${user.screening_date || 'Not Available'}</td>
                         <td class="action-buttons">
                             <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
                                 Edit
