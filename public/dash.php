@@ -13655,18 +13655,9 @@ body {
                     await animateNumberUpdate('community-total-screened', data.data.total_screened || 0);
                     await animateNumberUpdate('community-screened-change', data.data.total_screened || 0);
                     
-                    // Update severe cases cards if data is available
-                    if (typeof updateSeverelyCasesCards === 'function') {
-                        // Create a mock WHO data structure for severe cases cards
-                        const mockWHOData = {
-                            data: {
-                                weight_for_age: { 'Severely Underweight': data.data.high_risk_cases || 0 },
-                                height_for_age: { 'Severely Stunted': data.data.sam_cases || 0 },
-                                weight_for_height: { 'Severely Wasted': data.data.critical_muac || 0 }
-                            }
-                        };
-                        updateSeverelyCasesCards(mockWHOData);
-                    }
+                    // Note: Severe cases cards are updated by WHO classification data, not dashboard stats
+                    // The dashboard_assessment_stats.php uses different logic than WHO standards
+                    // We rely on the WHO classification system for accurate severely cases counts
                     
                     console.log('✅ [Community Metrics] Update completed');
                 } else {
