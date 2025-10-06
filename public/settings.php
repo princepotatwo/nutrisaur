@@ -3322,8 +3322,8 @@ header {
             overflow: hidden;
             width: 100%;
             max-width: calc(100% - 60px);
-            margin-left: 0;
-            margin-right: 0;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* Dark theme specific styles for profile card */
