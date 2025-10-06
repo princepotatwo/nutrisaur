@@ -7199,7 +7199,6 @@ header {
                 document.getElementById('editBirthday').value = finalUserData.birthday || '';
                 document.getElementById('editWeight').value = finalUserData.weight || '';
                 document.getElementById('editHeight').value = finalUserData.height || '';
-                document.getElementById('editMuac').value = finalUserData.muac || '';
                 
                 // Store original email for comparison
                 const originalEmail = finalUserData.email || userData.email;
@@ -8035,10 +8034,6 @@ header {
                         <input type="number" id="editHeight" name="height" step="0.1" min="1" max="300" required>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="editMuac">MUAC (cm)</label>
-                        <input type="number" id="editMuac" name="muac" step="0.1" min="0" max="50">
-                    </div>
                 </form>
             </div>
             <div class="modal-footer">
