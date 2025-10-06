@@ -99,6 +99,142 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
     $action = $_POST['action'];
     
     switch ($action) {
+        case 'update_profile':
+            try {
+                $name = $_POST['name'] ?? '';
+                $email = $_POST['email'] ?? '';
+                $currentUserId = $_SESSION['user_id'] ?? null;
+                
+                if (!$currentUserId) {
+                    echo json_encode(['success' => false, 'error' => 'User not logged in']);
+                    break;
+                }
+                
+                require_once __DIR__ . "/../config.php";
+                $pdo = getDatabaseConnection();
+                if (!$pdo) {
+                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                    break;
+                }
+                
+                // Update user profile in database
+                $stmt = $pdo->prepare("UPDATE users SET username = ?, email = ? WHERE user_id = ?");
+                $result = $stmt->execute([$name, $email, $currentUserId]);
+                
+                if ($result) {
+                    // Update session data
+                    $_SESSION['username'] = $name;
+                    $_SESSION['email'] = $email;
+                    
+                    echo json_encode(['success' => true, 'message' => 'Profile updated successfully']);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to update profile']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+            }
+            break;
+            
+        case 'send_verification_code':
+            try {
+                $email = $_SESSION['email'] ?? '';
+                if (!$email) {
+                    echo json_encode(['success' => false, 'error' => 'No email found in session']);
+                    break;
+                }
+                
+                // Generate 6-digit verification code
+                $verificationCode = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+                
+                // Store verification code in session (expires in 10 minutes)
+                $_SESSION['verification_code'] = $verificationCode;
+                $_SESSION['verification_expires'] = time() + 600; // 10 minutes
+                
+                // Send email (simplified - you can integrate with your email service)
+                $subject = 'Password Change Verification Code';
+                $message = "Your verification code is: $verificationCode\n\nThis code will expire in 10 minutes.";
+                $headers = 'From: noreply@nutrisaur.com';
+                
+                if (mail($email, $subject, $message, $headers)) {
+                    echo json_encode(['success' => true, 'message' => 'Verification code sent']);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to send email']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'error' => 'Error sending verification code: ' . $e->getMessage()]);
+            }
+            break;
+            
+        case 'change_password':
+            try {
+                $currentPassword = $_POST['currentPassword'] ?? '';
+                $newPassword = $_POST['newPassword'] ?? '';
+                $verificationCode = $_POST['verificationCode'] ?? '';
+                $currentUserId = $_SESSION['user_id'] ?? null;
+                
+                if (!$currentUserId) {
+                    echo json_encode(['success' => false, 'error' => 'User not logged in']);
+                    break;
+                }
+                
+                // Verify verification code
+                if (!isset($_SESSION['verification_code']) || !isset($_SESSION['verification_expires'])) {
+                    echo json_encode(['success' => false, 'error' => 'No verification code found. Please request a new one.']);
+                    break;
+                }
+                
+                if (time() > $_SESSION['verification_expires']) {
+                    echo json_encode(['success' => false, 'error' => 'Verification code has expired. Please request a new one.']);
+                    break;
+                }
+                
+                if ($_SESSION['verification_code'] !== $verificationCode) {
+                    echo json_encode(['success' => false, 'error' => 'Invalid verification code']);
+                    break;
+                }
+                
+                require_once __DIR__ . "/../config.php";
+                $pdo = getDatabaseConnection();
+                if (!$pdo) {
+                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                    break;
+                }
+                
+                // Get current user data
+                $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
+                $stmt->execute([$currentUserId]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$user) {
+                    echo json_encode(['success' => false, 'error' => 'User not found']);
+                    break;
+                }
+                
+                // Verify current password
+                if (!password_verify($currentPassword, $user['password'])) {
+                    echo json_encode(['success' => false, 'error' => 'Current password is incorrect']);
+                    break;
+                }
+                
+                // Update password
+                $hashedNewPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+                $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE user_id = ?");
+                $result = $stmt->execute([$hashedNewPassword, $currentUserId]);
+                
+                if ($result) {
+                    // Clear verification code
+                    unset($_SESSION['verification_code']);
+                    unset($_SESSION['verification_expires']);
+                    
+                    echo json_encode(['success' => true, 'message' => 'Password changed successfully']);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to update password']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+            }
+            break;
+            
         case 'get_users_table':
             try {
                 require_once __DIR__ . "/../config.php";
@@ -3076,6 +3212,206 @@ header {
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
+        /* Profile Card Styles */
+        .profile-card {
+            background: var(--color-card);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 4px 20px var(--color-shadow);
+            border: 1px solid var(--color-border);
+            transition: all 0.3s ease;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .profile-header h3 {
+            color: var(--color-highlight);
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .btn-edit-profile {
+            background: var(--color-highlight);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-edit-profile:hover {
+            background: #66BB6A;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
+        }
+
+        .profile-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .profile-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .profile-field label {
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .profile-field span {
+            color: var(--color-text);
+            font-size: 16px;
+            padding: 8px 12px;
+            background: var(--color-bg);
+            border-radius: 6px;
+            border: 1px solid var(--color-border);
+        }
+
+        .profile-edit {
+            background: var(--color-bg);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid var(--color-border);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--color-border);
+            border-radius: 6px;
+            background: var(--color-card);
+            color: var(--color-text);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--color-highlight);
+            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-cancel, .btn-save {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel {
+            background: var(--color-border);
+            color: var(--color-text);
+        }
+
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-save {
+            background: var(--color-highlight);
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #66BB6A;
+            transform: translateY(-2px);
+        }
+
+        .profile-actions {
+            display: flex;
+            justify-content: center;
+            padding-top: 15px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .btn-change-password {
+            background: #FF9800;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-change-password:hover {
+            background: #F57C00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+        }
+
+        .btn-send-code {
+            background: var(--color-highlight);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn-send-code:hover {
+            background: #66BB6A;
+            transform: translateY(-1px);
+        }
             vertical-align: middle;
             position: relative;
             line-height: 1.4;
@@ -4523,6 +4859,62 @@ header {
                 </div>
             </div>
         </div>
+
+        <!-- Current User Profile Card -->
+        <div class="profile-card">
+            <div class="profile-header">
+                <h3>My Profile</h3>
+                <button class="btn-edit-profile" onclick="toggleProfileEdit()">
+                    <span class="btn-icon">✏️</span>
+                    <span class="btn-text">Edit Profile</span>
+                </button>
+            </div>
+            
+            <div class="profile-content">
+                <div class="profile-info" id="profileInfo">
+                    <div class="profile-field">
+                        <label>Name:</label>
+                        <span id="profileName"><?php echo htmlspecialchars($_SESSION['username'] ?? 'N/A'); ?></span>
+                    </div>
+                    <div class="profile-field">
+                        <label>Email:</label>
+                        <span id="profileEmail"><?php echo htmlspecialchars($_SESSION['email'] ?? 'N/A'); ?></span>
+                    </div>
+                    <div class="profile-field">
+                        <label>Role:</label>
+                        <span id="profileRole"><?php echo htmlspecialchars($_SESSION['role'] ?? 'Admin'); ?></span>
+                    </div>
+                    <div class="profile-field">
+                        <label>Last Login:</label>
+                        <span id="profileLastLogin"><?php echo htmlspecialchars($_SESSION['last_login'] ?? 'N/A'); ?></span>
+                    </div>
+                </div>
+
+                <div class="profile-edit" id="profileEdit" style="display: none;">
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label for="editName">Name:</label>
+                            <input type="text" id="editName" name="name" value="<?php echo htmlspecialchars($_SESSION['username'] ?? ''); ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">Email:</label>
+                            <input type="email" id="editEmail" name="email" value="<?php echo htmlspecialchars($_SESSION['email'] ?? ''); ?>" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-cancel" onclick="cancelProfileEdit()">Cancel</button>
+                            <button type="submit" class="btn-save">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="profile-actions">
+                    <button class="btn-change-password" onclick="showChangePasswordModal()">
+                        <span class="btn-icon">🔒</span>
+                        <span class="btn-text">Change Password</span>
+                    </button>
+                </div>
+            </div>
+        </div>
         
         <!-- CSV Import Modal -->
         <div id="csvImportModal" class="modal">
@@ -5189,6 +5581,182 @@ header {
         // Global variable to track current table type
         let currentTableType = 'community_users'; // 'community_users' for community users table, 'users' for users table
         let originalCommunityUsersData = null; // Store original community users data
+
+        // Profile management functions
+        function toggleProfileEdit() {
+            const profileInfo = document.getElementById('profileInfo');
+            const profileEdit = document.getElementById('profileEdit');
+            const editBtn = document.querySelector('.btn-edit-profile');
+            
+            if (profileEdit.style.display === 'none') {
+                profileInfo.style.display = 'none';
+                profileEdit.style.display = 'block';
+                editBtn.innerHTML = '<span class="btn-icon">❌</span><span class="btn-text">Cancel Edit</span>';
+            } else {
+                profileInfo.style.display = 'grid';
+                profileEdit.style.display = 'none';
+                editBtn.innerHTML = '<span class="btn-icon">✏️</span><span class="btn-text">Edit Profile</span>';
+            }
+        }
+
+        function cancelProfileEdit() {
+            toggleProfileEdit();
+        }
+
+        // Handle profile form submission
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            
+            // Update profile via API
+            fetch('/settings.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=update_profile&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the display
+                    document.getElementById('profileName').textContent = name;
+                    document.getElementById('profileEmail').textContent = email;
+                    
+                    // Update session data (if available)
+                    if (typeof updateSessionData === 'function') {
+                        updateSessionData({ username: name, email: email });
+                    }
+                    
+                    showMessage('Profile updated successfully!', 'success');
+                    toggleProfileEdit();
+                } else {
+                    showMessage('Failed to update profile: ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating profile:', error);
+                showMessage('Error updating profile. Please try again.', 'error');
+            });
+        });
+
+        function showChangePasswordModal() {
+            // Create password change modal
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.id = 'changePasswordModal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <span class="close" onclick="closeChangePasswordModal()">&times;</span>
+                    <h2>Change Password</h2>
+                    <form id="changePasswordForm">
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password:</label>
+                            <input type="password" id="currentPassword" name="currentPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">New Password:</label>
+                            <input type="password" id="newPassword" name="newPassword" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password:</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="verificationCode">Verification Code:</label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <input type="text" id="verificationCode" name="verificationCode" required style="flex: 1;">
+                                <button type="button" onclick="sendVerificationCode()" class="btn-send-code">Send Code</button>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-cancel" onclick="closeChangePasswordModal()">Cancel</button>
+                            <button type="submit" class="btn-save">Change Password</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.style.display = 'block';
+        }
+
+        function closeChangePasswordModal() {
+            const modal = document.getElementById('changePasswordModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function sendVerificationCode() {
+            fetch('/settings.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'action=send_verification_code'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessage('Verification code sent to your email!', 'success');
+                } else {
+                    showMessage('Failed to send verification code: ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error sending verification code:', error);
+                showMessage('Error sending verification code. Please try again.', 'error');
+            });
+        }
+
+        // Handle password change form submission
+        document.addEventListener('submit', function(e) {
+            if (e.target.id === 'changePasswordForm') {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                const currentPassword = formData.get('currentPassword');
+                const newPassword = formData.get('newPassword');
+                const confirmPassword = formData.get('confirmPassword');
+                const verificationCode = formData.get('verificationCode');
+                
+                if (newPassword !== confirmPassword) {
+                    showMessage('New passwords do not match!', 'error');
+                    return;
+                }
+                
+                if (newPassword.length < 6) {
+                    showMessage('New password must be at least 6 characters long!', 'error');
+                    return;
+                }
+                
+                // Update password via API
+                fetch('/settings.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=change_password&currentPassword=${encodeURIComponent(currentPassword)}&newPassword=${encodeURIComponent(newPassword)}&verificationCode=${encodeURIComponent(verificationCode)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('Password changed successfully!', 'success');
+                        closeChangePasswordModal();
+                    } else {
+                        showMessage('Failed to change password: ' + data.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error changing password:', error);
+                    showMessage('Error changing password. Please try again.', 'error');
+                });
+            }
+        });
 
         function downloadCSVTemplate() {
             // Toggle between community_users table and users table
