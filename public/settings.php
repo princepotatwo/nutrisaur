@@ -893,15 +893,12 @@ header {
 
 /* Dashboard Header Styles */
 .dashboard-header {
-    background: var(--color-card);
-    padding: 20px 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 20px var(--color-shadow);
+    /* Removed card styling - no background, padding, border-radius, or box-shadow */
+    padding: 0;
     margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid var(--color-border);
 }
 
 .dashboard-header h1 {
