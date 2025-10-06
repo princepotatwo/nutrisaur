@@ -6869,6 +6869,25 @@ body {
     color: #000000 !important;
 }
 
+/* Specific chart legend text color fixes */
+.light-theme canvas + div,
+.light-theme .chartjs-legend,
+.light-theme .chartjs-legend * {
+    color: #000000 !important;
+}
+
+/* Chart.js legend text color overrides */
+.light-theme .chartjs-legend-item,
+.light-theme .chartjs-legend-item * {
+    color: #000000 !important;
+}
+
+/* Ensure chart legend text is visible in light theme */
+.light-theme .chart-container .chartjs-legend,
+.light-theme .chart-container .chartjs-legend * {
+    color: #000000 !important;
+}
+
 /* ===== BARANGAY DROPDOWN FUNCTIONALITY CSS ===== */
 .dropdown-content {
     display: none;
@@ -11232,9 +11251,10 @@ body {
                     
                     console.log('📊 Creating new trends line chart with data:', { timeLabels, datasets, totalUsers });
                     
-                    // Get theme-aware colors
+                    // Get theme-aware colors with fallback detection
                     const isLightTheme = document.body.classList.contains('light-theme');
-                    const textColor = isLightTheme ? '#000000' : '#FFFFFF';
+                    const isDarkTheme = document.body.classList.contains('dark-theme');
+                    const textColor = isLightTheme ? '#000000' : (isDarkTheme ? '#FFFFFF' : '#FFFFFF');
                     
                     trendsLineChart = new Chart(ctx, {
                         type: 'line',
@@ -11545,9 +11565,10 @@ body {
                     console.log('📊 Canvas context:', ctx);
                     console.log('📊 Creating new age classification chart with data:', { ageLabels, datasets, totalUsers });
                     
-                    // Get theme-aware colors for age classification chart
+                    // Get theme-aware colors for age classification chart with fallback detection
                     const isLightTheme = document.body.classList.contains('light-theme');
-                    const textColor = isLightTheme ? '#000000' : '#FFFFFF';
+                    const isDarkTheme = document.body.classList.contains('dark-theme');
+                    const textColor = isLightTheme ? '#000000' : (isDarkTheme ? '#FFFFFF' : '#FFFFFF');
                     
                     ageClassificationLineChart = new Chart(ctx, {
                     type: 'line',
@@ -12462,6 +12483,34 @@ body {
             }
         });
 
+        // Function to update chart colors when theme changes
+        function updateChartColorsForTheme() {
+            console.log('🎨 Updating chart colors for theme change...');
+            
+            const isLightTheme = document.body.classList.contains('light-theme');
+            const textColor = isLightTheme ? '#000000' : '#FFFFFF';
+            
+            // Update trends chart colors if it exists
+            if (window.trendsLineChart && window.trendsLineChart.options) {
+                console.log('🎨 Updating trends chart legend colors...');
+                if (window.trendsLineChart.options.plugins && window.trendsLineChart.options.plugins.legend) {
+                    window.trendsLineChart.options.plugins.legend.labels.color = textColor;
+                }
+                window.trendsLineChart.update('none'); // Update without animation
+            }
+            
+            // Update age classification chart colors if it exists
+            if (window.ageClassificationLineChart && window.ageClassificationLineChart.options) {
+                console.log('🎨 Updating age classification chart legend colors...');
+                if (window.ageClassificationLineChart.options.plugins && window.ageClassificationLineChart.options.plugins.legend) {
+                    window.ageClassificationLineChart.options.plugins.legend.labels.color = textColor;
+                }
+                window.ageClassificationLineChart.update('none'); // Update without animation
+            }
+            
+            console.log('🎨 Chart colors updated for theme:', isLightTheme ? 'light' : 'dark');
+        }
+
         // Theme toggle function
         function newToggleTheme() {
             const body = document.body;
@@ -12483,6 +12532,9 @@ body {
             
             // Refresh charts to apply new theme
             setTimeout(() => {
+                // Update chart colors for theme change
+                updateChartColorsForTheme();
+                
                 // Refresh trends chart if it exists
                 if (typeof updateTrendsChart === 'function') {
                     updateTrendsChart();
