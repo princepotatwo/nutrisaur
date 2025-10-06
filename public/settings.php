@@ -6847,8 +6847,8 @@ header {
                 };
                 console.log('Extracted community user data:', userData);
                 
-                // Show edit modal for community_users table with basic data
-                showEditUserModalSimple(userData);
+                // Show edit modal for community_users table with complete data
+                showEditUserModal(userData);
             }
         }
 
@@ -7365,9 +7365,14 @@ header {
                 document.getElementById('editWeight').value = finalUserData.weight || '';
                 document.getElementById('editHeight').value = finalUserData.height || '';
                 
+                // Set pregnancy status if available
+                if (finalUserData.is_pregnant) {
+                    document.getElementById('editPregnancy').value = finalUserData.is_pregnant;
+                }
+                
                 // Store original email for comparison
                 const originalEmail = finalUserData.email || userData.email;
-                document.getElementById('editEmail').setAttribute('data-original-email', originalEmail);
+                document.getElementById('modalEditEmail').setAttribute('data-original-email', originalEmail);
                 
                 // Initialize municipality and barangay dropdowns
                 initializeMunicipalityDropdown();
