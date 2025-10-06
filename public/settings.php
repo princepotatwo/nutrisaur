@@ -3290,7 +3290,7 @@ header {
         
         .user-table th:nth-child(7),
         .user-table td:nth-child(7) {
-            min-width: 200px; /* ACTIONS - enough for three buttons (Edit, Archive/Unarchive, Delete) */
+            min-width: 280px; /* ACTIONS - enough for three buttons (Edit, Archive/Unarchive, Delete) */
         }
 
         .user-table thead { 
@@ -3689,7 +3689,7 @@ header {
             text-align: center;
             padding: 8px 6px;
             box-sizing: border-box;
-            min-width: 140px;
+            min-width: 280px;
         }
 
 
@@ -3753,7 +3753,7 @@ header {
         /* Action buttons styling */
         .action-buttons {
             display: flex;
-            gap: 4px;
+            gap: 6px;
             justify-content: center;
             align-items: center;
             padding: 4px;
