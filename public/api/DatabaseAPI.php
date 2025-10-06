@@ -7592,4 +7592,97 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
     $db->close();
 }
 
+/**
+ * Send password reset email via SendGrid
+ */
+function sendPasswordResetEmail($email, $username, $resetCode) {
+    // SendGrid API configuration
+    $apiKey = $_ENV['SENDGRID_API_KEY'] ?? 'YOUR_SENDGRID_API_KEY_HERE';
+    $apiUrl = 'https://api.sendgrid.com/v3/mail/send';
+    
+    $emailData = [
+        'personalizations' => [
+            [
+                'to' => [
+                    ['email' => $email, 'name' => $username]
+                ],
+                'subject' => 'NUTRISAUR - Password Reset Code'
+            ]
+        ],
+        'from' => [
+            'email' => 'noreply.nutrisaur@gmail.com',
+            'name' => 'NUTRISAUR'
+        ],
+        'content' => [
+            [
+                'type' => 'text/plain',
+                'value' => "Hello " . htmlspecialchars($username) . ",\n\nYou requested a password reset for your NUTRISAUR account. Please use the reset code below:\n\nReset Code: " . $resetCode . "\n\nThis code will expire in 15 minutes.\n\nIf you did not request this password reset, please ignore this email.\n\nBest regards,\nNUTRISAUR Team"
+            ],
+            [
+                'type' => 'text/html',
+                'value' => "
+                <html>
+                <head>
+                    <title>NUTRISAUR Password Reset</title>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                </head>
+                <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4;'>
+                    <div style='max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);'>
+                        <div style='text-align: center; background-color: #2A3326; color: #A1B454; padding: 20px; border-radius: 8px 8px 0 0; margin: -20px -20px 20px -20px;'>
+                            <h1 style='margin: 0; font-size: 24px;'>NUTRISAUR</h1>
+                        </div>
+                        <div style='padding: 20px 0;'>
+                            <p>Hello " . htmlspecialchars($username) . ",</p>
+                            <p>You requested a password reset for your NUTRISAUR account. Please use the reset code below:</p>
+                            <div style='background-color: #f8f9fa; border: 2px solid #2A3326; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px;'>
+                                <span style='font-size: 28px; font-weight: bold; color: #2A3326; letter-spacing: 4px;'>" . $resetCode . "</span>
+                            </div>
+                            <p><strong>This code will expire in 15 minutes.</strong></p>
+                            <p>If you did not request this password reset, please ignore this email.</p>
+                        </div>
+                        <div style='text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 14px;'>
+                            <p>Best regards,<br>NUTRISAUR Team</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                "
+            ]
+        ]
+    ];
+    
+    // Send email via SendGrid API
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $apiKey
+    ]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+    
+    // Enhanced error logging
+    error_log("SendGrid Password Reset API Response: HTTP $httpCode, Response: $response, Error: " . ($curlError ?: 'None'));
+    
+    if ($curlError) {
+        error_log("SendGrid password reset cURL error: " . $curlError);
+        return false;
+    }
+    
+    if ($httpCode >= 200 && $httpCode < 300) {
+        error_log("Password reset email sent successfully via SendGrid API");
+        return true;
+    }
+    
+    error_log("SendGrid password reset API failed. HTTP Code: $httpCode, Response: $response");
+    return false;
+}
+
 ?>
