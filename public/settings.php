@@ -889,6 +889,12 @@ header {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
+    background-color: var(--color-card);
+    padding: 15px 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--color-shadow);
+    border: 1px solid var(--color-border);
+    transition: all 0.3s ease;
 }
 
 /* Dashboard Header Styles */
