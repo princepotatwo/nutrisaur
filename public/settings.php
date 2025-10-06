@@ -7185,8 +7185,8 @@ header {
             }
             
             // Populate form with the basic user data from table
-            document.getElementById('editName').value = userData.name || '';
-            document.getElementById('editEmail').value = userData.email || '';
+            document.getElementById('modalEditName').value = userData.name || '';
+            document.getElementById('modalEditEmail').value = userData.email || '';
             document.getElementById('editSex').value = userData.sex || '';
             document.getElementById('editBirthday').value = userData.birthday || '';
             
@@ -7195,7 +7195,7 @@ header {
             document.getElementById('editHeight').value = '';
             
             // Store original email for comparison
-            document.getElementById('editEmail').setAttribute('data-original-email', userData.email);
+            document.getElementById('modalEditEmail').setAttribute('data-original-email', userData.email);
             
             // Initialize municipality and barangay dropdowns
             initializeMunicipalityDropdown();
@@ -7275,8 +7275,8 @@ header {
                 console.log('Using final user data:', finalUserData);
                 
                 // Populate form with complete user data
-                document.getElementById('editName').value = finalUserData.name || '';
-                document.getElementById('editEmail').value = finalUserData.email || '';
+                document.getElementById('modalEditName').value = finalUserData.name || '';
+                document.getElementById('modalEditEmail').value = finalUserData.email || '';
                 document.getElementById('editSex').value = finalUserData.sex || '';
                 document.getElementById('editBirthday').value = finalUserData.birthday || '';
                 document.getElementById('editWeight').value = finalUserData.weight || '';
@@ -7654,7 +7654,7 @@ header {
             // Get form data
             const formData = new FormData(document.getElementById('editUserForm'));
             // Get original email for finding the user
-            const originalEmail = document.getElementById('editEmail').getAttribute('data-original-email');
+            const originalEmail = document.getElementById('modalEditEmail').getAttribute('data-original-email');
             
             const userData = {
                 original_email: originalEmail,  // Use this to find the user
@@ -7765,8 +7765,8 @@ header {
         }
 
         function validateEditForm() {
-            const name = document.getElementById('editName').value.trim();
-            const email = document.getElementById('editEmail').value.trim();
+            const name = document.getElementById('modalEditName').value.trim();
+            const email = document.getElementById('modalEditEmail').value.trim();
             const municipality = document.getElementById('editMunicipality').value;
             const barangay = document.getElementById('editBarangay').value;
             const sex = document.getElementById('editSex').value;
@@ -8059,14 +8059,14 @@ header {
             <div class="modal-body">
                 <form id="editUserForm">
                     <div class="form-group">
-                        <label for="editName">Full Name *</label>
-                        <input type="text" id="editName" name="name" required>
+                        <label for="modalEditName">Full Name *</label>
+                        <input type="text" id="modalEditName" name="name" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="editEmail">Email *</label>
-                        <input type="email" id="editEmail" name="email" required onblur="validateEmail()">
-                        <small id="emailError" style="color: red; font-size: 12px;"></small>
+                        <label for="modalEditEmail">Email *</label>
+                        <input type="email" id="modalEditEmail" name="email" required onblur="validateEmail()">
+                        <small id="modalEmailError" style="color: red; font-size: 12px;"></small>
                     </div>
                     
                     <div class="form-group">

@@ -1,985 +1,409 @@
- 🔍 Dashboard Metrics - Using donut chart logic:
-   - Total Screened: 15
-   - Severely Underweight (WFA): 2
-   - Severely Stunted (HFA): 4
-   - Severely Wasted (WFH): 2
- 🔍 WFA Classifications: Object
- 🔍 HFA Classifications: Object
- 🔍 WFH Classifications: Object
- 📊 Nutritional Statistics loaded: Object
- 🌍 Pre-loaded Geographic Distribution Data: Array(0)
- DOM Content Loaded - Initializing WHO dropdown
- 📅 Set from date to: 2025-01-01
- 📅 Set to date to: 2025-10-09
- 📊 Updating Trends Chart...
- 📅 Date inputs found: Object
- 📅 Current date values: Object
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Final filter value: 
- 📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=weight-for-age
- 📊 Updating severe cases list...
- 📊 Severe cases function called with barangay: 
- 📊 Severe cases list element found: 
- 📊 Severe cases - WHO Standard Select element: 
- 📊 Severe cases - WHO Standard value: weight-for-age
- 📊 Severe cases - Dropdown value at time of call: weight-for-age
- 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=weight-for-age
- WHO dropdown found, setting up event listener
- 🔄 Starting WHO standard change handler...
- 📊 WHO Standard selected: weight-for-age
- 📊 Dropdown element found: true
- 📊 Dropdown value: weight-for-age
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Final filter value: 
- 📡 Fetching WHO data with active filters...
- 📊 Active filters: Object
- Fetching WHO data for: Object
- API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=&who_standard=weight-for-age
- 🚀 Initializing municipality and barangay dropdown functionality...
- 🚀 Initializing modern mobile top navigation...
- 📱 Desktop navbar exists: true
- 📱 Initializing mobile dropdown functionality...
- 📱 Found select headers: 2
- 📱 Found dropdown contents: 2
- 📱 Found option items: 247
- ✅ Mobile dropdown functionality initialized
- ✅ Modern mobile top navigation system initialized successfully
- 📊 Trends API response: Object
- 📊 Trends API data structure: Object
- 📊 Chart data analysis: Object
- No chartable datasets available - showing message with user count
- Severe cases data received: Object
- Found 2 severe cases
- 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
- 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
- ✅ Severe cases list updated successfully with 2 cases
- Bulk API Response: Object
- Mapping weight-for-age to weight_for_age: Object
- Classification values: Array(6)
- Calculated total: 6
- Original total_users: 15
- Extracted weight-for-age data: Object
- Processed data for donut chart: Object
- 📊 Data received for chart update: Object
- 🎨 Updating chart...
- WHO Chart Update - Data received: Object
- Data type: object
- Data classifications: Object
- Data total: 6
- Chart elements found:
-   - chartBg (risk-chart-bg): 
-   - centerText (risk-center-text): 
-   - segments (risk-segments): 
- Processing classifications: Object
- Classifications keys: Array(6)
- Classifications values: Array(6)
- Total users: 6
- Has data (non-zero counts): true
- Chart segments: Array(3)
- Chart segments length: 3
- Chart segments details: Array(3)
- Creating gradient: conic-gradient(#E91E63 0% 33.33333333333333%, #FFC107 33.33333333333333% 66.66666666666666%, #4CAF50 66.66666666666666% 99.99999999999999%)
- Chart background set to: conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 33.3333%, rgb(255, 193, 7) 33.3333%, rgb(255, 193, 7) 66.6667%, rgb(76, 175, 80) 66.6667%, rgb(76, 175, 80) 100%)
- Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(233, 30, 99) 0%, rgb(233, 30, 99) 33.3333%, rgb(255, 193, 7) 33.3333%, rgb(255, 193, 7) 66.6667%, rgb(76, 175, 80) 66.6667%, rgb(76, 175, 80) 100%) repeat scroll 0% 0% / auto padding-box border-box
- Computed opacity: 1
- Element dimensions: Object
- WHO chart updated successfully
- 🎨 Updating age classification chart...
- 📊 Updating Age Classification Line Chart...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: 
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
- 📍 Found 13 municipality options
- 📍 Found 234 barangay options
- ✅ Municipality and barangay dropdown functionality initialized
- 📊 Age classification API response: Object
- 📊 Age Classification Line Chart Data: Object
- 📊 Creating new age classification chart with data: Object
- ✅ Age Classification Line Chart created successfully
- 🎨 Updating trends chart...
- 📊 Updating Trends Chart...
- 📅 Date inputs found: Object
- 📅 Current date values: Object
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Final filter value: 
- 📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=weight-for-age
- 📊 Trends API response: Object
- 📊 Trends API data structure: Object
- 📊 Chart data analysis: Object
- No chartable datasets available - showing message with user count
- 🎨 Updating severe cases list...
- 📊 WHO Standard before severe cases call: weight-for-age
- 📊 Dropdown value before severe cases call: weight-for-age
- 📊 Updating severe cases list...
- 📊 Severe cases function called with barangay: 
- 📊 Severe cases list element found: 
- 📊 Severe cases - WHO Standard Select element: 
- 📊 Severe cases - WHO Standard value: weight-for-age
- 📊 Severe cases - Dropdown value at time of call: weight-for-age
- 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=weight-for-age
- Severe cases data received: Object
- Found 2 severe cases
- 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
- 🔍 Severe case CSS class: severely-underweight for classification: Severely Underweight
- ✅ Severe cases list updated successfully with 2 cases
- ✅ Chart update completed
- 🏁 WHO classification loading completed
- 📊 Loading initial trends chart...
- 📊 updateTrendsChart function exists: function
- 📊 Updating Trends Chart...
- 📅 Date inputs found: Object
- 📅 Current date values: Object
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Final filter value: 
- 📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=&who_standard=weight-for-age
- 📊 Trends API response: Object
- 📊 Trends API data structure: Object
- 📊 Chart data analysis: Object
- No chartable datasets available - showing message with user count
- 📊 Trends chart loaded successfully
- 📊 Loading initial age classification chart...
- 📊 Updating Age Classification Line Chart...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: 
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
- 📊 Age classification API response: Object
- 📊 Age Classification Line Chart Data: Object
- 📊 Updated age classification chart with data: Object
- 🔄 Loading initial dashboard metrics and geographic distribution...
- 🔄 updateCommunityMetrics called with barangay: 
- 🔄 Loading barangay distribution data...
- Fetching barangay distribution data for: Object
- Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=
- Barangay API Response: Object
- Updating barangay distribution display: Object
- 🔄 Loading gender distribution data...
- Fetching gender distribution data for: Object
- Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
- Gender API Response: Object
- Updating gender distribution display: Object
- 🌍 Loading geographic distribution with pre-loaded data...
- 🌍 No pre-loaded geographic data available
- 🌍 updateGeographicChartDisplay called with data: Array(0)
- ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8693
- 🔽 Municipality dropdown toggled
- 🔍 Card Debug - Checking card elements:
- Card Container: 
- Number of cards found: 4
- Card 1: 
- Card 1 display: flex
- Card 1 visibility: visible
- Card 1 opacity: 1
- Card 2: 
- Card 2 display: flex
- Card 2 visibility: visible
- Card 2 opacity: 1
- Card 3: 
- Card 3 display: flex
- Card 3 visibility: visible
- Card 3 opacity: 1
- Card 4: 
- Card 4 display: flex
- Card 4 visibility: visible
- Card 4 opacity: 1
- 🔍 Initial Dashboard Metrics (Page Load):
-   - Total Screened: 15
-   - High Risk (Severely Underweight): 2
-   - SAM Cases (Severely Stunted): 4
-   - Critical MUAC (Severely Wasted): 2
- 🔄 Starting community metrics update...
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php
- DatabaseAPI response for dashboard_assessment_stats : Object
- Returning data: Object
- 📊 Community Metrics Data: Object
- 📊 Data type: object
- 📊 Data keys: Array(2)
- Total Screened Element: 
- Screened Change Element: 
- Total Users: 15
- Recent Registrations: 15
- 📊 Total screened element: 
- 📊 Total screened from API (data.data.total_screened): 15
- 📊 Total users from API (data.data.total_users): undefined
- 📊 Total users from API (data.total_users): undefined
- 📊 Total users from API (data.processed_users): undefined
- 📊 Final total users value: 15
- 📊 Setting total screened to: 15
- 📊 Setting screened change to: 15
- 📊 Severely cases will be updated by WHO classification data
- 🚀 Starting seamless dashboard updates (3-second interval)
- 🔍 Dashboard state: Object
- 🔍 Current barangay: 
- 🔍 Document visibility: visible
- 🏛️ Municipality selected: ABUCAY ABUCAY
- 🏘️ Updating barangay dropdown for municipality: ABUCAY
- ✅ Added 10 barangays for ABUCAY
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ABUCAY
- 🔍 Final filter value: ABUCAY
- 🔄 Updating dashboard with all filters: Object
- ✅ Municipality selection complete, dashboard updated with all filters
- 🔄 updateCommunityMetrics called with barangay: ABUCAY
- ⏳ Update already in progress, skipping...
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=analysis_data&barangay=ABUCAY
-dash:12557 Uncaught 
- 🏛️ Municipality option clicked: ABUCAY ABUCAY
- 🏛️ Municipality selected: ABUCAY ABUCAY
- 🏘️ Updating barangay dropdown for municipality: ABUCAY
- ✅ Added 10 barangays for ABUCAY
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ABUCAY
- 🔍 Final filter value: ABUCAY
- 🔄 Updating dashboard with all filters: Object
- ✅ Municipality selection complete, dashboard updated with all filters
- 🔄 updateCommunityMetrics called with barangay: ABUCAY
- ⏳ Update already in progress, skipping...
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=analysis_data&barangay=ABUCAY
-dash:12557 Uncaught (in promise) 
- DatabaseAPI response for analysis_data : Object
- 🌐 Cached fresh data for analysis_data
- Returning data: Object
- 🌍 updateGeographicChart called with barangay: ABUCAY
- 🌍 Using pre-loaded Geographic Data in updateGeographicChart: Array(0)
- No geographic data available
- 🌍 updateGeographicChartDisplay called with data: Array(0)
- ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8693
- 🔄 Updating barangay distribution for: ABUCAY
- Fetching barangay distribution data for: Object
- Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=ABUCAY
- DatabaseAPI response for analysis_data : Object
- 🌐 Cached fresh data for analysis_data
- Returning data: Object
- 🌍 updateGeographicChart called with barangay: ABUCAY
- 🌍 Using pre-loaded Geographic Data in updateGeographicChart: Array(0)
- No geographic data available
- 🌍 updateGeographicChartDisplay called with data: Array(0)
- ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8693
- 🔄 Updating barangay distribution for: ABUCAY
- Fetching barangay distribution data for: Object
- Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=ABUCAY
- Barangay API Response: Object
- Updating barangay distribution display: Object
- 🔄 Updating gender distribution for: ABUCAY
- Fetching gender distribution data for: Object
- Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=ABUCAY
- Barangay API Response: Object
- Updating barangay distribution display: Object
- 🔄 Updating gender distribution for: ABUCAY
- Fetching gender distribution data for: Object
- Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=ABUCAY
- Gender API Response: Object
- Updating gender distribution display: Object
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=intelligent_programs&barangay=ABUCAY
- Gender API Response: Object
- Updating gender distribution display: Object
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=intelligent_programs&barangay=ABUCAY
- DatabaseAPI response for intelligent_programs : Object
- 🌐 Cached fresh data for intelligent_programs
- Returning data: Array(0)
- 🔄 Updating trends chart for barangay: ABUCAY
- 📊 Updating Trends Chart...
- 📅 Date inputs found: Object
- 📅 Current date values: Object
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ABUCAY
- 🔍 Final filter value: ABUCAY
- 📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ABUCAY&who_standard=weight-for-age
- DatabaseAPI response for intelligent_programs : Object
- 🌐 Cached fresh data for intelligent_programs
- Returning data: Array(0)
- 🔄 Updating trends chart for barangay: ABUCAY
- 📊 Updating Trends Chart...
- 📅 Date inputs found: Object
- 📅 Current date values: Object
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ABUCAY
- 🔍 Final filter value: ABUCAY
- 📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ABUCAY&who_standard=weight-for-age
- 📊 Trends API response: Object
- 📊 Trends API data structure: Object
- 📊 Chart data analysis: Object
- No time labels available
- 🔄 Updating age classification chart for barangay: ABUCAY
- 📊 Updating Age Classification Line Chart...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: ABUCAY
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ABUCAY
- 📊 Trends API response: Object
- 📊 Trends API data structure: Object
- 📊 Chart data analysis: Object
- No time labels available
- 🔄 Updating age classification chart for barangay: ABUCAY
- 📊 Updating Age Classification Line Chart...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: ABUCAY
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ABUCAY
- 📊 Age classification API response: Object
- No age classification line chart data available
- 🔄 Updating severe cases list for barangay: ABUCAY
- 📊 Updating severe cases list...
- 📊 Severe cases function called with barangay: ABUCAY
- 📊 Severe cases list element found: 
- 📊 Severe cases - WHO Standard Select element: 
- 📊 Severe cases - WHO Standard value: weight-for-age
- 📊 Severe cases - Dropdown value at time of call: weight-for-age
- 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=ABUCAY&who_standard=weight-for-age
- 📊 Age classification API response: Object
- No age classification line chart data available
- 🔄 Updating severe cases list for barangay: ABUCAY
- 📊 Updating severe cases list...
- 📊 Severe cases function called with barangay: ABUCAY
- 📊 Severe cases list element found: 
- 📊 Severe cases - WHO Standard Select element: 
- 📊 Severe cases - WHO Standard value: weight-for-age
- 📊 Severe cases - Dropdown value at time of call: weight-for-age
- 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=ABUCAY&who_standard=weight-for-age
- Severe cases data received: Object
- No severe cases found
- 🔄 Starting WHO standard change handler...
- 📊 WHO Standard selected: weight-for-age
- 📊 Dropdown element found: true
- 📊 Dropdown value: weight-for-age
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ABUCAY
- 🔍 Final filter value: ABUCAY
- 📡 Fetching WHO data with active filters...
- 📊 Active filters: Object
- Fetching WHO data for: Object
- API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=ABUCAY&who_standard=weight-for-age
- Severe cases data received: Object
- No severe cases found
- WHO classification already loading, skipping...
- Bulk API Response: Object
- Mapping weight-for-age to weight_for_age: Object
- Classification values: Array(6)
- Calculated total: 0
- Original total_users: 0
- Extracted weight-for-age data: Object
- Processed data for donut chart: Object
- 📊 Data received for chart update: Object
- 🎨 Updating chart...
- WHO Chart Update - Data received: Object
- Data type: object
- Data classifications: Object
- Data total: 0
- Chart elements found:
-   - chartBg (risk-chart-bg): 
-   - centerText (risk-center-text): 
-   - segments (risk-segments): 
- 🎨 Updating age classification chart...
- 📊 Updating Age Classification Line Chart...
- Canvas not found, restoring...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: ABUCAY
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ABUCAY
- 📊 Age classification API response: Object
- No age classification line chart data available
- 🎨 Updating trends chart...
- 📊 Updating Trends Chart...
- 📅 Date inputs found: Object
- 📅 Current date values: Object
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ABUCAY
- 🔍 Final filter value: ABUCAY
- 📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ABUCAY&who_standard=weight-for-age
- 📊 Trends API response: Object
- 📊 Trends API data structure: Object
- 📊 Chart data analysis: Object
- No time labels available
- 🎨 Updating severe cases list...
- 📊 WHO Standard before severe cases call: weight-for-age
- 📊 Dropdown value before severe cases call: weight-for-age
- 📊 Updating severe cases list...
- 📊 Severe cases function called with barangay: ABUCAY
- 📊 Severe cases list element found: 
- 📊 Severe cases - WHO Standard Select element: 
- 📊 Severe cases - WHO Standard value: weight-for-age
- 📊 Severe cases - Dropdown value at time of call: weight-for-age
- 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=ABUCAY&who_standard=weight-for-age
- Severe cases data received: Object
- No severe cases found
- ✅ Chart update completed
- 🏁 WHO classification loading completed
- 🔄 updateCharts called with barangay: ABUCAY
- 🔍 Current Dashboard Metrics:
-   - Total Screened: 15
-   - High Risk (Severely Underweight): 2
-   - SAM Cases (Severely Stunted): 4
-   - Critical MUAC (Severely Wasted): 2
- 📈 Risk distribution data now handled by WHO classification system
- 📈 Risk Distribution Data (RAW): Object
- 📈 Risk Data Type: object
- 📈 Risk Data Keys: Array(1)
- 📈 Risk Data Success: false
- 📈 Risk Data Data: undefined
- 📈 High Risk Cases: undefined
- 📈 SAM Cases: undefined
- 📈 Critical MUAC: undefined
- 🔄 Updating Nutritional Statistics...
- 🔄 Updating Nutritional Statistics Display: Object
- 🌍 Using pre-loaded Geographic Distribution data...
- 🌍 Geographic Data: Array(0)
- 🌍 No geographic data, showing empty display
- 🌍 updateGeographicChartDisplay called with data: Array(0)
- ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8693
- 🎯 Dashboard first load completed - state management now active
-dash:8661 Uncaught (in promise) 
- 🔽 Municipality dropdown toggled
- ⏰ Seamless update triggered
- 🔍 Visibility state: visible
- 🔍 Update in progress: true
- 🔍 Current barangay: ABUCAY
- ⏸️ Skipping seamless update - visibility: visible updateInProgress: true
- 🔧 Resetting stuck updateInProgress flag
- 🏛️ Municipality selected: ORION ORION
- 🏘️ Updating barangay dropdown for municipality: ORION
- ✅ Added 23 barangays for ORION
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ORION
- 🔍 Final filter value: ORION
- 🔄 Updating dashboard with all filters: Object
- ✅ Municipality selection complete, dashboard updated with all filters
- 🔄 updateCommunityMetrics called with barangay: ORION
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=analysis_data&barangay=ORION
-dash:12557 Uncaught 
- 🏛️ Municipality option clicked: ORION ORION
- 🏛️ Municipality selected: ORION ORION
- 🏘️ Updating barangay dropdown for municipality: ORION
- ✅ Added 23 barangays for ORION
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ORION
- 🔍 Final filter value: ORION
- 🔄 Updating dashboard with all filters: Object
- ✅ Municipality selection complete, dashboard updated with all filters
- 🔄 updateCommunityMetrics called with barangay: ORION
- ⏳ Update already in progress, skipping...
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=analysis_data&barangay=ORION
-dash:12557 Uncaught (in promise) 
- DatabaseAPI response for analysis_data : Object
- 🌐 Cached fresh data for analysis_data
- Returning data: Object
- 🌍 updateGeographicChart called with barangay: ORION
- 🌍 Using pre-loaded Geographic Data in updateGeographicChart: Array(0)
- No geographic data available
- 🌍 updateGeographicChartDisplay called with data: Array(0)
- ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8693
- 🔄 Updating barangay distribution for: ORION
- Fetching barangay distribution data for: Object
- Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=ORION
- DatabaseAPI response for analysis_data : Object
- 🌐 Cached fresh data for analysis_data
- Returning data: Object
- 🌍 updateGeographicChart called with barangay: ORION
- 🌍 Using pre-loaded Geographic Data in updateGeographicChart: Array(0)
- No geographic data available
- 🌍 updateGeographicChartDisplay called with data: Array(0)
- ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8693
- 🔄 Updating barangay distribution for: ORION
- Fetching barangay distribution data for: Object
- Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=ORION
- Barangay API Response: Object
- Updating barangay distribution display: Object
- 🔄 Updating gender distribution for: ORION
- Fetching gender distribution data for: Object
- Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=ORION
- Barangay API Response: Object
- Updating barangay distribution display: Object
- 🔄 Updating gender distribution for: ORION
- Fetching gender distribution data for: Object
- Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=ORION
- Gender API Response: Object
- Updating gender distribution display: Object
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=intelligent_programs&barangay=ORION
- Gender API Response: Object
- Updating gender distribution display: Object
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=intelligent_programs&barangay=ORION
- DatabaseAPI response for intelligent_programs : Object
- 🌐 Cached fresh data for intelligent_programs
- Returning data: Array(0)
- 🔄 Updating trends chart for barangay: ORION
- 📊 Updating Trends Chart...
- 📅 Date inputs found: Object
- 📅 Current date values: Object
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ORION
- 🔍 Final filter value: ORION
- 📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORION&who_standard=weight-for-age
- DatabaseAPI response for intelligent_programs : Object
- 🌐 Cached fresh data for intelligent_programs
- Returning data: Array(0)
- 🔄 Updating trends chart for barangay: ORION
- 📊 Updating Trends Chart...
- 📅 Date inputs found: Object
- 📅 Current date values: Object
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ORION
- 🔍 Final filter value: ORION
- 📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORION&who_standard=weight-for-age
- 📊 Trends API response: Object
- 📊 Trends API data structure: Object
- 📊 Chart data analysis: Object
- No time labels available
- 🔄 Updating age classification chart for barangay: ORION
- 📊 Updating Age Classification Line Chart...
- Canvas not found, restoring...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: ORION
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORION
- 📊 Trends API response: Object
- 📊 Trends API data structure: Object
- 📊 Chart data analysis: Object
- No time labels available
- 🔄 Updating age classification chart for barangay: ORION
- 📊 Updating Age Classification Line Chart...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: ORION
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORION
- 📊 Age classification API response: Object
- No age classification line chart data available
- 🔄 Updating severe cases list for barangay: ORION
- 📊 Updating severe cases list...
- 📊 Severe cases function called with barangay: ORION
- 📊 Severe cases list element found: 
- 📊 Severe cases - WHO Standard Select element: 
- 📊 Severe cases - WHO Standard value: weight-for-age
- 📊 Severe cases - Dropdown value at time of call: weight-for-age
- 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=ORION&who_standard=weight-for-age
- 📊 Age classification API response: Object
- No age classification line chart data available
- 🔄 Updating severe cases list for barangay: ORION
- 📊 Updating severe cases list...
- 📊 Severe cases function called with barangay: ORION
- 📊 Severe cases list element found: 
- 📊 Severe cases - WHO Standard Select element: 
- 📊 Severe cases - WHO Standard value: weight-for-age
- 📊 Severe cases - Dropdown value at time of call: weight-for-age
- 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=ORION&who_standard=weight-for-age
- Severe cases data received: Object
- No severe cases found
- 🔄 Starting WHO standard change handler...
- 📊 WHO Standard selected: weight-for-age
- 📊 Dropdown element found: true
- 📊 Dropdown value: weight-for-age
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ORION
- 🔍 Final filter value: ORION
- 📡 Fetching WHO data with active filters...
- 📊 Active filters: Object
- Fetching WHO data for: Object
- API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=ORION&who_standard=weight-for-age
- Severe cases data received: Object
- No severe cases found
- WHO classification already loading, skipping...
- Bulk API Response: Object
- Mapping weight-for-age to weight_for_age: Object
- Classification values: Array(6)
- Calculated total: 0
- Original total_users: 0
- Extracted weight-for-age data: Object
- Processed data for donut chart: Object
- 📊 Data received for chart update: Object
- 🎨 Updating chart...
- WHO Chart Update - Data received: Object
- Data type: object
- Data classifications: Object
- Data total: 0
- Chart elements found:
-   - chartBg (risk-chart-bg): 
-   - centerText (risk-center-text): 
-   - segments (risk-segments): 
- 🎨 Updating age classification chart...
- 📊 Updating Age Classification Line Chart...
- Canvas not found, restoring...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: ORION
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORION
- 📊 Age classification API response: Object
- No age classification line chart data available
- 🎨 Updating trends chart...
- 📊 Updating Trends Chart...
- 📅 Date inputs found: Object
- 📅 Current date values: Object
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ORION
- 🔍 Final filter value: ORION
- 📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORION&who_standard=weight-for-age
- 📊 Trends API response: Object
- 📊 Trends API data structure: Object
- 📊 Chart data analysis: Object
- No time labels available
- 🎨 Updating severe cases list...
- 📊 WHO Standard before severe cases call: weight-for-age
- 📊 Dropdown value before severe cases call: weight-for-age
- 📊 Updating severe cases list...
- 📊 Severe cases function called with barangay: ORION
- 📊 Severe cases list element found: 
- 📊 Severe cases - WHO Standard Select element: 
- 📊 Severe cases - WHO Standard value: weight-for-age
- 📊 Severe cases - Dropdown value at time of call: weight-for-age
- 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=ORION&who_standard=weight-for-age
- Severe cases data received: Object
- No severe cases found
- ✅ Chart update completed
- 🏁 WHO classification loading completed
- 🔄 updateCharts called with barangay: ORION
- 🔍 Current Dashboard Metrics:
-   - Total Screened: 15
-   - High Risk (Severely Underweight): 2
-   - SAM Cases (Severely Stunted): 4
-   - Critical MUAC (Severely Wasted): 2
- 📈 Risk distribution data now handled by WHO classification system
- 📈 Risk Distribution Data (RAW): Object
- 📈 Risk Data Type: object
- 📈 Risk Data Keys: Array(1)
- 📈 Risk Data Success: false
- 📈 Risk Data Data: undefined
- 📈 High Risk Cases: undefined
- 📈 SAM Cases: undefined
- 📈 Critical MUAC: undefined
- 🔄 Updating Nutritional Statistics...
- 🔄 Updating Nutritional Statistics Display: Object
- 🌍 Using pre-loaded Geographic Distribution data...
- 🌍 Geographic Data: Array(0)
- 🌍 No geographic data, showing empty display
- 🌍 updateGeographicChartDisplay called with data: Array(0)
- ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8693
-dash:8661 Uncaught (in promise) 
- 🔽 Municipality dropdown toggled
- ⏰ Seamless update triggered
- 🔍 Visibility state: visible
- 🔍 Update in progress: true
- 🔍 Current barangay: ORION
- ⏸️ Skipping seamless update - visibility: visible updateInProgress: true
- 🔧 Resetting stuck updateInProgress flag
- 🏛️ Municipality selected: ORANI ORANI
- 🏘️ Updating barangay dropdown for municipality: ORANI
- ✅ Added 28 barangays for ORANI
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ORANI
- 🔍 Final filter value: ORANI
- 🔄 Updating dashboard with all filters: Object
- ✅ Municipality selection complete, dashboard updated with all filters
- 🔄 updateCommunityMetrics called with barangay: ORANI
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=analysis_data&barangay=ORANI
-dash:12557 Uncaught 
- 🏛️ Municipality option clicked: ORANI ORANI
- 🏛️ Municipality selected: ORANI ORANI
- 🏘️ Updating barangay dropdown for municipality: ORANI
- ✅ Added 28 barangays for ORANI
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ORANI
- 🔍 Final filter value: ORANI
- 🔄 Updating dashboard with all filters: Object
- ✅ Municipality selection complete, dashboard updated with all filters
- 🔄 updateCommunityMetrics called with barangay: ORANI
- ⏳ Update already in progress, skipping...
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=analysis_data&barangay=ORANI
-dash:12557 Uncaught (in promise) 
- DatabaseAPI response for analysis_data : Object
- 🌐 Cached fresh data for analysis_data
- Returning data: Object
- 🌍 updateGeographicChart called with barangay: ORANI
- 🌍 Using pre-loaded Geographic Data in updateGeographicChart: Array(0)
- No geographic data available
- 🌍 updateGeographicChartDisplay called with data: Array(0)
- ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8693
- 🔄 Updating barangay distribution for: ORANI
- Fetching barangay distribution data for: Object
- Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=ORANI
- DatabaseAPI response for analysis_data : Object
- 🌐 Cached fresh data for analysis_data
- Returning data: Object
- 🌍 updateGeographicChart called with barangay: ORANI
- 🌍 Using pre-loaded Geographic Data in updateGeographicChart: Array(0)
- No geographic data available
- 🌍 updateGeographicChartDisplay called with data: Array(0)
- ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8693
- 🔄 Updating barangay distribution for: ORANI
- Fetching barangay distribution data for: Object
- Barangay API URL: /api/DatabaseAPI.php?action=get_barangay_distribution_bulk&barangay=ORANI
- Barangay API Response: Object
- Updating barangay distribution display: Object
- 🔄 Updating gender distribution for: ORANI
- Fetching gender distribution data for: Object
- Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=ORANI
- Barangay API Response: Object
- Updating barangay distribution display: Object
- 🔄 Updating gender distribution for: ORANI
- Fetching gender distribution data for: Object
- Gender API URL: /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=ORANI
- Gender API Response: Object
- Updating gender distribution display: Object
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=intelligent_programs&barangay=ORANI
- Gender API Response: Object
- Updating gender distribution display: Object
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=intelligent_programs&barangay=ORANI
- DatabaseAPI response for intelligent_programs : Object
- 🌐 Cached fresh data for intelligent_programs
- Returning data: Array(0)
- 🔄 Updating trends chart for barangay: ORANI
- 📊 Updating Trends Chart...
- 📅 Date inputs found: Object
- 📅 Current date values: Object
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ORANI
- 🔍 Final filter value: ORANI
- 📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age
- DatabaseAPI response for intelligent_programs : Object
- 🌐 Cached fresh data for intelligent_programs
- Returning data: Array(0)
- 🔄 Updating trends chart for barangay: ORANI
- 📊 Updating Trends Chart...
- 📅 Date inputs found: Object
- 📅 Current date values: Object
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ORANI
- 🔍 Final filter value: ORANI
- 📊 Trends Chart Filters: Object
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age
- 📊 Trends API response: Object
- 📊 Trends API data structure: Object
- 📊 Chart data analysis: Object
- No time labels available
- 🔄 Updating age classification chart for barangay: ORANI
- 📊 Updating Age Classification Line Chart...
- Canvas not found, restoring...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: ORANI
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI
- 📊 Trends API response: Object
- 📊 Trends API data structure: Object
- 📊 Chart data analysis: Object
- No time labels available
- 🔄 Updating age classification chart for barangay: ORANI
- 📊 Updating Age Classification Line Chart...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: ORANI
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI
- 📊 Age classification API response: Object
- 📊 Age Classification Line Chart Data: Object
- 📊 Updated age classification chart with data: Object
- 🔄 Updating severe cases list for barangay: ORANI
- 📊 Updating severe cases list...
- 📊 Severe cases function called with barangay: ORANI
- 📊 Severe cases list element found: 
- 📊 Severe cases - WHO Standard Select element: 
- 📊 Severe cases - WHO Standard value: weight-for-age
- 📊 Severe cases - Dropdown value at time of call: weight-for-age
- 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=ORANI&who_standard=weight-for-age
- 📊 Age classification API response: Object
- 📊 Age Classification Line Chart Data: Object
- 📊 Updated age classification chart with data: Object
- 🔄 Updating severe cases list for barangay: ORANI
- 📊 Updating severe cases list...
- 📊 Severe cases function called with barangay: ORANI
- 📊 Severe cases list element found: 
- 📊 Severe cases - WHO Standard Select element: 
- 📊 Severe cases - WHO Standard value: weight-for-age
- 📊 Severe cases - Dropdown value at time of call: weight-for-age
- 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=ORANI&who_standard=weight-for-age
- Severe cases data received: Object
- No severe cases found
- 🔄 Starting WHO standard change handler...
- 📊 WHO Standard selected: weight-for-age
- 📊 Dropdown element found: true
- 📊 Dropdown value: weight-for-age
- 🔍 getAllActiveFilters - Raw values: Object
- 🔍 Using municipality as filter: ORANI
- 🔍 Final filter value: ORANI
- 📡 Fetching WHO data with active filters...
- 📊 Active filters: Object
- Fetching WHO data for: Object
- API URL (bulk): /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=ORANI&who_standard=weight-for-age
- Severe cases data received: Object
- No severe cases found
- WHO classification already loading, skipping...
- Bulk API Response: Object
- Mapping weight-for-age to weight_for_age: Object
- Classification values: Array(6)
- Calculated total: 1
- Original total_users: 1
- Extracted weight-for-age data: Object
- Processed data for donut chart: Object
- 📊 Data received for chart update: Object
- 🎨 Updating chart...
- WHO Chart Update - Data received: Object
- Data type: object
- Data classifications: Object
- Data total: 1
- Chart elements found:
-   - chartBg (risk-chart-bg): 
-   - centerText (risk-center-text): 
-   - segments (risk-segments): 
- Processing classifications: Object
- Classifications keys: Array(6)
- Classifications values: Array(6)
- Total users: 1
- Has data (non-zero counts): true
- Chart segments: Array(1)
- Chart segments length: 1
- Chart segments details: Array(1)
- Creating gradient: conic-gradient(#4CAF50 0% 100%)
-dash:10814 Chart background set to: conic-gradient(rgb(76, 175, 80) 0%, rgb(76, 175, 80) 100%)
-dash:10818 Computed background: rgba(0, 0, 0, 0) conic-gradient(rgb(76, 175, 80) 0%, rgb(76, 175, 80) 100%) repeat scroll 0% 0% / auto padding-box border-box
-dash:10819 Computed opacity: 0.3
-dash:10820 Element dimensions: Object
-dash:10844 WHO chart updated successfully
-dash:10904 🎨 Updating age classification chart...
-dash:10475 📊 Updating Age Classification Line Chart...
-dash:10503 📊 Using WHO Standard: weight-for-age
-dash:10504 📊 Using Barangay: ORANI
-dash:10508 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI
-dash:10513 📊 Age classification API response: Object
-dash:10531 📊 Age Classification Line Chart Data: Object
-dash:10539 📊 Updated age classification chart with data: Object
-dash:10908 🎨 Updating trends chart...
-dash:10207 📊 Updating Trends Chart...
-dash:10215 📅 Date inputs found: Object
-dash:10216 📅 Current date values: Object
-dash:8289 🔍 getAllActiveFilters - Raw values: Object
-dash:8302 🔍 Using municipality as filter: ORANI
-dash:8305 🔍 Final filter value: ORANI
-dash:10228 📊 Trends Chart Filters: Object
-dash:10240 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age
-dash:10245 📊 Trends API response: Object
-dash:10246 📊 Trends API data structure: Object
-dash:10265 📊 Chart data analysis: Object
-dash:10272 No time labels available
-dash:10912 🎨 Updating severe cases list...
-dash:10913 📊 WHO Standard before severe cases call: weight-for-age
-dash:10914 📊 Dropdown value before severe cases call: weight-for-age
-dash:12285 📊 Updating severe cases list...
-dash:12286 📊 Severe cases function called with barangay: ORANI
-dash:12290 📊 Severe cases list element found: <div class=​"severe-cases-list" id=​"severe-cases-list">​…​</div>​flex
-dash:12305 📊 Severe cases - WHO Standard Select element: <select id=​"whoStandardSelect" style=​"padding:​ 8px 12px;​ border:​ 1px solid #ddd;​ border-radius:​ 6px;​ background:​ white;​ color:​ #333;​ font-size:​ 14px;​">​…​</select>​
-dash:12306 📊 Severe cases - WHO Standard value: weight-for-age
-dash:12307 📊 Severe cases - Dropdown value at time of call: weight-for-age
-dash:12311 📊 Fetching severe cases data from: /api/DatabaseAPI.php?action=get_severe_cases&barangay=ORANI&who_standard=weight-for-age
-dash:12319 Severe cases data received: Object
-dash:12322 No severe cases found
-dash:10917 ✅ Chart update completed
-dash:10923 🏁 WHO classification loading completed
-dash:8490 🔄 updateCharts called with barangay: ORANI
-dash:8498 🔍 Current Dashboard Metrics:
-dash:8499   - Total Screened: 15
-dash:8500   - High Risk (Severely Underweight): 2
-dash:8501   - SAM Cases (Severely Stunted): 4
-dash:8502   - Critical MUAC (Severely Wasted): 2
-dash:8512 📈 Risk distribution data now handled by WHO classification system
-dash:8514 📈 Risk Distribution Data (RAW): Object
-dash:8515 📈 Risk Data Type: object
-dash:8516 📈 Risk Data Keys: Array(1)
-dash:8517 📈 Risk Data Success: false
-dash:8518 📈 Risk Data Data: undefined
-dash:8519 📈 High Risk Cases: undefined
-dash:8520 📈 SAM Cases: undefined
-dash:8521 📈 Critical MUAC: undefined
-dash:8628 🔄 Updating Nutritional Statistics...
-dash:11537 🔄 Updating Nutritional Statistics Display: Object
-dash:8636 🌍 Using pre-loaded Geographic Distribution data...
-dash:8637 🌍 Geographic Data: Array(0)
-dash:8642 🌍 No geographic data, showing empty display
-dash:8690 🌍 updateGeographicChartDisplay called with data: Array(0)
-dash:8693 ❌ Geographic chart container not found!
-updateGeographicChartDisplay @ dash:8693
-dash:8661 Uncaught (in promise) ReferenceError: resetTimeout is not defined
-    at dash:8661:30
-dash:12615 ⏰ Seamless update triggered
-dash:12616 🔍 Visibility state: visible
-dash:12617 🔍 Update in progress: true
-dash:12618 🔍 Current barangay: ORANI
-dash:12640 ⏸️ Skipping seamless update - visibility: visible updateInProgress: true
-dash:12644 🔧 Resetting stuck updateInProgress flag
-dash:12615 ⏰ Seamless update triggered
-dash:12616 🔍 Visibility state: visible
-dash:12617 🔍 Update in progress: false
-dash:12618 🔍 Current barangay: ORANI
-dash:12622 🔄 Seamless update for barangay: ORANI
-dash:12629 🔄 Seamless update with WHO standard: weight-for-age
-dash:9552 Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php?barangay=ORANI
-dash:10207 📊 Updating Trends Chart...
-dash:10215 📅 Date inputs found: {fromDateInput: true, toDateInput: true}
-dash:10216 📅 Current date values: {fromDate: '2025-01-01', toDate: '2025-10-09'}
-dash:8289 🔍 getAllActiveFilters - Raw values: {municipality: 'ORANI', barangay: 'Select Barangay', whoStandard: 'weight-for-age'}
-dash:8302 🔍 Using municipality as filter: ORANI
-dash:8305 🔍 Final filter value: ORANI
-dash:10228 📊 Trends Chart Filters: {fromDate: '2025-01-01', toDate: '2025-10-09', barangay: 'ORANI', whoStandard: 'weight-for-age'}
-dash:10240 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age
-dash:9532 📦 Using cached data for intelligent_programs
-dash:10245 📊 Trends API response: {success: true, data: {…}}
-dash:10246 📊 Trends API data structure: {success: true, hasData: true, dataKeys: Array(3), timeLabels: Array(0), datasets: Array(0), …}
-dash:10265 📊 Chart data analysis: {timeLabels: 0, datasets: 0, totalUsers: 0}
-dash:10272 No time labels available
-dash:10475 📊 Updating Age Classification Line Chart...
-dash:10503 📊 Using WHO Standard: weight-for-age
-dash:10504 📊 Using Barangay: ORANI
-dash:10508 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI
-dash:10242 Fetch finished loading: GET "https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age".
-updateTrendsChart @ dash:10242
-seamlessUpdateCharts @ dash:12699
-seamlessDashboardUpdate @ dash:12662
-(anonymous) @ dash:12632
-dash:9564 DatabaseAPI response for dashboard_assessment_stats : {success: true, data: {…}}
-dash:9574 Returning data: {total_screened: 1, high_risk_cases: 1, sam_cases: 1, critical_muac: 1, risk_levels: {…}, …}
-dash:9554 Fetch finished loading: GET "https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php?barangay=ORANI".
-fetchDataFromAPI @ dash:9554
-seamlessUpdateCommunityMetrics @ dash:12682
-seamlessDashboardUpdate @ dash:12661
-(anonymous) @ dash:12632
-dash:10513 📊 Age classification API response: {success: true, data: {…}}
-dash:10531 📊 Age Classification Line Chart Data: {ageLabels: Array(10), datasets: Array(1), totalUsers: 1, totalPopulation: undefined}
-dash:10539 📊 Updated age classification chart with data: {ageLabels: Array(10), datasets: Array(1), totalUsers: 1}
-dash:10510 Fetch finished loading: GET "https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI".
-updateAgeClassificationChart @ dash:10510
-seamlessUpdateCharts @ dash:12702
-await in seamlessUpdateCharts
-seamlessDashboardUpdate @ dash:12662
-(anonymous) @ dash:12632
-dash:12638 ✅ Seamless update completed
- ⏰ Seamless update triggered
- 🔍 Visibility state: visible
- 🔍 Update in progress: false
- 🔍 Current barangay: ORANI
- 🔄 Seamless update for barangay: ORANI
- 🔄 Seamless update with WHO standard: weight-for-age
- Fetching from centralized DatabaseAPI: https://nutrisaur-production.up.railway.app/api/dashboard_assessment_stats.php?barangay=ORANI
- 📊 Updating Trends Chart...
- 📅 Date inputs found: {fromDateInput: true, toDateInput: true}
- 📅 Current date values: {fromDate: '2025-01-01', toDate: '2025-10-09'}
- 🔍 getAllActiveFilters - Raw values: {municipality: 'ORANI', barangay: 'Select Barangay', whoStandard: 'weight-for-age'}
- 🔍 Using municipality as filter: ORANI
- 🔍 Final filter value: ORANI
- 📊 Trends Chart Filters: {fromDate: '2025-01-01', toDate: '2025-10-09', barangay: 'ORANI', whoStandard: 'weight-for-age'}
- 📊 Fetching trends data from: /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=ORANI&who_standard=weight-for-age
- 📦 Using cached data for intelligent_programs
- 📊 Trends API response: {success: true, data: {…}}
- 📊 Trends API data structure: {success: true, hasData: true, dataKeys: Array(3), timeLabels: Array(0), datasets: Array(0), …}
- 📊 Chart data analysis: {timeLabels: 0, datasets: 0, totalUsers: 0}
- No time labels available
- 📊 Updating Age Classification Line Chart...
- 📊 Using WHO Standard: weight-for-age
- 📊 Using Barangay: ORANI
- 📊 Fetching age classification data from: /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=ORANI
- DatabaseAPI response for dashboard_assessment_stats : {success: true, data: {…}}
- Returning data: {total_screened: 1, high_risk_cases: 1, sam_cases: 1, critical_muac: 1, risk_levels: {…}, …}
- 📊 Updated age classification chart with data: {ageLabels: Array(10), datasets: Array(1), totalUsers: 1}
- ✅ Seamless update completed
+2025-10-06 13:30:57.605 27496-27496 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759728657605
+2025-10-06 13:30:57.706 27496-27496 FoodActivity            com.example.nutrisaur11              D  Asian card clicked
+2025-10-06 13:30:57.706 27496-27496 FoodActivity            com.example.nutrisaur11              D  Selected cuisine category: Asian
+2025-10-06 13:30:57.706 27496-27496 FoodActivity            com.example.nutrisaur11              D  Passing user data to CuisineCategoryActivity: isjejs (BMI: )
+2025-10-06 13:30:57.749 27496-27496 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759728657749
+2025-10-06 13:30:57.750 27496-27496 SessionManager          com.example.nutrisaur11              D  User marked as idle
+2025-10-06 13:30:57.764 27496-27513 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223358250756ms; Flags=0, FrameTimelineVsyncId=684349, IntendedVsync=13786098648666, Vsync=13786131981998, InputEventId=0, HandleInputStart=13786134414062, AnimationStart=13786134416458, PerformTraversalsStart=13786134519218, DrawStart=13786134596145, FrameDeadline=13786131981998, FrameInterval=13786134400208, FrameStartTime=16666666, SyncQueued=13786134839374, SyncStart=13786134917031, IssueDrawCommandsStart=13786135150468, SwapBuffers=13786136719583, FrameCompleted=9223372036854775807, DequeueBufferDuration=20886, QueueBufferDuration=1028594, GpuCompleted=9223372036854775807, SwapBuffersCompleted=13786138196406, DisplayPresentTime=0, 
+2025-10-06 13:30:57.772 27496-27496 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759728657772
+2025-10-06 13:30:57.772 27496-27496 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-06 13:30:57.772 27496-27496 SessionManager          com.example.nutrisaur11              D  Using cached valid session
+2025-10-06 13:30:57.774 27496-27496 IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-06 13:30:57.774 27496-27496 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-06 13:30:57.777 27496-27496 DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
+2025-10-06 13:30:57.807 27496-27496 DailyResetManager       com.example.nutrisaur11              D  Same day, no reset needed. Current: 2025-10-06
+2025-10-06 13:30:57.808 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Date navigation initialized with passed date: 2025-10-06
+2025-10-06 13:30:57.808 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Using passed date from FoodActivity: 2025-10-06
+2025-10-06 13:30:57.808 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  FoodCategoryActivity initialized for category: Asian, date: 2025-10-06
+2025-10-06 13:30:57.808 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Received user data from database: isjejs (BMI: )
+2025-10-06 13:30:57.809 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Creating user profile from community_users table data...
+2025-10-06 13:30:57.810 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Calculated age from birthday '2005-10-06': 20
+2025-10-06 13:30:57.810 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Database user data: name=isjejs, age=20, weight=90.0, height=150.0, gender=Male
+2025-10-06 13:30:57.810 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Created user profile from database data: isjejs (BMI: 40.0)
+2025-10-06 13:30:57.811 27496-27496 CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1742.5 for isjejs
+2025-10-06 13:30:57.811 27496-27496 CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2700.875 (BMR: 1742.5 × Activity: 1.55)
+2025-10-06 13:30:57.811 27496-27496 CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 1700 (TDEE: 2700.875 + Adjustment: -1000.0)
+2025-10-06 13:30:57.811 27496-27496 CalorieCal...ionService com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=425, Lunch=595, Dinner=510, Snacks=170
+2025-10-06 13:30:57.811 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Set meal distribution - Breakfast: 425, Lunch: 595, Dinner: 510, Snacks: 170
+2025-10-06 13:30:57.812 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  setActiveTab() called with tab: recent
+2025-10-06 13:30:57.812 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Tab data cleared, switching to: recent
+2025-10-06 13:30:57.856 27496-27496 GeminiCacheManager      com.example.nutrisaur11              D  No cached recommendations found for Asian on 2025-10-06 (ingredient: 2025-10-06) - will make fresh API call
+2025-10-06 13:30:57.857 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Loading initial data for category: Asian
+2025-10-06 13:30:57.857 27496-28489 CuisineCategoryActivity com.example.nutrisaur11              D  Starting Gemini API call for Asian
+2025-10-06 13:30:57.857 27496-28489 GeminiService           com.example.nutrisaur11              D  Calculated age from birthday '2005-10-06': 20
+2025-10-06 13:30:57.857 27496-28489 GeminiService           com.example.nutrisaur11              D  Created user profile from database data: isjejs (Age: 20, Weight: 90.0, Height: 150.0, Gender: Male, Activity: Moderate)
+2025-10-06 13:30:57.861  3053-3339  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=10420   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.SplashActivity }
+2025-10-06 13:30:57.897 27496-27496 GeminiCacheManager      com.example.nutrisaur11              D  No cached recommendations found for Asian on 2025-10-06 (ingredient: 2025-10-06) - will make fresh API call
+2025-10-06 13:30:57.900 27496-28490 CuisineCategoryActivity com.example.nutrisaur11              D  Starting Gemini API call for Asian
+2025-10-06 13:30:57.901 27496-28490 GeminiService           com.example.nutrisaur11              D  Calculated age from birthday '2005-10-06': 20
+2025-10-06 13:30:57.901 27496-28490 GeminiService           com.example.nutrisaur11              D  Created user profile from database data: isjejs (Age: 20, Weight: 90.0, Height: 150.0, Gender: Male, Activity: Moderate)
+2025-10-06 13:30:57.902 27496-27496 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1759728657902
+2025-10-06 13:30:57.902 27496-27496 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-06 13:30:57.903 27496-27496 SessionManager          com.example.nutrisaur11              D  Using cached valid session
+2025-10-06 13:30:57.903 27496-27496 CommunityUserManager    com.example.nutrisaur11              D  === CHECKING ARCHIVE STATUS ===
+2025-10-06 13:30:57.903 27496-27496 CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
+2025-10-06 13:30:57.903 27496-27496 CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: jejei@idj.ee
+2025-10-06 13:30:57.905 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
+2025-10-06 13:30:57.905 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"jejei@idj.ee"}
+2025-10-06 13:30:57.930 27496-27511 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223358250689ms; Flags=0, FrameTimelineVsyncId=684359, IntendedVsync=13786165315330, Vsync=13786281981992, InputEventId=0, HandleInputStart=13786297889530, AnimationStart=13786297891405, PerformTraversalsStart=13786297892708, DrawStart=13786297947916, FrameDeadline=13786198648662, FrameInterval=13786297880416, FrameStartTime=16666666, SyncQueued=13786298530885, SyncStart=13786298574478, IssueDrawCommandsStart=13786299677135, SwapBuffers=13786301312343, FrameCompleted=9223372036854775807, DequeueBufferDuration=16302, QueueBufferDuration=510208, GpuCompleted=9223372036854775807, SwapBuffersCompleted=13786302096614, DisplayPresentTime=0, 
+2025-10-06 13:30:57.956 27496-27496 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
+2025-10-06 13:30:57.980 27496-27513 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223358250556ms; Flags=0, FrameTimelineVsyncId=684364, IntendedVsync=13786298644518, Vsync=13786331977850, InputEventId=0, HandleInputStart=13786347996614, AnimationStart=13786348001614, PerformTraversalsStart=13786348324062, DrawStart=13786348463176, FrameDeadline=13786331977850, FrameInterval=13786347973072, FrameStartTime=16666666, SyncQueued=13786353967343, SyncStart=13786354083801, IssueDrawCommandsStart=13786354304739, SwapBuffers=13786355470728, FrameCompleted=9223372036854775807, DequeueBufferDuration=16719, QueueBufferDuration=512812, GpuCompleted=9223372036854775807, SwapBuffersCompleted=13786356322864, DisplayPresentTime=0, 
+2025-10-06 13:30:57.981 27496-27513 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223358250555ms; Flags=0, FrameTimelineVsyncId=684364, IntendedVsync=13786298644518, Vsync=13786331977850, InputEventId=0, HandleInputStart=13786347996614, AnimationStart=13786348001614, PerformTraversalsStart=13786348324062, DrawStart=13786356257135, FrameDeadline=13786331977850, FrameInterval=13786347973072, FrameStartTime=16666666, SyncQueued=13786358250260, SyncStart=13786358420364, IssueDrawCommandsStart=13786358521562, SwapBuffers=13786359841405, FrameCompleted=9223372036854775807, DequeueBufferDuration=15468, QueueBufferDuration=647760, GpuCompleted=9223372036854775807, SwapBuffersCompleted=13786360964062, DisplayPresentTime=-72057592879976448, 
+2025-10-06 13:30:57.997 27496-28498 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223358250489ms; Flags=0, FrameTimelineVsyncId=684374, IntendedVsync=13786365517890, Vsync=13786365517890, InputEventId=0, HandleInputStart=13786365982968, AnimationStart=13786365987812, PerformTraversalsStart=13786367010260, DrawStart=13786372352187, FrameDeadline=13786398851222, FrameInterval=13786365957499, FrameStartTime=16666666, SyncQueued=13786372633072, SyncStart=13786372687343, IssueDrawCommandsStart=13786372760520, SwapBuffers=13786373835728, FrameCompleted=9223372036854775807, DequeueBufferDuration=12812, QueueBufferDuration=673750, GpuCompleted=9223372036854775807, SwapBuffersCompleted=13786374752864, DisplayPresentTime=4973363772440510464, 
+2025-10-06 13:30:57.998 27496-28489 GeminiCacheManager      com.example.nutrisaur11              D  No cached recommendations found for Asian on 2025-10-06 (ingredient: null) - will make fresh API call
+2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  No cached category recommendations found for Asian, making API call
+2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  === buildCategoryPrompt DEBUG ===
+2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  Category: Asian
+2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  UserData received: {is_pregnant=N/A, birthday=2005-10-06, muac_category=, notes=, nutritional_risk=, weight_kg=90, height_cm=150, sex=Male, municipality=HERMOSA, muac_cm=, screening_date=2025-10-06 00:16:31, bmi_category=, name=isjejs, barangay=Burgos-Soliman, age=, email=jejei@idj.ee, status=1, bmi=}
+2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  UserData isEmpty: false
+2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  === FOOD PREFERENCES DEBUG ===
+2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  User email: jejei@idj.ee
+2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  Combined preferences: 
+2025-10-06 13:30:57.999 27496-28489 GeminiService           com.example.nutrisaur11              D  Preferences isEmpty: true
+2025-10-06 13:30:58.000 27496-28489 GeminiService           com.example.nutrisaur11              D  Gemini API attempt 1 of 3
+2025-10-06 13:30:58.004 27496-27496 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-10-06 13:30:58.005 27496-28490 GeminiCacheManager      com.example.nutrisaur11              D  No cached recommendations found for Asian on 2025-10-06 (ingredient: null) - will make fresh API call
+2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  No cached category recommendations found for Asian, making API call
+2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  === buildCategoryPrompt DEBUG ===
+2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  Category: Asian
+2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  UserData received: {is_pregnant=N/A, birthday=2005-10-06, muac_category=, notes=, nutritional_risk=, weight_kg=90, height_cm=150, sex=Male, municipality=HERMOSA, muac_cm=, screening_date=2025-10-06 00:16:31, bmi_category=, name=isjejs, barangay=Burgos-Soliman, age=, email=jejei@idj.ee, status=1, bmi=}
+2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  UserData isEmpty: false
+2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  === FOOD PREFERENCES DEBUG ===
+2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  User email: jejei@idj.ee
+2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  Combined preferences: 
+2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  Preferences isEmpty: true
+2025-10-06 13:30:58.005 27496-28490 GeminiService           com.example.nutrisaur11              D  Gemini API attempt 1 of 3
+2025-10-06 13:30:58.012 27496-27496 SessionManager          com.example.nutrisaur11              D  User marked as idle
+2025-10-06 13:30:58.281 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
+2025-10-06 13:30:58.281 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  API response message: 
+2025-10-06 13:30:58.283 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"isjejs","email":"jejei@idj.ee","municipality":"HERMOSA","barangay":"Burgos-Soliman","sex":"Male","birthday":"2005-10-06","is_pregnant":"N\/A","weight":"90","height":"150","screening_date":"2025-10-06 00:16:31","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bHfMpNoFUy4SixU6aZEFkU8_bjbsOOobkRTfvfTqwUPjoUf-UytM5K6aE7QrDPYfSAKF-o_LxjjGNyPxJG1yyAE0mgKQ20qdFvhDopmRzg5sevlKW0","bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
+2025-10-06 13:30:58.284 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: jejei@idj.ee
+2025-10-06 13:30:58.284 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-06, is_pregnant=N/A, muac_category=, notes=, weight_kg=90, nutritional_risk=, height_cm=150, sex=Male, municipality=HERMOSA, muac_cm=, screening_date=2025-10-06 00:16:31, bmi_category=, name=isjejs, barangay=Burgos-Soliman, email=jejei@idj.ee, age=, bmi=, status=1}
+2025-10-06 13:30:58.284 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  User status: 1
+2025-10-06 13:30:58.285 27496-28491 CommunityUserManager    com.example.nutrisaur11              D  User is active (status = 1)
+2025-10-06 13:30:58.368 27496-27496 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-06 13:31:01.369 27496-27496 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-06 13:31:04.372 27496-27496 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-06 13:31:06.012 27496-28490 GeminiService           com.example.nutrisaur11              D  Gemini API Response Code: 200
+2025-10-06 13:31:06.012 27496-28490 GeminiService           com.example.nutrisaur11              D  Gemini API Response: {  "candidates": [    {      "content": {        "parts": [          {            "text": "```json\n[\n  {\n    \"food_name\": \"Sinigang (Pork)\",\n    \"calories\": 120,\n    \"protein\": 10,\n    \"fat\": 5,\n    \"carbs\": 8,\n    \"serving_size\": \"half cup\",\n    \"description\": \"A flavorful, broth-based soup that is low in calories and high in volume, promoting satiety with lean pork.\",\n    \"emoji\": \"🍲\"\n  },\n  {\n    \"food_name\": \"Ginisang Repolyo (Sauteed Cabbage)\",\n    \"calories\": 60,\n    \"protein\": 2,\n    \"fat\": 3,\n    \"carbs\": 8,\n    \"serving_size\": \"three-quarters cup\",\n    \"description\": \"A simple, low-calorie vegetable dish that adds fiber and nutrients to the diet.\",\n    \"emoji\": \"🥗\"\n  },\n  {\n    \"food_name\": \"Nilagang Baka (Boiled Beef Soup)\",\n    \"calories\": 110,\n    \"protein\": 12,\n    \"fat\": 4,\n    \"carbs\": 6,\n    \"serving_size\": \"half cup\",\n    \"description\": \"A clear soup with lean beef and vegetables, providing protein and hydration with minimal calories.\",\n    \"emoji\": \"🍖\"\n  },\n  {\n    \"food_name\": \"Steamed Fish (e.g., Tilapia)\",\n    \"calories\": 90,\n    \"protein\": 18,\n    \"fat\": 2,\n    \"carbs\": 0,\n    \"serving_size\": \"small fillet\",\n    \"description\": \"A lean source of protein that is low in fat and calories, supporting muscle maintenance.\",\n    \"emoji\": \"🐟\"\n  },\n  {\n    \"food_name\": \"Chicken Tinola (Chicken Soup with Ginger)\",\n    \"calories\": 80,\n    \"protein\": 10,\n    \"fat\": 3,\n    \"carbs\": 4,\n    \"serving_size\": \"half cup\",\n    \"description\": \"A light and flavorful soup with chicken and vegetables, providing protein and hydration.\",\n    \"emoji\": \"🍗\"\n  },\n  {\n    \"food_name\": \"Pinakbet (Vegetable Stew)\",\n    \"calories\": 70,\n    \"protein\": 3,\n    \"fat\": 4,\n    \"carbs\": 7,\n    \"serving_size\": \"three-quarters cup\",\n    \"description\": \"A vegetable-rich stew with minimal added fat, providing fiber and nutrients.\",\n    \"emoji\": \"🥘\"\n  },\n  {\n    \"food_name\": \"Tofu Stir-fry with Vegetables\",\n    \"calories\": 100,\n    \"protein\": 8,\n    \"fat\": 5,\n    \"carbs\": 6,\n    \"serving_size\": \"half cup\",\n    \"description\": \"A plant-based protein source with lots of vegetables that is low in calories and high in nutrients.\",\n    \"emoji\": \"🍲\"\n  },\n  {\n    \"food_name\": \"Mung Bean Soup (Monggo)\",\n    \"calories\": 110,\n    \"protein\": 7,\n    \"fat\": 3,\n    \"carbs\": 14,\n    \"serving_size\": \"half cup\",\n    \"description\": \"Provides fiber and protein to promote satiety and healthy digestion.\",\n    \"emoji\": \"🍛\"\n  },\n  {\n    \"food_name\": \"Pancit Bihon (Thin Rice Noodles with Vegetables and Lean Protein)\",\n    \"calories\": 120,\n    \"protein\": 6,\n    \"fat\": 4,\n    \"carbs\": 16,\n    \"serving_size\": \"half cup\",\n    \"description\": \"Noodles with vegetables and lean protein. Use less oil when stir-frying.\",\n    \"emoji\": \"🍜\"\n  },\n  {\n    \"food_name\": \"Ukoy (Shrimp Fritters - Baked, not Fried)\",\n    \"calories\": 90,\n    \"protein\": 5,\n    \"fat\": 3,\n    \"carbs\": 10,\n    \"serving_size\": \"1 piece\",\n    \"description\": \"Baked shrimp fritters offer some protein and vegetables. Baking instead of frying reduces the fat content.\",\n    \"emoji\": \"🍤\"\n  },\n  {\n    \"food_name\": \"Lumpiang Sariwa (Fresh Spring Rolls)\",\n    \"calories\": 80,\n    \"protein\": 4,\n    \"fat\": 2,\n    \"carbs\": 12,\n    \"serving_size\": \"1 roll\",\n    \"description\": \"Fresh spring rolls filled with vegetables offer fiber and hydration.\",\n    \"emoji\": \"🥗\"\n  },\n  {\n    \"food_name\": \"Adobong Sitaw (String Beans Adobo - Less Oil)\",\n    \"calories\": 60,\n    \"protein\": 3,\n    \"fat\": 2,\n    \"carbs\": 8,\n    \"serving_size\": \"three-quarters cup\",\n    \"description\": \"String beans cooked in adobo style with reduced oil is a flavorful and lo
+2025-10-06 13:31:06.015 27496-28490 GeminiService           com.example.nutrisaur11              D  Extracted category text: ```json
+                                                                                                    [
+                                                                                                      {
+                                                                                                        "food_name": "Sinigang (Pork)",
+                                                                                                        "calories": 120,
+                                                                                                        "protein": 10,
+                                                                                                        "fat": 5,
+                                                                                                        "carbs": 8,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "A flavorful, broth-based soup that is low in calories and high in volume, promoting satiety with lean pork.",
+                                                                                                        "emoji": "🍲"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Ginisang Repolyo (Sauteed Cabbage)",
+                                                                                                        "calories": 60,
+                                                                                                        "protein": 2,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 8,
+                                                                                                        "serving_size": "three-quarters cup",
+                                                                                                        "description": "A simple, low-calorie vegetable dish that adds fiber and nutrients to the diet.",
+                                                                                                        "emoji": "🥗"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Nilagang Baka (Boiled Beef Soup)",
+                                                                                                        "calories": 110,
+                                                                                                        "protein": 12,
+                                                                                                        "fat": 4,
+                                                                                                        "carbs": 6,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "A clear soup with lean beef and vegetables, providing protein and hydration with minimal calories.",
+                                                                                                        "emoji": "🍖"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Steamed Fish (e.g., Tilapia)",
+                                                                                                        "calories": 90,
+                                                                                                        "protein": 18,
+                                                                                                        "fat": 2,
+                                                                                                        "carbs": 0,
+                                                                                                        "serving_size": "small fillet",
+                                                                                                        "description": "A lean source of protein that is low in fat and calories, supporting muscle maintenance.",
+                                                                                                        "emoji": "🐟"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Chicken Tinola (Chicken Soup with Ginger)",
+                                                                                                        "calories": 80,
+                                                                                                        "protein": 10,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 4,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "A light and flavorful soup with chicken and vegetables, providing protein and hydration.",
+                                                                                                        "emoji": "🍗"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Pinakbet (Vegetable Stew)",
+                                                                                                        "calories": 70,
+                                                                                                        "protein": 3,
+                                                                                                        "fat": 4,
+                                                                                                        "carbs": 7,
+                                                                                                        "serving_size": "three-quarters cup",
+                                                                                                        "description": "A vegetable-rich stew with minimal added fat, providing fiber and nutrients.",
+                                                                                                        "emoji": "🥘"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Tofu Stir-fry with Vegetables",
+                                                                                                        "calories": 100,
+                                                                                                        "protein": 8,
+                                                                                                        "fat": 5,
+                                                                                                        "carbs": 6,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "A plant-based protein source with lots of vegetables that is low in calories and high in nutrients.",
+                                                                                                        "emoji": "🍲"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Mung Bean Soup (Monggo)",
+                                                                                                        "calories": 110,
+                                                                                                        "protein": 7,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 14,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Provides fiber and protein to promote satiety and healthy digestion.",
+                                                                                                        "emoji": "🍛"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Pancit Bihon (Thin Rice Noodles with Vegetables and Lean Protein)",
+                                                                                                        "calories": 120,
+                                                                                                        "protein": 6,
+                                                                                                        "fat": 4,
+                                                                                                        "carbs": 16,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Noodles with vegetables and lean protein. Use less oil when stir-frying.",
+                                                                                                        "emoji": "🍜"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Ukoy (Shrimp Fritters - Baked, not Fried)",
+                                                                                                        "calories": 90,
+                                                                                                        "protein": 5,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 10,
+                                                                                                        "serving_size": "1 piece",
+                                                                                                        "description": "Baked shrimp fritters offer some protein and vegetables. Baking instead of frying reduces the fat content.",
+                                                                                                        "emoji": "🍤"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Lumpiang Sariwa (Fresh Spring Rolls)",
+                                                                                                        "calories": 80,
+                                                                                                        "protein": 4,
+                                                                                                        "fat": 2,
+                                                                                                        "carbs": 12,
+                                                                                                        "serving_size": "1 roll",
+                                                                                                        "description": "Fresh spring rolls filled with vegetables offer fiber and hydration.",
+                                                                                                        "emoji": "🥗"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Adobong Sitaw (String Beans Adobo - Less Oil)",
+                                                                                                        "calories": 60,
+                                                                                                        "protein": 3,
+                                                                                                        "fat": 2,
+                                                                                                        "carbs": 8,
+                                                                                                        "serving_size": "three-quarters cup",
+                                                                                                        "description": "String beans cooked in adobo style with reduced oil is a flavorful and low-calorie vegetable dish.",
+                                                                                                        "emoji": "🥗"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Sinabawang Gulay (Vegetable Soup)",
+                                                                                                        "calories": 50,
+                                                                                                        "protein": 2,
+                                                                                                        "fat": 1,
+                                                                                                        "carbs": 8,
+                                                                                                        "serving_size": "one cup",
+                                                                                                        "description": "A light and hydrating vegetable soup that is low in calories and rich in nutrients.",
+                                                                                                        "emoji": "🍲"
+                                                                                                      }
+                                                                                                    ]
+                                                                                                    ```
+2025-10-06 13:31:06.016 27496-28490 GeminiService           com.example.nutrisaur11              D  Extracted category JSON: [
+                                                                                                      {
+                                                                                                        "food_name": "Sinigang (Pork)",
+                                                                                                        "calories": 120,
+                                                                                                        "protein": 10,
+                                                                                                        "fat": 5,
+                                                                                                        "carbs": 8,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "A flavorful, broth-based soup that is low in calories and high in volume, promoting satiety with lean pork.",
+                                                                                                        "emoji": "🍲"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Ginisang Repolyo (Sauteed Cabbage)",
+                                                                                                        "calories": 60,
+                                                                                                        "protein": 2,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 8,
+                                                                                                        "serving_size": "three-quarters cup",
+                                                                                                        "description": "A simple, low-calorie vegetable dish that adds fiber and nutrients to the diet.",
+                                                                                                        "emoji": "🥗"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Nilagang Baka (Boiled Beef Soup)",
+                                                                                                        "calories": 110,
+                                                                                                        "protein": 12,
+                                                                                                        "fat": 4,
+                                                                                                        "carbs": 6,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "A clear soup with lean beef and vegetables, providing protein and hydration with minimal calories.",
+                                                                                                        "emoji": "🍖"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Steamed Fish (e.g., Tilapia)",
+                                                                                                        "calories": 90,
+                                                                                                        "protein": 18,
+                                                                                                        "fat": 2,
+                                                                                                        "carbs": 0,
+                                                                                                        "serving_size": "small fillet",
+                                                                                                        "description": "A lean source of protein that is low in fat and calories, supporting muscle maintenance.",
+                                                                                                        "emoji": "🐟"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Chicken Tinola (Chicken Soup with Ginger)",
+                                                                                                        "calories": 80,
+                                                                                                        "protein": 10,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 4,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "A light and flavorful soup with chicken and vegetables, providing protein and hydration.",
+                                                                                                        "emoji": "🍗"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Pinakbet (Vegetable Stew)",
+                                                                                                        "calories": 70,
+                                                                                                        "protein": 3,
+                                                                                                        "fat": 4,
+                                                                                                        "carbs": 7,
+                                                                                                        "serving_size": "three-quarters cup",
+                                                                                                        "description": "A vegetable-rich stew with minimal added fat, providing fiber and nutrients.",
+                                                                                                        "emoji": "🥘"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Tofu Stir-fry with Vegetables",
+                                                                                                        "calories": 100,
+                                                                                                        "protein": 8,
+                                                                                                        "fat": 5,
+                                                                                                        "carbs": 6,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "A plant-based protein source with lots of vegetables that is low in calories and high in nutrients.",
+                                                                                                        "emoji": "🍲"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Mung Bean Soup (Monggo)",
+                                                                                                        "calories": 110,
+                                                                                                        "protein": 7,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 14,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Provides fiber and protein to promote satiety and healthy digestion.",
+                                                                                                        "emoji": "🍛"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Pancit Bihon (Thin Rice Noodles with Vegetables and Lean Protein)",
+                                                                                                        "calories": 120,
+                                                                                                        "protein": 6,
+                                                                                                        "fat": 4,
+                                                                                                        "carbs": 16,
+                                                                                                        "serving_size": "half cup",
+                                                                                                        "description": "Noodles with vegetables and lean protein. Use less oil when stir-frying.",
+                                                                                                        "emoji": "🍜"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Ukoy (Shrimp Fritters - Baked, not Fried)",
+                                                                                                        "calories": 90,
+                                                                                                        "protein": 5,
+                                                                                                        "fat": 3,
+                                                                                                        "carbs": 10,
+                                                                                                        "serving_size": "1 piece",
+                                                                                                        "description": "Baked shrimp fritters offer some protein and vegetables. Baking instead of frying reduces the fat content.",
+                                                                                                        "emoji": "🍤"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Lumpiang Sariwa (Fresh Spring Rolls)",
+                                                                                                        "calories": 80,
+                                                                                                        "protein": 4,
+                                                                                                        "fat": 2,
+                                                                                                        "carbs": 12,
+                                                                                                        "serving_size": "1 roll",
+                                                                                                        "description": "Fresh spring rolls filled with vegetables offer fiber and hydration.",
+                                                                                                        "emoji": "🥗"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Adobong Sitaw (String Beans Adobo - Less Oil)",
+                                                                                                        "calories": 60,
+                                                                                                        "protein": 3,
+                                                                                                        "fat": 2,
+                                                                                                        "carbs": 8,
+                                                                                                        "serving_size": "three-quarters cup",
+                                                                                                        "description": "String beans cooked in adobo style with reduced oil is a flavorful and low-calorie vegetable dish.",
+                                                                                                        "emoji": "🥗"
+                                                                                                      },
+                                                                                                      {
+                                                                                                        "food_name": "Sinabawang Gulay (Vegetable Soup)",
+                                                                                                        "calories": 50,
+                                                                                                        "protein": 2,
+                                                                                                        "fat": 1,
+                                                                                                        "carbs": 8,
+                                                                                                        "serving_size": "one cup",
+                                                                                                        "description": "A light and hydrating vegetable soup that is low in calories and rich in nutrients.",
+                                                                                                        "emoji": "🍲"
+                                                                                                      }
+                                                                                                    ]
+2025-10-06 13:31:06.016 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Sinigang (Pork) (🍲)
+2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Ginisang Repolyo (Sauteed Cabbage) (🥗)
+2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Nilagang Baka (Boiled Beef Soup) (🍖)
+2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Steamed Fish (e.g., Tilapia) (🐟)
+2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Chicken Tinola (Chicken Soup with Ginger) (🍗)
+2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Pinakbet (Vegetable Stew) (🥘)
+2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Tofu Stir-fry with Vegetables (🍲)
+2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Mung Bean Soup (Monggo) (🍛)
+2025-10-06 13:31:06.017 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Pancit Bihon (Thin Rice Noodles with Vegetables and Lean Protein) (🍜)
+2025-10-06 13:31:06.018 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Ukoy (Shrimp Fritters - Baked, not Fried) (🍤)
+2025-10-06 13:31:06.018 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Lumpiang Sariwa (Fresh Spring Rolls) (🥗)
+2025-10-06 13:31:06.018 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Adobong Sitaw (String Beans Adobo - Less Oil) (🥗)
+2025-10-06 13:31:06.018 27496-28490 GeminiService           com.example.nutrisaur11              D  Added category food: Sinabawang Gulay (Vegetable Soup) (🍲)
+2025-10-06 13:31:06.019 27496-28490 GeminiService           com.example.nutrisaur11              D  Calculated age from birthday '2005-10-06': 20
+2025-10-06 13:31:06.019 27496-28490 GeminiService           com.example.nutrisaur11              D  Created user profile from database data: isjejs (Age: 20, Weight: 90.0, Height: 150.0, Gender: Male, Activity: Moderate)
+2025-10-06 13:31:06.083 27496-28490 GeminiCacheManager      com.example.nutrisaur11              D  Cached persistent recommendations for Asian (user: 20_Male_90.0_150.0, ingredient: null)
+2025-10-06 13:31:06.083 27496-28490 GeminiService           com.example.nutrisaur11              D  Cached category recommendations for Asian
+2025-10-06 13:31:06.132 27496-28490 GeminiCacheManager      com.example.nutrisaur11              D  Cached persistent recommendations for Asian (user: 20_Male_90.0_150.0, ingredient: 2025-10-06)
+2025-10-06 13:31:06.132 27496-28490 CuisineCategoryActivity com.example.nutrisaur11              D  Cached 13 recommendations for Asian (UI update may be ignored)
+2025-10-06 13:31:06.134 27496-27496 CuisineCategoryActivity com.example.nutrisaur11              D  Loaded and displayed 13 recommendations for Asian
+2025-10-06 13:31:06.170 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-06
+2025-10-06 13:31:06.170 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
+2025-10-06 13:31:06.170 27496-27496 AddedFoodManager        com.example.nutrisaur11              D    - Pasta Salad with Pesto, Mozzarella, and Cherry Tomatoes in Breakfast
+2025-10-06 13:31:06.170 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 1 foods from daily storage for 2025-10-06
+2025-10-06 13:31:06.170 27496-27496 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Sinigang (Pork) isAdded check: false (final: false)
+2025-10-06 13:31:06.178 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-06
+2025-10-06 13:31:06.178 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
+2025-10-06 13:31:06.178 27496-27496 AddedFoodManager        com.example.nutrisaur11              D    - Pasta Salad with Pesto, Mozzarella, and Cherry Tomatoes in Breakfast
+2025-10-06 13:31:06.178 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 1 foods from daily storage for 2025-10-06
+2025-10-06 13:31:06.178 27496-27496 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Ginisang Repolyo (Sauteed Cabbage) isAdded check: false (final: false)
+2025-10-06 13:31:06.186 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-06
+2025-10-06 13:31:06.186 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
+2025-10-06 13:31:06.186 27496-27496 AddedFoodManager        com.example.nutrisaur11              D    - Pasta Salad with Pesto, Mozzarella, and Cherry Tomatoes in Breakfast
+2025-10-06 13:31:06.186 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 1 foods from daily storage for 2025-10-06
+2025-10-06 13:31:06.186 27496-27496 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Nilagang Baka (Boiled Beef Soup) isAdded check: false (final: false)
+2025-10-06 13:31:06.195 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-06
+2025-10-06 13:31:06.195 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
+2025-10-06 13:31:06.195 27496-27496 AddedFoodManager        com.example.nutrisaur11              D    - Pasta Salad with Pesto, Mozzarella, and Cherry Tomatoes in Breakfast
+2025-10-06 13:31:06.195 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 1 foods from daily storage for 2025-10-06
+2025-10-06 13:31:06.195 27496-27496 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Steamed Fish (e.g., Tilapia) isAdded check: false (final: false)
+2025-10-06 13:31:06.202 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-06
+2025-10-06 13:31:06.202 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
+2025-10-06 13:31:06.202 27496-27496 AddedFoodManager        com.example.nutrisaur11              D    - Pasta Salad with Pesto, Mozzarella, and Cherry Tomatoes in Breakfast
+2025-10-06 13:31:06.202 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 1 foods from daily storage for 2025-10-06
+2025-10-06 13:31:06.202 27496-27496 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Chicken Tinola (Chicken Soup with Ginger) isAdded check: false (final: false)
+2025-10-06 13:31:06.208 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-06
+2025-10-06 13:31:06.208 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
+2025-10-06 13:31:06.208 27496-27496 AddedFoodManager        com.example.nutrisaur11              D    - Pasta Salad with Pesto, Mozzarella, and Cherry Tomatoes in Breakfast
+2025-10-06 13:31:06.208 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 1 foods from daily storage for 2025-10-06
+2025-10-06 13:31:06.208 27496-27496 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Pinakbet (Vegetable Stew) isAdded check: false (final: false)
+2025-10-06 13:31:06.215 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 1 meal categories for 2025-10-06
+2025-10-06 13:31:06.215 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
+2025-10-06 13:31:06.215 27496-27496 AddedFoodManager        com.example.nutrisaur11              D    - Pasta Salad with Pesto, Mozzarella, and Cherry Tomatoes in Breakfast
+2025-10-06 13:31:06.215 27496-27496 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 1 foods from daily storage for 2025-10-06
+2025-10-06 13:31:06.215 27496-27496 FoodItemAdapter         com.example.nutrisaur11              D  Category activity - Tofu Stir-fry with Vegetables isAdded check: false (final: false)
