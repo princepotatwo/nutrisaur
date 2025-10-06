@@ -170,26 +170,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                 $currentPassword = $_POST['currentPassword'] ?? '';
                 $newPassword = $_POST['newPassword'] ?? '';
                 $verificationCode = $_POST['verificationCode'] ?? '';
+                $useVerification = $_POST['useVerification'] === 'true';
                 $currentUserId = $_SESSION['user_id'] ?? null;
                 
                 if (!$currentUserId) {
                     echo json_encode(['success' => false, 'error' => 'User not logged in']);
-                    break;
-                }
-                
-                // Verify verification code
-                if (!isset($_SESSION['verification_code']) || !isset($_SESSION['verification_expires'])) {
-                    echo json_encode(['success' => false, 'error' => 'No verification code found. Please request a new one.']);
-                    break;
-                }
-                
-                if (time() > $_SESSION['verification_expires']) {
-                    echo json_encode(['success' => false, 'error' => 'Verification code has expired. Please request a new one.']);
-                    break;
-                }
-                
-                if ($_SESSION['verification_code'] !== $verificationCode) {
-                    echo json_encode(['success' => false, 'error' => 'Invalid verification code']);
                     break;
                 }
                 
@@ -210,10 +195,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                     break;
                 }
                 
-                // Verify current password
-                if (!password_verify($currentPassword, $user['password'])) {
-                    echo json_encode(['success' => false, 'error' => 'Current password is incorrect']);
-                    break;
+                if ($useVerification) {
+                    // Verify verification code
+                    if (!isset($_SESSION['verification_code']) || !isset($_SESSION['verification_expires'])) {
+                        echo json_encode(['success' => false, 'error' => 'No verification code found. Please request a new one.']);
+                        break;
+                    }
+                    
+                    if (time() > $_SESSION['verification_expires']) {
+                        echo json_encode(['success' => false, 'error' => 'Verification code has expired. Please request a new one.']);
+                        break;
+                    }
+                    
+                    if ($_SESSION['verification_code'] !== $verificationCode) {
+                        echo json_encode(['success' => false, 'error' => 'Invalid verification code']);
+                        break;
+                    }
+                } else {
+                    // Verify current password
+                    if (!password_verify($currentPassword, $user['password'])) {
+                        echo json_encode(['success' => false, 'error' => 'Current password is incorrect']);
+                        break;
+                    }
                 }
                 
                 // Update password
@@ -222,13 +225,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                 $result = $stmt->execute([$hashedNewPassword, $currentUserId]);
                 
                 if ($result) {
-                    // Clear verification code
-                    unset($_SESSION['verification_code']);
-                    unset($_SESSION['verification_expires']);
+                    // Clear verification code if used
+                    if ($useVerification) {
+                        unset($_SESSION['verification_code']);
+                        unset($_SESSION['verification_expires']);
+                    }
                     
                     echo json_encode(['success' => true, 'message' => 'Password changed successfully']);
                 } else {
                     echo json_encode(['success' => false, 'error' => 'Failed to update password']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+            }
+            break;
+            
+        case 'send_email_verification_code':
+            try {
+                $newEmail = $_POST['newEmail'] ?? '';
+                if (!$newEmail) {
+                    echo json_encode(['success' => false, 'error' => 'No email provided']);
+                    break;
+                }
+                
+                // Generate 6-digit verification code
+                $verificationCode = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+                
+                // Store verification code in session (expires in 10 minutes)
+                $_SESSION['email_verification_code'] = $verificationCode;
+                $_SESSION['email_verification_expires'] = time() + 600; // 10 minutes
+                $_SESSION['pending_email'] = $newEmail;
+                
+                // Send email (simplified - you can integrate with your email service)
+                $subject = 'Email Change Verification Code';
+                $message = "Your verification code for changing email is: $verificationCode\n\nThis code will expire in 10 minutes.";
+                $headers = 'From: noreply@nutrisaur.com';
+                
+                if (mail($newEmail, $subject, $message, $headers)) {
+                    echo json_encode(['success' => true, 'message' => 'Verification code sent to new email']);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to send email']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'error' => 'Error sending verification code: ' . $e->getMessage()]);
+            }
+            break;
+            
+        case 'change_email':
+            try {
+                $newEmail = $_POST['newEmail'] ?? '';
+                $verificationCode = $_POST['verificationCode'] ?? '';
+                $currentUserId = $_SESSION['user_id'] ?? null;
+                
+                if (!$currentUserId) {
+                    echo json_encode(['success' => false, 'error' => 'User not logged in']);
+                    break;
+                }
+                
+                // Verify verification code
+                if (!isset($_SESSION['email_verification_code']) || !isset($_SESSION['email_verification_expires'])) {
+                    echo json_encode(['success' => false, 'error' => 'No verification code found. Please request a new one.']);
+                    break;
+                }
+                
+                if (time() > $_SESSION['email_verification_expires']) {
+                    echo json_encode(['success' => false, 'error' => 'Verification code has expired. Please request a new one.']);
+                    break;
+                }
+                
+                if ($_SESSION['email_verification_code'] !== $verificationCode) {
+                    echo json_encode(['success' => false, 'error' => 'Invalid verification code']);
+                    break;
+                }
+                
+                if ($_SESSION['pending_email'] !== $newEmail) {
+                    echo json_encode(['success' => false, 'error' => 'Email does not match the one verification was sent to']);
+                    break;
+                }
+                
+                require_once __DIR__ . "/../config.php";
+                $pdo = getDatabaseConnection();
+                if (!$pdo) {
+                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+                    break;
+                }
+                
+                // Update email
+                $stmt = $pdo->prepare("UPDATE users SET email = ? WHERE user_id = ?");
+                $result = $stmt->execute([$newEmail, $currentUserId]);
+                
+                if ($result) {
+                    // Update session
+                    $_SESSION['email'] = $newEmail;
+                    
+                    // Clear verification data
+                    unset($_SESSION['email_verification_code']);
+                    unset($_SESSION['email_verification_expires']);
+                    unset($_SESSION['pending_email']);
+                    
+                    echo json_encode(['success' => true, 'message' => 'Email changed successfully']);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to update email']);
                 }
             } catch (Exception $e) {
                 echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
@@ -3432,6 +3529,42 @@ header {
             background: #66BB6A;
             transform: translateY(-1px);
         }
+
+        .btn-change-email {
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn-change-email:hover {
+            background: #1976D2;
+            transform: translateY(-1px);
+        }
+
+        .btn-forgot-password {
+            background: #FF5722;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn-forgot-password:hover {
+            background: #E64A19;
+            transform: translateY(-1px);
+        }
             vertical-align: middle;
             position: relative;
             line-height: 1.4;
@@ -4918,7 +5051,10 @@ header {
                         </div>
                         <div class="form-group">
                             <label for="editEmail">Email:</label>
-                            <input type="email" id="editEmail" name="email" value="<?php echo htmlspecialchars($_SESSION['email'] ?? ''); ?>" required>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <input type="email" id="editEmail" name="email" value="<?php echo htmlspecialchars($_SESSION['email'] ?? ''); ?>" required style="flex: 1;">
+                                <button type="button" onclick="showChangeEmailModal()" class="btn-change-email">Change Email</button>
+                            </div>
                         </div>
                         <div class="form-actions">
                             <button type="button" class="btn-cancel" onclick="cancelProfileEdit()">Cancel</button>
@@ -5685,12 +5821,15 @@ header {
                             <label for="confirmPassword">Confirm New Password:</label>
                             <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6">
                         </div>
-                        <div class="form-group">
-                            <label for="verificationCode">Verification Code:</label>
+                        <div class="form-group" id="verificationGroup" style="display: none;">
+                            <label for="verificationCode">Verification Code (if you forgot current password):</label>
                             <div style="display: flex; gap: 10px; align-items: center;">
-                                <input type="text" id="verificationCode" name="verificationCode" required style="flex: 1;">
+                                <input type="text" id="verificationCode" name="verificationCode" style="flex: 1;">
                                 <button type="button" onclick="sendVerificationCode()" class="btn-send-code">Send Code</button>
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" onclick="toggleForgotPassword()" class="btn-forgot-password">I forgot my current password</button>
                         </div>
                         <div class="form-actions">
                             <button type="button" class="btn-cancel" onclick="closeChangePasswordModal()">Cancel</button>
@@ -5704,11 +5843,97 @@ header {
             modal.style.display = 'block';
         }
 
+        function toggleForgotPassword() {
+            const verificationGroup = document.getElementById('verificationGroup');
+            const currentPasswordField = document.getElementById('currentPassword');
+            const forgotBtn = document.querySelector('.btn-forgot-password');
+            
+            if (verificationGroup.style.display === 'none') {
+                verificationGroup.style.display = 'block';
+                currentPasswordField.required = false;
+                currentPasswordField.placeholder = 'Leave blank if using verification code';
+                forgotBtn.textContent = 'I know my current password';
+            } else {
+                verificationGroup.style.display = 'none';
+                currentPasswordField.required = true;
+                currentPasswordField.placeholder = '';
+                forgotBtn.textContent = 'I forgot my current password';
+            }
+        }
+
         function closeChangePasswordModal() {
             const modal = document.getElementById('changePasswordModal');
             if (modal) {
                 modal.remove();
             }
+        }
+
+        function showChangeEmailModal() {
+            // Create email change modal
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.id = 'changeEmailModal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <span class="close" onclick="closeChangeEmailModal()">&times;</span>
+                    <h2>Change Email Address</h2>
+                    <form id="changeEmailForm">
+                        <div class="form-group">
+                            <label for="newEmail">New Email Address:</label>
+                            <input type="email" id="newEmail" name="newEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="emailVerificationCode">Verification Code:</label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <input type="text" id="emailVerificationCode" name="emailVerificationCode" required style="flex: 1;">
+                                <button type="button" onclick="sendEmailVerificationCode()" class="btn-send-code">Send Code</button>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-cancel" onclick="closeChangeEmailModal()">Cancel</button>
+                            <button type="submit" class="btn-save">Change Email</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.style.display = 'block';
+        }
+
+        function closeChangeEmailModal() {
+            const modal = document.getElementById('changeEmailModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function sendEmailVerificationCode() {
+            const newEmail = document.getElementById('newEmail').value;
+            if (!newEmail) {
+                showMessage('Please enter a new email address first!', 'error');
+                return;
+            }
+            
+            fetch('/settings.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=send_email_verification_code&newEmail=${encodeURIComponent(newEmail)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessage('Verification code sent to your new email address!', 'success');
+                } else {
+                    showMessage('Failed to send verification code: ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error sending verification code:', error);
+                showMessage('Error sending verification code. Please try again.', 'error');
+            });
         }
 
         function sendVerificationCode() {
@@ -5733,6 +5958,53 @@ header {
             });
         }
 
+        // Handle email change form submission
+        document.addEventListener('submit', function(e) {
+            if (e.target.id === 'changeEmailForm') {
+                e.preventDefault();
+                
+                const formData = new FormData(e.target);
+                const newEmail = formData.get('newEmail');
+                const verificationCode = formData.get('emailVerificationCode');
+                
+                if (!newEmail || !verificationCode) {
+                    showMessage('Please fill in all fields!', 'error');
+                    return;
+                }
+                
+                // Update email via API
+                fetch('/settings.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=change_email&newEmail=${encodeURIComponent(newEmail)}&verificationCode=${encodeURIComponent(verificationCode)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the display
+                        document.getElementById('profileEmail').textContent = newEmail;
+                        document.getElementById('editEmail').value = newEmail;
+                        
+                        // Update session data
+                        if (typeof updateSessionData === 'function') {
+                            updateSessionData({ email: newEmail });
+                        }
+                        
+                        showMessage('Email changed successfully!', 'success');
+                        closeChangeEmailModal();
+                    } else {
+                        showMessage('Failed to change email: ' + data.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error changing email:', error);
+                    showMessage('Error changing email. Please try again.', 'error');
+                });
+            }
+        });
+
         // Handle password change form submission
         document.addEventListener('submit', function(e) {
             if (e.target.id === 'changePasswordForm') {
@@ -5743,6 +6015,8 @@ header {
                 const newPassword = formData.get('newPassword');
                 const confirmPassword = formData.get('confirmPassword');
                 const verificationCode = formData.get('verificationCode');
+                const verificationGroup = document.getElementById('verificationGroup');
+                const isUsingVerification = verificationGroup.style.display !== 'none';
                 
                 if (newPassword !== confirmPassword) {
                     showMessage('New passwords do not match!', 'error');
@@ -5754,13 +6028,24 @@ header {
                     return;
                 }
                 
+                // Validate either current password or verification code is provided
+                if (!isUsingVerification && !currentPassword) {
+                    showMessage('Please enter your current password or use verification code!', 'error');
+                    return;
+                }
+                
+                if (isUsingVerification && !verificationCode) {
+                    showMessage('Please enter the verification code!', 'error');
+                    return;
+                }
+                
                 // Update password via API
                 fetch('/settings.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: `action=change_password&currentPassword=${encodeURIComponent(currentPassword)}&newPassword=${encodeURIComponent(newPassword)}&verificationCode=${encodeURIComponent(verificationCode)}`
+                    body: `action=change_password&currentPassword=${encodeURIComponent(currentPassword)}&newPassword=${encodeURIComponent(newPassword)}&verificationCode=${encodeURIComponent(verificationCode)}&useVerification=${isUsingVerification}`
                 })
                 .then(response => response.json())
                 .then(data => {
