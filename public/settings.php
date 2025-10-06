@@ -487,7 +487,7 @@ if ($db->isAvailable()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MHO Nutritional Assessment Module</title>
+    <title>Settings and Admin</title>
 </head>
 <style>
 /* Dark Theme - Default */
@@ -4289,7 +4289,7 @@ header {
     <div class="dashboard">
         <header class="dashboard-header fade-in">
             <div class="dashboard-title">
-                <h1>MHO Nutritional Assessment Module</h1>
+                <h1>Settings and Admin</h1>
             </div>
             <div class="user-info">
                 <button id="new-theme-toggle" class="new-theme-toggle-btn" title="Toggle theme">
