@@ -1103,6 +1103,8 @@ function getFCMTokensByLocation($targetLocation = null) {
                 error_log("Processing municipality case: $targetLocation");
                 // Get tokens for all users in the municipality
                 $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
+                // Convert underscores back to spaces
+                $municipalityName = str_replace('_', ' ', $municipalityName);
                 
                 // Handle special case for BALANGA -> CITY OF BALANGA
                 if ($municipalityName === 'BALANGA') {
@@ -1165,28 +1167,6 @@ function getFCMTokensByLocation($targetLocation = null) {
             
             error_log("Total FCM tokens with barangay data: $tokenWithBarangayCount, Total active FCM tokens: $tokenCount");
             
-            // Check total users in database
-            $totalUsersStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users");
-            $totalUsersStmt->execute();
-            $totalUsers = $totalUsersStmt->fetch(PDO::FETCH_ASSOC)['total'];
-            error_log("Total users in database: $totalUsers");
-            
-            // Show sample users without FCM tokens
-            $sampleStmt = $db->getPDO()->prepare("SELECT email, barangay, municipality, fcm_token FROM community_users WHERE barangay = :barangay LIMIT 3");
-            if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
-                $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
-                if ($municipalityName === 'BALANGA') {
-                    $municipalityName = 'CITY OF BALANGA';
-                }
-                $sampleStmt = $db->getPDO()->prepare("SELECT email, barangay, municipality, fcm_token FROM community_users WHERE municipality = :municipality LIMIT 3");
-                $sampleStmt->bindParam(':municipality', $municipalityName);
-            } else {
-                $sampleStmt->bindParam(':barangay', $targetLocation);
-            }
-            $sampleStmt->execute();
-            $sampleUsers = $sampleStmt->fetchAll(PDO::FETCH_ASSOC);
-            error_log("Sample users in target location: " . json_encode($sampleUsers));
-            
             // Debug: Show what municipalities and barangays actually exist in the database
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
                 $debugStmt = $db->getPDO()->prepare("SELECT DISTINCT municipality, COUNT(*) as count FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != '' GROUP BY municipality");
@@ -1195,6 +1175,8 @@ function getFCMTokensByLocation($targetLocation = null) {
                 error_log("Available municipalities in database: " . json_encode($municipalities));
                 
                 $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
+                // Convert underscores back to spaces
+                $municipalityName = str_replace('_', ' ', $municipalityName);
                 error_log("Looking for municipality: '$municipalityName'");
             }
         }
@@ -1315,6 +1297,8 @@ function getUsersForLocation($targetLocation) {
             // Check if it's a municipality
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
                 $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
+                // Convert underscores back to spaces
+                $municipalityName = str_replace('_', ' ', $municipalityName);
                 $result = $db->universalQuery("
                     SELECT cu.email as user_email, cu.barangay, cu.fcm_token, cu.status as is_active
                     FROM community_users cu
@@ -4947,8 +4931,8 @@ header:hover {
                         <option value="PILAR">PILAR</option>
                         <option value="SAMAL">SAMAL</option>
                     </select>
-                        </div>
-                
+                                </div>
+                                
                 <div class="form-group">
                     <label for="eventBarangay">Barangay (Optional)</label>
                     <select id="eventBarangay" name="eventBarangay">
@@ -4956,20 +4940,20 @@ header:hover {
                         <!-- Barangay options will be populated by JavaScript -->
                     </select>
                     <small class="form-help">Leave empty to target all barangays in the selected municipality</small>
-                            </div>
+                </div>
                 
                 <div class="form-group">
                     <label for="eventOrganizer">Person in Charge</label>
                     <input type="text" id="eventOrganizer" name="eventOrganizer" value="<?php echo htmlspecialchars($username ?? $email ?? 'Unknown User'); ?>" readonly>
-                                </div>
-                                
+                </div>
+                
                 <div class="form-row">
-                    <div class="form-group">
-                        <label for="eventDescription">Event Description</label>
+                <div class="form-group">
+                    <label for="eventDescription">Event Description</label>
                         <textarea id="eventDescription" name="eventDescription" placeholder="Describe the event details..." rows="3"></textarea>
                                 </div>
                 </div>
-                                
+                
                 <div class="form-actions">
                     <button type="button" onclick="handleNewEventCreation()" class="btn btn-primary">Create Event</button>
                     <button type="button" class="btn btn-secondary" onclick="closeCreateEventModal()">Cancel</button>
@@ -4977,175 +4961,175 @@ header:hover {
             </form>
         </div>
     </div>
-</div>
-
+        </div>
+        
 <!-- Events Table and Main Content -->
-<div class="events-table-container">
-    <div class="table-header">
-        <h2>Upcoming Events</h2>
-        <div class="table-controls">
-            <select id="eventFilter" onchange="filterEvents(this.value)">
-                <option value="all">All Events</option>
-                <option value="upcoming">Upcoming</option>
-                <option value="past">Past Events</option>
-            </select>
-            <button onclick="confirmDeleteAll()" class="btn btn-danger">Delete All Events</button>
-        </div>
-    </div>
-    
-    <?php if(isset($_GET['deleted'])): ?>
-        <div class="alert alert-success">
-            Event deleted successfully!
-        </div>
-    <?php endif; ?>
-    
-    <?php if(isset($_GET['deleted_all'])): ?>
-        <div class="alert alert-success">
-            All events deleted successfully!
-        </div>
-    <?php endif; ?>
-    
-    <?php if(isset($_GET['updated'])): ?>
-        <div class="alert alert-success">
-            Event updated successfully!
-            <br>Update notification sent to all users!
-        </div>
-    <?php endif; ?>
-    
-    <?php if(isset($_GET['error'])): ?>
-        <div class="alert alert-danger">
-            Error: <?php echo htmlspecialchars($_GET['message'] ?? 'Unknown error occurred'); ?>
-        </div>
-    <?php endif; ?>
-    
-    <table class="events-table">
-        <thead>
-            <tr>
-                <th>Event Title</th>
-                <th>Date & Time</th>
-                <th>Location</th>
-                <th>Organizer</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="eventsTableBody">
-            <?php if($dbConnected && count($programs) > 0): ?>
-                <?php foreach($programs as $program): ?>
-                    <?php
-                        // Determine if event is upcoming or past
-                        $eventDate = strtotime($program['date_time']);
-                        $currentDate = time();
-                        $status = ($eventDate > $currentDate) ? 'upcoming' : 'past';
-                    ?>
-                    <tr class="event-row <?php echo $status; ?>">
-                        <td><?php echo htmlspecialchars($program['title']); ?></td>
-                        <td><?php echo date('M j, Y, g:i A', strtotime($program['date_time'])); ?></td>
-                        <td><?php echo htmlspecialchars($program['location']); ?></td>
-                        <td><?php echo htmlspecialchars($program['organizer']); ?></td>
-                        <td><span class="status-badge status-<?php echo $status; ?>"><?php echo ucfirst($status); ?></span></td>
-                        <td>
-                            <div class="action-buttons">
-                                <button onclick="openEditModal(<?php echo $program['program_id']; ?>, '<?php echo htmlspecialchars($program['title']); ?>', '<?php echo htmlspecialchars($program['type']); ?>', '<?php echo htmlspecialchars($program['description']); ?>', '<?php echo $program['date_time']; ?>', '<?php echo htmlspecialchars($program['location']); ?>', '<?php echo htmlspecialchars($program['organizer']); ?>')" class="btn btn-add">Edit</button>
-                                <a href="event.php?delete=<?php echo $program['program_id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this event?')">Delete</a>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="7" class="no-events">No events found. Create your first event!</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
-
-<!-- Navigation -->
-<div class="navbar">
-    <div class="navbar-header">
-        <div class="navbar-logo">
-            <div class="navbar-logo-icon">
-                <img src="/logo.png" alt="Logo" style="width: 40px; height: 40px;">
+        <div class="events-table-container">
+            <div class="table-header">
+                <h2>Upcoming Events</h2>
+                <div class="table-controls">
+                    <select id="eventFilter" onchange="filterEvents(this.value)">
+                        <option value="all">All Events</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="past">Past Events</option>
+                    </select>
+                    <button onclick="confirmDeleteAll()" class="btn btn-danger">Delete All Events</button>
+                </div>
             </div>
-            <div class="navbar-logo-text">NutriSaur</div>
+            
+            <?php if(isset($_GET['deleted'])): ?>
+                <div class="alert alert-success">
+                    Event deleted successfully!
+                </div>
+            <?php endif; ?>
+            
+            <?php if(isset($_GET['deleted_all'])): ?>
+                <div class="alert alert-success">
+                    All events deleted successfully!
+                </div>
+            <?php endif; ?>
+            
+            <?php if(isset($_GET['updated'])): ?>
+                <div class="alert alert-success">
+                    Event updated successfully!
+                    <br>Update notification sent to all users!
+                </div>
+            <?php endif; ?>
+            
+            <?php if(isset($_GET['error'])): ?>
+                <div class="alert alert-danger">
+                    Error: <?php echo htmlspecialchars($_GET['message'] ?? 'Unknown error occurred'); ?>
+                </div>
+            <?php endif; ?>
+            
+            <table class="events-table">
+                <thead>
+                    <tr>
+                        <th>Event Title</th>
+                        <th>Date & Time</th>
+                        <th>Location</th>
+                        <th>Organizer</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="eventsTableBody">
+                    <?php if($dbConnected && count($programs) > 0): ?>
+                        <?php foreach($programs as $program): ?>
+                            <?php
+                                // Determine if event is upcoming or past
+                                $eventDate = strtotime($program['date_time']);
+                                $currentDate = time();
+                                $status = ($eventDate > $currentDate) ? 'upcoming' : 'past';
+                            ?>
+                            <tr class="event-row <?php echo $status; ?>">
+                                <td><?php echo htmlspecialchars($program['title']); ?></td>
+                                <td><?php echo date('M j, Y, g:i A', strtotime($program['date_time'])); ?></td>
+                                <td><?php echo htmlspecialchars($program['location']); ?></td>
+                                <td><?php echo htmlspecialchars($program['organizer']); ?></td>
+                                <td><span class="status-badge status-<?php echo $status; ?>"><?php echo ucfirst($status); ?></span></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button onclick="openEditModal(<?php echo $program['program_id']; ?>, '<?php echo htmlspecialchars($program['title']); ?>', '<?php echo htmlspecialchars($program['type']); ?>', '<?php echo htmlspecialchars($program['description']); ?>', '<?php echo $program['date_time']; ?>', '<?php echo htmlspecialchars($program['location']); ?>', '<?php echo htmlspecialchars($program['organizer']); ?>')" class="btn btn-add">Edit</button>
+                                        <a href="event.php?delete=<?php echo $program['program_id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this event?')">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="7" class="no-events">No events found. Create your first event!</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+    </div>
+    
+<!-- Navigation -->
+    <div class="navbar">
+        <div class="navbar-header">
+            <div class="navbar-logo">
+                <div class="navbar-logo-icon">
+                    <img src="/logo.png" alt="Logo" style="width: 40px; height: 40px;">
+                </div>
+                <div class="navbar-logo-text">NutriSaur</div>
+            </div>
+        </div>
+        <div class="navbar-menu">
+            <ul>
+                <li><a href="dash"><span class="navbar-icon"></span><span>Dashboard</span></a></li>
+                <li><a href="screening"><span class="navbar-icon"></span><span>MHO Assessment</span></a></li>
+                <li><a href="event"><span class="navbar-icon"></span><span>Nutrition Event Notifications</span></a></li>
+                <li><a href="ai"><span class="navbar-icon"></span><span>Chatbot & AI Logs</span></a></li>
+                <li><a href="settings"><span class="navbar-icon"></span><span>Settings & Admin</span></a></li>
+                <li><a href="logout" style="color: #ff5252;"><span class="navbar-icon"></span><span>Logout</span></a></li>
+            </ul>
+        </div>
+        <div class="navbar-footer">
+            <div>NutriSaur v2.0 • © 2025</div>
+            <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($username); ?></div>
         </div>
     </div>
-    <div class="navbar-menu">
-        <ul>
-            <li><a href="dash"><span class="navbar-icon"></span><span>Dashboard</span></a></li>
-            <li><a href="screening"><span class="navbar-icon"></span><span>MHO Assessment</span></a></li>
-            <li><a href="event"><span class="navbar-icon"></span><span>Nutrition Event Notifications</span></a></li>
-            <li><a href="ai"><span class="navbar-icon"></span><span>Chatbot & AI Logs</span></a></li>
-            <li><a href="settings"><span class="navbar-icon"></span><span>Settings & Admin</span></a></li>
-            <li><a href="logout" style="color: #ff5252;"><span class="navbar-icon"></span><span>Logout</span></a></li>
-        </ul>
-    </div>
-    <div class="navbar-footer">
-        <div>NutriSaur v2.0 • © 2025</div>
-        <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($username); ?></div>
-    </div>
-</div>
 
-<!-- Mobile Top Navigation -->
-<div class="mobile-top-nav">
-    <div class="mobile-nav-container">
-        <div class="mobile-nav-logo">
-            <img src="/logo.png" alt="Logo" class="mobile-logo-img">
-            <span class="mobile-logo-text">NutriSaur</span>
-        </div>
-        <div class="mobile-nav-icons">
-            <a href="dash" class="mobile-nav-icon" title="Dashboard">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="3" width="7" height="7"></rect>
-                    <rect x="14" y="3" width="7" height="7"></rect>
-                    <rect x="14" y="14" width="7" height="7"></rect>
-                    <rect x="3" y="14" width="7" height="7"></rect>
-                </svg>
-            </a>
-            <a href="screening" class="mobile-nav-icon" title="MHO Assessment">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-            </a>
-            <a href="event" class="mobile-nav-icon active" title="Events">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                </svg>
-            </a>
-            <a href="ai" class="mobile-nav-icon" title="AI Chatbot">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
-            </a>
-            <a href="settings" class="mobile-nav-icon" title="Settings">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                </svg>
-            </a>
-            <a href="logout" class="mobile-nav-icon" title="Logout" style="color: #ff5252;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16,17 21,12 16,7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
-            </a>
+    <!-- Mobile Top Navigation -->
+    <div class="mobile-top-nav">
+        <div class="mobile-nav-container">
+            <div class="mobile-nav-logo">
+                <img src="/logo.png" alt="Logo" class="mobile-logo-img">
+                <span class="mobile-logo-text">NutriSaur</span>
+            </div>
+            <div class="mobile-nav-icons">
+                <a href="dash" class="mobile-nav-icon" title="Dashboard">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                </a>
+                <a href="screening" class="mobile-nav-icon" title="MHO Assessment">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+                <a href="event" class="mobile-nav-icon active" title="Events">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                </a>
+                <a href="ai" class="mobile-nav-icon" title="AI Chatbot">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </a>
+                <a href="settings" class="mobile-nav-icon" title="Settings">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </a>
+                <a href="logout" class="mobile-nav-icon" title="Logout" style="color: #ff5252;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16,17 21,12 16,7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </a>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Edit Event Modal -->
+    <!-- Edit Event Modal -->
 <div id="editEventModal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Edit Event</h3>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Event</h3>
             <span class="close" onclick="closeEditEventModal()">&times;</span>
-        </div>
+            </div>
         <div class="modal-body">
             <form class="event-form" id="editEventForm">
                 <input type="hidden" id="editEventId" name="editEventId">
@@ -5204,9 +5188,9 @@ header:hover {
                     <button type="button" class="btn btn-secondary" onclick="closeEditEventModal()">Cancel</button>
                 </div>
             </form>
+            </div>
         </div>
     </div>
-</div>
 
 <script>
 // Municipality to Barangay mapping
@@ -5273,7 +5257,7 @@ function getTargetLocation() {
     } else if (barangay) {
         return barangay; // Target specific barangay
     } else {
-        return 'MUNICIPALITY_' + municipality.replace(' ', '_'); // Target all barangays in municipality
+        return 'MUNICIPALITY_' + municipality.replace(/ /g, '_'); // Target all barangays in municipality
     }
 }
 
@@ -5287,7 +5271,7 @@ function getEditTargetLocation() {
     } else if (barangay) {
         return barangay; // Target specific barangay
     } else {
-        return 'MUNICIPALITY_' + municipality.replace(' ', '_'); // Target all barangays in municipality
+        return 'MUNICIPALITY_' + municipality.replace(/ /g, '_'); // Target all barangays in municipality
     }
 }
 
@@ -5309,18 +5293,18 @@ function closeCreateEventModal() {
     document.getElementById('newCreateEventForm').reset();
 }
 
-// 🚨 GLOBAL EVENT CREATION HANDLER - Available immediately
-window.handleNewEventCreation = async function() {
-    console.log('🚨 NEW EVENT CREATION STARTED - NO REDIRECTS');
-    
-    // Get form data from the form element
-    const form = document.getElementById('newCreateEventForm');
-    if (!form) {
-        console.error('Form not found!');
-        return;
-    }
-    
-    const formData = new FormData(form);
+        // 🚨 GLOBAL EVENT CREATION HANDLER - Available immediately
+        window.handleNewEventCreation = async function() {
+            console.log('🚨 NEW EVENT CREATION STARTED - NO REDIRECTS');
+            
+            // Get form data from the form element
+            const form = document.getElementById('newCreateEventForm');
+            if (!form) {
+                console.error('Form not found!');
+                return;
+            }
+            
+            const formData = new FormData(form);
     const municipality = formData.get('eventMunicipality');
     const barangay = formData.get('eventBarangay');
     
@@ -5334,192 +5318,192 @@ window.handleNewEventCreation = async function() {
         targetLocation = 'MUNICIPALITY_' + municipality.replace(' ', '_'); // Target all barangays in municipality
     }
     
-    const eventData = {
-        title: formData.get('eventTitle'),
-        description: formData.get('eventDescription'),
-        date_time: formData.get('eventDate'),
+            const eventData = {
+                title: formData.get('eventTitle'),
+                description: formData.get('eventDescription'),
+                date_time: formData.get('eventDate'),
         location: targetLocation,
-        organizer: formData.get('eventOrganizer')
-    };
-    
-    console.log('Event data:', eventData);
-    console.log('Form element found:', !!form);
-    console.log('FormData entries:');
-    for (let [key, value] of formData.entries()) {
-        console.log(key + ': ' + value);
-    }
-    
-    // Validate required fields
-    if (!eventData.title || !eventData.description || !eventData.date_time || !eventData.organizer) {
-        console.error('Missing required fields:', {
-            title: eventData.title,
-            description: eventData.description,
-            date_time: eventData.date_time,
-            organizer: eventData.organizer
-        });
-        alert('Please fill in all required fields');
-        return;
-    }
-    
-    try {
-        console.log('✅ Validation passed, starting event creation process');
-    
-        // Show loading state
-        const submitBtn = document.querySelector('#newCreateEventForm .btn-primary');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
-        submitBtn.disabled = true;
-        
-            console.log('🔄 Calling save_event_only API...');
-            console.log('📤 Sending event data to programs table:', {
-                title: eventData.title,
-                description: eventData.description,
-                date_time: eventData.date_time,
-                location: eventData.location,
-                organizer: eventData.organizer
-            });
+                organizer: formData.get('eventOrganizer')
+            };
             
-            // 🚨 STEP 1: SAVE EVENT TO DATABASE FIRST (using the working PHP logic)
-            const saveResponse = await fetch('event.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: new URLSearchParams({
-                    'action': 'save_event_only',
-                    'title': eventData.title,
-                    'description': eventData.description,
-                    'date_time': eventData.date_time,
-                    'location': eventData.location,
-                    'organizer': eventData.organizer
-                })
-            });
-            
-            const saveResult = await saveResponse.json();
-            console.log('📊 Save API response:', saveResult);
-            
-            if (!saveResult.success) {
-                console.error('❌ Save API failed:', saveResult.message);
-                throw new Error(`Failed to save event: ${saveResult.message}`);
+            console.log('Event data:', eventData);
+            console.log('Form element found:', !!form);
+            console.log('FormData entries:');
+            for (let [key, value] of formData.entries()) {
+                console.log(key + ': ' + value);
             }
             
-            console.log('✅ Event saved successfully!');
+            // Validate required fields
+            if (!eventData.title || !eventData.description || !eventData.date_time || !eventData.organizer) {
+                console.error('Missing required fields:', {
+                    title: eventData.title,
+                    description: eventData.description,
+                    date_time: eventData.date_time,
+                    organizer: eventData.organizer
+                });
+                alert('Please fill in all required fields');
+                return;
+            }
             
-            // Notifications are now handled automatically in PHP after saving
-            
-            // Fetch and display current programs table
-            console.log('🔍 Fetching current programs table to verify...');
             try {
-                const programsResponse = await fetch('/api/DatabaseAPI.php', {
+                console.log('✅ Validation passed, starting event creation process');
+            
+            // Show loading state
+        const submitBtn = document.querySelector('#newCreateEventForm .btn-primary');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
+            submitBtn.disabled = true;
+            
+                console.log('🔄 Calling save_event_only API...');
+                console.log('📤 Sending event data to programs table:', {
+                    title: eventData.title,
+                    description: eventData.description,
+                    date_time: eventData.date_time,
+                    location: eventData.location,
+                    organizer: eventData.organizer
+                });
+                
+                // 🚨 STEP 1: SAVE EVENT TO DATABASE FIRST (using the working PHP logic)
+                const saveResponse = await fetch('event.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: new URLSearchParams({
-                        'action': 'query',
-                        'sql': 'SELECT * FROM programs ORDER BY program_id DESC LIMIT 5'
+                        'action': 'save_event_only',
+                        'title': eventData.title,
+                        'description': eventData.description,
+                        'date_time': eventData.date_time,
+                        'location': eventData.location,
+                        'organizer': eventData.organizer
                     })
                 });
-                const programsResult = await programsResponse.json();
-                console.log('📊 Current programs table (last 5 events):', programsResult);
-            } catch (error) {
-                console.error('❌ Error fetching programs table:', error);
-            }
-            
-                // Reset form
-                form.reset();
                 
-                // Show success message
-            alert(`🎉 Event "${eventData.title}" created successfully!`);
-            
-            // Refresh the page to show the new event
-            setTimeout(() => {
-                location.reload();
-            }, 2000); // Wait 2 seconds to show the success message
-            
-        } catch (error) {
-            console.error('Error creating event:', error);
-            alert('Error creating event. Please try again.');
-        } finally {
-            // Restore button state
+                const saveResult = await saveResponse.json();
+                console.log('📊 Save API response:', saveResult);
+                
+                if (!saveResult.success) {
+                    console.error('❌ Save API failed:', saveResult.message);
+                    throw new Error(`Failed to save event: ${saveResult.message}`);
+                }
+                
+                console.log('✅ Event saved successfully!');
+                
+                // Notifications are now handled automatically in PHP after saving
+                
+                // Fetch and display current programs table
+                console.log('🔍 Fetching current programs table to verify...');
+                try {
+                    const programsResponse = await fetch('/api/DatabaseAPI.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: new URLSearchParams({
+                            'action': 'query',
+                            'sql': 'SELECT * FROM programs ORDER BY program_id DESC LIMIT 5'
+                        })
+                    });
+                    const programsResult = await programsResponse.json();
+                    console.log('📊 Current programs table (last 5 events):', programsResult);
+                } catch (error) {
+                    console.error('❌ Error fetching programs table:', error);
+                }
+                
+                    // Reset form
+                    form.reset();
+                    
+                    // Show success message
+                alert(`🎉 Event "${eventData.title}" created successfully!`);
+                
+                // Refresh the page to show the new event
+                setTimeout(() => {
+                    location.reload();
+                }, 2000); // Wait 2 seconds to show the success message
+                
+            } catch (error) {
+                console.error('Error creating event:', error);
+                alert('Error creating event. Please try again.');
+            } finally {
+                // Restore button state
             const submitBtn = document.querySelector('#newCreateEventForm .btn-primary');
-            if (submitBtn) {
-                submitBtn.innerHTML = '<span class="btn-text">Create Event</span>';
-            submitBtn.disabled = false;
-        }
-    }
-};
-
-// Function to confirm delete all events
-function confirmDeleteAll() {
-    // Get total number of events
-    const eventRows = document.querySelectorAll('.event-row');
-    const eventCount = eventRows.length;
-    
-    if (eventCount === 0) {
-        alert('No events to delete!');
-        return;
-    }
-
-    // Double confirmation for delete all
-    const confirmMessage = `⚠️ WARNING: This will delete ALL ${eventCount} events from the database!\n\nThis action cannot be undone. Are you absolutely sure?`;
-    
-    if (!confirm(confirmMessage)) {
-        return;
-    }
-
-    // Second confirmation
-    if (!confirm('FINAL CONFIRMATION: Delete ALL events? This will permanently remove all event data.')) {
-        return;
-    }
-
-    // Show loading state
-    const deleteAllBtn = event.target;
-    const originalText = deleteAllBtn.innerHTML;
-    deleteAllBtn.innerHTML = '⏳ Deleting...';
-    deleteAllBtn.disabled = true;
-
-    // Send delete all request to server
-    fetch('/api/delete_all_programs.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            confirm: true
-        })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-        // Remove all event rows from the page
-        eventRows.forEach(row => row.remove());
-        
-        alert(`Successfully deleted all ${data.deleted_count || eventCount} events!`);
-        
-        // Reload page to refresh event list
-        setTimeout(() => {
-            window.location.reload();
-        }, 1500);
-            } else {
-        alert('Error deleting all events: ' + (data.message || 'Unknown error'));
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<span class="btn-text">Create Event</span>';
+                submitBtn.disabled = false;
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
+        }
+        };
+        
+// Function to confirm delete all events
+        function confirmDeleteAll() {
+            // Get total number of events
+            const eventRows = document.querySelectorAll('.event-row');
+            const eventCount = eventRows.length;
+            
+            if (eventCount === 0) {
+        alert('No events to delete!');
+                return;
+            }
+
+            // Double confirmation for delete all
+            const confirmMessage = `⚠️ WARNING: This will delete ALL ${eventCount} events from the database!\n\nThis action cannot be undone. Are you absolutely sure?`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            // Second confirmation
+            if (!confirm('FINAL CONFIRMATION: Delete ALL events? This will permanently remove all event data.')) {
+                return;
+            }
+
+            // Show loading state
+            const deleteAllBtn = event.target;
+            const originalText = deleteAllBtn.innerHTML;
+            deleteAllBtn.innerHTML = '⏳ Deleting...';
+            deleteAllBtn.disabled = true;
+
+            // Send delete all request to server
+            fetch('/api/delete_all_programs.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    confirm: true
+                })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                    // Remove all event rows from the page
+                    eventRows.forEach(row => row.remove());
+                    
+        alert(`Successfully deleted all ${data.deleted_count || eventCount} events!`);
+                    
+                    // Reload page to refresh event list
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                        } else {
+        alert('Error deleting all events: ' + (data.message || 'Unknown error'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
     alert('Error deleting all events: ' + error.message);
-})
-.finally(() => {
-    // Restore button state
-    if (deleteAllBtn) {
-        deleteAllBtn.innerHTML = originalText;
-        deleteAllBtn.disabled = false;
-    }
-});
-}
-    </script>    
+            })
+            .finally(() => {
+                // Restore button state
+                if (deleteAllBtn) {
+                    deleteAllBtn.innerHTML = originalText;
+                    deleteAllBtn.disabled = false;
+                }
+            });
+        }
+    </script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Event.php page loaded, checking for program recommendations...');
