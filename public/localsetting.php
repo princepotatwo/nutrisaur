@@ -535,10 +535,12 @@ h1 {
     justify-content: center;
     align-items: center;
     padding: 0;
+    margin: 0;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
     flex-wrap: nowrap;
+    vertical-align: top;
 }
 
 .admin-action-btn {
@@ -555,7 +557,8 @@ h1 {
     flex-shrink: 0;
     min-width: 55px;
     height: 28px;
-    margin-right: 4px;
+    margin: 0 2px;
+    vertical-align: top;
 }
 
 .admin-action-btn:hover {
