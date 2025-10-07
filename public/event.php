@@ -188,26 +188,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             $notificationMessage = 'Event created successfully';
             error_log("✅ Event saved successfully with ID: $eventId");
             
-            // Try to send notifications using the simple DatabaseAPI method
+            // Try to send notifications using the centralized getFCMTokensByLocation function
             try {
                 error_log("📱 Attempting to send notifications via DatabaseAPI...");
                 
-                // Use the DatabaseAPI directly instead of complex functions
-                $db = DatabaseAPI::getInstance();
-                
-                // Get FCM tokens for the location (no limit to process all users)
-                $locationQuery = $location === 'All Locations' || $location === 'all' ? '' : "AND barangay = :location";
-                $sql = "SELECT fcm_token, email FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != '' $locationQuery";
-                
-                if ($location === 'All Locations' || $location === 'all') {
-                    $stmt = $db->getPDO()->prepare($sql);
-                } else {
-                    $stmt = $db->getPDO()->prepare($sql);
-                    $stmt->bindParam(':location', $location);
-                }
-                
-                $stmt->execute();
-                $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                // Use the centralized getFCMTokensByLocation function for consistent targeting
+                $users = getFCMTokensByLocation($location);
                 
                 error_log("📊 Found " . count($users) . " users to notify for location: $location");
                 
