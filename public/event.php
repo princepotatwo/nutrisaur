@@ -1121,6 +1121,12 @@ function getFCMTokensByLocation($targetLocation = null) {
                 
                 error_log("🔍 Found " . count($tokens) . " users in municipality '$municipalityName'");
                 
+                // Debug: Show what municipalities actually exist in the database
+                $debugStmt = $db->getPDO()->prepare("SELECT DISTINCT municipality, COUNT(*) as count FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != '' GROUP BY municipality");
+                $debugStmt->execute();
+                $municipalities = $debugStmt->fetchAll(PDO::FETCH_ASSOC);
+                error_log("🔍 Available municipalities with FCM tokens: " . json_encode($municipalities));
+                
                 // Debug: Show what municipalities actually exist
                 $debugStmt = $db->getPDO()->prepare("SELECT DISTINCT municipality, COUNT(*) as count FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != '' GROUP BY municipality");
                 $debugStmt->execute();
