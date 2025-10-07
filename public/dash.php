@@ -6973,6 +6973,43 @@ body {
     right: 0;
 }
 
+/* Barangay Dropdown Container - Outside Filter Section */
+.barangay-dropdown-container {
+    background: var(--color-card);
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    position: relative;
+    overflow: visible;
+}
+
+.barangay-dropdown-container .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.barangay-dropdown-container .custom-select-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 400px;
+}
+
+.barangay-dropdown-container .dropdown-content {
+    z-index: 1002;
+    position: absolute;
+    max-width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: var(--color-card);
+    border: 2px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
 .dropdown-content.show {
     display: block;
 }
@@ -8209,13 +8246,27 @@ body {
                         </div>
                     </div>
                 </div>
-                <div class="filter-group">
-                    <label>Select Barangay:</label>
-                    <div class="custom-select-container small-width">
-                        <div class="select-header" onclick="toggleDropdown()">
-                            <span id="selected-option">All Barangays</span>
-                            <span class="dropdown-arrow">▼</span>
-                        </div>
+            <div class="filter-group">
+                <label>WHO Standard:</label>
+                <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;">
+                    <option value="weight-for-age" selected>Weight-for-Age (0-71 months)</option>
+                    <option value="height-for-age">Height-for-Age (0-71 months)</option>
+                    <option value="weight-for-height">Weight-for-Height (0-60 months)</option>
+                    <option value="bmi-for-age">BMI-for-Age (5-19 years)</option>
+                    <option value="bmi-adult">BMI Adult (≥19 years)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Barangay Dropdown - Moved Outside Filter Section -->
+        <div class="barangay-dropdown-container" style="margin-bottom: 20px; background: var(--color-card); padding: 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <div class="filter-group">
+                <label>Select Barangay:</label>
+                <div class="custom-select-container small-width">
+                    <div class="select-header" onclick="toggleDropdown()">
+                        <span id="selected-option">All Barangays</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </div>
                     <div class="dropdown-content" id="dropdown-content">
                         <div class="search-container">
                             <input type="text" id="search-input" placeholder="Search barangay or municipality..." onkeyup="filterOptions()">
@@ -8500,17 +8551,6 @@ body {
                         </div>
                     </div>
                 </div>
-            </div>
-            </div>
-            <div class="filter-group">
-                <label>WHO Standard:</label>
-                <select id="whoStandardSelect" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; background: white; color: #333; font-size: 14px;">
-                    <option value="weight-for-age" selected>Weight-for-Age (0-71 months)</option>
-                    <option value="height-for-age">Height-for-Age (0-71 months)</option>
-                    <option value="weight-for-height">Weight-for-Height (0-60 months)</option>
-                    <option value="bmi-for-age">BMI-for-Age (5-19 years)</option>
-                    <option value="bmi-adult">BMI Adult (≥19 years)</option>
-                </select>
             </div>
         </div>
 
