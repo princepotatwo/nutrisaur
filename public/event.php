@@ -4949,10 +4949,170 @@ header:hover {
                 </div>
                                 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Create Event</button>
+                    <button type="button" onclick="handleNewEventCreation()" class="btn btn-primary">Create Event</button>
                     <button type="button" class="btn btn-secondary" onclick="closeCreateEventModal()">Cancel</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Events Table and Main Content -->
+<div class="events-table-container">
+    <div class="table-header">
+        <h2>Upcoming Events</h2>
+        <div class="table-controls">
+            <select id="eventFilter" onchange="filterEvents(this.value)">
+                <option value="all">All Events</option>
+                <option value="upcoming">Upcoming</option>
+                <option value="past">Past Events</option>
+            </select>
+            <button onclick="confirmDeleteAll()" class="btn btn-danger">Delete All Events</button>
+        </div>
+    </div>
+    
+    <?php if(isset($_GET['deleted'])): ?>
+        <div class="alert alert-success">
+            Event deleted successfully!
+        </div>
+    <?php endif; ?>
+    
+    <?php if(isset($_GET['deleted_all'])): ?>
+        <div class="alert alert-success">
+            All events deleted successfully!
+        </div>
+    <?php endif; ?>
+    
+    <?php if(isset($_GET['updated'])): ?>
+        <div class="alert alert-success">
+            Event updated successfully!
+            <br>Update notification sent to all users!
+        </div>
+    <?php endif; ?>
+    
+    <?php if(isset($_GET['error'])): ?>
+        <div class="alert alert-danger">
+            Error: <?php echo htmlspecialchars($_GET['message'] ?? 'Unknown error occurred'); ?>
+        </div>
+    <?php endif; ?>
+    
+    <table class="events-table">
+        <thead>
+            <tr>
+                <th>Event Title</th>
+                <th>Date & Time</th>
+                <th>Location</th>
+                <th>Organizer</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="eventsTableBody">
+            <?php if($dbConnected && count($programs) > 0): ?>
+                <?php foreach($programs as $program): ?>
+                    <?php
+                        // Determine if event is upcoming or past
+                        $eventDate = strtotime($program['date_time']);
+                        $currentDate = time();
+                        $status = ($eventDate > $currentDate) ? 'upcoming' : 'past';
+                    ?>
+                    <tr class="event-row <?php echo $status; ?>">
+                        <td><?php echo htmlspecialchars($program['title']); ?></td>
+                        <td><?php echo date('M j, Y, g:i A', strtotime($program['date_time'])); ?></td>
+                        <td><?php echo htmlspecialchars($program['location']); ?></td>
+                        <td><?php echo htmlspecialchars($program['organizer']); ?></td>
+                        <td><span class="status-badge status-<?php echo $status; ?>"><?php echo ucfirst($status); ?></span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button onclick="openEditModal(<?php echo $program['program_id']; ?>, '<?php echo htmlspecialchars($program['title']); ?>', '<?php echo htmlspecialchars($program['type']); ?>', '<?php echo htmlspecialchars($program['description']); ?>', '<?php echo $program['date_time']; ?>', '<?php echo htmlspecialchars($program['location']); ?>', '<?php echo htmlspecialchars($program['organizer']); ?>')" class="btn btn-add">Edit</button>
+                                <a href="event.php?delete=<?php echo $program['program_id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this event?')">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="7" class="no-events">No events found. Create your first event!</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+
+<!-- Navigation -->
+<div class="navbar">
+    <div class="navbar-header">
+        <div class="navbar-logo">
+            <div class="navbar-logo-icon">
+                <img src="/logo.png" alt="Logo" style="width: 40px; height: 40px;">
+            </div>
+            <div class="navbar-logo-text">NutriSaur</div>
+        </div>
+    </div>
+    <div class="navbar-menu">
+        <ul>
+            <li><a href="dash"><span class="navbar-icon"></span><span>Dashboard</span></a></li>
+            <li><a href="screening"><span class="navbar-icon"></span><span>MHO Assessment</span></a></li>
+            <li><a href="event"><span class="navbar-icon"></span><span>Nutrition Event Notifications</span></a></li>
+            <li><a href="ai"><span class="navbar-icon"></span><span>Chatbot & AI Logs</span></a></li>
+            <li><a href="settings"><span class="navbar-icon"></span><span>Settings & Admin</span></a></li>
+            <li><a href="logout" style="color: #ff5252;"><span class="navbar-icon"></span><span>Logout</span></a></li>
+        </ul>
+    </div>
+    <div class="navbar-footer">
+        <div>NutriSaur v2.0 • © 2025</div>
+        <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($username); ?></div>
+    </div>
+</div>
+
+<!-- Mobile Top Navigation -->
+<div class="mobile-top-nav">
+    <div class="mobile-nav-container">
+        <div class="mobile-nav-logo">
+            <img src="/logo.png" alt="Logo" class="mobile-logo-img">
+            <span class="mobile-logo-text">NutriSaur</span>
+        </div>
+        <div class="mobile-nav-icons">
+            <a href="dash" class="mobile-nav-icon" title="Dashboard">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+            </a>
+            <a href="screening" class="mobile-nav-icon" title="MHO Assessment">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </a>
+            <a href="event" class="mobile-nav-icon active" title="Events">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+            </a>
+            <a href="ai" class="mobile-nav-icon" title="AI Chatbot">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </a>
+            <a href="settings" class="mobile-nav-icon" title="Settings">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </a>
+            <a href="logout" class="mobile-nav-icon" title="Logout" style="color: #ff5252;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16,17 21,12 16,7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+            </a>
         </div>
     </div>
 </div>
