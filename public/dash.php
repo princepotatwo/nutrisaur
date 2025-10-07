@@ -8731,12 +8731,19 @@ body {
         
         // Custom Dropdown Functions
         function toggleDropdown() {
+            console.log('🔽 toggleDropdown called');
             const dropdown = document.getElementById('dropdown-content');
             const arrow = document.querySelector('#dropdown-content').parentElement.querySelector('.dropdown-arrow');
+            
+            console.log('🔽 Dropdown found:', dropdown);
+            console.log('🔽 Arrow found:', arrow);
             
             if (dropdown && arrow) {
                 dropdown.classList.toggle('active');
                 arrow.classList.toggle('active');
+                console.log('✅ Barangay dropdown toggled');
+            } else {
+                console.error('❌ Dropdown or arrow not found');
             }
         }
 
@@ -12906,22 +12913,7 @@ body {
             return url;
         }
 
-        // Dropdown toggle functions  
-        function toggleDropdown() {
-            const dropdown = document.getElementById('dropdown-content');
-            if (dropdown) {
-                dropdown.classList.toggle('show');
-                console.log('🔽 Barangay dropdown toggled');
-            }
-        }
-
-        function toggleMunicipalityDropdown() {
-            const dropdown = document.getElementById('municipality-dropdown-content');  
-            if (dropdown) {
-                dropdown.classList.toggle('show');
-                console.log('🔽 Municipality dropdown toggled');
-            }
-        }
+        // Dropdown toggle functions - REMOVED DUPLICATES
 
         // Filter options function for search
         function filterOptions() {
@@ -13718,18 +13710,7 @@ body {
             console.log('✅ Mobile dropdown functionality initialized');
         }
         
-        // Toggle dropdown function
-        function toggleDropdown(header, dropdown) {
-            const isActive = dropdown.classList.contains('active');
-            
-            // Close all other dropdowns first
-            closeAllDropdowns();
-            
-            if (!isActive) {
-                dropdown.classList.add('active');
-                header.classList.add('active');
-            }
-        }
+        // Toggle dropdown function - REMOVED DUPLICATE
         
         // Close all dropdowns
         function closeAllDropdowns() {
