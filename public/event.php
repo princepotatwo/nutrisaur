@@ -1322,7 +1322,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
         $db = DatabaseAPI::getInstance();
         
         // Get program details before deletion to clean up lock files
-        $programResult = $db->select('programs', 'title, location, date_time', 'program_id = ?', [$programId]);
+        $programResult = $db->universalSelect('programs', 'title, location, date_time', 'program_id = ?', '', '', [$programId]);
         $program = $programResult['success'] && !empty($programResult['data']) ? $programResult['data'][0] : null;
         
         // Delete the event from database
@@ -1581,20 +1581,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_event'])) {
     $organizer = $_POST['eventOrganizer'];
     
     try {
-        // First update the event in the database
-        $stmt = $conn->prepare("UPDATE programs SET title = :title, type = :type, description = :description, 
-                               date_time = :date_time, location = :location, organizer = :organizer 
-                               WHERE program_id = :id");
+        // Get database connection
+        $db = DatabaseAPI::getInstance();
         
-        $stmt->bindParam(':id', $programId);
-        $stmt->bindParam(':title', $title);
-        $stmt->bindParam(':type', $type);
-        $stmt->bindParam(':description', $description);
-        $stmt->bindParam(':date_time', $date_time);
-        $stmt->bindParam(':location', $location);
-        $stmt->bindParam(':organizer', $organizer);
+        // Update the event in the database using universalUpdate
+        $updateData = [
+            'title' => $title,
+            'type' => $type,
+            'description' => $description,
+            'date_time' => $date_time,
+            'location' => $location,
+            'organizer' => $organizer
+        ];
         
-        $stmt->execute();
+        $result = $db->universalUpdate('programs', $updateData, 'program_id = ?', [$programId]);
+        
+        if (!$result['success']) {
+            throw new Exception("Failed to update event: " . $result['message']);
+        }
         
         // Send notification about the updated event with location-based targeting
         try {
@@ -1655,11 +1659,12 @@ $editEvent = null;
 if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
     $editId = $_GET['edit'];
     try {
+        // Get database connection
+        $db = DatabaseAPI::getInstance();
+        
         // First try to get from local database
-        $stmt = $conn->prepare("SELECT * FROM programs WHERE program_id = :id");
-        $stmt->bindParam(':id', $editId);
-        $stmt->execute();
-        $editEvent = $stmt->fetch();
+        $result = $db->universalSelect('programs', '*', 'program_id = ?', '', '', [$editId]);
+        $editEvent = $result['success'] && !empty($result['data']) ? $result['data'][0] : null;
         
         // If not found locally, try to get from unified_api.php
         if (!$editEvent) {
@@ -5401,6 +5406,18 @@ header:hover {
                     <input type="text" id="edit_eventTitle" name="eventTitle" required>
                 </div>
                 
+                <div class="form-group">
+                    <label for="edit_eventType">Event Type</label>
+                    <select id="edit_eventType" name="eventType" required>
+                        <option value="">Select Event Type</option>
+                        <option value="Nutrition Education">Nutrition Education</option>
+                        <option value="Health Screening">Health Screening</option>
+                        <option value="Community Outreach">Community Outreach</option>
+                        <option value="Training Workshop">Training Workshop</option>
+                        <option value="Meeting">Meeting</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
                 
                 <div class="form-group">
                     <label for="edit_eventDate">Date & Time</label>
@@ -7396,6 +7413,7 @@ Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup 
             // Set form values
             document.getElementById('edit_program_id').value = programId;
             document.getElementById('edit_eventTitle').value = title;
+            document.getElementById('edit_eventType').value = type;
             document.getElementById('edit_eventDescription').value = description;
             
             // Set location dropdown value with improved matching
