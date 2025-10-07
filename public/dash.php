@@ -13374,19 +13374,27 @@ body {
         function initMobileDropdowns() {
             console.log('📱 Initializing mobile dropdown functionality...');
             
-            // Get all dropdown elements
-            const selectHeaders = document.querySelectorAll('.select-header');
-            const dropdownContents = document.querySelectorAll('.dropdown-content');
+            // Get all dropdown elements (excluding municipality and barangay dropdowns)
+            const selectHeaders = document.querySelectorAll('.select-header:not(#barangay-select-header)');
+            const dropdownContents = document.querySelectorAll('.dropdown-content:not(#municipality-dropdown-content):not(#dropdown-content)');
             const optionItems = document.querySelectorAll('.option-item');
             
-            console.log('📱 Found select headers:', selectHeaders.length);
-            console.log('📱 Found dropdown contents:', dropdownContents.length);
+            console.log('📱 Found select headers (excluding muni/brgy):', selectHeaders.length);
+            console.log('📱 Found dropdown contents (excluding muni/brgy):', dropdownContents.length);
             console.log('📱 Found option items:', optionItems.length);
             
-            // Add touch and click event listeners to select headers
+            // Skip adding event listeners if these are municipality/barangay dropdowns
+            // These dropdowns have their own specific toggle functions
             selectHeaders.forEach((header, index) => {
                 const dropdown = dropdownContents[index];
                 if (!dropdown) return;
+                
+                // Skip if this is one of our custom dropdowns
+                if (header.id === 'barangay-select-header' || 
+                    dropdown.id === 'municipality-dropdown-content' || 
+                    dropdown.id === 'dropdown-content') {
+                    return;
+                }
                 
                 // Touch events for mobile
                 header.addEventListener('touchstart', function(e) {
@@ -13461,7 +13469,11 @@ body {
             const dropdowns = document.querySelectorAll('.dropdown-content');
             const headers = document.querySelectorAll('.select-header');
             
-            dropdowns.forEach(dropdown => dropdown.classList.remove('active'));
+            // Remove both .active and .show classes to support different dropdown types
+            dropdowns.forEach(dropdown => {
+                dropdown.classList.remove('active');
+                dropdown.classList.remove('show');
+            });
             headers.forEach(header => header.classList.remove('active'));
         }
         
