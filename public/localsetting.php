@@ -460,6 +460,7 @@ h1 {
     overflow: visible;
     text-overflow: clip;
     min-width: 140px;
+    vertical-align: middle;
 }
 
 .admin-table tr:last-child td {
