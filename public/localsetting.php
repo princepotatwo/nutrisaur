@@ -450,6 +450,8 @@ h1 {
     padding: 12px 15px;
     border-bottom: 1px solid rgba(161, 180, 84, 0.1);
     vertical-align: middle;
+    height: 60px;
+    min-height: 60px;
 }
 
 /* Ensure admin table action column is properly aligned */
@@ -532,6 +534,8 @@ h1 {
     padding: 4px;
     width: 100%;
     box-sizing: border-box;
+    height: 100%;
+    min-height: 52px;
 }
 
 .admin-action-btn {
