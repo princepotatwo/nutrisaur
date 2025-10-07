@@ -8186,7 +8186,7 @@ body {
                 <div class="filter-group">
                     <label>Select Municipality:</label>
                     <div class="custom-select-container small-width">
-                        <div class="select-header" onclick="toggleMunicipalityDropdown()">
+                        <div class="select-header" onclick="console.log('🏘️ Municipality clicked!'); toggleMunicipalityDropdown();">
                             <span id="selected-municipality-option">All Municipalities</span>
                             <span class="dropdown-arrow" id="municipality-arrow">▼</span>
                         </div>
@@ -8761,6 +8761,12 @@ body {
             }
         }
 
+        // Test function to verify JavaScript is working
+        function testMunicipalityClick() {
+            console.log('🏘️ TEST: Municipality click handler is working!');
+            return true;
+        }
+
         // Municipality dropdown functions
         function toggleMunicipalityDropdown() {
             console.log('🏘️ toggleMunicipalityDropdown called');
@@ -8769,6 +8775,7 @@ body {
             
             console.log('🏘️ Dropdown found:', dropdown);
             console.log('🏘️ Arrow found:', arrow);
+            console.log('🏘️ Current dropdown display:', dropdown ? dropdown.style.display : 'null');
             
             // Close barangay dropdown first
             const barangayDropdown = document.getElementById('dropdown-content');
@@ -8776,6 +8783,7 @@ body {
             if (barangayDropdown && barangayArrow) {
                 barangayDropdown.style.display = 'none';
                 barangayArrow.classList.remove('active');
+                console.log('🏘️ Closed barangay dropdown');
             }
             
             if (dropdown && arrow) {
@@ -8783,13 +8791,17 @@ body {
                 if (dropdown.style.display === 'none' || dropdown.style.display === '') {
                     dropdown.style.display = 'block';
                     arrow.classList.add('active');
+                    console.log('🏘️ Opened municipality dropdown');
                 } else {
                     dropdown.style.display = 'none';
                     arrow.classList.remove('active');
+                    console.log('🏘️ Closed municipality dropdown');
                 }
                 console.log('✅ Municipality dropdown toggled');
             } else {
                 console.error('❌ Municipality dropdown or arrow not found');
+                console.error('❌ Dropdown:', dropdown);
+                console.error('❌ Arrow:', arrow);
             }
         }
 
@@ -12909,11 +12921,13 @@ body {
                 // Close municipality dropdown
                 console.log('🏛️ Closing municipality dropdown...');
                 const municipalityDropdown = document.getElementById('municipality-dropdown-content');
-                if (municipalityDropdown) {
-                    municipalityDropdown.classList.remove('show');
+                const municipalityArrow = document.getElementById('municipality-arrow');
+                if (municipalityDropdown && municipalityArrow) {
+                    municipalityDropdown.style.display = 'none';
+                    municipalityArrow.classList.remove('active');
                     console.log('✅ Municipality dropdown closed');
                 } else {
-                    console.log('⚠️ Municipality dropdown not found');
+                    console.log('⚠️ Municipality dropdown or arrow not found');
                 }
                 
                 // Update barangay dropdown with barangays from selected municipality
