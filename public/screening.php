@@ -5847,14 +5847,14 @@ header {
                             return;
                         }
                         
-                        if (!data.data || Object.keys(data.data).length === 0) {
+                        if (!data.user || Object.keys(data.user).length === 0) {
                             console.error('❌ Empty data received');
                             alert('Error: No user data received');
                             return;
                         }
                         
                         console.log('✅ Showing user modal...');
-                        showUserDetailsModal(data.data);
+                        showUserDetailsModal(data.user);
                     })
                 .catch(error => {
                     console.error('❌ Fetch Error:', error);
