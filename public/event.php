@@ -5306,7 +5306,7 @@ function closeCreateEventModal() {
             
             // Prepare data for submission
             const eventData = {
-                action: 'edit_event',
+                edit_event: '1',
                 program_id: formData.get('editEventId'),
                 eventTitle: formData.get('editEventTitle'),
                 eventDescription: formData.get('editEventDescription'),
