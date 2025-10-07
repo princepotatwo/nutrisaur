@@ -234,8 +234,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                     break;
                 }
                 
-                // Generate 6-digit verification code
-                $verificationCode = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+                // Generate 4-digit verification code
+                $verificationCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
                 
                 // Store verification code in session (expires in 10 minutes)
                 $_SESSION['verification_code'] = $verificationCode;
@@ -335,8 +335,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                     break;
                 }
                 
-                // Generate 6-digit verification code
-                $verificationCode = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+                // Generate 4-digit verification code
+                $verificationCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
                 
                 // Store verification code in session (expires in 10 minutes)
                 $_SESSION['email_verification_code'] = $verificationCode;
@@ -2618,53 +2618,159 @@ header {
 
         /* Edit User Modal Styles */
         .modal-body {
-            padding: 20px 0;
+            padding: 30px 0;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            position: relative;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-weight: 600;
             color: var(--text-color);
+            font-size: 14px;
+            letter-spacing: 0.5px;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid var(--color-border);
-            border-radius: 4px;
+            padding: 14px 16px;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
             font-size: 14px;
             background-color: var(--color-card);
             color: var(--text-color);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
             border-color: var(--color-highlight);
-            box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
+            box-shadow: 0 0 0 3px rgba(161, 180, 84, 0.15);
+            transform: translateY(-1px);
         }
 
         .form-group input[readonly] {
-            background-color: #f5f5f5;
-            color: #666;
+            background-color: #f8f9fa;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 6px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .form-group small.error {
+            color: #dc3545;
+        }
+
+        /* Form grid layout for better organization */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 0;
+        }
+
+        /* Enhanced modal styling */
+        .modal-content {
+            background: var(--card-bg);
+            margin: 3% auto;
+            padding: 0;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--color-border);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--color-highlight), #8FAF5A);
+            color: white;
+            padding: 25px 30px;
+            margin: 0;
+            border-bottom: none;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .modal-header .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-header .close:hover {
+            opacity: 0.8;
+        }
+
+        .modal-body {
+            padding: 30px;
+            background: var(--color-card);
         }
 
         .modal-footer {
             display: flex;
             justify-content: flex-end;
-            gap: 10px;
-            padding: 20px 0 0 0;
+            gap: 15px;
+            padding: 25px 30px;
             border-top: 1px solid var(--color-border);
-            margin-top: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
             position: sticky;
             bottom: 0;
-            background-color: var(--color-card);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-highlight), #8FAF5A);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #8FAF5A, var(--color-highlight));
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
         }
 
         /* Ensure edit modal footer is visible */
@@ -8523,62 +8629,76 @@ header {
             </div>
             <div class="modal-body">
                 <form id="editUserForm">
+                    <!-- Personal Information Section -->
                     <div class="form-group">
                         <label for="modalEditName">Full Name *</label>
-                        <input type="text" id="modalEditName" name="name" required>
+                        <input type="text" id="modalEditName" name="name" required placeholder="Enter full name">
                     </div>
                     
                     <div class="form-group">
-                        <label for="modalEditEmail">Email *</label>
-                        <input type="email" id="modalEditEmail" name="email" required onblur="validateEmail()">
-                        <small id="modalEmailError" style="color: red; font-size: 12px;"></small>
+                        <label for="modalEditEmail">Email Address *</label>
+                        <input type="email" id="modalEditEmail" name="email" required onblur="validateEmail()" placeholder="Enter email address">
+                        <small id="modalEmailError" class="error"></small>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="editMunicipality">Municipality *</label>
-                        <select id="editMunicipality" name="municipality" required onchange="updateBarangayOptions()">
-                            <option value="">Select Municipality</option>
-                        </select>
+                    <!-- Location Information -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editMunicipality">Municipality *</label>
+                            <select id="editMunicipality" name="municipality" required onchange="updateBarangayOptions()">
+                                <option value="">Select Municipality</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editBarangay">Barangay *</label>
+                            <select id="editBarangay" name="barangay" required>
+                                <option value="">Select Barangay</option>
+                            </select>
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="editBarangay">Barangay *</label>
-                        <select id="editBarangay" name="barangay" required>
-                            <option value="">Select Barangay</option>
-                        </select>
+                    <!-- Personal Details -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editSex">Sex *</label>
+                            <select id="editSex" name="sex" required onchange="togglePregnancyField()">
+                                <option value="">Select Sex</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editBirthday">Birthday *</label>
+                            <input type="date" id="editBirthday" name="birthday" required onchange="calculateAge()">
+                            <small id="ageDisplay"></small>
+                        </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="editSex">Sex *</label>
-                        <select id="editSex" name="sex" required onchange="togglePregnancyField()">
-                            <option value="">Select Sex</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="editBirthday">Birthday *</label>
-                        <input type="date" id="editBirthday" name="birthday" required onchange="calculateAge()">
-                        <small id="ageDisplay" style="color: #666; font-size: 12px;"></small>
-                    </div>
-                    
+                    <!-- Pregnancy Field (conditional) -->
                     <div class="form-group" id="pregnancyGroup" style="display: none;">
                         <label for="editPregnancy">Are you pregnant? *</label>
                         <select id="editPregnancy" name="is_pregnant">
                             <option value="No">No</option>
                             <option value="Yes">Yes</option>
                         </select>
+                        <small>This field is only required for female users</small>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="editWeight">Weight (kg) *</label>
-                        <input type="number" id="editWeight" name="weight" step="0.1" min="0.1" max="1000" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="editHeight">Height (cm) *</label>
-                        <input type="number" id="editHeight" name="height" step="0.1" min="1" max="300" required>
+                    <!-- Physical Measurements -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editWeight">Weight (kg) *</label>
+                            <input type="number" id="editWeight" name="weight" step="0.1" min="0.1" max="1000" required placeholder="Enter weight in kg">
+                            <small>Enter weight in kilograms</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editHeight">Height (cm) *</label>
+                            <input type="number" id="editHeight" name="height" step="0.1" min="1" max="300" required placeholder="Enter height in cm">
+                            <small>Enter height in centimeters</small>
+                        </div>
                     </div>
                     
                 </form>
@@ -8601,19 +8721,19 @@ header {
                 <form id="editUsersTableForm">
                     <div class="form-group">
                         <label for="editUsername">Username *</label>
-                        <input type="text" id="editUsername" name="username" required>
+                        <input type="text" id="editUsername" name="username" required placeholder="Enter username">
                     </div>
                     
                     <div class="form-group">
-                        <label for="editUserEmail">Email *</label>
-                        <input type="email" id="editUserEmail" name="email" required>
-                        <small id="userEmailError" style="color: red; font-size: 12px;"></small>
+                        <label for="editUserEmail">Email Address *</label>
+                        <input type="email" id="editUserEmail" name="email" required placeholder="Enter email address">
+                        <small id="userEmailError" class="error"></small>
                     </div>
                     
                     <div class="form-group">
                         <label for="editPassword">Password</label>
                         <input type="password" id="editPassword" name="password" placeholder="Leave blank to keep current password">
-                        <small style="color: #666; font-size: 12px;">Leave blank to keep current password</small>
+                        <small>Leave blank to keep current password</small>
                     </div>
                     
                     <input type="hidden" id="editUserId" name="user_id">
