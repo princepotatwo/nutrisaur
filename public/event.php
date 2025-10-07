@@ -5268,11 +5268,74 @@ function closeCreateEventModal() {
     document.getElementById('newCreateEventForm').reset();
 }
 
-// Function to close edit event modal  
-function closeEditEventModal() {
-    document.getElementById('editEventModal').style.display = 'none';
-    document.getElementById('editEventForm').reset();
-}
+        // Function to close edit event modal  
+        function closeEditEventModal() {
+            document.getElementById('editEventModal').style.display = 'none';
+            document.getElementById('editEventForm').reset();
+        }
+
+        // Edit form submission handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const editEventForm = document.getElementById('editEventForm');
+            if (editEventForm) {
+                editEventForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    handleEditEventSubmission();
+                });
+            }
+        });
+
+        // Handle edit event submission
+        window.handleEditEventSubmission = async function() {
+            const form = document.getElementById('editEventForm');
+            const formData = new FormData(form);
+            
+            // Get municipality and barangay values
+            const municipality = formData.get('editEventMunicipality');
+            const barangay = formData.get('editEventBarangay');
+            
+            // Determine target location
+            let targetLocation;
+            if (municipality === 'all') {
+                targetLocation = 'all';
+            } else if (barangay) {
+                targetLocation = barangay; // Target specific barangay
+            } else {
+                targetLocation = 'MUNICIPALITY_' + municipality.replace(/ /g, '_'); // Target all barangays in municipality
+            }
+            
+            // Prepare data for submission
+            const eventData = {
+                action: 'edit_event',
+                program_id: formData.get('editEventId'),
+                eventTitle: formData.get('editEventTitle'),
+                eventDescription: formData.get('editEventDescription'),
+                eventDate: formData.get('editEventDate'),
+                eventLocation: targetLocation,
+                eventOrganizer: formData.get('editEventOrganizer')
+            };
+            
+            try {
+                const response = await fetch('event.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(eventData)
+                });
+                
+                if (response.ok) {
+                    // Close modal and refresh page
+                    closeEditEventModal();
+                    location.reload();
+                } else {
+                    alert('Error updating event. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error updating event. Please try again.');
+            }
+        };
 
 // Function to close create event modal
 function closeCreateEventModal() {
@@ -6951,71 +7014,45 @@ Medical Mission,${formatDate(future3)},LIMAY,Poblacion,Dr. Ana Reyes,Free medica
         // Edit Modal Functions
         function openEditModal(programId, title, type, description, dateTime, location, organizer) {
             // Set form values
-            document.getElementById('edit_program_id').value = programId;
-            document.getElementById('edit_eventTitle').value = title;
-            document.getElementById('edit_eventDescription').value = description;
+            document.getElementById('editEventId').value = programId;
+            document.getElementById('editEventTitle').value = title;
+            document.getElementById('editEventDescription').value = description;
+            document.getElementById('editEventDate').value = dateTime;
+            document.getElementById('editEventOrganizer').value = organizer;
             
-            // Set location dropdown value with improved matching
-            const editLocationInput = document.getElementById('edit_eventLocation');
-            const selectedEditLocation = document.getElementById('selected-edit-event-location');
-            if (editLocationInput && selectedEditLocation && location) {
-                editLocationInput.value = location;
-                
-                // Find the exact match in the edit dropdown options
-                let foundMatch = false;
-                const editOptionItems = document.querySelectorAll('#edit-event-location-dropdown .option-item');
-                
-                editOptionItems.forEach(item => {
-                    if (item.getAttribute('data-value') === location) {
-                        // Found exact match - update display and mark as selected
-                        selectedEditLocation.textContent = item.textContent;
-                        console.log('Edit modal: Found exact match, updated dropdown display to:', item.textContent);
-                        
-                        // Mark this option as selected
-                        editOptionItems.forEach(opt => opt.classList.remove('selected'));
-                        item.classList.add('selected');
-                        foundMatch = true;
-                    }
-                });
-                
-                // If no exact match found, try to find a close match
-                if (!foundMatch) {
-                    console.log('Edit modal: No exact match found, looking for close match...');
-                    editOptionItems.forEach(item => {
-                        const itemText = item.textContent.toLowerCase();
-                        const locationLower = location.toLowerCase();
-                        
-                        // Check if the location is contained in the option text
-                        if (itemText.includes(locationLower) || locationLower.includes(itemText)) {
-                            selectedEditLocation.textContent = item.textContent;
-                            console.log('Edit modal: Found close match, updated dropdown display to:', item.textContent);
-                            
-                            // Mark this option as selected
-                            editOptionItems.forEach(opt => opt.classList.remove('selected'));
-                            item.classList.add('selected');
-                            foundMatch = true;
+            // Handle location - parse municipality and barangay from location string
+            if (location) {
+                // Check if it's a municipality targeting (MUNICIPALITY_ format)
+                if (location.startsWith('MUNICIPALITY_')) {
+                    const municipalityName = location.replace('MUNICIPALITY_', '').replace(/_/g, ' ');
+                    document.getElementById('editEventMunicipality').value = municipalityName;
+                    document.getElementById('editEventBarangay').value = ''; // All barangays
+                    updateEditBarangayOptions();
+                } else {
+                    // It's a specific barangay - need to find which municipality it belongs to
+                    let foundMunicipality = '';
+                    for (const [municipality, barangays] of Object.entries(municipalityBarangays)) {
+                        if (barangays.includes(location)) {
+                            foundMunicipality = municipality;
+                            break;
                         }
-                    });
+                    }
+                    
+                    if (foundMunicipality) {
+                        document.getElementById('editEventMunicipality').value = foundMunicipality;
+                        updateEditBarangayOptions();
+                        document.getElementById('editEventBarangay').value = location;
+                    } else {
+                        // Fallback - treat as municipality
+                        document.getElementById('editEventMunicipality').value = location;
+                        document.getElementById('editEventBarangay').value = '';
+                        updateEditBarangayOptions();
+                    }
                 }
-                
-                // If still no match, just use the location as is
-                if (!foundMatch) {
-                    selectedEditLocation.textContent = location;
-                    console.log('Edit modal: No match found, using location as is:', location);
-                }
-            } else if (selectedEditLocation) {
-                selectedEditLocation.textContent = 'All Locations';
             }
             
-            document.getElementById('edit_eventOrganizer').value = organizer;
-            
-            // Convert date format for datetime-local input
-            const date = new Date(dateTime);
-            const formattedDate = date.toISOString().slice(0, 16);
-            document.getElementById('edit_eventDate').value = formattedDate;
-            
-            // Show modal
-            document.getElementById('editModal').style.display = 'block';
+            // Show the modal
+            document.getElementById('editEventModal').style.display = 'block';
         }
         
         function closeEditModal() {
