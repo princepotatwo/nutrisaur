@@ -8216,7 +8216,7 @@ body {
                             <span id="selected-option">All Barangays</span>
                             <span class="dropdown-arrow">▼</span>
                         </div>
-                    <div class="dropdown-content" id="dropdown-content">
+                        <div class="dropdown-content" id="dropdown-content">
                         <div class="search-container">
                             <input type="text" id="search-input" placeholder="Search barangay or municipality..." onkeyup="filterOptions()">
                         </div>
@@ -8732,8 +8732,7 @@ body {
         // Custom Dropdown Functions
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdown-content');
-            const arrow = document.querySelector('.dropdown-arrow');
-            const selectHeader = document.querySelector('.select-header');
+            const arrow = document.querySelector('#dropdown-content').parentElement.querySelector('.dropdown-arrow');
             
             if (dropdown && arrow) {
                 dropdown.classList.toggle('active');
