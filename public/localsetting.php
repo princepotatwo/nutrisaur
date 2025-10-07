@@ -436,6 +436,7 @@ h1 {
 .admin-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
 .admin-table th {
@@ -463,6 +464,10 @@ h1 {
     text-overflow: clip;
     min-width: 140px;
     vertical-align: middle;
+}
+
+.admin-table tr {
+    height: 60px;
 }
 
 .admin-table tr:last-child td {
@@ -528,14 +533,12 @@ h1 {
     display: flex;
     gap: 8px;
     justify-content: center;
-    flex-wrap: wrap;
     align-items: center;
-    vertical-align: middle;
-    padding: 4px;
+    padding: 0;
     width: 100%;
-    box-sizing: border-box;
     height: 100%;
-    min-height: 52px;
+    box-sizing: border-box;
+    flex-wrap: nowrap;
 }
 
 .admin-action-btn {
