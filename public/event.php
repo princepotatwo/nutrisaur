@@ -1396,15 +1396,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
             // Debug: Check database connection
             error_log("🔍 CSV: Database connection established successfully");
             
-            $importedCount = 0;
-            $errors = [];
+                    $importedCount = 0;
+                    $errors = [];
             $row = 0;
                     
             // Process CSV
             if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
                 error_log("🔍 CSV: File opened successfully, starting to process rows...");
-                while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                    $row++;
+                    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                        $row++;
                     error_log("🔍 CSV: Processing row $row with " . count($data) . " columns: " . implode('|', $data));
                     if ($row == 1) {
                         error_log("🔍 CSV: Skipping header row");
@@ -1504,9 +1504,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                                 // Target users based on barangay field
                                 if (empty($barangay)) {
                                     // If barangay is empty, target all users in the municipality
-                                    $tokenStmt = $pdo->prepare("
-                                        SELECT fcm_token, email FROM community_users 
-                                        WHERE fcm_token IS NOT NULL AND fcm_token != ''
+                                $tokenStmt = $pdo->prepare("
+                                    SELECT fcm_token, email FROM community_users 
+                                    WHERE fcm_token IS NOT NULL AND fcm_token != ''
                                         AND municipality = ?
                                     ");
                                     $tokenStmt->execute([$location]);
@@ -4908,48 +4908,218 @@ header:hover {
                 </div>
                 
                 <div class="form-group">
-                    <label for="eventLocation">Location</label>
-                    <div class="custom-select-container">
-                        <div class="select-header" onclick="toggleEventLocationDropdown()">
-                            <span id="selected-event-location">All Locations</span>
-                            <span class="dropdown-arrow">▼</span>
+                    <label for="eventMunicipality">Municipality</label>
+                    <select id="eventMunicipality" name="eventMunicipality" onchange="updateBarangayOptions()" required>
+                        <option value="">Select Municipality</option>
+                        <option value="all">All Municipalities</option>
+                        <option value="ABUCAY">ABUCAY</option>
+                        <option value="BAGAC">BAGAC</option>
+                        <option value="CITY OF BALANGA">CITY OF BALANGA</option>
+                        <option value="DINALUPIHAN">DINALUPIHAN</option>
+                        <option value="HERMOSA">HERMOSA</option>
+                        <option value="LIMAY">LIMAY</option>
+                        <option value="MARIVELES">MARIVELES</option>
+                        <option value="MORONG">MORONG</option>
+                        <option value="ORANI">ORANI</option>
+                        <option value="ORION">ORION</option>
+                        <option value="PILAR">PILAR</option>
+                        <option value="SAMAL">SAMAL</option>
+                    </select>
                         </div>
-                        <div class="dropdown-content" id="event-location-dropdown">
-                            <div class="search-container">
-                                <input type="text" id="event-location-search" placeholder="Search barangay or municipality..." onkeyup="filterEventLocationOptions()">
+                
+                <div class="form-group">
+                    <label for="eventBarangay">Barangay (Optional)</label>
+                    <select id="eventBarangay" name="eventBarangay">
+                        <option value="">All Barangays in Municipality</option>
+                        <!-- Barangay options will be populated by JavaScript -->
+                    </select>
+                    <small class="form-help">Leave empty to target all barangays in the selected municipality</small>
                             </div>
-                            <div class="options-container">
-                                <!-- Municipality Options -->
-                                <div class="option-group">
-                                    <div class="option-header">Municipalities</div>
-                                    <div class="option-item" data-value="all" onclick="selectEventLocation('all', 'All Locations')">All Locations</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_ABUCAY" onclick="selectEventLocation('MUNICIPALITY_ABUCAY', 'ABUCAY (All Barangays)')">ABUCAY (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_BAGAC" onclick="selectEventLocation('MUNICIPALITY_BAGAC', 'BAGAC (All Barangays)')">BAGAC (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_BALANGA" onclick="selectEventLocation('MUNICIPALITY_BALANGA', 'CITY OF BALANGA (All Barangays)')">CITY OF BALANGA (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_DINALUPIHAN" onclick="selectEventLocation('MUNICIPALITY_DINALUPIHAN', 'DINALUPIHAN (All Barangays)')">DINALUPIHAN (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_HERMOSA" onclick="selectEventLocation('MUNICIPALITY_HERMOSA', 'HERMOSA (All Barangays)')">HERMOSA (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_LIMAY" onclick="selectEventLocation('MUNICIPALITY_LIMAY', 'LIMAY (All Barangays)')">LIMAY (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_MARIVELES" onclick="selectEventLocation('MUNICIPALITY_MARIVELES', 'MARIVELES (All Barangays)')">MARIVELES (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_MORONG" onclick="selectEventLocation('MUNICIPALITY_MORONG', 'MORONG (All Barangays)')">MORONG (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_ORANI" onclick="selectEventLocation('MUNICIPALITY_ORANI', 'ORANI (All Barangays)')">ORANI (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_ORION" onclick="selectEventLocation('MUNICIPALITY_ORION', 'ORION (All Barangays)')">ORION (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_PILAR" onclick="selectEventLocation('MUNICIPALITY_PILAR', 'PILAR (All Barangays)')">PILAR (All Barangays)</div>
-                                    <div class="option-item" data-value="MUNICIPALITY_SAMAL" onclick="selectEventLocation('MUNICIPALITY_SAMAL', 'SAMAL (All Barangays)')">SAMAL (All Barangays)</div>
+                
+                <div class="form-group">
+                    <label for="eventOrganizer">Person in Charge</label>
+                    <input type="text" id="eventOrganizer" name="eventOrganizer" value="<?php echo htmlspecialchars($username ?? $email ?? 'Unknown User'); ?>" readonly>
                                 </div>
                                 
-                                <!-- Individual Barangays by Municipality -->
-                                <div class="option-group">
-                                    <div class="option-header">ABUCAY</div>
-                                    <div class="option-item" data-value="Bangkal" onclick="selectEventLocation('Bangkal', 'Bangkal')">Bangkal</div>
-                                    <div class="option-item" data-value="Calaylayan (Pob.)" onclick="selectEventLocation('Calaylayan (Pob.)', 'Calaylayan (Pob.)')">Calaylayan (Pob.)</div>
-                                    <div class="option-item" data-value="Capitangan" onclick="selectEventLocation('Capitangan', 'Capitangan')">Capitangan</div>
-                                    <div class="option-item" data-value="Gabon" onclick="selectEventLocation('Gabon', 'Gabon')">Gabon</div>
-                                    <div class="option-item" data-value="Laon (Pob.)" onclick="selectEventLocation('Laon (Pob.)', 'Laon (Pob.)')">Laon (Pob.)</div>
-                                    <div class="option-item" data-value="Mabatang" onclick="selectEventLocation('Mabatang', 'Mabatang')">Mabatang</div>
-                                    <div class="option-item" data-value="Omboy" onclick="selectEventLocation('Omboy', 'Omboy')">Omboy</div>
-                                    <div class="option-item" data-value="Salian" onclick="selectEventLocation('Salian', 'Salian')">Salian</div>
-                                    <div class="option-item" data-value="Wawa (Pob.)" onclick="selectEventLocation('Wawa (Pob.)', 'Wawa (Pob.)')">Wawa (Pob.)</div>
-                                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventDescription">Event Description</label>
+                        <textarea id="eventDescription" name="eventDescription" placeholder="Describe the event details..." rows="3"></textarea>
+                    </div>
+                </div>
+                                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create Event</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateEventModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Event Modal -->
+<div id="editEventModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Edit Event</h3>
+            <span class="close" onclick="closeEditEventModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form class="event-form" id="editEventForm">
+                <input type="hidden" id="editEventId" name="editEventId">
+                
+                <div class="form-group">
+                    <label for="editEventTitle">Event Title</label>
+                    <input type="text" id="editEventTitle" name="editEventTitle" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editEventDate">Date & Time</label>
+                    <input type="datetime-local" id="editEventDate" name="editEventDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editEventMunicipality">Municipality</label>
+                    <select id="editEventMunicipality" name="editEventMunicipality" onchange="updateEditBarangayOptions()" required>
+                        <option value="">Select Municipality</option>
+                        <option value="all">All Municipalities</option>
+                        <option value="ABUCAY">ABUCAY</option>
+                        <option value="BAGAC">BAGAC</option>
+                        <option value="CITY OF BALANGA">CITY OF BALANGA</option>
+                        <option value="DINALUPIHAN">DINALUPIHAN</option>
+                        <option value="HERMOSA">HERMOSA</option>
+                        <option value="LIMAY">LIMAY</option>
+                        <option value="MARIVELES">MARIVELES</option>
+                        <option value="MORONG">MORONG</option>
+                        <option value="ORANI">ORANI</option>
+                        <option value="ORION">ORION</option>
+                        <option value="PILAR">PILAR</option>
+                        <option value="SAMAL">SAMAL</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editEventBarangay">Barangay (Optional)</label>
+                    <select id="editEventBarangay" name="editEventBarangay">
+                        <option value="">All Barangays in Municipality</option>
+                        <!-- Barangay options will be populated by JavaScript -->
+                    </select>
+                    <small class="form-help">Leave empty to target all barangays in the selected municipality</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editEventOrganizer">Person in Charge</label>
+                    <input type="text" id="editEventOrganizer" name="editEventOrganizer" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editEventDescription">Event Description</label>
+                    <textarea id="editEventDescription" name="editEventDescription" rows="3"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update Event</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditEventModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Municipality to Barangay mapping
+const municipalityBarangays = {
+    'ABUCAY': ['Bangkal', 'Calaylayan (Pob.)', 'Capitangan', 'Gabon', 'Laon (Pob.)', 'Mabatang', 'Omboy', 'Salian', 'Wawa (Pob.)'],
+    'BAGAC': ['Bagumbayan (Pob.)', 'Banawang', 'Binuangan', 'Binukawan', 'Ibaba', 'Ibabang Wasian', 'Ilog', 'Lawa', 'Palihan', 'Parang', 'Poblacion', 'San Antonio', 'Saysain', 'Sibacan', 'Tabing-Ilog', 'Tipo', 'Wawa'],
+    'CITY OF BALANGA': ['Bagumbayan', 'Cabog-Cabog', 'Munting Batangas (Cadre)', 'Cataning', 'Central', 'Cupang Proper', 'Cupang West', 'Dangcol (Bernabe)', 'Ibayo', 'Malabia', 'Poblacion', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Jose', 'Sibacan', 'Camacho', 'Talisay', 'Tanato', 'Tenejero', 'Tortugas', 'Tuyo', 'Bagong Silang', 'Cupang North', 'Doña Francisca', 'Lote'],
+    'DINALUPIHAN': ['Bayan-bayanan', 'Bonifacio', 'Burgos', 'Daungan', 'Del Pilar', 'General Lim', 'Imelda', 'Lourdes', 'Mabatang', 'Maligaya', 'Poblacion', 'San Juan', 'San Roque', 'Santo Niño', 'Sulong'],
+    'HERMOSA': ['A. Rivera (Pob.)', 'Almacen', 'Bacong', 'Balsic', 'Bamban', 'Burgos-Soliman (Pob.)', 'Cataning (Pob.)', 'Culis', 'Daungan (Pob.)', 'Mabiga', 'Mabuco', 'Maite', 'Mambog - Mandama', 'Palihan', 'Pandatung', 'Pulo', 'Saba', 'San Pedro', 'Sumalo', 'Tipo'],
+    'LIMAY': ['Alangan', 'Kitang I', 'Kitang 2 & Luz', 'Lamao', 'Landing', 'Poblacion', 'Reformista', 'Townsite', 'Wawa', 'Duale', 'San Francisco de Asis', 'St. Francis II'],
+    'MARIVELES': ['Alas-asin', 'Alion', 'Batangas II', 'Cabcaben', 'Lucanin', 'Baseco Country (Nassco)', 'Poblacion', 'San Carlos', 'San Isidro', 'Sisiman', 'Balon-Anito', 'Biaan', 'Camaya', 'Ipag', 'Malaya', 'Maligaya', 'Mt. View', 'Townsite'],
+    'MORONG': ['Binaritan', 'Mabayo', 'Nagbalayong', 'Poblacion', 'Sabang', 'San Jose'],
+    'ORANI': ['Bagong Paraiso', 'Balut', 'Bayorbor', 'Calungusan', 'Camacho', 'Daang Bago', 'Dona', 'Kaparangan', 'Mabayo', 'Masagana', 'Mulawin', 'Paglalaban', 'Palawe', 'Pantalan Bago', 'Poblacion', 'Saguing', 'Tagumpay', 'Tala', 'Tapulao', 'Tenejero', 'Wawa'],
+    'ORION': ['Balagtas', 'Balut', 'Bantan', 'Bilolo', 'Calungusan', 'Camachile', 'Daang Bago', 'Daang Pare', 'Del Pilar', 'General Lim', 'Imelda', 'Lourdes', 'Mabatang', 'Maligaya', 'Poblacion', 'San Juan', 'San Roque', 'Santo Niño', 'Sulong'],
+    'PILAR': ['Alas-asin', 'Balanak', 'Balut', 'Bantan', 'Bilolo', 'Calungusan', 'Camachile', 'Daang Bago', 'Daang Pare', 'Del Pilar', 'General Lim', 'Imelda', 'Lourdes', 'Mabatang', 'Maligaya', 'Poblacion', 'San Juan', 'San Roque', 'Santo Niño', 'Sulong'],
+    'SAMAL': ['East Daang Bago', 'West Daang Bago', 'East Poblacion', 'West Poblacion', 'San Juan', 'San Roque', 'Santo Niño', 'Sulong']
+};
+
+// Function to update barangay options based on selected municipality
+function updateBarangayOptions() {
+    const municipalitySelect = document.getElementById('eventMunicipality');
+    const barangaySelect = document.getElementById('eventBarangay');
+    const selectedMunicipality = municipalitySelect.value;
+    
+    // Clear existing options
+    barangaySelect.innerHTML = '<option value="">All Barangays in Municipality</option>';
+    
+    if (selectedMunicipality && selectedMunicipality !== 'all' && municipalityBarangays[selectedMunicipality]) {
+        municipalityBarangays[selectedMunicipality].forEach(barangay => {
+            const option = document.createElement('option');
+            option.value = barangay;
+            option.textContent = barangay;
+            barangaySelect.appendChild(option);
+        });
+    }
+}
+
+// Function to update edit barangay options
+function updateEditBarangayOptions() {
+    const municipalitySelect = document.getElementById('editEventMunicipality');
+    const barangaySelect = document.getElementById('editEventBarangay');
+    const selectedMunicipality = municipalitySelect.value;
+    
+    // Clear existing options
+    barangaySelect.innerHTML = '<option value="">All Barangays in Municipality</option>';
+    
+    if (selectedMunicipality && selectedMunicipality !== 'all' && municipalityBarangays[selectedMunicipality]) {
+        municipalityBarangays[selectedMunicipality].forEach(barangay => {
+            const option = document.createElement('option');
+            option.value = barangay;
+            option.textContent = barangay;
+            barangaySelect.appendChild(option);
+        });
+    }
+}
+
+// Function to get the target location for notifications
+function getTargetLocation() {
+    const municipality = document.getElementById('eventMunicipality').value;
+    const barangay = document.getElementById('eventBarangay').value;
+    
+    if (municipality === 'all') {
+        return 'all';
+    } else if (barangay) {
+        return barangay; // Target specific barangay
+    } else {
+        return 'MUNICIPALITY_' + municipality.replace(' ', '_'); // Target all barangays in municipality
+    }
+}
+
+// Function to get the target location for edit form
+function getEditTargetLocation() {
+    const municipality = document.getElementById('editEventMunicipality').value;
+    const barangay = document.getElementById('editEventBarangay').value;
+    
+    if (municipality === 'all') {
+        return 'all';
+    } else if (barangay) {
+        return barangay; // Target specific barangay
+    } else {
+        return 'MUNICIPALITY_' + municipality.replace(' ', '_'); // Target all barangays in municipality
+    }
+}
+
+// Function to close create event modal
+function closeCreateEventModal() {
+    document.getElementById('createEventModal').style.display = 'none';
+    document.getElementById('newCreateEventForm').reset();
+}
+
+// Function to close edit event modal  
+function closeEditEventModal() {
+    document.getElementById('editEventModal').style.display = 'none';
+    document.getElementById('editEventForm').reset();
+}
                                 <div class="option-group">
                                     <div class="option-header">BAGAC</div>
                                     <div class="option-item" data-value="Bagumbayan (Pob.)" onclick="selectEventLocation('Bagumbayan (Pob.)', 'Bagumbayan (Pob.)')">Bagumbayan (Pob.)</div>
@@ -5584,6 +5754,17 @@ header:hover {
     </div>
 
     <script>
+        // Add form submission event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            const newCreateEventForm = document.getElementById('newCreateEventForm');
+            if (newCreateEventForm) {
+                newCreateEventForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    handleNewEventCreation();
+                });
+            }
+        });
+        
         // 🚨 GLOBAL EVENT CREATION HANDLER - Available immediately
         window.handleNewEventCreation = async function() {
             console.log('🚨 NEW EVENT CREATION STARTED - NO REDIRECTS');
@@ -5596,11 +5777,24 @@ header:hover {
             }
             
             const formData = new FormData(form);
+            const municipality = formData.get('eventMunicipality');
+            const barangay = formData.get('eventBarangay');
+            
+            // Determine target location based on municipality and barangay selection
+            let targetLocation;
+            if (municipality === 'all') {
+                targetLocation = 'all';
+            } else if (barangay) {
+                targetLocation = barangay; // Target specific barangay
+            } else {
+                targetLocation = 'MUNICIPALITY_' + municipality.replace(' ', '_'); // Target all barangays in municipality
+            }
+            
             const eventData = {
                 title: formData.get('eventTitle'),
                 description: formData.get('eventDescription'),
                 date_time: formData.get('eventDate'),
-                location: formData.get('eventLocation'),
+                location: targetLocation,
                 organizer: formData.get('eventOrganizer')
             };
             
