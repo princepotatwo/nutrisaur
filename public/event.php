@@ -1165,6 +1165,28 @@ function getFCMTokensByLocation($targetLocation = null) {
             
             error_log("Total FCM tokens with barangay data: $tokenWithBarangayCount, Total active FCM tokens: $tokenCount");
             
+            // Check total users in database
+            $totalUsersStmt = $db->getPDO()->prepare("SELECT COUNT(*) as total FROM community_users");
+            $totalUsersStmt->execute();
+            $totalUsers = $totalUsersStmt->fetch(PDO::FETCH_ASSOC)['total'];
+            error_log("Total users in database: $totalUsers");
+            
+            // Show sample users without FCM tokens
+            $sampleStmt = $db->getPDO()->prepare("SELECT email, barangay, municipality, fcm_token FROM community_users WHERE barangay = :barangay LIMIT 3");
+            if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
+                $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
+                if ($municipalityName === 'BALANGA') {
+                    $municipalityName = 'CITY OF BALANGA';
+                }
+                $sampleStmt = $db->getPDO()->prepare("SELECT email, barangay, municipality, fcm_token FROM community_users WHERE municipality = :municipality LIMIT 3");
+                $sampleStmt->bindParam(':municipality', $municipalityName);
+            } else {
+                $sampleStmt->bindParam(':barangay', $targetLocation);
+            }
+            $sampleStmt->execute();
+            $sampleUsers = $sampleStmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("Sample users in target location: " . json_encode($sampleUsers));
+            
             // Debug: Show what municipalities and barangays actually exist in the database
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
                 $debugStmt = $db->getPDO()->prepare("SELECT DISTINCT municipality, COUNT(*) as count FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != '' GROUP BY municipality");
