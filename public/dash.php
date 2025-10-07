@@ -8466,16 +8466,7 @@ body {
         
         // Custom Dropdown Functions (removed duplicate - using the one defined later)
 
-        // Municipality dropdown functions
-        function toggleMunicipalityDropdown() {
-            const dropdown = document.getElementById('municipality-dropdown-content');
-            const arrow = document.querySelector('#municipality-dropdown-content').parentElement.querySelector('.dropdown-arrow');
-            
-            if (dropdown && arrow) {
-                dropdown.classList.toggle('active');
-                arrow.classList.toggle('active');
-            }
-        }
+        // Municipality dropdown functions (removed duplicate - using the one defined later)
 
 
         async function selectOption(value, text) {
@@ -12642,6 +12633,7 @@ body {
         // Dropdown toggle functions  
         function toggleDropdown() {
             const dropdown = document.getElementById('dropdown-content');
+            // Allow dropdown to open even when disabled - message inside guides user
             if (dropdown) {
                 dropdown.classList.toggle('show');
                 console.log('🔽 Barangay dropdown toggled');
