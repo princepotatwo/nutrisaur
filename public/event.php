@@ -1599,8 +1599,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_event'])) {
             throw new Exception("Failed to update event: " . $result['message']);
         }
         
-
-        $successMessage = "Event updated successfully!";
+        // Redirect to refresh the page and show success message
+        header("Location: event.php?updated=1&updated_id=" . $programId);
+        exit();
     } catch(PDOException $e) {
         $errorMessage = "Error updating program: " . $e->getMessage();
     }
