@@ -1395,9 +1395,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         $row++;
                     if ($row == 1) continue; // Skip header
                         
-                    // Validate columns
-                        if (count($data) < 5) {
-                        $errors[] = "Row $row: Need 5 columns";
+                    // Validate columns - now expecting 6 columns
+                        if (count($data) < 6) {
+                        $errors[] = "Row $row: Need 6 columns (title, date_time, location, barangay, organizer, description)";
                             continue;
                         }
                         
@@ -1405,12 +1405,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         $title = trim($data[0]);
                         $date_time = trim($data[1]);
                         $location = trim($data[2]);
-                        $organizer = trim($data[3]);
-                        $description = trim($data[4]);
+                        $barangay = trim($data[3]);
+                        $organizer = trim($data[4]);
+                        $description = trim($data[5]);
                         
                         // Validate required fields
                     if (empty($title) || empty($date_time) || empty($location) || empty($organizer)) {
-                        $errors[] = "Row $row: Missing required fields";
+                        $errors[] = "Row $row: Missing required fields (title, date_time, location, organizer are required)";
                             continue;
                         }
                         
@@ -1429,10 +1430,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                     $result = $stmt->fetch();
                     $nextId = ($result['max_id'] ?? 0) + 1;
                     
-                    // Insert into database
+                    // Insert into database - now includes barangay
                     $stmt = $pdo->prepare("
-                        INSERT INTO programs (program_id, title, type, description, date_time, location, organizer) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO programs (program_id, title, type, description, date_time, location, organizer, barangay) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                     ");
                     
                     $success = $stmt->execute([
@@ -1442,7 +1443,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         $description,
                         $dateObj->format('Y-m-d H:i:s'),
                         $location,
-                        $organizer
+                        $organizer,
+                        $barangay
                     ]);
                     
                     if ($success) {
@@ -1463,14 +1465,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                                 file_put_contents($lockFile, time());
                                 
                                 $notificationTitle = "🎯 Event: $title";
-                                $notificationBody = "New event: $title at $location on " . date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s')));
+                                $notificationBody = "New event: $title at $location" . (!empty($barangay) ? " - $barangay" : "") . " on " . date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s')));
                                 
                                 $tokenStmt = $pdo->prepare("
                                     SELECT fcm_token, email FROM community_users 
                                     WHERE fcm_token IS NOT NULL AND fcm_token != ''
                                     AND (municipality = ? OR barangay = ? OR ? = 'All Locations')
                                 ");
-                                $tokenStmt->execute([$location, $location, $location]);
+                                $tokenStmt->execute([$location, $barangay, $location]);
                                 $tokens = $tokenStmt->fetchAll();
                                 
                                 error_log("🔔 CSV: Found " . count($tokens) . " FCM tokens for location: $location");
@@ -4735,7 +4737,7 @@ header:hover {
                             <div class="upload-text">
                                 <h4>Upload CSV File</h4>
                                 <p>Click to select or drag and drop your CSV file here</p>
-                                <p class="csv-format">Format: Event Title, Date & Time, Location, Organizer, Description</p>
+                                <p class="csv-format">Format: Event Title, Date & Time, Location, Barangay, Organizer, Description</p>
                             </div>
                             <input type="file" id="csvFile" name="csvFile" accept=".csv" style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" onchange="handleFileSelect(this)">
                         </div>
@@ -6355,10 +6357,10 @@ header:hover {
                 return `${year}-${month}-${day} ${hours}:${minutes}`;
             };
             
-            const csvContent = `title,date_time,location,organizer,description
-Nutrition Workshop,${formatDate(future1)},CITY OF BALANGA,Dr. Maria Santos,Free nutrition screening and health consultation
-Health Seminar,${formatDate(future2)},ABUCAY,Dr. Juan Cruz,Community health education and awareness
-Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup and consultation`;
+            const csvContent = `title,date_time,location,barangay,organizer,description
+Nutrition Workshop,${formatDate(future1)},CITY OF BALANGA,Bagumbayan,Dr. Maria Santos,Free nutrition screening and health consultation
+Health Seminar,${formatDate(future2)},ABUCAY,Bangkal,Dr. Juan Cruz,Community health education and awareness
+Medical Mission,${formatDate(future3)},LIMAY,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation`;
             
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
