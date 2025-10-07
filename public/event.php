@@ -1574,7 +1574,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_event'])) {
     $programId = $_POST['program_id'];
     $title = $_POST['eventTitle'];
-    $type = $_POST['eventType']; // Changed from notificationType to eventType
     $description = $_POST['eventDescription'];
     $date_time = $_POST['eventDate'];
     $location = $_POST['eventLocation'];
@@ -1587,7 +1586,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_event'])) {
         // Update the event in the database using universalUpdate
         $updateData = [
             'title' => $title,
-            'type' => $type,
             'description' => $description,
             'date_time' => $date_time,
             'location' => $location,
@@ -5406,18 +5404,6 @@ header:hover {
                     <input type="text" id="edit_eventTitle" name="eventTitle" required>
                 </div>
                 
-                <div class="form-group">
-                    <label for="edit_eventType">Event Type</label>
-                    <select id="edit_eventType" name="eventType" required>
-                        <option value="">Select Event Type</option>
-                        <option value="Nutrition Education">Nutrition Education</option>
-                        <option value="Health Screening">Health Screening</option>
-                        <option value="Community Outreach">Community Outreach</option>
-                        <option value="Training Workshop">Training Workshop</option>
-                        <option value="Meeting">Meeting</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
                 
                 <div class="form-group">
                     <label for="edit_eventDate">Date & Time</label>
@@ -5974,7 +5960,6 @@ header:hover {
             setTimeout(() => {
                 // Check if all required form elements exist
                 const titleInput = document.getElementById('eventTitle');
-                const typeInput = document.getElementById('eventType');
                 const locationInput = document.getElementById('eventLocation');
                 const descriptionInput = document.getElementById('eventDescription');
                 const dateInput = document.getElementById('eventDate');
@@ -5983,7 +5968,6 @@ header:hover {
                 // Log which elements were found
                 console.log('Form elements found:', {
                     titleInput: !!titleInput,
-                    typeInput: !!typeInput,
                     locationInput: !!locationInput,
                     descriptionInput: !!descriptionInput,
                     dateInput: !!dateInput,
@@ -5998,12 +5982,6 @@ header:hover {
                     console.error('Title input element not found');
                 }
                 
-                if (typeInput && programType) {
-                    typeInput.value = programType;
-                    console.log('Set type to:', programType);
-                } else if (programType) {
-                    console.error('Type input element not found or programType missing');
-                }
                 
                 if (locationInput && programLocation) {
                     locationInput.value = programLocation;
@@ -6167,7 +6145,6 @@ header:hover {
         // Form validation function
         function validateEventForm() {
             const titleInput = document.getElementById('eventTitle');
-            const typeInput = document.getElementById('eventType');
             const descriptionInput = document.getElementById('eventDescription');
             const dateInput = document.getElementById('eventDate');
             const locationInput = document.getElementById('eventLocation');
@@ -6175,7 +6152,6 @@ header:hover {
             
             console.log('Form validation - Form values:', {
                 title: titleInput?.value,
-                type: typeInput?.value,
                 description: descriptionInput?.value,
                 date: dateInput?.value,
                 location: locationInput?.value,
@@ -6188,10 +6164,6 @@ header:hover {
                 return false;
             }
             
-            if (!typeInput.value.trim()) {
-                showAlert('danger', 'Please select an event type.');
-                return false;
-            }
             
             if (!descriptionInput.value.trim()) {
                 showAlert('danger', 'Please enter an event description.');
@@ -7413,7 +7385,6 @@ Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup 
             // Set form values
             document.getElementById('edit_program_id').value = programId;
             document.getElementById('edit_eventTitle').value = title;
-            document.getElementById('edit_eventType').value = type;
             document.getElementById('edit_eventDescription').value = description;
             
             // Set location dropdown value with improved matching
@@ -7618,7 +7589,6 @@ Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup 
             setTimeout(() => {
                 // Check if all required form elements exist
                 const titleInput = document.getElementById('eventTitle');
-                const typeInput = document.getElementById('eventType');
                 const locationInput = document.getElementById('eventLocation');
                 const descriptionInput = document.getElementById('eventDescription');
                 const dateInput = document.getElementById('eventDate');
@@ -7627,7 +7597,6 @@ Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup 
                 // Log which elements were found
                 console.log('Form elements found:', {
                     titleInput: !!titleInput,
-                    typeInput: !!typeInput,
                     locationInput: !!locationInput,
                     descriptionInput: !!descriptionInput,
                     dateInput: !!dateInput,
@@ -7642,12 +7611,6 @@ Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup 
                     console.error('Title input element not found');
                 }
                 
-                if (typeInput && programType) {
-                    typeInput.value = programType;
-                    console.log('Set type to:', programType);
-                } else if (programType) {
-                    console.error('Type input element not found or programType missing');
-                }
                 
                 if (locationInput && programLocation) {
                     locationInput.value = programLocation;
@@ -7811,7 +7774,6 @@ Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup 
         // Form validation function
         function validateEventForm() {
             const titleInput = document.getElementById('eventTitle');
-            const typeInput = document.getElementById('eventType');
             const descriptionInput = document.getElementById('eventDescription');
             const dateInput = document.getElementById('eventDate');
             const locationInput = document.getElementById('eventLocation');
@@ -7819,7 +7781,6 @@ Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup 
             
             console.log('Form validation - Form values:', {
                 title: titleInput?.value,
-                type: typeInput?.value,
                 description: descriptionInput?.value,
                 date: dateInput?.value,
                 location: locationInput?.value,
@@ -7832,10 +7793,6 @@ Medical Mission,${formatDate(future3)},LIMAY,Dr. Ana Reyes,Free medical checkup 
                 return false;
             }
             
-            if (!typeInput.value.trim()) {
-                showAlert('danger', 'Please select an event type.');
-                return false;
-            }
             
             if (!descriptionInput.value.trim()) {
                 showAlert('danger', 'Please enter an event description.');
