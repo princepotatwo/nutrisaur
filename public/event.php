@@ -1395,19 +1395,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         $row++;
                     if ($row == 1) continue; // Skip header
                         
-                    // Validate columns - now expecting 6 columns
-                        if (count($data) < 6) {
-                        $errors[] = "Row $row: Need 6 columns (title, date_time, location, barangay, organizer, description)";
+                    // Validate columns - accept both 5 and 6 columns for backward compatibility
+                        if (count($data) < 5) {
+                        $errors[] = "Row $row: Need at least 5 columns (title, date_time, location, organizer, description)";
                             continue;
                         }
                         
-                    // Extract data
+                    // Handle backward compatibility: if 5 columns, treat as old format without barangay
+                    if (count($data) == 5) {
+                        // Old format: title, date_time, location, organizer, description
+                        $barangay = ''; // Empty barangay = target all barangays in municipality
+                    } else {
+                        // New format: title, date_time, location, barangay, organizer, description
+                        $barangay = trim($data[3]);
+                    }
+                        
+                    // Extract data based on format
                         $title = trim($data[0]);
                         $date_time = trim($data[1]);
                         $location = trim($data[2]);
-                        $barangay = trim($data[3]);
+                        
+                    if (count($data) == 5) {
+                        // Old format: title, date_time, location, organizer, description
+                        $organizer = trim($data[3]);
+                        $description = trim($data[4]);
+                    } else {
+                        // New format: title, date_time, location, barangay, organizer, description
                         $organizer = trim($data[4]);
                         $description = trim($data[5]);
+                    }
                         
                         // Validate required fields
                     if (empty($title) || empty($date_time) || empty($location) || empty($organizer)) {
@@ -1467,12 +1483,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                                 $notificationTitle = "🎯 Event: $title";
                                 $notificationBody = "New event: $title at $location" . (!empty($barangay) ? " - $barangay" : "") . " on " . date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s')));
                                 
-                                $tokenStmt = $pdo->prepare("
-                                    SELECT fcm_token, email FROM community_users 
-                                    WHERE fcm_token IS NOT NULL AND fcm_token != ''
-                                    AND (municipality = ? OR barangay = ? OR ? = 'All Locations')
-                                ");
-                                $tokenStmt->execute([$location, $barangay, $location]);
+                                // Target users based on barangay field
+                                if (empty($barangay)) {
+                                    // If barangay is empty, target all users in the municipality
+                                    $tokenStmt = $pdo->prepare("
+                                        SELECT fcm_token, email FROM community_users 
+                                        WHERE fcm_token IS NOT NULL AND fcm_token != ''
+                                        AND municipality = ?
+                                    ");
+                                    $tokenStmt->execute([$location]);
+                                    error_log("🔔 CSV: Targeting all users in municipality: $location");
+                                } else {
+                                    // If barangay has value, target users in that specific barangay
+                                    $tokenStmt = $pdo->prepare("
+                                        SELECT fcm_token, email FROM community_users 
+                                        WHERE fcm_token IS NOT NULL AND fcm_token != ''
+                                        AND barangay = ?
+                                    ");
+                                    $tokenStmt->execute([$barangay]);
+                                    error_log("🔔 CSV: Targeting users in specific barangay: $barangay");
+                                }
                                 $tokens = $tokenStmt->fetchAll();
                                 
                                 error_log("🔔 CSV: Found " . count($tokens) . " FCM tokens for location: $location");
@@ -4738,6 +4768,7 @@ header:hover {
                                 <h4>Upload CSV File</h4>
                                 <p>Click to select or drag and drop your CSV file here</p>
                                 <p class="csv-format">Format: Event Title, Date & Time, Location, Barangay, Organizer, Description</p>
+                                <p class="csv-format-note">💡 Leave Barangay empty to target all barangays in the municipality</p>
                             </div>
                             <input type="file" id="csvFile" name="csvFile" accept=".csv" style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" onchange="handleFileSelect(this)">
                         </div>
@@ -6359,7 +6390,7 @@ header:hover {
             
             const csvContent = `title,date_time,location,barangay,organizer,description
 Nutrition Workshop,${formatDate(future1)},CITY OF BALANGA,Bagumbayan,Dr. Maria Santos,Free nutrition screening and health consultation
-Health Seminar,${formatDate(future2)},ABUCAY,Bangkal,Dr. Juan Cruz,Community health education and awareness
+Health Seminar,${formatDate(future2)},ABUCAY,,Dr. Juan Cruz,Community health education and awareness (all barangays)
 Medical Mission,${formatDate(future3)},LIMAY,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation`;
             
             const blob = new Blob([csvContent], { type: 'text/csv' });
