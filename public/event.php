@@ -5315,7 +5315,7 @@ function closeCreateEventModal() {
     } else if (barangay) {
         targetLocation = barangay; // Target specific barangay
     } else {
-        targetLocation = 'MUNICIPALITY_' + municipality.replace(' ', '_'); // Target all barangays in municipality
+        targetLocation = 'MUNICIPALITY_' + municipality.replace(/ /g, '_'); // Target all barangays in municipality
     }
     
             const eventData = {
