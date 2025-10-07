@@ -449,6 +449,17 @@ h1 {
 .admin-table td {
     padding: 12px 15px;
     border-bottom: 1px solid rgba(161, 180, 84, 0.1);
+    vertical-align: middle;
+}
+
+/* Ensure admin table action column is properly aligned */
+.admin-table th:last-child,
+.admin-table td:last-child {
+    text-align: center;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+    min-width: 140px;
 }
 
 .admin-table tr:last-child td {
@@ -512,21 +523,37 @@ h1 {
 
 .admin-actions {
     display: flex;
-    gap: 10px;
-    justify-content: flex-end;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    vertical-align: middle;
+    padding: 4px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .admin-action-btn {
-    background: none;
+    background-color: var(--color-highlight);
+    color: white;
     border: none;
-    color: var(--color-highlight);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 14px;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 55px;
+    height: 28px;
+    margin-right: 4px;
 }
 
 .admin-action-btn:hover {
-    color: var(--color-accent1);
+    background-color: #8CA86E;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(161, 180, 84, 0.3);
 }
 
 /* System configurations section */
