@@ -5280,6 +5280,223 @@ function closeEditEventModal() {
     document.getElementById('editEventModal').style.display = 'none';
     document.getElementById('editEventForm').reset();
 }
+
+// Function to close create event modal
+function closeCreateEventModal() {
+    document.getElementById('createEventModal').style.display = 'none';
+    document.getElementById('newCreateEventForm').reset();
+}
+
+// 🚨 GLOBAL EVENT CREATION HANDLER - Available immediately
+window.handleNewEventCreation = async function() {
+    console.log('🚨 NEW EVENT CREATION STARTED - NO REDIRECTS');
+    
+    // Get form data from the form element
+    const form = document.getElementById('newCreateEventForm');
+    if (!form) {
+        console.error('Form not found!');
+        return;
+    }
+    
+    const formData = new FormData(form);
+    const municipality = formData.get('eventMunicipality');
+    const barangay = formData.get('eventBarangay');
+    
+    // Determine target location based on municipality and barangay selection
+    let targetLocation;
+    if (municipality === 'all') {
+        targetLocation = 'all';
+    } else if (barangay) {
+        targetLocation = barangay; // Target specific barangay
+    } else {
+        targetLocation = 'MUNICIPALITY_' + municipality.replace(' ', '_'); // Target all barangays in municipality
+    }
+    
+    const eventData = {
+        title: formData.get('eventTitle'),
+        description: formData.get('eventDescription'),
+        date_time: formData.get('eventDate'),
+        location: targetLocation,
+        organizer: formData.get('eventOrganizer')
+    };
+    
+    console.log('Event data:', eventData);
+    console.log('Form element found:', !!form);
+    console.log('FormData entries:');
+    for (let [key, value] of formData.entries()) {
+        console.log(key + ': ' + value);
+    }
+    
+    // Validate required fields
+    if (!eventData.title || !eventData.description || !eventData.date_time || !eventData.organizer) {
+        console.error('Missing required fields:', {
+            title: eventData.title,
+            description: eventData.description,
+            date_time: eventData.date_time,
+            organizer: eventData.organizer
+        });
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    try {
+        console.log('✅ Validation passed, starting event creation process');
+    
+        // Show loading state
+        const submitBtn = document.querySelector('#newCreateEventForm .btn-primary');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
+        submitBtn.disabled = true;
+        
+            console.log('🔄 Calling save_event_only API...');
+            console.log('📤 Sending event data to programs table:', {
+                title: eventData.title,
+                description: eventData.description,
+                date_time: eventData.date_time,
+                location: eventData.location,
+                organizer: eventData.organizer
+            });
+            
+            // 🚨 STEP 1: SAVE EVENT TO DATABASE FIRST (using the working PHP logic)
+            const saveResponse = await fetch('event.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: new URLSearchParams({
+                    'action': 'save_event_only',
+                    'title': eventData.title,
+                    'description': eventData.description,
+                    'date_time': eventData.date_time,
+                    'location': eventData.location,
+                    'organizer': eventData.organizer
+                })
+            });
+            
+            const saveResult = await saveResponse.json();
+            console.log('📊 Save API response:', saveResult);
+            
+            if (!saveResult.success) {
+                console.error('❌ Save API failed:', saveResult.message);
+                throw new Error(`Failed to save event: ${saveResult.message}`);
+            }
+            
+            console.log('✅ Event saved successfully!');
+            
+            // Notifications are now handled automatically in PHP after saving
+            
+            // Fetch and display current programs table
+            console.log('🔍 Fetching current programs table to verify...');
+            try {
+                const programsResponse = await fetch('/api/DatabaseAPI.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: new URLSearchParams({
+                        'action': 'query',
+                        'sql': 'SELECT * FROM programs ORDER BY program_id DESC LIMIT 5'
+                    })
+                });
+                const programsResult = await programsResponse.json();
+                console.log('📊 Current programs table (last 5 events):', programsResult);
+            } catch (error) {
+                console.error('❌ Error fetching programs table:', error);
+            }
+            
+                // Reset form
+                form.reset();
+                
+                // Show success message
+            alert(`🎉 Event "${eventData.title}" created successfully!`);
+            
+            // Refresh the page to show the new event
+            setTimeout(() => {
+                location.reload();
+            }, 2000); // Wait 2 seconds to show the success message
+            
+        } catch (error) {
+            console.error('Error creating event:', error);
+            alert('Error creating event. Please try again.');
+        } finally {
+            // Restore button state
+            const submitBtn = document.querySelector('#newCreateEventForm .btn-primary');
+            if (submitBtn) {
+                submitBtn.innerHTML = '<span class="btn-text">Create Event</span>';
+            submitBtn.disabled = false;
+        }
+    }
+};
+
+// Function to confirm delete all events
+function confirmDeleteAll() {
+    // Get total number of events
+    const eventRows = document.querySelectorAll('.event-row');
+    const eventCount = eventRows.length;
+    
+    if (eventCount === 0) {
+        alert('No events to delete!');
+        return;
+    }
+
+    // Double confirmation for delete all
+    const confirmMessage = `⚠️ WARNING: This will delete ALL ${eventCount} events from the database!\n\nThis action cannot be undone. Are you absolutely sure?`;
+    
+    if (!confirm(confirmMessage)) {
+        return;
+    }
+
+    // Second confirmation
+    if (!confirm('FINAL CONFIRMATION: Delete ALL events? This will permanently remove all event data.')) {
+        return;
+    }
+
+    // Show loading state
+    const deleteAllBtn = event.target;
+    const originalText = deleteAllBtn.innerHTML;
+    deleteAllBtn.innerHTML = '⏳ Deleting...';
+    deleteAllBtn.disabled = true;
+
+    // Send delete all request to server
+    fetch('/api/delete_all_programs.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            confirm: true
+        })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+        // Remove all event rows from the page
+        eventRows.forEach(row => row.remove());
+        
+        alert(`Successfully deleted all ${data.deleted_count || eventCount} events!`);
+        
+        // Reload page to refresh event list
+        setTimeout(() => {
+            window.location.reload();
+        }, 1500);
+            } else {
+        alert('Error deleting all events: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+    alert('Error deleting all events: ' + error.message);
+})
+.finally(() => {
+    // Restore button state
+    if (deleteAllBtn) {
+        deleteAllBtn.innerHTML = originalText;
+        deleteAllBtn.disabled = false;
+    }
+});
+}
     </script>    
     <script>
     document.addEventListener('DOMContentLoaded', function() {
