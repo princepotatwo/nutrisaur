@@ -1129,6 +1129,16 @@ header {
     border-color: var(--color-highlight);
 }
 
+.select-header.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #f5f5f5;
+}
+
+.select-header.disabled:hover {
+    border-color: var(--color-border);
+}
+
 .dropdown-arrow {
     transition: transform 0.3s ease;
 }
@@ -8212,290 +8222,15 @@ body {
                 <div class="filter-group">
                     <label>Select Barangay:</label>
                     <div class="custom-select-container small-width">
-                        <div class="select-header" onclick="toggleDropdown()">
-                            <span id="selected-option">All Barangays</span>
+                        <div class="select-header disabled" id="barangay-select-header" onclick="toggleDropdown()">
+                            <span id="selected-option">Select Barangay</span>
                             <span class="dropdown-arrow">▼</span>
                         </div>
                     <div class="dropdown-content" id="dropdown-content">
-                        <div class="search-container">
-                            <input type="text" id="search-input" placeholder="Search barangay or municipality..." onkeyup="filterOptions()">
-                        </div>
                         <div class="options-container">
-                            <!-- Municipality Options -->
-                            <div class="option-group">
-                                <div class="option-header">Municipalities</div>
-                                <div class="option-item" data-value="">All Barangays</div>
-                                <div class="option-item" data-value="MUNICIPALITY_ABUCAY">ABUCAY (All Barangays)</div>
-                                <div class="option-item" data-value="MUNICIPALITY_BAGAC">BAGAC (All Barangays)</div>
-                                <div class="option-item" data-value="MUNICIPALITY_BALANGA">CITY OF BALANGA (All Barangays)</div>
-                                <div class="option-item" data-value="MUNICIPALITY_DINALUPIHAN">DINALUPIHAN (All Barangays)</div>
-                                <div class="option-item" data-value="MUNICIPALITY_HERMOSA">HERMOSA (All Barangays)</div>
-                                <div class="option-item" data-value="MUNICIPALITY_LIMAY">LIMAY (All Barangays)</div>
-                                <div class="option-item" data-value="MUNICIPALITY_MARIVELES">MARIVELES (All Barangays)</div>
-                                <div class="option-item" data-value="MUNICIPALITY_MORONG">MORONG (All Barangays)</div>
-                                <div class="option-item" data-value="MUNICIPALITY_ORANI">ORANI (All Barangays)</div>
-                                <div class="option-item" data-value="MUNICIPALITY_ORION">ORION (All Barangays)</div>
-                                <div class="option-item" data-value="MUNICIPALITY_PILAR">PILAR (All Barangays)</div>
-                                <div class="option-item" data-value="MUNICIPALITY_SAMAL">SAMAL (All Barangays)</div>
-                            </div>
-                            
-                            <!-- Individual Barangays by Municipality -->
-                            <div class="option-group">
-                                <div class="option-header">ABUCAY</div>
-                                <div class="option-item" data-value="Bangkal">Bangkal</div>
-                                <div class="option-item" data-value="Calaylayan (Pob.)">Calaylayan (Pob.)</div>
-                                <div class="option-item" data-value="Capitangan">Capitangan</div>
-                                <div class="option-item" data-value="Gabon">Gabon</div>
-                                <div class="option-item" data-value="Laon (Pob.)">Laon (Pob.)</div>
-                                <div class="option-item" data-value="Mabatang">Mabatang</div>
-                                <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                <div class="option-item" data-value="Saguing">Saguing</div>
-                                <div class="option-item" data-value="Salapungan">Salapungan</div>
-                                <div class="option-item" data-value="Tala">Tala</div>
-                            </div>
-                            <div class="option-group">
-                                <div class="option-header">BAGAC</div>
-                                <div class="option-item" data-value="Bagumbayan (Pob.)">Bagumbayan (Pob.)</div>
-                                <div class="option-item" data-value="Banawang">Banawang</div>
-                                <div class="option-item" data-value="Binuangan">Binuangan</div>
-                                <div class="option-item" data-value="Binukawan">Binukawan</div>
-                                <div class="option-item" data-value="Ibaba">Ibaba</div>
-                                <div class="option-item" data-value="Ibayo">Ibayo</div>
-                                <div class="option-item" data-value="Paysawan">Paysawan</div>
-                                <div class="option-item" data-value="Quinaoayanan">Quinaoayanan</div>
-                                <div class="option-item" data-value="San Antonio">San Antonio</div>
-                                <div class="option-item" data-value="Saysain">Saysain</div>
-                                <div class="option-item" data-value="Sibucao">Sibucao</div>
-                                <div class="option-item" data-value="Tabing-Ilog">Tabing-Ilog</div>
-                                <div class="option-item" data-value="Tipo">Tipo</div>
-                                <div class="option-item" data-value="Tugatog">Tugatog</div>
-                                <div class="option-item" data-value="Wawa">Wawa</div>
-                            </div>
-                            <div class="option-group">
-                                <div class="option-header">CITY OF BALANGA</div>
-                                <div class="option-item" data-value="Bagumbayan">Bagumbayan</div>
-                                <div class="option-item" data-value="Cabog-Cabog">Cabog-Cabog</div>
-                                <div class="option-item" data-value="Munting Batangas (Cadre)">Munting Batangas (Cadre)</div>
-                                <div class="option-item" data-value="Cataning">Cataning</div>
-                                <div class="option-item" data-value="Central">Central</div>
-                                <div class="option-item" data-value="Cupang Proper">Cupang Proper</div>
-                                <div class="option-item" data-value="Cupang West">Cupang West</div>
-                                <div class="option-item" data-value="Dangcol (Bernabe)">Dangcol (Bernabe)</div>
-                                <div class="option-item" data-value="Ibayo">Ibayo</div>
-                                <div class="option-item" data-value="Malabia">Malabia</div>
-                                <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                <div class="option-item" data-value="Pto. Rivas Ibaba">Pto. Rivas Ibaba</div>
-                                <div class="option-item" data-value="Pto. Rivas Itaas">Pto. Rivas Itaas</div>
-                                <div class="option-item" data-value="San Jose">San Jose</div>
-                                <div class="option-item" data-value="Sibacan">Sibacan</div>
-                                <div class="option-item" data-value="Camacho">Camacho</div>
-                                <div class="option-item" data-value="Talisay">Talisay</div>
-                                <div class="option-item" data-value="Tanato">Tanato</div>
-                                <div class="option-item" data-value="Tenejero">Tenejero</div>
-                                <div class="option-item" data-value="Tortugas">Tortugas</div>
-                                <div class="option-item" data-value="Tuyo">Tuyo</div>
-                                <div class="option-item" data-value="Bagong Silang">Bagong Silang</div>
-                                <div class="option-item" data-value="Cupang North">Cupang North</div>
-                                <div class="option-item" data-value="Doña Francisca">Doña Francisca</div>
-                                <div class="option-item" data-value="Lote">Lote</div>
-                            </div>
-                            <div class="option-group">
-                                <div class="option-header">DINALUPIHAN</div>
-                                <div class="option-item" data-value="Bangal">Bangal</div>
-                                <div class="option-item" data-value="Bonifacio (Pob.)">Bonifacio (Pob.)</div>
-                                <div class="option-item" data-value="Burgos (Pob.)">Burgos (Pob.)</div>
-                                <div class="option-item" data-value="Colo">Colo</div>
-                                <div class="option-item" data-value="Daang Bago">Daang Bago</div>
-                                <div class="option-item" data-value="Dalao">Dalao</div>
-                                <div class="option-item" data-value="Del Pilar">Del Pilar</div>
-                                <div class="option-item" data-value="General Luna">General Luna</div>
-                                <div class="option-item" data-value="Governor Generoso">Governor Generoso</div>
-                                <div class="option-item" data-value="Hacienda">Hacienda</div>
-                                <div class="option-item" data-value="Jose Abad Santos (Pob.)">Jose Abad Santos (Pob.)</div>
-                                <div class="option-item" data-value="Kataasan">Kataasan</div>
-                                <div class="option-item" data-value="Layac">Layac</div>
-                                <div class="option-item" data-value="Lourdes">Lourdes</div>
-                                <div class="option-item" data-value="Mabini">Mabini</div>
-                                <div class="option-item" data-value="Maligaya">Maligaya</div>
-                                <div class="option-item" data-value="Naparing">Naparing</div>
-                                <div class="option-item" data-value="Paco">Paco</div>
-                                <div class="option-item" data-value="Pag-asa">Pag-asa</div>
-                                <div class="option-item" data-value="Pagalanggang">Pagalanggang</div>
-                                <div class="option-item" data-value="Panggalan">Panggalan</div>
-                                <div class="option-item" data-value="Pinulot">Pinulot</div>
-                                <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                <div class="option-item" data-value="Rizal">Rizal</div>
-                                <div class="option-item" data-value="Saguing">Saguing</div>
-                                <div class="option-item" data-value="San Benito">San Benito</div>
-                                <div class="option-item" data-value="San Isidro">San Isidro</div>
-                                <div class="option-item" data-value="San Ramon">San Ramon</div>
-                                <div class="option-item" data-value="Santo Cristo">Santo Cristo</div>
-                                <div class="option-item" data-value="Sapang Balas">Sapang Balas</div>
-                                <div class="option-item" data-value="Sumalo">Sumalo</div>
-                                <div class="option-item" data-value="Tipo">Tipo</div>
-                                <div class="option-item" data-value="Tuklasan">Tuklasan</div>
-                                <div class="option-item" data-value="Turac">Turac</div>
-                                <div class="option-item" data-value="Zamora">Zamora</div>
-                            </div>
-                            <div class="option-group">
-                                <div class="option-header">HERMOSA</div>
-                                <div class="option-item" data-value="A. Rivera (Pob.)">A. Rivera (Pob.)</div>
-                                <div class="option-item" data-value="Almacen">Almacen</div>
-                                <div class="option-item" data-value="Bacong">Bacong</div>
-                                <div class="option-item" data-value="Balsic">Balsic</div>
-                                <div class="option-item" data-value="Bamban">Bamban</div>
-                                <div class="option-item" data-value="Burgos-Soliman (Pob.)">Burgos-Soliman (Pob.)</div>
-                                <div class="option-item" data-value="Cataning (Pob.)">Cataning (Pob.)</div>
-                                <div class="option-item" data-value="Culong">Culong</div>
-                                <div class="option-item" data-value="Daungan (Pob.)">Daungan (Pob.)</div>
-                                <div class="option-item" data-value="Judicial (Pob.)">Judicial (Pob.)</div>
-                                <div class="option-item" data-value="Mabiga">Mabiga</div>
-                                <div class="option-item" data-value="Mabuco">Mabuco</div>
-                                <div class="option-item" data-value="Maite">Maite</div>
-                                <div class="option-item" data-value="Palihan">Palihan</div>
-                                <div class="option-item" data-value="Pandatung">Pandatung</div>
-                                <div class="option-item" data-value="Pulong Gubat">Pulong Gubat</div>
-                                <div class="option-item" data-value="San Pedro (Pob.)">San Pedro (Pob.)</div>
-                                <div class="option-item" data-value="Santo Cristo (Pob.)">Santo Cristo (Pob.)</div>
-                                <div class="option-item" data-value="Sumalo">Sumalo</div>
-                                <div class="option-item" data-value="Tipo">Tipo</div>
-                            </div>
-                            <div class="option-group">
-                                <div class="option-header">LIMAY</div>
-                                <div class="option-item" data-value="Alangan">Alangan</div>
-                                <div class="option-item" data-value="Kitang I">Kitang I</div>
-                                <div class="option-item" data-value="Kitang 2 & Luz">Kitang 2 & Luz</div>
-                                <div class="option-item" data-value="Lamao">Lamao</div>
-                                <div class="option-item" data-value="Landing">Landing</div>
-                                <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                <div class="option-item" data-value="Reforma">Reforma</div>
-                                <div class="option-item" data-value="San Francisco de Asis">San Francisco de Asis</div>
-                                <div class="option-item" data-value="Townsite">Townsite</div>
-                            </div>
-                            <div class="option-group">
-                                <div class="option-header">MARIVELES</div>
-                                <div class="option-item" data-value="Alas-asin">Alas-asin</div>
-                                <div class="option-item" data-value="Alion">Alion</div>
-                                <div class="option-item" data-value="Batangas II">Batangas II</div>
-                                <div class="option-item" data-value="Cabcaben">Cabcaben</div>
-                                <div class="option-item" data-value="Lucanin">Lucanin</div>
-                                <div class="option-item" data-value="Baseco Country (Nassco)">Baseco Country (Nassco)</div>
-                                <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                <div class="option-item" data-value="San Carlos">San Carlos</div>
-                                <div class="option-item" data-value="San Isidro">San Isidro</div>
-                                <div class="option-item" data-value="Sisiman">Sisiman</div>
-                                <div class="option-item" data-value="Balon-Anito">Balon-Anito</div>
-                                <div class="option-item" data-value="Biaan">Biaan</div>
-                                <div class="option-item" data-value="Camaya">Camaya</div>
-                                <div class="option-item" data-value="Ipag">Ipag</div>
-                                <div class="option-item" data-value="Malaya">Malaya</div>
-                                <div class="option-item" data-value="Maligaya">Maligaya</div>
-                                <div class="option-item" data-value="Mt. View">Mt. View</div>
-                                <div class="option-item" data-value="Townsite">Townsite</div>
-                            </div>
-                            <div class="option-group">
-                                <div class="option-header">MORONG</div>
-                                <div class="option-item" data-value="Binaritan">Binaritan</div>
-                                <div class="option-item" data-value="Mabayo">Mabayo</div>
-                                <div class="option-item" data-value="Nagbalayong">Nagbalayong</div>
-                                <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                <div class="option-item" data-value="Sabang">Sabang</div>
-                            </div>
-                            <div class="option-group">
-                                <div class="option-header">ORANI</div>
-                                <div class="option-item" data-value="Apolinario (Pob.)">Apolinario (Pob.)</div>
-                                <div class="option-item" data-value="Bagong Paraiso">Bagong Paraiso</div>
-                                <div class="option-item" data-value="Balut">Balut</div>
-                                <div class="option-item" data-value="Bayan (Pob.)">Bayan (Pob.)</div>
-                                <div class="option-item" data-value="Calero (Pob.)">Calero (Pob.)</div>
-                                <div class="option-item" data-value="Calutit">Calutit</div>
-                                <div class="option-item" data-value="Camachile">Camachile</div>
-                                <div class="option-item" data-value="Del Pilar">Del Pilar</div>
-                                <div class="option-item" data-value="Kaparangan">Kaparangan</div>
-                                <div class="option-item" data-value="Mabatang">Mabatang</div>
-                                <div class="option-item" data-value="Maria Fe">Maria Fe</div>
-                                <div class="option-item" data-value="Pagtakhan">Pagtakhan</div>
-                                <div class="option-item" data-value="Paking-Carbonero (Pob.)">Paking-Carbonero (Pob.)</div>
-                                <div class="option-item" data-value="Pantalan Bago (Pob.)">Pantalan Bago (Pob.)</div>
-                                <div class="option-item" data-value="Pantalan Luma (Pob.)">Pantalan Luma (Pob.)</div>
-                                <div class="option-item" data-value="Parang">Parang</div>
-                                <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                <div class="option-item" data-value="Rizal (Pob.)">Rizal (Pob.)</div>
-                                <div class="option-item" data-value="Sagrada">Sagrada</div>
-                                <div class="option-item" data-value="San Jose">San Jose</div>
-                                <div class="option-item" data-value="Sibul">Sibul</div>
-                                <div class="option-item" data-value="Sili">Sili</div>
-                                <div class="option-item" data-value="Sulong">Sulong</div>
-                                <div class="option-item" data-value="Tagumpay">Tagumpay</div>
-                                <div class="option-item" data-value="Tala">Tala</div>
-                                <div class="option-item" data-value="Talimundoc">Talimundoc</div>
-                                <div class="option-item" data-value="Tugatog">Tugatog</div>
-                                <div class="option-item" data-value="Wawa">Wawa</div>
-                            </div>
-                            <div class="option-group">
-                                <div class="option-header">ORION</div>
-                                <div class="option-item" data-value="Arellano (Pob.)">Arellano (Pob.)</div>
-                                <div class="option-item" data-value="Bagumbayan (Pob.)">Bagumbayan (Pob.)</div>
-                                <div class="option-item" data-value="Balagtas (Pob.)">Balagtas (Pob.)</div>
-                                <div class="option-item" data-value="Balut (Pob.)">Balut (Pob.)</div>
-                                <div class="option-item" data-value="Bantan">Bantan</div>
-                                <div class="option-item" data-value="Bilolo">Bilolo</div>
-                                <div class="option-item" data-value="Calungusan">Calungusan</div>
-                                <div class="option-item" data-value="Camachile">Camachile</div>
-                                <div class="option-item" data-value="Daang Bago">Daang Bago</div>
-                                <div class="option-item" data-value="Daan Bago">Daan Bago</div>
-                                <div class="option-item" data-value="Daan Bilolo">Daan Bilolo</div>
-                                <div class="option-item" data-value="Daan Pare">Daan Pare</div>
-                                <div class="option-item" data-value="General Lim (Kaput)">General Lim (Kaput)</div>
-                                <div class="option-item" data-value="Kaput">Kaput</div>
-                                <div class="option-item" data-value="Lati">Lati</div>
-                                <div class="option-item" data-value="Lusung">Lusung</div>
-                                <div class="option-item" data-value="Puting Buhangin">Puting Buhangin</div>
-                                <div class="option-item" data-value="Sabatan">Sabatan</div>
-                                <div class="option-item" data-value="San Vicente">San Vicente</div>
-                                <div class="option-item" data-value="Santa Elena">Santa Elena</div>
-                                <div class="option-item" data-value="Santo Domingo">Santo Domingo</div>
-                                <div class="option-item" data-value="Villa Angeles">Villa Angeles</div>
-                                <div class="option-item" data-value="Wakas">Wakas</div>
-                            </div>
-                            <div class="option-group">
-                                <div class="option-header">PILAR</div>
-                                <div class="option-item" data-value="Ala-uli">Ala-uli</div>
-                                <div class="option-item" data-value="Bagumbayan">Bagumbayan</div>
-                                <div class="option-item" data-value="Balut I">Balut I</div>
-                                <div class="option-item" data-value="Balut II">Balut II</div>
-                                <div class="option-item" data-value="Bantan Munti">Bantan Munti</div>
-                                <div class="option-item" data-value="Bantan">Bantan</div>
-                                <div class="option-item" data-value="Burgos">Burgos</div>
-                                <div class="option-item" data-value="Del Rosario">Del Rosario</div>
-                                <div class="option-item" data-value="Diwa">Diwa</div>
-                                <div class="option-item" data-value="Landing">Landing</div>
-                                <div class="option-item" data-value="Liwa">Liwa</div>
-                                <div class="option-item" data-value="Nueva Vida">Nueva Vida</div>
-                                <div class="option-item" data-value="Panghulo">Panghulo</div>
-                                <div class="option-item" data-value="Pantingan">Pantingan</div>
-                                <div class="option-item" data-value="Poblacion">Poblacion</div>
-                                <div class="option-item" data-value="Rizal">Rizal</div>
-                                <div class="option-item" data-value="Sagrada">Sagrada</div>
-                                <div class="option-item" data-value="San Nicolas">San Nicolas</div>
-                                <div class="option-item" data-value="San Pedro">San Pedro</div>
-                                <div class="option-item" data-value="Santo Niño">Santo Niño</div>
-                                <div class="option-item" data-value="Wakas">Wakas</div>
-                            </div>
-                            <div class="option-group">
-                                <div class="option-header">SAMAL</div>
-                                <div class="option-item" data-value="East Calaguiman (Pob.)">East Calaguiman (Pob.)</div>
-                                <div class="option-item" data-value="East Daang Bago (Pob.)">East Daang Bago (Pob.)</div>
-                                <div class="option-item" data-value="Ibaba (Pob.)">Ibaba (Pob.)</div>
-                                <div class="option-item" data-value="Imelda">Imelda</div>
-                                <div class="option-item" data-value="Lalawigan">Lalawigan</div>
-                                <div class="option-item" data-value="Palili">Palili</div>
-                                <div class="option-item" data-value="San Juan">San Juan</div>
-                                <div class="option-item" data-value="San Roque">San Roque</div>
-                                <div class="option-item" data-value="Santa Lucia">Santa Lucia</div>
-                                <div class="option-item" data-value="Santo Niño">Santo Niño</div>
-                                <div class="option-item" data-value="West Calaguiman (Pob.)">West Calaguiman (Pob.)</div>
-                                <div class="option-item" data-value="West Daang Bago (Pob.)">West Daang Bago (Pob.)</div>
+                            <!-- Barangays will be dynamically populated when municipality is selected -->
+                            <div class="option-item disabled" style="opacity: 0.5; cursor: not-allowed;">
+                                Please select a municipality first
                             </div>
                         </div>
                     </div>
@@ -8729,17 +8464,7 @@ body {
         window.nutritionalStatistics = <?php echo json_encode($nutritionalStatistics); ?>;
         console.log('📊 Nutritional Statistics loaded:', window.nutritionalStatistics);
         
-        // Custom Dropdown Functions
-        function toggleDropdown() {
-            const dropdown = document.getElementById('dropdown-content');
-            const arrow = document.querySelector('.dropdown-arrow');
-            const selectHeader = document.querySelector('.select-header');
-            
-            if (dropdown && arrow) {
-                dropdown.classList.toggle('active');
-                arrow.classList.toggle('active');
-            }
-        }
+        // Custom Dropdown Functions (removed duplicate - using the one defined later)
 
         // Municipality dropdown functions
         function toggleMunicipalityDropdown() {
@@ -12799,6 +12524,7 @@ body {
             try {
                 const barangayDropdown = document.getElementById('dropdown-content');
                 const selectedSpan = document.getElementById('selected-option');
+                const barangaySelectHeader = document.getElementById('barangay-select-header');
                 
                 if (!barangayDropdown) {
                     console.error('❌ Barangay dropdown not found');
@@ -12811,6 +12537,12 @@ body {
                 // Reset selected option text
                 if (selectedSpan) {
                     selectedSpan.textContent = 'Select Barangay';
+                }
+
+                // Enable the barangay dropdown (remove disabled class)
+                if (barangaySelectHeader) {
+                    barangaySelectHeader.classList.remove('disabled');
+                    console.log('✅ Barangay dropdown enabled');
                 }
 
                 // Get barangays for the selected municipality
@@ -13719,18 +13451,18 @@ body {
             console.log('✅ Mobile dropdown functionality initialized');
         }
         
-        // Toggle dropdown function
-        function toggleDropdown(header, dropdown) {
-            const isActive = dropdown.classList.contains('active');
-            
-            // Close all other dropdowns first
-            closeAllDropdowns();
-            
-            if (!isActive) {
-                dropdown.classList.add('active');
-                header.classList.add('active');
-            }
-        }
+        // Toggle dropdown function (parametrized version - currently unused)
+        // function toggleDropdown(header, dropdown) {
+        //     const isActive = dropdown.classList.contains('active');
+        //     
+        //     // Close all other dropdowns first
+        //     closeAllDropdowns();
+        //     
+        //     if (!isActive) {
+        //         dropdown.classList.add('active');
+        //         header.classList.add('active');
+        //     }
+        // }
         
         // Close all dropdowns
         function closeAllDropdowns() {
