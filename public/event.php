@@ -1106,11 +1106,6 @@ function getFCMTokensByLocation($targetLocation = null) {
                 // Convert underscores back to spaces
                 $municipalityName = str_replace('_', ' ', $municipalityName);
                 
-                // Handle special case for BALANGA -> CITY OF BALANGA
-                if ($municipalityName === 'BALANGA') {
-                    $municipalityName = 'CITY OF BALANGA';
-                }
-                
                 error_log("Looking for municipality: '$municipalityName'");
                 
                 $stmt = $db->getPDO()->prepare("
