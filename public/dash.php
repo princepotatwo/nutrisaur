@@ -8188,7 +8188,7 @@ body {
                     <div class="custom-select-container small-width">
                         <div class="select-header" onclick="toggleMunicipalityDropdown()">
                             <span id="selected-municipality-option">All Municipalities</span>
-                            <span class="dropdown-arrow">▼</span>
+                            <span class="dropdown-arrow" id="municipality-arrow">▼</span>
                         </div>
                         <div class="dropdown-content" id="municipality-dropdown-content" style="display: none;">
                             <div class="options-container">
@@ -8214,7 +8214,7 @@ body {
                     <div class="custom-select-container small-width">
                         <div class="select-header" onclick="toggleDropdown()">
                             <span id="selected-option">All Barangays</span>
-                            <span class="dropdown-arrow">▼</span>
+                            <span class="dropdown-arrow" id="barangay-arrow">▼</span>
                         </div>
                         <div class="dropdown-content" id="dropdown-content" style="display: none;">
                         <div class="search-container">
@@ -8733,10 +8733,18 @@ body {
         function toggleDropdown() {
             console.log('🔽 toggleDropdown called');
             const dropdown = document.getElementById('dropdown-content');
-            const arrow = document.querySelector('#dropdown-content').parentElement.querySelector('.dropdown-arrow');
+            const arrow = document.getElementById('barangay-arrow');
             
             console.log('🔽 Dropdown found:', dropdown);
             console.log('🔽 Arrow found:', arrow);
+            
+            // Close municipality dropdown first
+            const municipalityDropdown = document.getElementById('municipality-dropdown-content');
+            const municipalityArrow = document.getElementById('municipality-arrow');
+            if (municipalityDropdown && municipalityArrow) {
+                municipalityDropdown.style.display = 'none';
+                municipalityArrow.classList.remove('active');
+            }
             
             if (dropdown && arrow) {
                 // Toggle display style
@@ -8757,10 +8765,18 @@ body {
         function toggleMunicipalityDropdown() {
             console.log('🏘️ toggleMunicipalityDropdown called');
             const dropdown = document.getElementById('municipality-dropdown-content');
-            const arrow = document.querySelector('#municipality-dropdown-content').parentElement.querySelector('.dropdown-arrow');
+            const arrow = document.getElementById('municipality-arrow');
             
             console.log('🏘️ Dropdown found:', dropdown);
             console.log('🏘️ Arrow found:', arrow);
+            
+            // Close barangay dropdown first
+            const barangayDropdown = document.getElementById('dropdown-content');
+            const barangayArrow = document.getElementById('barangay-arrow');
+            if (barangayDropdown && barangayArrow) {
+                barangayDropdown.style.display = 'none';
+                barangayArrow.classList.remove('active');
+            }
             
             if (dropdown && arrow) {
                 // Toggle display style
