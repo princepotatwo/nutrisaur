@@ -1121,6 +1121,14 @@ function getFCMTokensByLocation($targetLocation = null) {
                 $stmt->bindParam(':municipality', $municipalityName);
                 $stmt->execute();
                 $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                
+                error_log("🔍 Found " . count($tokens) . " users in municipality '$municipalityName'");
+                
+                // Debug: Show what municipalities actually exist
+                $debugStmt = $db->getPDO()->prepare("SELECT DISTINCT municipality, COUNT(*) as count FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != '' GROUP BY municipality");
+                $debugStmt->execute();
+                $municipalities = $debugStmt->fetchAll(PDO::FETCH_ASSOC);
+                error_log("🔍 Available municipalities with FCM tokens: " . json_encode($municipalities));
             } else {
                 error_log("Processing barangay case: $targetLocation - getting tokens for specific barangay");
                 // Get FCM tokens by barangay
