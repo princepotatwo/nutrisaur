@@ -1385,15 +1385,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                 throw new Exception("Database connection failed");
             }
             
-                    $importedCount = 0;
-                    $errors = [];
+            // Debug: Check database connection
+            error_log("🔍 CSV: Database connection established successfully");
+            
+            $importedCount = 0;
+            $errors = [];
             $row = 0;
                     
             // Process CSV
             if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
-                    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                        $row++;
-                    if ($row == 1) continue; // Skip header
+                error_log("🔍 CSV: File opened successfully, starting to process rows...");
+                while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                    $row++;
+                    error_log("🔍 CSV: Processing row $row with " . count($data) . " columns: " . implode('|', $data));
+                    if ($row == 1) {
+                        error_log("🔍 CSV: Skipping header row");
+                        continue; // Skip header
+                    }
                         
                     // Validate columns - accept both 5 and 6 columns for backward compatibility
                         if (count($data) < 5) {
@@ -1446,10 +1454,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                     $result = $stmt->fetch();
                     $nextId = ($result['max_id'] ?? 0) + 1;
                     
-                    // Insert into database - now includes barangay
+                    // Insert into database - using community_users.barangay for targeting
+                    error_log("🔍 CSV: Attempting to insert - ID: $nextId, Title: $title, Location: $location, Target Barangay: $barangay");
                     $stmt = $pdo->prepare("
-                        INSERT INTO programs (program_id, title, type, description, date_time, location, organizer, barangay) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO programs (program_id, title, type, description, date_time, location, organizer) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
                     ");
                     
                     $success = $stmt->execute([
@@ -1459,9 +1468,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         $description,
                         $dateObj->format('Y-m-d H:i:s'),
                         $location,
-                        $organizer,
-                        $barangay
+                        $organizer
                     ]);
+                    
+                    error_log("🔍 CSV: Insert result - Success: " . ($success ? 'YES' : 'NO'));
                     
                     if ($success) {
                             $importedCount++;
