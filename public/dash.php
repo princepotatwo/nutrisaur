@@ -8190,7 +8190,7 @@ body {
                             <span id="selected-municipality-option">All Municipalities</span>
                             <span class="dropdown-arrow">▼</span>
                         </div>
-                        <div class="dropdown-content" id="municipality-dropdown-content">
+                        <div class="dropdown-content" id="municipality-dropdown-content" style="display: none;">
                             <div class="options-container">
                                 <div class="option-item" data-value="">All Municipalities</div>
                                 <div class="option-item" data-value="ABUCAY">ABUCAY</div>
@@ -8216,7 +8216,7 @@ body {
                             <span id="selected-option">All Barangays</span>
                             <span class="dropdown-arrow">▼</span>
                         </div>
-                        <div class="dropdown-content" id="dropdown-content">
+                        <div class="dropdown-content" id="dropdown-content" style="display: none;">
                         <div class="search-container">
                             <input type="text" id="search-input" placeholder="Search barangay or municipality..." onkeyup="filterOptions()">
                         </div>
@@ -8739,8 +8739,14 @@ body {
             console.log('🔽 Arrow found:', arrow);
             
             if (dropdown && arrow) {
-                dropdown.classList.toggle('active');
-                arrow.classList.toggle('active');
+                // Toggle display style
+                if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                    dropdown.style.display = 'block';
+                    arrow.classList.add('active');
+                } else {
+                    dropdown.style.display = 'none';
+                    arrow.classList.remove('active');
+                }
                 console.log('✅ Barangay dropdown toggled');
             } else {
                 console.error('❌ Dropdown or arrow not found');
@@ -8749,12 +8755,25 @@ body {
 
         // Municipality dropdown functions
         function toggleMunicipalityDropdown() {
+            console.log('🏘️ toggleMunicipalityDropdown called');
             const dropdown = document.getElementById('municipality-dropdown-content');
             const arrow = document.querySelector('#municipality-dropdown-content').parentElement.querySelector('.dropdown-arrow');
             
+            console.log('🏘️ Dropdown found:', dropdown);
+            console.log('🏘️ Arrow found:', arrow);
+            
             if (dropdown && arrow) {
-                dropdown.classList.toggle('active');
-                arrow.classList.toggle('active');
+                // Toggle display style
+                if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                    dropdown.style.display = 'block';
+                    arrow.classList.add('active');
+                } else {
+                    dropdown.style.display = 'none';
+                    arrow.classList.remove('active');
+                }
+                console.log('✅ Municipality dropdown toggled');
+            } else {
+                console.error('❌ Municipality dropdown or arrow not found');
             }
         }
 
