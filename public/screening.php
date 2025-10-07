@@ -7587,6 +7587,18 @@ header {
                         }
                     }
                     
+                    // Refresh the modal with updated data if it's open
+                    const existingModal = document.querySelector('.modal');
+                    if (existingModal && existingModal.style.display === 'block') {
+                        console.log('🔄 Refreshing modal with updated flag status...');
+                        // Close current modal and reopen with fresh data
+                        existingModal.remove();
+                        // Small delay to ensure modal is fully closed before reopening
+                        setTimeout(() => {
+                            viewUserDetails(userEmail);
+                        }, 100);
+                    }
+                    
                     console.log('✅ Flag status updated successfully');
                 } else {
                     console.error('❌ Error updating flag:', data.message);
