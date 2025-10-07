@@ -8469,7 +8469,7 @@ body {
         // Municipality dropdown functions (removed duplicate - using the one defined later)
 
 
-        async function selectOption(value, text) {
+        async function selectOptionGeneral(value, text) {
             const selectedOption = document.getElementById('selected-option');
             const dropdownContent = document.getElementById('dropdown-content');
             const dropdownArrow = document.querySelector('.dropdown-arrow');
@@ -8555,7 +8555,7 @@ body {
                         item.addEventListener('click', async function() {
                             const value = this.getAttribute('data-value');
                             const text = this.textContent;
-                            await selectOption(value, text);
+                            await selectOptionGeneral(value, text);
                         });
                     });
                 }
@@ -8564,7 +8564,7 @@ body {
                     item.addEventListener('click', async function() {
                         const value = this.getAttribute('data-value');
                         const text = this.textContent;
-                        await selectOption(value, text);
+                        await selectOptionGeneral(value, text);
                     });
                 });
             }
@@ -13424,14 +13424,14 @@ body {
                 item.addEventListener('touchstart', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    selectOption(item);
+                    selectOptionMobile(item);
                 });
                 
                 // Click events for desktop
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    selectOption(item);
+                    selectOptionMobile(item);
                 });
             });
             
@@ -13478,7 +13478,7 @@ body {
         }
         
         // Select option function
-        function selectOption(item) {
+        function selectOptionMobile(item) {
             const value = item.getAttribute('data-value');
             const text = item.textContent.trim();
             const container = item.closest('.custom-select-container');
