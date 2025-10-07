@@ -1188,12 +1188,13 @@ function logNotificationAttempt($eventId, $notificationType, $targetType, $targe
             VALUES (:event_id, :notification_type, :target_type, :target_value, :tokens_sent, :success, :error_message, NOW())
         ");
         
+        $successInt = $success ? 1 : 0;
         $stmt->bindParam(':event_id', $eventId);
         $stmt->bindParam(':notification_type', $notificationType);
         $stmt->bindParam(':target_type', $targetType);
         $stmt->bindParam(':target_value', $targetValue);
         $stmt->bindParam(':tokens_sent', $tokensSent);
-        $stmt->bindParam(':success', $success ? 1 : 0);
+        $stmt->bindParam(':success', $successInt);
         $stmt->bindParam(':error_message', $errorMessage);
         $stmt->execute();
         
@@ -1596,53 +1597,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit_event'])) {
         
         if (!$result['success']) {
             throw new Exception("Failed to update event: " . $result['message']);
-        }
-        
-        // Send notification about the updated event with location-based targeting
-        try {
-            // Get FCM tokens based on event location
-            $fcmTokenData = getFCMTokensByLocation($location);
-            $fcmTokens = array_column($fcmTokenData, 'fcm_token');
-            
-            if (!empty($fcmTokens)) {
-                // Determine target type for logging
-                $targetType = 'all';
-                $targetValue = 'all';
-                if (!empty($location)) {
-                    if (strpos($location, 'MUNICIPALITY_') === 0) {
-                        $targetType = 'municipality';
-                        $targetValue = $location;
-                    } else {
-                        $targetType = 'barangay';
-                        $targetValue = $location;
-                    }
-                }
-                
-                $notificationSent = sendEventFCMNotification($fcmTokenData, [
-                    'title' => "Event Updated: $title",
-                    'body' => "Event details have been updated. Check the new information.",
-                    'data' => [
-                        'event_title' => $title,
-                        'event_type' => $type,
-                        'event_description' => $description,
-                        'event_date' => $date_time,
-                        'event_location' => $location,
-                        'event_organizer' => $organizer,
-                        'notification_type' => 'event_updated',
-                        'click_action' => 'FLUTTER_NOTIFICATION_CLICK'
-                    ]
-                ], $location);
-                
-                // Log the notification attempt
-                logNotificationAttempt($programId, 'event_updated', $targetType, $targetValue, count($fcmTokens), $notificationSent);
-            } else {
-                // Log the attempt with no tokens found
-                logNotificationAttempt($programId, 'event_updated', 'barangay', $location, 0, false, 'No FCM tokens found for location');
-            }
-            
-        } catch(Exception $e) {
-            error_log("Error sending event update notification: " . $e->getMessage());
-            logNotificationAttempt($programId, 'event_updated', 'barangay', $location, 0, false, $e->getMessage());
         }
         
 
