@@ -436,7 +436,6 @@ h1 {
 .admin-table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
 }
 
 .admin-table th {
@@ -451,8 +450,6 @@ h1 {
     padding: 12px 15px;
     border-bottom: 1px solid rgba(161, 180, 84, 0.1);
     vertical-align: middle;
-    height: 60px;
-    min-height: 60px;
 }
 
 /* Ensure admin table action column is properly aligned */
@@ -466,9 +463,6 @@ h1 {
     vertical-align: middle;
 }
 
-.admin-table tr {
-    height: 60px;
-}
 
 .admin-table tr:last-child td {
     border-bottom: none;
@@ -534,13 +528,11 @@ h1 {
     gap: 8px;
     justify-content: center;
     align-items: center;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
+    padding: 4px;
     flex-wrap: nowrap;
-    vertical-align: top;
+    width: 100%;
+    box-sizing: border-box;
+    vertical-align: middle;
 }
 
 .admin-action-btn {
@@ -557,8 +549,10 @@ h1 {
     flex-shrink: 0;
     min-width: 55px;
     height: 28px;
-    margin: 0 2px;
-    vertical-align: top;
+    margin-right: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .admin-action-btn:hover {
