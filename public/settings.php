@@ -8170,6 +8170,7 @@ header {
             console.log('Performing delete by location:', deleteData);
             
             // Send delete request to server
+            console.log('Sending request to /api/delete_users_by_location.php with data:', JSON.stringify(deleteData));
             fetch('/api/delete_users_by_location.php', {
                 method: 'POST',
                 headers: {
@@ -8177,14 +8178,35 @@ header {
                 },
                 body: JSON.stringify(deleteData)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showNotification(`Successfully deleted ${data.deleted_count} users from ${deleteData.municipality}${deleteData.barangay ? `, ${deleteData.barangay}` : ''}`, 'success');
-                    closeDeleteByLocationModal();
-                    loadCommunityUsersTable(); // Refresh the table
-                } else {
-                    showNotification('Error deleting users: ' + data.message, 'error');
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                // Get response text first to debug
+                return response.text();
+            })
+            .then(text => {
+                console.log('Raw response text:', text);
+                
+                try {
+                    const data = JSON.parse(text);
+                    console.log('Parsed JSON data:', data);
+                    
+                    if (data.success) {
+                        showNotification(`Successfully deleted ${data.deleted_count} users from ${deleteData.municipality}${deleteData.barangay ? `, ${deleteData.barangay}` : ''}`, 'success');
+                        closeDeleteByLocationModal();
+                        loadCommunityUsersTable(); // Refresh the table
+                    } else {
+                        showNotification('Error deleting users: ' + data.message, 'error');
+                    }
+                } catch (parseError) {
+                    console.error('JSON parse error:', parseError);
+                    console.error('Response text that failed to parse:', text);
+                    showNotification('Error parsing server response: ' + parseError.message, 'error');
                 }
             })
             .catch(error => {

@@ -1,5 +1,10 @@
 <?php
 // Delete users by location API
+error_log("Delete by location API called at " . date('Y-m-d H:i:s'));
+
+// Start output buffering to catch any unexpected output
+ob_start();
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -11,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 session_start();
+error_log("Session started, user_id: " . ($_SESSION['user_id'] ?? 'not set') . ", role: " . ($_SESSION['role'] ?? 'not set'));
 
 // Check if user is logged in and is admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -19,9 +25,13 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 }
 
 try {
+    error_log("Attempting to require config.php");
     require_once __DIR__ . '/../../config.php';
+    error_log("Config.php loaded successfully");
     
+    error_log("Attempting to get database connection");
     $pdo = getDatabaseConnection();
+    error_log("Database connection result: " . ($pdo ? 'success' : 'failed'));
     
     if (!$pdo) {
         echo json_encode(['success' => false, 'message' => 'Database connection failed']);
@@ -29,18 +39,24 @@ try {
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        error_log("POST request received");
         $input = file_get_contents('php://input');
+        error_log("Raw input: " . $input);
         $data = json_decode($input, true);
+        error_log("Decoded data: " . json_encode($data));
         
         if (!$data) {
+            error_log("No data received or JSON decode failed");
             echo json_encode(['success' => false, 'message' => 'No data received']);
             exit();
         }
         
         $municipality = $data['municipality'] ?? '';
         $barangay = $data['barangay'] ?? '';
+        error_log("Municipality: '$municipality', Barangay: '$barangay'");
         
         if (empty($municipality)) {
+            error_log("Municipality is empty");
             echo json_encode(['success' => false, 'message' => 'Municipality is required']);
             exit();
         }
@@ -87,6 +103,12 @@ try {
             $location = $municipality . ($barangay ? ", $barangay" : "");
             error_log("Users deleted by location by admin: " . ($_SESSION['username'] ?? 'Unknown') . " - Location: $location - Count: $userCount - Notifications sent: $notificationsSent");
             
+            // Clean any unexpected output
+            $unexpectedOutput = ob_get_clean();
+            if (!empty($unexpectedOutput)) {
+                error_log("Unexpected output detected: " . $unexpectedOutput);
+            }
+            
             echo json_encode([
                 'success' => true, 
                 'message' => "Successfully deleted $userCount users from $location" . ($notificationsSent > 0 ? " and sent $notificationsSent notifications" : ""),
@@ -94,14 +116,29 @@ try {
                 'notifications_sent' => $notificationsSent
             ]);
         } else {
+            // Clean any unexpected output
+            $unexpectedOutput = ob_get_clean();
+            if (!empty($unexpectedOutput)) {
+                error_log("Unexpected output detected: " . $unexpectedOutput);
+            }
             echo json_encode(['success' => false, 'message' => 'Failed to delete users']);
         }
     } else {
+        // Clean any unexpected output
+        $unexpectedOutput = ob_get_clean();
+        if (!empty($unexpectedOutput)) {
+            error_log("Unexpected output detected: " . $unexpectedOutput);
+        }
         echo json_encode(['success' => false, 'message' => 'POST method required']);
     }
     
 } catch (Exception $e) {
     error_log("Error deleting users by location: " . $e->getMessage());
+    // Clean any unexpected output
+    $unexpectedOutput = ob_get_clean();
+    if (!empty($unexpectedOutput)) {
+        error_log("Unexpected output detected: " . $unexpectedOutput);
+    }
     echo json_encode(['success' => false, 'message' => 'Server error: ' . $e->getMessage()]);
 }
 
