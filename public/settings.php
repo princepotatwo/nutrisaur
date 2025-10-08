@@ -8199,7 +8199,10 @@ header {
                     if (data.success) {
                         showNotification(`Successfully deleted ${data.deleted_count} users from ${deleteData.municipality}${deleteData.barangay ? `, ${deleteData.barangay}` : ''}`, 'success');
                         closeDeleteByLocationModal();
-                        loadCommunityUsersTable(); // Refresh the table
+                        // Refresh the page to ensure all data is updated
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500); // Small delay to show the success message
                     } else {
                         showNotification('Error deleting users: ' + data.message, 'error');
                     }
