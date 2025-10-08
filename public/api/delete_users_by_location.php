@@ -2,6 +2,10 @@
 // Delete users by location API
 error_log("Delete by location API called at " . date('Y-m-d H:i:s'));
 
+// Suppress error reporting to prevent warnings from being output
+error_reporting(0);
+ini_set('display_errors', 0);
+
 // Start output buffering to catch any unexpected output
 ob_start();
 
@@ -19,7 +23,7 @@ session_start();
 error_log("Session started, user_id: " . ($_SESSION['user_id'] ?? 'not set') . ", role: " . ($_SESSION['role'] ?? 'not set'));
 
 // Check if user is logged in and is admin
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
     exit();
 }
