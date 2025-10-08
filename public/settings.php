@@ -2732,16 +2732,16 @@ header {
 
         .modal-footer {
             display: flex;
-            justify-content: flex-end;
             gap: 15px;
             padding: 25px 30px;
             border-top: 1px solid var(--color-border);
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            background: var(--color-card);
             position: sticky;
             bottom: 0;
         }
 
         .btn {
+            flex: 1;
             padding: 12px 24px;
             border: none;
             border-radius: 8px;
@@ -2749,7 +2749,6 @@ header {
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-width: 120px;
         }
 
         .btn-secondary {
