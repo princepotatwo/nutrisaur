@@ -1551,15 +1551,15 @@ header {
 }
 
 .btn-delete-location {
-    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     color: white;
-    box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
 }
 
 .btn-delete-location:hover {
-    background: linear-gradient(135deg, #e67e22 0%, #f39c12 100%);
+    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
 }
 
 .btn-icon {
@@ -1568,6 +1568,39 @@ header {
 
 .btn-text {
     font-weight: 500;
+}
+
+.warning-box {
+    background: #fee;
+    border: 1px solid #fcc;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    color: #c33;
+}
+
+[data-theme="dark"] .warning-box {
+    background: #2d1b1b;
+    border-color: #4a2c2c;
+    color: #ff6b6b;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
 }
 
 /* Search container styles applied to div containing search input */
@@ -5059,7 +5092,6 @@ header {
                                 <span class="btn-text">Delete All Users</span>
                             </button>
                             <button class="btn-delete-location" onclick="showDeleteByLocationModal()" id="deleteByLocationBtn" style="display: none;">
-                                <span class="btn-icon">📍</span>
                                 <span class="btn-text">Delete by Location</span>
                             </button>
                         </div>
@@ -8108,17 +8140,16 @@ header {
         function confirmDeleteByLocation() {
             const municipality = document.getElementById('deleteMunicipality').value;
             const barangay = document.getElementById('deleteBarangay').value;
-            const scope = document.getElementById('deleteScope').value;
             
-            if (!municipality || !scope) {
-                alert('Please select municipality and scope');
+            if (!municipality) {
+                alert('Please select municipality');
                 return;
             }
             
             // Show password confirmation modal
             const confirmMessage = `You are about to delete all community users from ${municipality}${barangay ? `, ${barangay}` : ''}. This action cannot be undone. Please enter your admin password to confirm.`;
             
-            showPasswordConfirmModal(performDeleteByLocation, {municipality, barangay, scope}, confirmMessage);
+            showPasswordConfirmModal(performDeleteByLocation, {municipality, barangay}, confirmMessage);
         }
 
         function performDeleteByLocation(deleteData) {
@@ -8700,21 +8731,20 @@ header {
             // Clear existing options
             barangayFilter.innerHTML = '<option value="">All</option>';
             
-            // Add barangay options based on selected municipality
-            // This is a simplified version - you may want to fetch from your database
+            // Use the exact same barangay data as screening.php
             const barangays = {
-                'ABUCAY': ['ABUCAY POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
-                'BAGAC': ['BAGAC POBLACION', 'BANAYBANAY', 'BINUANGAN', 'BINUKAWAN', 'BORLONG', 'BULACAN', 'BULIG', 'CALUMPANG', 'IBABA', 'IBIS', 'KAPARANGAN', 'KAYANAPAN', 'LAWAIN', 'PAG-ASA', 'PALIKPIK', 'PARANG', 'QUINABALAN', 'SAYSAYAN', 'SAN ANTONIO', 'SANTA ELENA', 'TABING-ILOG', 'TALISAY', 'TIGBIGA', 'TINIGTIGAN', 'TUMAO', 'WAWA'],
-                'CITY OF BALANGA': ['BALANGA POBLACION', 'BAGONG SILANG', 'BAGUMBAYAN', 'BALUT', 'BANTAYAN', 'BATANGAS', 'BINUANGAN', 'BULACAN', 'BULIG', 'BURGOS', 'CALUMPANG', 'CAPITANGAN', 'DONA FRANCISCA', 'DUHAT', 'IBABA', 'IBIS', 'KAPARANGAN', 'KAYANAPAN', 'LAWAIN', 'MABALACAT', 'MALABO', 'PAG-ASA', 'PALIKPIK', 'PARANG', 'POBLACION', 'QUINABALAN', 'SAYSAYAN', 'SAN ANTONIO', 'SANTA ELENA', 'TABING-ILOG', 'TALISAY', 'TIGBIGA', 'TINIGTIGAN', 'TUMAO', 'WAWA'],
-                'DINALUPIHAN': ['DINALUPIHAN POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
-                'HERMOSA': ['HERMOSA POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
-                'LIMAY': ['LIMAY POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
-                'MARIVELES': ['MARIVELES POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
-                'MORONG': ['MORONG POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
-                'ORANI': ['ORANI POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
-                'ORION': ['ORION POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
-                'PILAR': ['PILAR POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA'],
-                'SAMAL': ['SAMAL POBLACION', 'BAGONG SILANG', 'BANGKAL', 'BINUKAWAN', 'CALAYLAYAN', 'CALUMBOG', 'CAPITANGAN', 'GABON', 'KALAYAAN', 'LAWIN', 'MABALACAT', 'MALABO', 'PAMARANGAN', 'PANILAO', 'POBLACION', 'SABANG', 'SALVACION', 'SANTO TOMAS', 'SUMACAB', 'TABING-ILOG', 'WAWA']
+                'ABUCAY': ['Bangkal', 'Calaylayan (Pob.)', 'Capitangan', 'Gabon', 'Laon (Pob.)', 'Mabatang', 'Poblacion', 'Saguing', 'Salapungan', 'Tala'],
+                'BAGAC': ['Bagumbayan (Pob.)', 'Banawang', 'Binuangan', 'Binukawan', 'Ibaba', 'Ibayo', 'Paysawan', 'Quinaoayanan', 'San Antonio', 'Saysain', 'Sibucao', 'Tabing-Ilog', 'Tipo', 'Tugatog', 'Wawa'],
+                'CITY OF BALANGA': ['Bagumbayan', 'Cabog-Cabog', 'Munting Batangas (Cadre)', 'Cataning', 'Central', 'Cupang Proper', 'Cupang West', 'Dangcol (Bernabe)', 'Ibayo', 'Malabia', 'Poblacion', 'Pto. Rivas Ibaba', 'Pto. Rivas Itaas', 'San Jose', 'Sibacan', 'Camacho', 'Talisay', 'Tanato', 'Tenejero', 'Tortugas', 'Tuyo', 'Bagong Silang', 'Cupang North', 'Doña Francisca', 'Lote'],
+                'DINALUPIHAN': ['Bangal', 'Bonifacio (Pob.)', 'Burgos (Pob.)', 'Colo', 'Daang Bago', 'Dalao', 'Del Pilar', 'General Luna', 'Governor Generoso', 'Hacienda', 'Jose Abad Santos (Pob.)', 'Kataasan', 'Layac', 'Lourdes', 'Mabini', 'Maligaya', 'Naparing', 'Paco', 'Pag-asa', 'Pagalanggang', 'Panggalan', 'Pinulot', 'Poblacion', 'Rizal', 'Saguing', 'San Benito', 'San Isidro', 'San Ramon', 'Santo Cristo', 'Sapang Balas', 'Sumalo', 'Tipo', 'Tuklasan', 'Turac', 'Zamora'],
+                'HERMOSA': ['A. Rivera (Pob.)', 'Almacen', 'Bacong', 'Balsic', 'Bamban', 'Burgos-Soliman (Pob.)', 'Cataning (Pob.)', 'Culong', 'Daungan (Pob.)', 'Judicial (Pob.)', 'Mabiga', 'Mabuco', 'Maite', 'Palihan', 'Pandatung', 'Pulong Gubat', 'San Pedro (Pob.)', 'Santo Cristo (Pob.)', 'Sumalo', 'Tipo'],
+                'LIMAY': ['Alangan', 'Kitang I', 'Kitang 2 & Luz', 'Lamao', 'Landing', 'Poblacion', 'Reforma', 'San Francisco de Asis', 'Townsite'],
+                'MARIVELES': ['Alas-asin', 'Alion', 'Batangas II', 'Cabcaben', 'Lucanin', 'Mabayo', 'Malaya', 'Maligaya', 'Mountain View', 'Poblacion', 'San Carlos', 'San Isidro', 'San Nicolas', 'San Pedro', 'Saysain', 'Sisiman', 'Tukuran'],
+                'MORONG': ['Binaritan', 'Mabayo', 'Nagbalayong', 'Poblacion', 'Sabang', 'San Pedro', 'Sitio Liyang'],
+                'ORANI': ['Apolinario (Pob.)', 'Bagong Paraiso', 'Balut', 'Bayan (Pob.)', 'Calero (Pob.)', 'Calutit', 'Camachile', 'Del Pilar', 'Kaparangan', 'Mabatang', 'Maria Fe', 'Pagtakhan', 'Paking-Carbonero (Pob.)', 'Pantalan Bago (Pob.)', 'Pantalan Luma (Pob.)', 'Parang', 'Poblacion', 'Rizal (Pob.)', 'Sagrada', 'San Jose', 'Sibul', 'Sili', 'Sulong', 'Tagumpay', 'Tala', 'Talimundoc', 'Tugatog', 'Wawa'],
+                'ORION': ['Arellano (Pob.)', 'Bagumbayan (Pob.)', 'Balagtas (Pob.)', 'Balut (Pob.)', 'Bantan', 'Bilolo', 'Calungusan', 'Camachile', 'Daang Bago', 'Daan Bago', 'Daan Bilolo', 'Daan Pare', 'General Lim (Kaput)', 'Kaput', 'Lati', 'Lusung', 'Puting Buhangin', 'Sabatan', 'San Vicente', 'Santa Elena', 'Santo Domingo', 'Villa Angeles', 'Wakas'],
+                'PILAR': ['Ala-uli', 'Bagumbayan', 'Balut I', 'Balut II', 'Bantan Munti', 'Bantan', 'Burgos', 'Del Rosario', 'Diwa', 'Landing', 'Liwa', 'Nueva Vida', 'Panghulo', 'Pantingan', 'Poblacion', 'Rizal', 'Sagrada', 'San Nicolas', 'San Pedro', 'Santo Niño', 'Wakas'],
+                'SAMAL': ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan', 'San Roque', 'Santa Lucia', 'Santo Niño', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
             };
             
             const selectedMunicipality = municipalityFilter.value;
@@ -8905,20 +8935,11 @@ header {
                         <select id="deleteBarangay" name="barangay">
                             <option value="">All Barangays</option>
                         </select>
-                        <small>Leave empty to delete all users from the selected municipality</small>
+                        <small>Select a specific barangay or leave as "All Barangays" to delete all users from the municipality</small>
                     </div>
                     
                     <div class="form-group">
-                        <label for="deleteScope">Delete Scope *</label>
-                        <select id="deleteScope" name="scope" required>
-                            <option value="">Select Scope</option>
-                            <option value="municipality">All users in this municipality</option>
-                            <option value="barangay">All users in this barangay only</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin: 15px 0;">
+                        <div class="warning-box">
                             <strong>⚠️ Warning:</strong> This action will permanently delete all community users from the selected location. This cannot be undone.
                         </div>
                     </div>
@@ -8926,7 +8947,7 @@ header {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeDeleteByLocationModal()">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="confirmDeleteByLocation()">Delete Users</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDeleteByLocation()">Delete Users</button>
             </div>
         </div>
     </div>
