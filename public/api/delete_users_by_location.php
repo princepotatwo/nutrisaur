@@ -39,18 +39,17 @@ try {
         
         $municipality = $data['municipality'] ?? '';
         $barangay = $data['barangay'] ?? '';
-        $scope = $data['scope'] ?? '';
         
-        if (empty($municipality) || empty($scope)) {
-            echo json_encode(['success' => false, 'message' => 'Municipality and scope are required']);
+        if (empty($municipality)) {
+            echo json_encode(['success' => false, 'message' => 'Municipality is required']);
             exit();
         }
         
-        // Build the WHERE clause based on scope
+        // Build the WHERE clause based on municipality and optional barangay
         $whereClause = "municipality = ?";
         $params = [$municipality];
         
-        if ($scope === 'barangay' && !empty($barangay)) {
+        if (!empty($barangay)) {
             $whereClause .= " AND barangay = ?";
             $params[] = $barangay;
         }

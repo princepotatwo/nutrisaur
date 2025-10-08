@@ -1554,6 +1554,16 @@ header {
     background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     color: white;
     box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .btn-delete-location:hover {
@@ -4042,11 +4052,15 @@ header {
             pointer-events: auto !important;
             cursor: pointer !important;
             position: relative !important;
-            z-index: 101 !important;
+            z-index: 1002 !important;
             user-select: none !important;
         }
 
         /* Password Confirmation Modal Styling */
+        #passwordConfirmModal {
+            z-index: 1002 !important;
+        }
+        
         #passwordConfirmModal .modal-content {
             max-width: 500px;
             border: 2px solid var(--color-danger);
