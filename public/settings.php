@@ -241,8 +241,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                     break;
                 }
                 
-                require_once __DIR__ . "/../config.php";
-                $pdo = getDatabaseConnection();
                 if (!$pdo) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
@@ -305,8 +303,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                     break;
                 }
                 
-                require_once __DIR__ . "/../config.php";
-                $pdo = getDatabaseConnection();
                 if (!$pdo) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
@@ -426,8 +422,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                     break;
                 }
                 
-                require_once __DIR__ . "/../config.php";
-                $pdo = getDatabaseConnection();
                 if (!$pdo) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
@@ -457,8 +451,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
             
         case 'get_users_table':
             try {
-                require_once __DIR__ . "/../config.php";
-                $pdo = getDatabaseConnection();
                 if (!$pdo) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
@@ -486,8 +478,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                     break;
                 }
                 
-                require_once __DIR__ . "/../config.php";
-                $pdo = getDatabaseConnection();
                 if (!$pdo) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
@@ -598,7 +588,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                
                error_log("Attempting to insert user with data: username=$username, email=$email, municipality=$municipality");
                
-               $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, municipality, password_reset_code, password_reset_expires, email_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, NOW())");
+               $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, municipality, password_reset_code, password_reset_expires, email_verified, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, 1, NOW())");
                $result = $insertStmt->execute([$username, $email, $hashedPassword, $municipality, $resetToken, $resetExpires]);
                
                if ($result) {
