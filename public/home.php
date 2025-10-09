@@ -2114,11 +2114,16 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             setTimeout(forceDarkStyling, 100);
             setTimeout(forceDarkStyling, 500);
             
-            // Show the login form after styling is applied
+            // Show the login form after styling is applied (only if no password setup token)
             setTimeout(() => {
-                const authForm = document.getElementById('auth-form');
-                if (authForm) {
-                    authForm.style.display = 'block';
+                const urlParams = new URLSearchParams(window.location.search);
+                const setupToken = urlParams.get('setup_password');
+                
+                if (!setupToken) {
+                    const authForm = document.getElementById('auth-form');
+                    if (authForm) {
+                        authForm.style.display = 'block';
+                    }
                 }
             }, 600);
             
@@ -2499,14 +2504,14 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
 
         // Initialize all event listeners
         document.addEventListener('DOMContentLoaded', function() {
+            // Check for password setup token FIRST, before any other initialization
+            checkPasswordSetupToken();
+            
             createParticles();
             setupPasswordToggles();
             setupVerificationForm();
             setupForgotPasswordForm();
             setupPasswordSetupForm();
-            
-            // Check for password setup token first, before showing login form
-            checkPasswordSetupToken();
             
             // Only show login form if no password setup token
             const urlParams = new URLSearchParams(window.location.search);
