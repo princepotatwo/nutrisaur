@@ -156,8 +156,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         $organizer = $_POST['organizer'] ?? '';
         $whoStandard = $_POST['who_standard'] ?? null;
         $classification = $_POST['classification'] ?? null;
+        $userStatus = $_POST['user_status'] ?? null;
         
-        error_log("🎯 WHO Standard: '$whoStandard', Classification: '$classification'");
+        error_log("🎯 WHO Standard: '$whoStandard', Classification: '$classification', User Status: '$userStatus'");
         
         // Auto-set type to "Event" since we removed the type field
         $type = 'Event';
@@ -772,8 +773,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
                 error_log("📱 AJAX: Sending notifications for event: $title at $location");
                 error_log("🔍 Before sendEventNotifications - WHO Standard: '$whoStandard', Classification: '$classification'");
                 
-                // Use the centralized sendEventNotifications function with WHO classification targeting
-                $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer, $whoStandard, $classification);
+                // Use the centralized sendEventNotifications function with WHO classification and user status targeting
+                $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer, $whoStandard, $classification, $userStatus);
                 
                 if ($notificationResult['success']) {
                     $notificationMessage = $notificationResult['message'];
@@ -810,7 +811,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 }
 
 // 🚨 NEW SIMPLIFIED NOTIFICATION FUNCTION
-function sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer, $whoStandard = null, $classification = null) {
+function sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer, $whoStandard = null, $classification = null, $userStatus = null) {
     $db = DatabaseAPI::getInstance();
     
     try {
@@ -834,9 +835,9 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
         file_put_contents($lockFile, time());
         error_log("🔔 Manual Event: Sending notification for event: $title at $location");
         
-        // Get FCM tokens based on location and WHO classification
-        error_log("🔍 sendEventNotifications - WHO Standard: '$whoStandard', Classification: '$classification'");
-        $fcmTokenData = getFCMTokensByLocation($location, $whoStandard, $classification);
+        // Get FCM tokens based on location, WHO classification, and user status
+        error_log("🔍 sendEventNotifications - WHO Standard: '$whoStandard', Classification: '$classification', User Status: '$userStatus'");
+        $fcmTokenData = getFCMTokensByLocation($location, $whoStandard, $classification, $userStatus);
         $fcmTokens = array_column($fcmTokenData, 'fcm_token');
         
         error_log("📱 FCM tokens found: " . count($fcmTokens) . " for location: '$location'");
@@ -1087,17 +1088,35 @@ function sendEventFCMNotification($tokens, $notificationData, $targetLocation = 
 // These functions are no longer needed - using the working API instead
 
 // Function to get FCM tokens based on location and WHO classification targeting
-function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $classification = null) {
+function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $classification = null, $userStatus = null) {
     try {
         // Use DatabaseAPI class directly
         $db = DatabaseAPI::getInstance();
         
         // Debug logging
-        error_log("getFCMTokensByLocation called with targetLocation: '$targetLocation', whoStandard: '$whoStandard', classification: '$classification'");
+        error_log("getFCMTokensByLocation called with targetLocation: '$targetLocation', whoStandard: '$whoStandard', classification: '$classification', userStatus: '$userStatus'");
         
         // Build WHERE clause for WHO classification filtering
         $classificationWhere = "";
         $classificationParams = [];
+        
+        // Build WHERE clause for user status filtering
+        $userStatusWhere = "";
+        $userStatusParams = [];
+        
+        if (!empty($userStatus)) {
+            switch ($userStatus) {
+                case 'flagged':
+                    $userStatusWhere = " AND flagged = 1";
+                    break;
+                case 'with_notes':
+                    $userStatusWhere = " AND notes IS NOT NULL AND notes != ''";
+                    break;
+                case 'flagged_and_notes':
+                    $userStatusWhere = " AND flagged = 1 AND notes IS NOT NULL AND notes != ''";
+                    break;
+            }
+        }
         
         if (!empty($whoStandard) && !empty($classification)) {
             // Map WHO standard to database column
@@ -1132,9 +1151,11 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
                 WHERE fcm_token IS NOT NULL 
                 AND fcm_token != ''
                 $classificationWhere
+                $userStatusWhere
             ";
             $stmt = $db->getPDO()->prepare($sql);
-            $stmt->execute($classificationParams);
+            $allParams = array_merge($classificationParams, $userStatusParams);
+            $stmt->execute($allParams);
             $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
             // Check if it's a municipality (starts with MUNICIPALITY_)
@@ -1154,10 +1175,11 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
                     AND fcm_token != ''
                     AND municipality = :municipality
                     $classificationWhere
+                    $userStatusWhere
                 ";
                 $stmt = $db->getPDO()->prepare($sql);
                 $stmt->bindParam(':municipality', $municipalityName);
-                $allParams = array_merge([':municipality' => $municipalityName], $classificationParams);
+                $allParams = array_merge([':municipality' => $municipalityName], $classificationParams, $userStatusParams);
                 $stmt->execute($allParams);
                 $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
@@ -1184,10 +1206,11 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
                     AND fcm_token != ''
                     AND barangay = :targetLocation
                     $classificationWhere
+                    $userStatusWhere
                 ";
                 $stmt = $db->getPDO()->prepare($sql);
                 $stmt->bindParam(':targetLocation', $targetLocation);
-                $allParams = array_merge([':targetLocation' => $targetLocation], $classificationParams);
+                $allParams = array_merge([':targetLocation' => $targetLocation], $classificationParams, $userStatusParams);
                 $stmt->execute($allParams);
                 $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
@@ -5016,6 +5039,17 @@ header:hover {
                 </div>
                 
                 <div class="form-group">
+                    <label for="eventUserStatus">User Status Filter</label>
+                    <select id="eventUserStatus" name="eventUserStatus">
+                        <option value="">None - All Users</option>
+                        <option value="flagged">Flagged Users Only</option>
+                        <option value="with_notes">Users with Notes</option>
+                        <option value="flagged_and_notes">Flagged Users with Notes</option>
+                    </select>
+                    <small class="form-help">Filter users by their status (flagged, notes, or both)</small>
+                </div>
+                
+                <div class="form-group">
                     <label for="eventOrganizer">Person in Charge</label>
                     <input type="text" id="eventOrganizer" name="eventOrganizer" value="<?php echo htmlspecialchars($username ?? $email ?? 'Unknown User'); ?>" readonly>
                 </div>
@@ -5271,6 +5305,17 @@ header:hover {
                         <!-- Classification options will be populated by JavaScript based on WHO standard -->
                     </select>
                     <small class="form-help">Select specific classification to target users with that nutritional status</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editEventUserStatus">User Status Filter</label>
+                    <select id="editEventUserStatus" name="editEventUserStatus">
+                        <option value="">None - All Users</option>
+                        <option value="flagged">Flagged Users Only</option>
+                        <option value="with_notes">Users with Notes</option>
+                        <option value="flagged_and_notes">Flagged Users with Notes</option>
+                    </select>
+                    <small class="form-help">Filter users by their status (flagged, notes, or both)</small>
                 </div>
                 
                 <div class="form-group">
@@ -5546,6 +5591,7 @@ function closeCreateEventModal() {
     const barangay = formData.get('eventBarangay');
     const whoStandard = formData.get('eventWhoStandard');
     const classification = formData.get('eventClassification');
+    const userStatus = formData.get('eventUserStatus');
     
     // Determine target location based on municipality and barangay selection
     let targetLocation;
@@ -5564,7 +5610,8 @@ function closeCreateEventModal() {
         location: targetLocation,
                 organizer: formData.get('eventOrganizer'),
                 who_standard: whoStandard || null,
-                classification: classification || null
+                classification: classification || null,
+                user_status: userStatus || null
             };
             
             console.log('Event data:', eventData);
@@ -5619,7 +5666,8 @@ function closeCreateEventModal() {
                         'location': eventData.location,
                         'organizer': eventData.organizer,
                         'who_standard': eventData.who_standard,
-                        'classification': eventData.classification
+                        'classification': eventData.classification,
+                        'user_status': eventData.user_status
                     })
                 });
                 
