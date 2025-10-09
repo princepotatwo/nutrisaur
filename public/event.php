@@ -4953,6 +4953,27 @@ header:hover {
                 </div>
                 
                 <div class="form-group">
+                    <label for="eventWhoStandard">WHO Standard</label>
+                    <select id="eventWhoStandard" name="eventWhoStandard" onchange="updateClassificationOptions()">
+                        <option value="">All WHO Standards</option>
+                        <option value="weight-for-age">Weight for Age</option>
+                        <option value="height-for-age">Height for Age</option>
+                        <option value="weight-for-height">Weight for Height</option>
+                        <option value="bmi-adult">BMI Adult</option>
+                    </select>
+                    <small class="form-help">Select WHO standard to target specific classifications</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="eventClassification">Classification (Optional)</label>
+                    <select id="eventClassification" name="eventClassification">
+                        <option value="">All Classifications</option>
+                        <!-- Classification options will be populated by JavaScript based on WHO standard -->
+                    </select>
+                    <small class="form-help">Select specific classification to target users with that nutritional status</small>
+                </div>
+                
+                <div class="form-group">
                     <label for="eventOrganizer">Person in Charge</label>
                     <input type="text" id="eventOrganizer" name="eventOrganizer" value="<?php echo htmlspecialchars($username ?? $email ?? 'Unknown User'); ?>" readonly>
                 </div>
@@ -5190,6 +5211,27 @@ header:hover {
                 </div>
                 
                 <div class="form-group">
+                    <label for="editEventWhoStandard">WHO Standard</label>
+                    <select id="editEventWhoStandard" name="editEventWhoStandard" onchange="updateEditClassificationOptions()">
+                        <option value="">All WHO Standards</option>
+                        <option value="weight-for-age">Weight for Age</option>
+                        <option value="height-for-age">Height for Age</option>
+                        <option value="weight-for-height">Weight for Height</option>
+                        <option value="bmi-adult">BMI Adult</option>
+                    </select>
+                    <small class="form-help">Select WHO standard to target specific classifications</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editEventClassification">Classification (Optional)</label>
+                    <select id="editEventClassification" name="editEventClassification">
+                        <option value="">All Classifications</option>
+                        <!-- Classification options will be populated by JavaScript based on WHO standard -->
+                    </select>
+                    <small class="form-help">Select specific classification to target users with that nutritional status</small>
+                </div>
+                
+                <div class="form-group">
                     <label for="editEventOrganizer">Person in Charge</label>
                     <input type="text" id="editEventOrganizer" name="editEventOrganizer" readonly>
                 </div>
@@ -5261,6 +5303,80 @@ function updateEditBarangayOptions() {
             barangaySelect.appendChild(option);
         });
     }
+}
+
+// Function to update classification options based on WHO standard
+function updateClassificationOptions() {
+    const whoStandardSelect = document.getElementById('eventWhoStandard');
+    const classificationSelect = document.getElementById('eventClassification');
+    const selectedStandard = whoStandardSelect.value;
+    
+    // Clear existing options
+    classificationSelect.innerHTML = '<option value="">All Classifications</option>';
+    
+    if (selectedStandard) {
+        const classifications = getClassificationsForStandard(selectedStandard);
+        classifications.forEach(classification => {
+            const option = document.createElement('option');
+            option.value = classification;
+            option.textContent = classification;
+            classificationSelect.appendChild(option);
+        });
+    }
+}
+
+// Function to update edit classification options based on WHO standard
+function updateEditClassificationOptions() {
+    const whoStandardSelect = document.getElementById('editEventWhoStandard');
+    const classificationSelect = document.getElementById('editEventClassification');
+    const selectedStandard = whoStandardSelect.value;
+    
+    // Clear existing options
+    classificationSelect.innerHTML = '<option value="">All Classifications</option>';
+    
+    if (selectedStandard) {
+        const classifications = getClassificationsForStandard(selectedStandard);
+        classifications.forEach(classification => {
+            const option = document.createElement('option');
+            option.value = classification;
+            option.textContent = classification;
+            classificationSelect.appendChild(option);
+        });
+    }
+}
+
+// Function to get classifications for a specific WHO standard
+function getClassificationsForStandard(standard) {
+    const classifications = {
+        'weight-for-age': [
+            'Severely Underweight',
+            'Underweight', 
+            'Normal',
+            'Overweight',
+            'Obese'
+        ],
+        'height-for-age': [
+            'Severely Stunted',
+            'Stunted',
+            'Normal',
+            'Tall'
+        ],
+        'weight-for-height': [
+            'Severely Wasted',
+            'Wasted',
+            'Normal',
+            'Overweight',
+            'Obese'
+        ],
+        'bmi-adult': [
+            'Underweight',
+            'Normal',
+            'Overweight',
+            'Obese'
+        ]
+    };
+    
+    return classifications[standard] || [];
 }
 
 // Function to get the target location for notifications
@@ -5386,6 +5502,8 @@ function closeCreateEventModal() {
             const formData = new FormData(form);
     const municipality = formData.get('eventMunicipality');
     const barangay = formData.get('eventBarangay');
+    const whoStandard = formData.get('eventWhoStandard');
+    const classification = formData.get('eventClassification');
     
     // Determine target location based on municipality and barangay selection
     let targetLocation;
@@ -5402,7 +5520,9 @@ function closeCreateEventModal() {
                 description: formData.get('eventDescription'),
                 date_time: formData.get('eventDate'),
         location: targetLocation,
-                organizer: formData.get('eventOrganizer')
+                organizer: formData.get('eventOrganizer'),
+                who_standard: whoStandard || null,
+                classification: classification || null
             };
             
             console.log('Event data:', eventData);
