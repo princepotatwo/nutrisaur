@@ -117,100 +117,14 @@ function sendVerificationEmail($email, $username, $verificationCode, $subject = 
 }
 
 /**
- * Send password setup email using SendGrid API
+ * Send password setup email using the same method as verification emails
  */
 function sendPasswordSetupEmail($email, $username, $resetToken) {
-    // SendGrid API configuration
-    $apiKey = $_ENV['SENDGRID_API_KEY'] ?? 'YOUR_SENDGRID_API_KEY_HERE';
-    $apiUrl = 'https://api.sendgrid.com/v3/mail/send';
-    
     // Create password setup link
     $setupLink = "https://" . $_SERVER['HTTP_HOST'] . "/home.php?setup_password=" . $resetToken;
     
-    $emailData = [
-        'personalizations' => [
-            [
-                'to' => [
-                    ['email' => $email, 'name' => $username]
-                ],
-                'subject' => 'NUTRISAUR - Admin Account Setup'
-            ]
-        ],
-        'from' => [
-            'email' => 'noreply.nutrisaur@gmail.com',
-            'name' => 'NUTRISAUR'
-        ],
-        'content' => [
-            [
-                'type' => 'text/plain',
-                'value' => "Hello " . htmlspecialchars($username) . ",\n\nYour NUTRISAUR admin account has been created. Please click the link below to set up your password:\n\n" . $setupLink . "\n\nThis link will expire in 7 days.\n\nYour temporary password is: mho123\n\nPlease change your password after logging in for security.\n\nBest regards,\nNUTRISAUR Team"
-            ],
-            [
-                'type' => 'text/html',
-                'value' => "
-                <html>
-                <head>
-                    <title>NUTRISAUR Admin Account Setup</title>
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                </head>
-                <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4;'>
-                    <div style='max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);'>
-                        <div style='text-align: center; background-color: #2A3326; color: #A1B454; padding: 20px; border-radius: 8px 8px 0 0; margin: -20px -20px 20px -20px;'>
-                            <h1 style='margin: 0; font-size: 24px;'>NUTRISAUR</h1>
-                        </div>
-                        <div style='padding: 20px 0;'>
-                            <p>Hello " . htmlspecialchars($username) . ",</p>
-                            <p>Your NUTRISAUR admin account has been created. Please click the button below to set up your password:</p>
-                            <div style='text-align: center; margin: 30px 0;'>
-                                <a href='" . $setupLink . "' style='background-color: #A1B454; color: #2A3326; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;'>Set Up Password</a>
-                            </div>
-                            <p><strong>Your temporary password is: mho123</strong></p>
-                            <p><strong>This link will expire in 7 days.</strong></p>
-                            <p>Please change your password after logging in for security.</p>
-                        </div>
-                        <div style='text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 14px;'>
-                            <p>Best regards,<br>NUTRISAUR Team</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-                "
-            ]
-        ]
-    ];
-    
-    // Send email via SendGrid API
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $apiUrl);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . $apiKey
-    ]);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curlError = curl_error($ch);
-    curl_close($ch);
-    
-    // Enhanced error logging
-    error_log("SendGrid Password Setup API Response: HTTP $httpCode, Response: $response, Error: " . ($curlError ?: 'None'));
-    
-    if ($curlError) {
-        error_log("SendGrid password setup cURL error: " . $curlError);
-        return false;
-    }
-    
-    if ($httpCode >= 200 && $httpCode < 300) {
-        error_log("Password setup email sent successfully via SendGrid API");
-        return true;
-    }
-    
-    error_log("SendGrid password setup API failed. HTTP Code: $httpCode, Response: $response");
-    return false;
+    // Use the same email method as verification emails
+    return sendVerificationEmail($email, $username, $setupLink, 'Admin Account Setup - Password Required');
 }
 
 // Municipalities and Barangays data
@@ -282,15 +196,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Handle AJAX requests for table management
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($_POST['municipality'])) {
-    // Ensure we always return JSON
-    header('Content-Type: application/json');
-    
-    // Start output buffering to catch any unexpected output
-    ob_start();
-    
-    $action = $_POST['action'];
-    
-    switch ($action) {
+    try {
+        // Start output buffering first to catch any unexpected output
+        ob_start();
+        
+        // Ensure we always return JSON
+        header('Content-Type: application/json');
+        
+        // Disable error display to prevent HTML output
+        ini_set('display_errors', 0);
+        error_reporting(E_ALL);
+        
+        $action = $_POST['action'];
+        
+        switch ($action) {
         case 'update_profile':
             try {
                 $name = $_POST['name'] ?? '';
@@ -935,14 +854,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
         default:
             echo json_encode(['success' => false, 'error' => 'Unknown action']);
             break;
-    }
-    
-    // Clean any unexpected output and ensure JSON response
-    $unexpectedOutput = ob_get_clean();
-    if (!empty($unexpectedOutput)) {
-        error_log("Unexpected output in AJAX handler: " . $unexpectedOutput);
-        // If there was unexpected output, send it as an error
-        echo json_encode(['success' => false, 'error' => 'Server error: Unexpected output detected']);
+        }
+        
+        // Clean any unexpected output and ensure JSON response
+        $unexpectedOutput = ob_get_clean();
+        if (!empty($unexpectedOutput)) {
+            error_log("Unexpected output in AJAX handler: " . $unexpectedOutput);
+            // If there was unexpected output, send it as an error
+            echo json_encode(['success' => false, 'error' => 'Server error: Unexpected output detected']);
+        }
+        
+    } catch (Exception $e) {
+        // Clean any output buffer
+        ob_end_clean();
+        
+        // Log the error
+        error_log("Fatal error in AJAX handler: " . $e->getMessage() . " Stack trace: " . $e->getTraceAsString());
+        
+        // Return JSON error
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'error' => 'Server error: ' . $e->getMessage()]);
     }
     
     exit;
