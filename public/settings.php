@@ -8,6 +8,11 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
     exit;
 }
 
+// Debug: Log session data for super admin
+if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin') {
+    error_log("Super admin session detected: " . print_r($_SESSION, true));
+}
+
 // Use centralized DatabaseAPI - NO MORE HARDCODED CONNECTIONS!
 require_once __DIR__ . '/api/DatabaseHelper.php';
 
@@ -7265,19 +7270,31 @@ header {
                 },
                 body: `action=add_user&email=${encodeURIComponent(email)}&municipality=${encodeURIComponent(municipality)}`
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showMessage(data.message || 'Admin user created successfully!', 'success');
-                    closeUserImportModal();
-                    // Reload the appropriate table
-                    if (currentTableType === 'users') {
-                        loadUsersTable();
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                return response.text(); // Get raw response first
+            })
+            .then(text => {
+                console.log('Raw response:', text);
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        showMessage(data.message || 'Admin user created successfully!', 'success');
+                        closeUserImportModal();
+                        // Reload the appropriate table
+                        if (currentTableType === 'users') {
+                            loadUsersTable();
+                        } else {
+                            loadCommunityUsersTable();
+                        }
                     } else {
-                        loadCommunityUsersTable();
+                        showMessage('Failed to create admin user: ' + data.error, 'error');
                     }
-                } else {
-                    showMessage('Failed to create admin user: ' + data.error, 'error');
+                } catch (e) {
+                    console.error('JSON parse error:', e);
+                    console.error('Response was not JSON:', text);
+                    showMessage('Server returned invalid response. Check console for details.', 'error');
                 }
             })
             .catch(error => {
