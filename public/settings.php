@@ -493,7 +493,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
             
        case 'add_user':
            // Debug: Log everything
-           error_log("=== ADD USER DEBUG START ===");
+           error_log("=== ADD USER DEBUG START - VERSION 2.0 ===");
            error_log("POST data: " . print_r($_POST, true));
            error_log("Session data: " . print_r($_SESSION, true));
            
