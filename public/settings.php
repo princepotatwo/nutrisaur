@@ -8,15 +8,13 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
     exit;
 }
 
-// Use centralized DatabaseAPI - NO MORE HARDCODED CONNECTIONS!
-require_once __DIR__ . '/api/DatabaseHelper.php';
+// Use direct database connection for AJAX requests to avoid DatabaseAPI conflicts
+require_once __DIR__ . "/../config.php";
 
-// Get database helper instance
-$db = DatabaseHelper::getInstance();
-
-// Check if database is available
+// Get database connection
+$pdo = getDatabaseConnection();
 $dbError = null;
-if (!$db->isAvailable()) {
+if (!$pdo) {
     $dbError = "Database connection not available";
     error_log($dbError);
 }
@@ -180,8 +178,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'fcm_token' => $_POST['fcm_token'] ?? null
         ];
         
-        // Insert using DatabaseHelper
-        $result = $db->insert('community_users', $insertData);
+        // Insert using direct PDO
+        $stmt = $pdo->prepare("INSERT INTO community_users (municipality, barangay, sex, birthday, weight, height, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+        $result = $stmt->execute([$municipality, $barangay, $sex, $birthday, $weight, $height]);
+        
+        if ($result) {
+            $result = ['success' => true, 'message' => 'Screening assessment saved successfully'];
+        } else {
+            $result = ['success' => false, 'message' => 'Failed to save screening assessment'];
+        }
                 
                 if ($result['success']) {
             $success_message = "Screening assessment saved successfully!";
@@ -199,6 +204,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
     try {
         // Start output buffering first to catch any unexpected output
         ob_start();
+        
+        // Check authentication first before any output
+        if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
+            ob_end_clean();
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'error' => 'Not authenticated']);
+            exit;
+        }
         
         // Ensure we always return JSON
         header('Content-Type: application/json');
@@ -860,8 +873,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
         $unexpectedOutput = ob_get_clean();
         if (!empty($unexpectedOutput)) {
             error_log("Unexpected output in AJAX handler: " . $unexpectedOutput);
-            // If there was unexpected output, send it as an error
-            echo json_encode(['success' => false, 'error' => 'Server error: Unexpected output detected']);
+            // If there was unexpected output, send it as an error with details
+            echo json_encode([
+                'success' => false, 
+                'error' => 'Server error: Unexpected output detected',
+                'debug_output' => substr($unexpectedOutput, 0, 200) // First 200 chars for debugging
+            ]);
         }
         
     } catch (Exception $e) {
@@ -879,19 +896,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
     exit;
 }
 
-// Get existing screening assessments using DatabaseHelper
+// Get existing screening assessments using direct PDO
 $screening_assessments = [];
-if ($db->isAvailable()) {
+if ($pdo) {
     try {
         $user_email = $_SESSION['user_email'] ?? 'user@example.com';
-        $result = $db->select(
-            'community_users', 
-            '*', 
-            'email = ?', 
-            [$user_email], 
-            'screening_date DESC'
-        );
-        $screening_assessments = $result['success'] ? $result['data'] : [];
+        $stmt = $pdo->prepare("SELECT * FROM community_users WHERE email = ? ORDER BY screening_date DESC");
+        $stmt->execute([$user_email]);
+        $screening_assessments = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
         error_log("Error fetching screening assessments: " . $e->getMessage());
     }
@@ -5286,19 +5298,12 @@ header {
                 <tbody id="usersTableBody">
                     <?php
                         // Get community_users data directly from database
-                    if ($db->isAvailable()) {
+                    if ($pdo) {
                         try {
-                            // Use Universal DatabaseAPI to get users for HTML display
-                            // First get all community users
-                            $result = $db->select(
-                                    'community_users',
-                                    '*',
-                                '',
-                                [],
-                                    'name ASC'
-                            );
-                            
-                            $users = $result['success'] ? $result['data'] : [];
+                            // Get all community users using direct PDO
+                            $stmt = $pdo->prepare("SELECT * FROM community_users ORDER BY name ASC");
+                            $stmt->execute();
+                            $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             
                             if (!empty($users)) {
                                 foreach ($users as $user) {
