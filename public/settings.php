@@ -655,22 +655,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                
                error_log("Generated username: $username");
                
-               // Check if required columns exist
-               $columnsCheck = $pdo->query("SHOW COLUMNS FROM users LIKE 'password_reset_token'");
-               if (!$columnsCheck->fetch()) {
-                   error_log("password_reset_token column does not exist, creating it");
-                   $pdo->exec("ALTER TABLE users ADD COLUMN password_reset_token VARCHAR(64) NULL");
-               }
-               
-               $columnsCheck2 = $pdo->query("SHOW COLUMNS FROM users LIKE 'password_reset_expires'");
-               if (!$columnsCheck2->fetch()) {
-                   error_log("password_reset_expires column does not exist, creating it");
-                   $pdo->exec("ALTER TABLE users ADD COLUMN password_reset_expires DATETIME NULL");
-               }
+               // All required columns exist in the database
                
                error_log("Attempting to insert user with data: username=$username, email=$email, municipality=$municipality");
                
-               $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, municipality, password_reset_token, password_reset_expires, email_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, NOW())");
+               $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, municipality, password_reset_code, password_reset_expires, email_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, NOW())");
                $result = $insertStmt->execute([$username, $email, $hashedPassword, $municipality, $resetToken, $resetExpires]);
                
                if ($result) {
