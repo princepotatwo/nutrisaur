@@ -2504,7 +2504,20 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             setupVerificationForm();
             setupForgotPasswordForm();
             setupPasswordSetupForm();
+            
+            // Check for password setup token first, before showing login form
             checkPasswordSetupToken();
+            
+            // Only show login form if no password setup token
+            const urlParams = new URLSearchParams(window.location.search);
+            const setupToken = urlParams.get('setup_password');
+            if (!setupToken) {
+                // Show login form only if no password setup token
+                const authForm = document.getElementById('auth-form');
+                if (authForm) {
+                    authForm.style.display = 'block';
+                }
+            }
         });
         
         // Setup forgot password functionality
@@ -2816,12 +2829,20 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             const setupToken = urlParams.get('setup_password');
             
             if (setupToken) {
-                // Show password setup form
+                // Hide all forms first
                 hideAllForms();
+                
+                // Show only password setup form
                 document.getElementById('password-setup-form').style.display = 'block';
                 document.getElementById('reset_token').value = setupToken;
                 document.getElementById('auth-title').textContent = 'Set Up Your Password';
                 showMessage('Please set up your password to complete your account setup.', 'info');
+                
+                // Ensure login form is completely hidden
+                const authForm = document.getElementById('auth-form');
+                if (authForm) {
+                    authForm.style.display = 'none';
+                }
             }
         }
 
