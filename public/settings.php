@@ -282,7 +282,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Handle AJAX requests for table management
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($_POST['municipality'])) {
+    // Ensure we always return JSON
     header('Content-Type: application/json');
+    
+    // Start output buffering to catch any unexpected output
+    ob_start();
     
     $action = $_POST['action'];
     
@@ -579,15 +583,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
             
        case 'add_user':
            try {
+               // Debug: Log the request
+               error_log("Add user request received. POST data: " . print_r($_POST, true));
+               
                $email = $_POST['email'] ?? '';
                $municipality = $_POST['municipality'] ?? '';
                
+               error_log("Email: $email, Municipality: $municipality");
+               
                if (empty($email) || empty($municipality)) {
+                   error_log("Missing required fields");
                    echo json_encode(['success' => false, 'error' => 'Email and municipality are required']);
                    break;
                }
                
                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                   error_log("Invalid email format: $email");
                    echo json_encode(['success' => false, 'error' => 'Invalid email format']);
                    break;
                }
@@ -595,17 +606,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                require_once __DIR__ . "/../config.php";
                $pdo = getDatabaseConnection();
                if (!$pdo) {
+                   error_log("Database connection failed");
                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                    break;
                }
+               
+               error_log("Database connection successful");
                
                // Check if user already exists
                $checkStmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
                $checkStmt->execute([$email]);
                if ($checkStmt->fetch()) {
+                   error_log("User already exists with email: $email");
                    echo json_encode(['success' => false, 'error' => 'User with this email already exists']);
                    break;
                }
+               
+               error_log("User does not exist, proceeding with creation");
                
                // Generate default password and reset token
                $defaultPassword = 'mho123';
@@ -636,14 +653,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                    $username = 'admin' . rand(1000, 9999);
                }
                
+               error_log("Generated username: $username");
+               
+               // Check if required columns exist
+               $columnsCheck = $pdo->query("SHOW COLUMNS FROM users LIKE 'password_reset_token'");
+               if (!$columnsCheck->fetch()) {
+                   error_log("password_reset_token column does not exist, creating it");
+                   $pdo->exec("ALTER TABLE users ADD COLUMN password_reset_token VARCHAR(64) NULL");
+               }
+               
+               $columnsCheck2 = $pdo->query("SHOW COLUMNS FROM users LIKE 'password_reset_expires'");
+               if (!$columnsCheck2->fetch()) {
+                   error_log("password_reset_expires column does not exist, creating it");
+                   $pdo->exec("ALTER TABLE users ADD COLUMN password_reset_expires DATETIME NULL");
+               }
+               
+               error_log("Attempting to insert user with data: username=$username, email=$email, municipality=$municipality");
+               
                $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, municipality, password_reset_token, password_reset_expires, email_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, NOW())");
                $result = $insertStmt->execute([$username, $email, $hashedPassword, $municipality, $resetToken, $resetExpires]);
                
                if ($result) {
                    $userId = $pdo->lastInsertId();
+                   error_log("User inserted successfully with ID: $userId");
                    
                    // Send password setup email
-                   $emailSent = sendPasswordSetupEmail($email, $username, $resetToken);
+                   try {
+                       $emailSent = sendPasswordSetupEmail($email, $username, $resetToken);
+                       error_log("Email sent result: " . ($emailSent ? 'true' : 'false'));
+                   } catch (Exception $emailError) {
+                       error_log("Email sending failed: " . $emailError->getMessage());
+                       $emailSent = false;
+                   }
                    
                    echo json_encode([
                        'success' => true, 
@@ -651,10 +692,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                        'email_sent' => $emailSent
                    ]);
                } else {
-                   echo json_encode(['success' => false, 'error' => 'Failed to add user']);
+                   error_log("Failed to insert user. PDO error: " . print_r($insertStmt->errorInfo(), true));
+                   echo json_encode(['success' => false, 'error' => 'Failed to add user to database']);
                }
            } catch (Exception $e) {
-               echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+               error_log("Exception in add_user: " . $e->getMessage() . " Stack trace: " . $e->getTraceAsString());
+               echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
            }
            break;
            
@@ -904,6 +947,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
             echo json_encode(['success' => false, 'error' => 'Unknown action']);
             break;
     }
+    
+    // Clean any unexpected output and ensure JSON response
+    $unexpectedOutput = ob_get_clean();
+    if (!empty($unexpectedOutput)) {
+        error_log("Unexpected output in AJAX handler: " . $unexpectedOutput);
+        // If there was unexpected output, send it as an error
+        echo json_encode(['success' => false, 'error' => 'Server error: Unexpected output detected']);
+    }
+    
     exit;
 }
 
