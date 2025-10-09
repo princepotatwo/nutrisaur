@@ -843,9 +843,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                    break;
                }
                
-               // Check if user is logged in (admin user)
-               if (!isset($_SESSION['user_id'])) {
+               // Check if user is logged in (admin user or super admin)
+               if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
                    echo json_encode(['success' => false, 'error' => 'Admin user not logged in']);
+                   break;
+               }
+               
+               // Handle super admin case
+               if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin') {
+                   if ($password === 'admin') {
+                       echo json_encode(['success' => true, 'message' => 'Super admin password verified']);
+                   } else {
+                       echo json_encode(['success' => false, 'error' => 'Incorrect super admin password']);
+                   }
                    break;
                }
                
