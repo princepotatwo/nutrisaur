@@ -834,6 +834,7 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
         error_log("🔔 Manual Event: Sending notification for event: $title at $location");
         
         // Get FCM tokens based on location and WHO classification
+        error_log("🔍 sendEventNotifications - WHO Standard: '$whoStandard', Classification: '$classification'");
         $fcmTokenData = getFCMTokensByLocation($location, $whoStandard, $classification);
         $fcmTokens = array_column($fcmTokenData, 'fcm_token');
         
@@ -1124,13 +1125,14 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
         if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '' || $targetLocation === 'All Locations') {
             error_log("Processing 'all locations' case - getting all FCM tokens");
             // Get all FCM tokens with optional WHO classification filtering
-            $stmt = $db->getPDO()->prepare("
+            $sql = "
                 SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
                 FROM community_users
                 WHERE fcm_token IS NOT NULL 
                 AND fcm_token != ''
                 $classificationWhere
-            ");
+            ";
+            $stmt = $db->getPDO()->prepare($sql);
             $stmt->execute($classificationParams);
             $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
@@ -1144,16 +1146,18 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
                 
                 error_log("Looking for municipality: '$municipalityName'");
                 
-                $stmt = $db->getPDO()->prepare("
+                $sql = "
                     SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
                     FROM community_users
                     WHERE fcm_token IS NOT NULL 
                     AND fcm_token != ''
                     AND municipality = :municipality
                     $classificationWhere
-                ");
+                ";
+                $stmt = $db->getPDO()->prepare($sql);
                 $stmt->bindParam(':municipality', $municipalityName);
-                $stmt->execute($classificationParams);
+                $allParams = array_merge([':municipality' => $municipalityName], $classificationParams);
+                $stmt->execute($allParams);
                 $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 error_log("🔍 Found " . count($tokens) . " users in municipality '$municipalityName'");
@@ -1172,16 +1176,18 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
             } else {
                 error_log("Processing barangay case: $targetLocation - getting tokens for specific barangay");
                 // Get FCM tokens by barangay with optional WHO classification filtering
-                $stmt = $db->getPDO()->prepare("
+                $sql = "
                     SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
                     FROM community_users
                     WHERE fcm_token IS NOT NULL 
                     AND fcm_token != ''
                     AND barangay = :targetLocation
                     $classificationWhere
-                ");
+                ";
+                $stmt = $db->getPDO()->prepare($sql);
                 $stmt->bindParam(':targetLocation', $targetLocation);
-                $stmt->execute($classificationParams);
+                $allParams = array_merge([':targetLocation' => $targetLocation], $classificationParams);
+                $stmt->execute($allParams);
                 $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         }
