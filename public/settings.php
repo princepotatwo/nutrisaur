@@ -597,12 +597,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                error_log("Insert result: " . ($result ? 'SUCCESS' : 'FAILED'));
                
                if ($result) {
-                   error_log("User created successfully!");
+                   error_log("User created successfully, sending notification email...");
+                   
+                   // Send simple notification email with login details
+                   $loginLink = "https://" . $_SERVER['HTTP_HOST'] . "/home.php";
+                   $emailSent = sendVerificationEmail($email, $username, $loginLink, 'Admin Account Created - Login Details');
+                   
+                   error_log("Email sent: " . ($emailSent ? 'SUCCESS' : 'FAILED'));
                    error_log("=== ADD USER DEBUG END - SUCCESS ===");
                    
                    echo json_encode([
                        'success' => true, 
-                       'message' => 'Admin user created successfully! Default password: mho123'
+                       'message' => 'Admin user created successfully! Login email sent.',
+                       'email_sent' => $emailSent
                    ]);
                } else {
                    error_log("Insert failed. PDO error: " . print_r($stmt->errorInfo(), true));
