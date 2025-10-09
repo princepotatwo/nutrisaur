@@ -516,6 +516,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
            }
            
            try {
+               // Check if municipality column exists, create if missing
+               $checkColumn = $pdo->query("SHOW COLUMNS FROM users LIKE 'municipality'");
+               if (!$checkColumn->fetch()) {
+                   $pdo->exec("ALTER TABLE users ADD COLUMN municipality VARCHAR(100) NULL");
+               }
+               
                // Check if email already exists
                $check = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
                $check->execute([$email]);
