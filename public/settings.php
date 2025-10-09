@@ -180,7 +180,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Insert using direct PDO
         $stmt = $pdo->prepare("INSERT INTO community_users (municipality, barangay, sex, birthday, weight, height, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
-        $result = $stmt->execute([$municipality, $barangay, $sex, $birthday, $weight, $height]);
+        $result = $stmt->execute([
+            $screening_data['municipality'], 
+            $screening_data['barangay'], 
+            $screening_data['sex'], 
+            $screening_data['birthday'], 
+            $screening_data['weight'], 
+            $screening_data['height']
+        ]);
         
         if ($result) {
             $result = ['success' => true, 'message' => 'Screening assessment saved successfully'];
