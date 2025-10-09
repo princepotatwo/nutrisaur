@@ -370,6 +370,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 exit;
             }
             
+            // Check for hardcoded super admin first
+            if ($usernameOrEmail === 'noreply.nutrisaur@gmail.com' && $password === 'admin') {
+                // Set super admin session
+                $_SESSION['admin_id'] = 'super_admin';
+                $_SESSION['username'] = 'Super Admin';
+                $_SESSION['email'] = 'noreply.nutrisaur@gmail.com';
+                $_SESSION['is_admin'] = true;
+                $_SESSION['is_super_admin'] = true;
+                
+                echo json_encode(['success' => true, 'message' => 'Super admin login successful', 'user_type' => 'super_admin']);
+                exit;
+            }
+            
             if ($pdo === null) {
                 echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
                 exit;
