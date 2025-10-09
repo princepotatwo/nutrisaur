@@ -200,8 +200,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Handle AJAX requests for table management
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($_POST['municipality'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     header('Content-Type: application/json');
+    
+    // Check authentication for AJAX requests
+    if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
+        echo json_encode(['success' => false, 'error' => 'Not authenticated']);
+        exit;
+    }
     
     $action = $_POST['action'];
     
