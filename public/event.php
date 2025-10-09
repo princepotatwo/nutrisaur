@@ -154,6 +154,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         $date_time = $_POST['date_time'] ?? '';
         $location = $_POST['location'] ?? '';
         $organizer = $_POST['organizer'] ?? '';
+        $whoStandard = $_POST['who_standard'] ?? null;
+        $classification = $_POST['classification'] ?? null;
+        
+        error_log("🎯 WHO Standard: '$whoStandard', Classification: '$classification'");
         
         // Auto-set type to "Event" since we removed the type field
         $type = 'Event';
@@ -767,8 +771,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             try {
                 error_log("📱 AJAX: Sending notifications for event: $title at $location");
                 
-                // Use the centralized sendEventNotifications function
-                $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer);
+                // Use the centralized sendEventNotifications function with WHO classification targeting
+                $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer, $whoStandard, $classification);
                 
                 if ($notificationResult['success']) {
                     $notificationMessage = $notificationResult['message'];
@@ -805,7 +809,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 }
 
 // 🚨 NEW SIMPLIFIED NOTIFICATION FUNCTION
-function sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer) {
+function sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer, $whoStandard = null, $classification = null) {
     $db = DatabaseAPI::getInstance();
     
     try {
@@ -829,8 +833,8 @@ function sendEventNotifications($eventId, $title, $type, $description, $date_tim
         file_put_contents($lockFile, time());
         error_log("🔔 Manual Event: Sending notification for event: $title at $location");
         
-        // Get FCM tokens based on location
-        $fcmTokenData = getFCMTokensByLocation($location);
+        // Get FCM tokens based on location and WHO classification
+        $fcmTokenData = getFCMTokensByLocation($location, $whoStandard, $classification);
         $fcmTokens = array_column($fcmTokenData, 'fcm_token');
         
         error_log("📱 FCM tokens found: " . count($fcmTokens) . " for location: '$location'");
@@ -1080,25 +1084,54 @@ function sendEventFCMNotification($tokens, $notificationData, $targetLocation = 
 
 // These functions are no longer needed - using the working API instead
 
-// Function to get FCM tokens based on location targeting using DatabaseAPI methods
-function getFCMTokensByLocation($targetLocation = null) {
+// Function to get FCM tokens based on location and WHO classification targeting
+function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $classification = null) {
     try {
         // Use DatabaseAPI class directly
         $db = DatabaseAPI::getInstance();
         
         // Debug logging
-        error_log("getFCMTokensByLocation called with targetLocation: '$targetLocation' (type: " . gettype($targetLocation) . ", length: " . strlen($targetLocation ?? '') . ")");
+        error_log("getFCMTokensByLocation called with targetLocation: '$targetLocation', whoStandard: '$whoStandard', classification: '$classification'");
+        
+        // Build WHERE clause for WHO classification filtering
+        $classificationWhere = "";
+        $classificationParams = [];
+        
+        if (!empty($whoStandard) && !empty($classification)) {
+            // Map WHO standard to database column
+            $classificationColumn = "";
+            switch ($whoStandard) {
+                case 'weight-for-age':
+                    $classificationColumn = "weight_for_age_classification";
+                    break;
+                case 'height-for-age':
+                    $classificationColumn = "height_for_age_classification";
+                    break;
+                case 'weight-for-height':
+                    $classificationColumn = "weight_for_height_classification";
+                    break;
+                case 'bmi-adult':
+                    $classificationColumn = "bmi_category";
+                    break;
+            }
+            
+            if (!empty($classificationColumn)) {
+                $classificationWhere = " AND $classificationColumn = :classification";
+                $classificationParams[':classification'] = $classification;
+            }
+        }
         
         if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '' || $targetLocation === 'All Locations') {
             error_log("Processing 'all locations' case - getting all FCM tokens");
-            // Get all FCM tokens (no status column check)
+            // Get all FCM tokens with optional WHO classification filtering
             $stmt = $db->getPDO()->prepare("
                 SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
                 FROM community_users
                 WHERE fcm_token IS NOT NULL 
                 AND fcm_token != ''
+                $classificationWhere
             ");
-            $stmt->execute();
+            $stmt->execute($classificationParams);
             $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
             // Check if it's a municipality (starts with MUNICIPALITY_)
@@ -1117,9 +1150,10 @@ function getFCMTokensByLocation($targetLocation = null) {
                     WHERE fcm_token IS NOT NULL 
                     AND fcm_token != ''
                     AND municipality = :municipality
+                    $classificationWhere
                 ");
                 $stmt->bindParam(':municipality', $municipalityName);
-                $stmt->execute();
+                $stmt->execute($classificationParams);
                 $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 error_log("🔍 Found " . count($tokens) . " users in municipality '$municipalityName'");
@@ -1137,16 +1171,17 @@ function getFCMTokensByLocation($targetLocation = null) {
                 error_log("🔍 Available municipalities with FCM tokens: " . json_encode($municipalities));
             } else {
                 error_log("Processing barangay case: $targetLocation - getting tokens for specific barangay");
-                // Get FCM tokens by barangay
+                // Get FCM tokens by barangay with optional WHO classification filtering
                 $stmt = $db->getPDO()->prepare("
                     SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
                     FROM community_users
                     WHERE fcm_token IS NOT NULL 
                     AND fcm_token != ''
                     AND barangay = :targetLocation
+                    $classificationWhere
                 ");
                 $stmt->bindParam(':targetLocation', $targetLocation);
-                $stmt->execute();
+                $stmt->execute($classificationParams);
                 $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         }
@@ -5575,7 +5610,9 @@ function closeCreateEventModal() {
                         'description': eventData.description,
                         'date_time': eventData.date_time,
                         'location': eventData.location,
-                        'organizer': eventData.organizer
+                        'organizer': eventData.organizer,
+                        'who_standard': eventData.who_standard,
+                        'classification': eventData.classification
                     })
                 });
                 
