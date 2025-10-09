@@ -116,6 +116,103 @@ function sendVerificationEmail($email, $username, $verificationCode, $subject = 
     return false;
 }
 
+/**
+ * Send password setup email using SendGrid API
+ */
+function sendPasswordSetupEmail($email, $username, $resetToken) {
+    // SendGrid API configuration
+    $apiKey = $_ENV['SENDGRID_API_KEY'] ?? 'YOUR_SENDGRID_API_KEY_HERE';
+    $apiUrl = 'https://api.sendgrid.com/v3/mail/send';
+    
+    // Create password setup link
+    $setupLink = "https://" . $_SERVER['HTTP_HOST'] . "/home.php?setup_password=" . $resetToken;
+    
+    $emailData = [
+        'personalizations' => [
+            [
+                'to' => [
+                    ['email' => $email, 'name' => $username]
+                ],
+                'subject' => 'NUTRISAUR - Admin Account Setup'
+            ]
+        ],
+        'from' => [
+            'email' => 'noreply.nutrisaur@gmail.com',
+            'name' => 'NUTRISAUR'
+        ],
+        'content' => [
+            [
+                'type' => 'text/plain',
+                'value' => "Hello " . htmlspecialchars($username) . ",\n\nYour NUTRISAUR admin account has been created. Please click the link below to set up your password:\n\n" . $setupLink . "\n\nThis link will expire in 7 days.\n\nYour temporary password is: mho123\n\nPlease change your password after logging in for security.\n\nBest regards,\nNUTRISAUR Team"
+            ],
+            [
+                'type' => 'text/html',
+                'value' => "
+                <html>
+                <head>
+                    <title>NUTRISAUR Admin Account Setup</title>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                </head>
+                <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4;'>
+                    <div style='max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);'>
+                        <div style='text-align: center; background-color: #2A3326; color: #A1B454; padding: 20px; border-radius: 8px 8px 0 0; margin: -20px -20px 20px -20px;'>
+                            <h1 style='margin: 0; font-size: 24px;'>NUTRISAUR</h1>
+                        </div>
+                        <div style='padding: 20px 0;'>
+                            <p>Hello " . htmlspecialchars($username) . ",</p>
+                            <p>Your NUTRISAUR admin account has been created. Please click the button below to set up your password:</p>
+                            <div style='text-align: center; margin: 30px 0;'>
+                                <a href='" . $setupLink . "' style='background-color: #A1B454; color: #2A3326; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;'>Set Up Password</a>
+                            </div>
+                            <p><strong>Your temporary password is: mho123</strong></p>
+                            <p><strong>This link will expire in 7 days.</strong></p>
+                            <p>Please change your password after logging in for security.</p>
+                        </div>
+                        <div style='text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 14px;'>
+                            <p>Best regards,<br>NUTRISAUR Team</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                "
+            ]
+        ]
+    ];
+    
+    // Send email via SendGrid API
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $apiKey
+    ]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+    
+    // Enhanced error logging
+    error_log("SendGrid Password Setup API Response: HTTP $httpCode, Response: $response, Error: " . ($curlError ?: 'None'));
+    
+    if ($curlError) {
+        error_log("SendGrid password setup cURL error: " . $curlError);
+        return false;
+    }
+    
+    if ($httpCode >= 200 && $httpCode < 300) {
+        error_log("Password setup email sent successfully via SendGrid API");
+        return true;
+    }
+    
+    error_log("SendGrid password setup API failed. HTTP Code: $httpCode, Response: $response");
+    return false;
+}
+
 // Municipalities and Barangays data
 $municipalities = [
     'ABUCAY' => ['Bangkal', 'Calaylayan (Pob.)', 'Capitangan', 'Gabon', 'Laon (Pob.)', 'Mabatang', 'Omboy', 'Salian', 'Wawa (Pob.)'],
@@ -482,22 +579,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
             
        case 'add_user':
            try {
-               $username = $_POST['username'] ?? '';
                $email = $_POST['email'] ?? '';
-               $password = $_POST['password'] ?? '';
+               $municipality = $_POST['municipality'] ?? '';
                
-               if (empty($username) || empty($email) || empty($password)) {
-                   echo json_encode(['success' => false, 'error' => 'All fields are required']);
+               if (empty($email) || empty($municipality)) {
+                   echo json_encode(['success' => false, 'error' => 'Email and municipality are required']);
                    break;
                }
                
                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                    echo json_encode(['success' => false, 'error' => 'Invalid email format']);
-                   break;
-               }
-               
-               if (strlen($password) < 6) {
-                   echo json_encode(['success' => false, 'error' => 'Password must be at least 6 characters']);
                    break;
                }
                
@@ -509,19 +600,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                }
                
                // Check if user already exists
-               $checkStmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? OR username = ?");
-               $checkStmt->execute([$email, $username]);
+               $checkStmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
+               $checkStmt->execute([$email]);
                if ($checkStmt->fetch()) {
-                   echo json_encode(['success' => false, 'error' => 'User with this email or username already exists']);
+                   echo json_encode(['success' => false, 'error' => 'User with this email already exists']);
                    break;
                }
                
-               $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-               $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, email_verified, created_at) VALUES (?, ?, ?, 1, NOW())");
-               $result = $insertStmt->execute([$username, $email, $hashedPassword]);
+               // Generate default password and reset token
+               $defaultPassword = 'mho123';
+               $hashedPassword = password_hash($defaultPassword, PASSWORD_DEFAULT);
+               
+               // Generate reset token for password change
+               $resetToken = bin2hex(random_bytes(32));
+               $resetExpires = date('Y-m-d H:i:s', strtotime('+7 days'));
+               
+               // Generate username from email
+               $username = explode('@', $email)[0];
+               $username = preg_replace('/[^a-zA-Z0-9_]/', '', $username);
+               
+               // Ensure username is unique
+               $originalUsername = $username;
+               $counter = 1;
+               $maxAttempts = 50;
+               $attempts = 0;
+               while ($attempts < $maxAttempts) {
+                   $stmt = $pdo->prepare("SELECT user_id FROM users WHERE username = ?");
+                   $stmt->execute([$username]);
+                   if (!$stmt->fetch()) break;
+                   $username = $originalUsername . $counter;
+                   $counter++;
+                   $attempts++;
+               }
+               if ($attempts >= $maxAttempts) {
+                   $username = 'admin' . rand(1000, 9999);
+               }
+               
+               $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, municipality, password_reset_token, password_reset_expires, email_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, NOW())");
+               $result = $insertStmt->execute([$username, $email, $hashedPassword, $municipality, $resetToken, $resetExpires]);
                
                if ($result) {
-                   echo json_encode(['success' => true, 'message' => 'User added successfully']);
+                   $userId = $pdo->lastInsertId();
+                   
+                   // Send password setup email
+                   $emailSent = sendPasswordSetupEmail($email, $username, $resetToken);
+                   
+                   echo json_encode([
+                       'success' => true, 
+                       'message' => 'Admin user added successfully! Password setup email sent.',
+                       'email_sent' => $emailSent
+                   ]);
                } else {
                    echo json_encode(['success' => false, 'error' => 'Failed to add user']);
                }
@@ -5374,16 +5502,19 @@ header {
             <h2>Add New Admin User</h2>
             <form id="userForm">
                 <div class="input-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-                <div class="input-group">
-                    <label for="email">Email</label>
+                    <label for="email">Email *</label>
                     <input type="email" id="email" name="email" required>
                 </div>
                 <div class="input-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
+                    <label for="municipality">Municipality *</label>
+                    <select id="municipality" name="municipality" required>
+                        <option value="">Select Municipality</option>
+                        <?php
+                        foreach ($municipalities as $municipality => $barangays) {
+                            echo '<option value="' . htmlspecialchars($municipality) . '">' . htmlspecialchars($municipality) . '</option>';
+                        }
+                        ?>
+                    </select>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-submit" onclick="addNewUser()">Add Admin User</button>
@@ -7162,11 +7293,10 @@ header {
             const form = document.getElementById('userForm');
             const formData = new FormData(form);
             
-            const username = formData.get('username');
             const email = formData.get('email');
-            const password = formData.get('password');
+            const municipality = formData.get('municipality');
             
-            if (!username || !email || !password) {
+            if (!email || !municipality) {
                 showMessage('Please fill in all fields', 'error');
                 return;
             }
@@ -7176,7 +7306,7 @@ header {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `action=add_user&username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+                body: `action=add_user&email=${encodeURIComponent(email)}&municipality=${encodeURIComponent(municipality)}`
             })
             .then(response => response.json())
             .then(data => {

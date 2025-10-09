@@ -37,117 +37,63 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['login'])) {
     $usernameOrEmail = trim($_POST['username_login']);
     $password = $_POST['password_login'];
     
-    if (empty($usernameOrEmail) || empty($password)) {
-        $loginError = "Please enter both username/email and password";
+    // Check for hardcoded super admin first
+    if ($usernameOrEmail === 'noreply.nutrisaur@gmail.com' && $password === 'admin') {
+        // Set super admin session
+        $_SESSION['admin_id'] = 'super_admin';
+        $_SESSION['username'] = 'Super Admin';
+        $_SESSION['email'] = 'noreply.nutrisaur@gmail.com';
+        $_SESSION['is_admin'] = true;
+        $_SESSION['is_super_admin'] = true;
+        
+        // Redirect to dashboard
+        header("Location: /dash");
+        exit;
     } else {
-        if ($pdo === null) {
-            $loginError = "Database connection unavailable. Please try again later.";
+        // Handle regular user login
+        if (empty($usernameOrEmail) || empty($password)) {
+            $loginError = "Please enter both username/email and password";
         } else {
-            try {
-                // Check if user exists in users table and is active
-                $stmt = $pdo->prepare("SELECT user_id, username, email, password, email_verified, is_active FROM users WHERE email = ? OR username = ?");
-                $stmt->execute([$usernameOrEmail, $usernameOrEmail]);
-                $user = $stmt->fetch();
-            
-                if ($user && password_verify($password, $user['password'])) {
-                    // Check if user is archived/inactive
-                    if (isset($user['is_active']) && $user['is_active'] == 0) {
-                        $loginError = "Your account has been archived. Please contact an administrator.";
-                    } else {
-                    // Check email verification status
-                    if ($user['email_verified'] == 1) {
-                        // Set session variables only if email is verified
-                        $_SESSION['user_id'] = $user['user_id'];
-                        $_SESSION['username'] = $user['username'];
-                        $_SESSION['email'] = $user['email'];
-                        $_SESSION['is_admin'] = false;
-                        
-                        // Update last login
-                        $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
-                        $updateStmt->execute([$user['user_id']]);
-                        
-                        // Redirect to dashboard
-                        header("Location: /dash");
-                        exit;
-                    } else {
-                        $loginError = "Please verify your email before logging in";
-                    }
-                    }
-                } else {
-                    $loginError = "Invalid username/email or password";
-                }
-            } catch (Exception $e) {
-                $loginError = "Login failed: " . $e->getMessage();
-                error_log("Login error: " . $e->getMessage());
-            }
-        }
-    }
-}
-
-// Handle registration form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
-    $username = trim($_POST['username_register']);
-    $email = trim($_POST['email_register']);
-    $password = $_POST['password_register'];
-    
-    if (empty($username) || empty($email) || empty($password)) {
-        $registrationError = "Please fill in all fields";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $registrationError = "Please enter a valid email address";
-    } elseif (strlen($password) < 6) {
-        $registrationError = "Password must be at least 6 characters long";
-    } elseif (strlen($password) > 20) {
-        $registrationError = "Password must be 20 characters or less";
-    } elseif (!preg_match('/[A-Z]/', $password)) {
-        $registrationError = "Password must contain at least one uppercase letter";
-    } elseif (!preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $password)) {
-        $registrationError = "Password must contain at least one symbol (!@#$%^&*()_+-=[]{}|;\':\",./<>?)";
-    } elseif (strlen($username) < 3) {
-        $registrationError = "Username must be at least 3 characters long";
-    } elseif (strlen($username) > 20) {
-        $registrationError = "Username must be 20 characters or less";
-    } else {
-        if ($pdo === null) {
-            $registrationError = "Database connection unavailable. Please try again later.";
-        } else {
-            try {
-                // Check if user already exists
-                $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? OR username = ?");
-                $stmt->execute([$email, $username]);
-                $existingUser = $stmt->fetch();
-            
-                if ($existingUser) {
-                    $registrationError = "User with this email or username already exists";
-                } else {
-                    // Generate verification code
-                    $verificationCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
-                    $expiresAt = date('Y-m-d H:i:s', strtotime('+5 minutes'));
-                    
-                    // Hash password
-                    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                    
-                    // Insert user
-                    $stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_code, verification_code_expires, email_verified, created_at) VALUES (?, ?, ?, ?, ?, 0, NOW())");
-                    $result = $stmt->execute([$username, $email, $hashedPassword, $verificationCode, $expiresAt]);
-                    
-                    if ($result) {
-                        $userId = $pdo->lastInsertId();
-                        
-                        // Send verification email
-                        $emailSent = sendVerificationEmail($email, $username, $verificationCode);
-                        
-                        if ($emailSent) {
-                            $registrationSuccess = "Registration successful! Please check your email for verification code.";
+            if ($pdo === null) {
+                $loginError = "Database connection unavailable. Please try again later.";
+            } else {
+                try {
+                    // Check if user exists in users table and is active
+                    $stmt = $pdo->prepare("SELECT user_id, username, email, password, email_verified, is_active FROM users WHERE email = ? OR username = ?");
+                    $stmt->execute([$usernameOrEmail, $usernameOrEmail]);
+                    $user = $stmt->fetch();
+                
+                    if ($user && password_verify($password, $user['password'])) {
+                        // Check if user is archived/inactive
+                        if (isset($user['is_active']) && $user['is_active'] == 0) {
+                            $loginError = "Your account has been archived. Please contact an administrator.";
                         } else {
-                            $registrationSuccess = "Registration successful! Please check your email inbox or spam folder for the verification code.";
+                        // Check email verification status
+                        if ($user['email_verified'] == 1) {
+                            // Set session variables only if email is verified
+                            $_SESSION['user_id'] = $user['user_id'];
+                            $_SESSION['username'] = $user['username'];
+                            $_SESSION['email'] = $user['email'];
+                            $_SESSION['is_admin'] = false;
+                            
+                            // Update last login
+                            $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
+                            $updateStmt->execute([$user['user_id']]);
+                            
+                            // Redirect to dashboard
+                            header("Location: /dash");
+                            exit;
+                        } else {
+                            $loginError = "Please verify your email before logging in";
+                        }
                         }
                     } else {
-                        $registrationError = "Failed to create user account";
+                        $loginError = "Invalid username/email or password";
                     }
+                } catch (Exception $e) {
+                    $loginError = "Login failed: " . $e->getMessage();
+                    error_log("Login error: " . $e->getMessage());
                 }
-            } catch (Exception $e) {
-                $registrationError = "Registration failed: " . $e->getMessage();
-                error_log("Registration error: " . $e->getMessage());
             }
         }
     }
@@ -469,107 +415,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 exit;
             }
             
-        case 'register':
-            $username = trim($_POST['username']);
-            $email = trim($_POST['email']);
-            $password = $_POST['password'];
-            
-            if (empty($username) || empty($email) || empty($password)) {
-                echo json_encode(['success' => false, 'message' => 'Please fill in all fields']);
-                exit;
-            }
-            
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                echo json_encode(['success' => false, 'message' => 'Please enter a valid email address']);
-                exit;
-            }
-            
-            if (strlen($password) < 6) {
-                echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
-                exit;
-            }
-            
-            if (strlen($password) > 20) {
-                echo json_encode(['success' => false, 'message' => 'Password must be 20 characters or less']);
-                exit;
-            }
-            
-            // Check for at least one uppercase letter
-            if (!preg_match('/[A-Z]/', $password)) {
-                echo json_encode(['success' => false, 'message' => 'Password must contain at least one uppercase letter']);
-                exit;
-            }
-            
-            // Check for at least one symbol
-            if (!preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $password)) {
-                echo json_encode(['success' => false, 'message' => 'Password must contain at least one symbol (!@#$%^&*()_+-=[]{}|;\':",./<>?)']);
-                exit;
-            }
-            
-            if (strlen($username) < 3) {
-                echo json_encode(['success' => false, 'message' => 'Username must be at least 3 characters long']);
-                exit;
-            }
-            
-            if (strlen($username) > 20) {
-                echo json_encode(['success' => false, 'message' => 'Username must be 20 characters or less']);
-                exit;
-            }
-            
-            if ($pdo === null) {
-                echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
-                exit;
-            }
-            
-            try {
-                // Check if user already exists
-                $stmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ? OR username = ?");
-                $stmt->execute([$email, $username]);
-                $existingUser = $stmt->fetch();
-                
-                if ($existingUser) {
-                    echo json_encode(['success' => false, 'message' => 'User with this email or username already exists']);
-                    exit;
-                }
-                
-                // Generate verification code
-                $verificationCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
-                $expiresAt = date('Y-m-d H:i:s', strtotime('+5 minutes'));
-                
-                // Hash password
-                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                
-                // Insert user
-                $stmt = $pdo->prepare("INSERT INTO users (username, email, password, verification_code, verification_code_expires, email_verified, created_at) VALUES (?, ?, ?, ?, ?, 0, NOW())");
-                $result = $stmt->execute([$username, $email, $hashedPassword, $verificationCode, $expiresAt]);
-                
-                if ($result) {
-                    $userId = $pdo->lastInsertId();
-                    
-                    // Send verification email
-                    $emailSent = sendVerificationEmail($email, $username, $verificationCode);
-                    
-                    echo json_encode([
-                        'success' => true,
-                        'message' => $emailSent ? 
-                            'Registration successful! Please check your email for verification code.' : 
-                            'Registration successful! Please check your email inbox or spam folder for the verification code.',
-                        'requires_verification' => true,
-                        'data' => [
-                            'user_id' => $userId,
-                            'username' => $username,
-                            'email' => $email,
-                            'email_sent' => $emailSent,
-                            'verification_code' => $verificationCode
-                        ]
-                    ]);
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'Failed to create user account']);
-                }
-            } catch (Exception $e) {
-                echo json_encode(['success' => false, 'message' => 'Registration failed: ' . $e->getMessage()]);
-            }
-            exit;
             
         case 'check_session':
             $loggedIn = isset($_SESSION['user_id']);
@@ -809,6 +654,77 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 }
             } catch (Exception $e) {
                 echo json_encode(['success' => false, 'message' => 'Password update failed: ' . $e->getMessage()]);
+            }
+            exit;
+            
+        case 'setup_password':
+            $resetToken = trim($_POST['reset_token']);
+            $newPassword = $_POST['new_password'];
+            $confirmPassword = $_POST['confirm_password'];
+            
+            if (empty($resetToken) || empty($newPassword) || empty($confirmPassword)) {
+                echo json_encode(['success' => false, 'message' => 'Please fill in all fields']);
+                exit;
+            }
+            
+            if ($newPassword !== $confirmPassword) {
+                echo json_encode(['success' => false, 'message' => 'Passwords do not match']);
+                exit;
+            }
+            
+            if (strlen($newPassword) < 6) {
+                echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
+                exit;
+            }
+            
+            if (strlen($newPassword) > 20) {
+                echo json_encode(['success' => false, 'message' => 'Password must be 20 characters or less']);
+                exit;
+            }
+            
+            // Check for at least one uppercase letter
+            if (!preg_match('/[A-Z]/', $newPassword)) {
+                echo json_encode(['success' => false, 'message' => 'Password must contain at least one uppercase letter']);
+                exit;
+            }
+            
+            // Check for at least one symbol
+            if (!preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $newPassword)) {
+                echo json_encode(['success' => false, 'message' => 'Password must contain at least one symbol (!@#$%^&*()_+-=[]{}|;\':",./<>?)']);
+                exit;
+            }
+            
+            if ($pdo === null) {
+                echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
+                exit;
+            }
+            
+            try {
+                // Verify reset token
+                $stmt = $pdo->prepare("SELECT user_id, username, email FROM users WHERE password_reset_token = ? AND password_reset_expires > NOW()");
+                $stmt->execute([$resetToken]);
+                $user = $stmt->fetch();
+                
+                if ($user) {
+                    // Hash new password
+                    $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+                    
+                    // Update password and clear reset token
+                    $updateStmt = $pdo->prepare("UPDATE users SET password = ?, password_reset_token = NULL, password_reset_expires = NULL WHERE user_id = ?");
+                    $updateStmt->execute([$hashedPassword, $user['user_id']]);
+                    
+                    // Log the user in after successful password setup
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['email'] = $user['email'];
+                    $_SESSION['is_admin'] = true;
+                    
+                    echo json_encode(['success' => true, 'message' => 'Password set up successfully! You are now logged in.', 'redirect' => '/dash']);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Invalid or expired setup link']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => 'Password setup failed: ' . $e->getMessage()]);
             }
             exit;
     }
@@ -1959,43 +1875,8 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
                     </svg>
                     Sign in with Google
                 </button>
-                <a href="#" class="toggle-link" id="toggle-link">No account? Create one!</a>
             </form>
             
-            <!-- Hidden registration form - will be shown via JavaScript -->
-            <form id="register-form" method="post" action="" autocomplete="off" style="display: none;">
-                <div class="input-group">
-                    <label for="username_register">Username</label>
-                    <input type="text" id="username_register" name="username_register" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
-                </div>
-                <div class="input-group">
-                    <label for="email_register">Email</label>
-                    <input type="email" id="email_register" name="email_register" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
-                </div>
-                <div class="input-group password-field">
-                    <label for="password_register">Password</label>
-                    <input type="password" id="password_register" name="password_register" required class="password-field" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
-                    <button type="button" class="password-toggle" id="toggle-password-register" data-target="password_register" aria-label="Toggle password visibility" title="Show/Hide password">
-                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                        </svg>
-                        <svg class="eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
-                            <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
-                        </svg>
-                    </button>
-                </div>
-                <button type="submit" class="auth-btn" name="register">Create Account</button>
-                <button type="button" class="google-btn" data-mode="register">
-                    <svg width="18" height="18" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                    </svg>
-                    Sign up with Google
-                </button>
-                <a href="#" class="toggle-link" id="toggle-link-register">Already have an account? Login</a>
-            </form>
             
             <!-- Hidden verification form -->
             <form id="verification-form" method="post" action="" style="display: none;">
@@ -2057,6 +1938,28 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
                 </div>
                 <button type="submit" class="auth-btn" id="update-password-btn">Update Password</button>
                 <a href="#" class="toggle-link" id="back-to-login-from-password">Back to Login</a>
+            </form>
+            
+            <!-- Hidden password setup form -->
+            <form id="password-setup-form" method="post" action="" style="display: none;">
+                <div class="input-group">
+                    <label for="setup_new_password">New Password</label>
+                    <input type="password" id="setup_new_password" name="new_password" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                </div>
+                <div class="input-group password-field">
+                    <label for="setup_confirm_password">Confirm Password</label>
+                    <input type="password" id="setup_confirm_password" name="confirm_password" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <button type="button" class="password-toggle" id="toggle-password-setup-confirm" data-target="setup_confirm_password" aria-label="Toggle password visibility" title="Show/Hide password">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                        <svg class="eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                            <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
+                        </svg>
+                    </button>
+                </div>
+                <input type="hidden" id="reset_token" name="reset_token">
+                <button type="submit" class="auth-btn" id="setup-password-btn">Set Up Password</button>
             </form>
         </div>
     </div>
@@ -2213,11 +2116,8 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
         // Authentication related code
         console.log('Setting up authentication elements...');
         const authForm = document.getElementById('auth-form');
-        const registerForm = document.getElementById('register-form');
         const authTitle = document.getElementById('auth-title');
         const authBtn = document.getElementById('auth-btn');
-        const toggleLink = document.getElementById('toggle-link');
-        const toggleLinkRegister = document.getElementById('toggle-link-register');
         const emailGroup = document.getElementById('email-group');
         const usernameInput = document.getElementById('username');
         const emailInput = document.getElementById('email');
@@ -2227,11 +2127,8 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
         // Debug element existence
         console.log('Element check:', {
             authForm: !!authForm,
-            registerForm: !!registerForm,
             authTitle: !!authTitle,
             authBtn: !!authBtn,
-            toggleLink: !!toggleLink,
-            toggleLinkRegister: !!toggleLinkRegister,
             emailGroup: !!emailGroup,
             usernameInput: !!usernameInput,
             emailInput: !!emailInput,
@@ -2241,30 +2138,6 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
 
         let isLoginMode = true;
 
-        // Toggle between login and register mode
-        if (toggleLink) {
-            toggleLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                console.log('Switching to register mode');
-                authForm.style.display = 'none';
-                registerForm.style.display = 'block';
-                authTitle.textContent = 'Register';
-            });
-        } else {
-            console.error('toggleLink element not found!');
-        }
-        
-        if (toggleLinkRegister) {
-            toggleLinkRegister.addEventListener('click', (e) => {
-                e.preventDefault();
-                console.log('Switching to login mode');
-                registerForm.style.display = 'none';
-                authForm.style.display = 'block';
-                authTitle.textContent = 'Login';
-            });
-        } else {
-            console.error('toggleLinkRegister element not found!');
-        }
 
         // Form submission handler
         if (authForm) {
@@ -2285,39 +2158,6 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             console.error('authForm element not found!');
         }
 
-        // Register form submission handler
-        if (registerForm) {
-            registerForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                console.log('Register form submitted');
-                clearMessage();
-
-                // Validate form
-                const username = document.getElementById('username_register').value;
-                const email = document.getElementById('email_register').value;
-                const password = document.getElementById('password_register').value;
-
-                if (!username || !email || !password) {
-                    showMessage('Please fill in all fields', 'error');
-                    return;
-                }
-
-                if (!validateEmail(email)) {
-                    showMessage('Please enter a valid email address', 'error');
-                    return;
-                }
-
-                if (password.length < 6) {
-                    showMessage('Password must be at least 6 characters long', 'error');
-                    return;
-                }
-
-
-                await register(username, email, password);
-            });
-        } else {
-            console.error('registerForm element not found!');
-        }
 
         // Login function - using home.php AJAX
         async function login(username, password) {
@@ -2350,50 +2190,6 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             }
         }
 
-        // Register function - using home.php AJAX
-        async function register(username, email, password) {
-            try {
-                // Show a loading message
-                showMessage('Processing registration...', 'info');
-                
-                const formData = new FormData();
-                formData.append('username', username);
-                formData.append('email', email);
-                formData.append('password', password);
-                formData.append('ajax_action', 'register');
-                
-                const response = await fetch('/home.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    if (data.requires_verification) {
-                        // Show verification screen with code if available
-                        const verificationCode = data.data?.verification_code || null;
-                        const email = data.data?.email || '';
-                        showVerificationScreen(email, verificationCode);
-                    } else {
-                        showMessage('Registration successful! Redirecting to dashboard...', 'success');
-                        // Redirect to dashboard after successful registration
-                        setTimeout(() => {
-                            window.location.href = '/dash';
-                        }, 1000);
-                    }
-                } else {
-                    showMessage(data.message || 'Registration failed. Please try again.', 'error');
-                    // Stay on registration form
-                    isLoginMode = false;
-                    registerForm.style.display = 'block';
-                    authForm.style.display = 'none';
-                }
-            } catch (error) {
-                showMessage('An error occurred. Please try again later.', 'error');
-                console.error('Registration error:', error);
-            }
-        }
 
         // Show message in message div
         function showMessage(message, type) {
@@ -2449,22 +2245,19 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             authTitle.textContent = 'Login';
             authBtn.textContent = 'Login';
             emailGroup.style.display = 'none';
-            toggleLink.textContent = 'No account? Create one!';
             authForm.reset();
-            // Hide registration form and show login form
-            registerForm.style.display = 'none';
+            // Show login form
             authForm.style.display = 'block';
         }
 
         // Show verification screen
         function showVerificationScreen(email, verificationCode = null) {
             authForm.style.display = 'none';
-            registerForm.style.display = 'none';
             document.getElementById('verification-form').style.display = 'block';
             document.getElementById('verification_email').value = email;
             authTitle.textContent = 'Email Verification';
             
-            showMessage('Registration successful! Please check your email inbox or spam folder for the verification code.', 'success');
+            showMessage('Please check your email inbox or spam folder for the verification code.', 'success');
         }
 
         // Hide verification screen and show login
@@ -2593,67 +2386,6 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
                 }
             }
 
-            // Setup for register password field
-            const registerPassword = document.getElementById('password_register');
-            const registerToggle = document.getElementById('toggle-password-register');
-            const registerIconShow = registerToggle?.querySelector('.eye-icon');
-            const registerIconHide = registerToggle?.querySelector('.eye-slash-icon');
-
-            if (registerPassword && registerToggle) {
-                // Store the current state to prevent auto-hide
-                let isPasswordVisible = false;
-                
-                registerToggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    // Toggle the input type
-                    isPasswordVisible = !isPasswordVisible;
-                    registerPassword.type = isPasswordVisible ? 'text' : 'password';
-
-                    // Update aria attributes
-                    registerToggle.setAttribute('aria-pressed', isPasswordVisible ? 'true' : 'false');
-                    registerToggle.setAttribute('aria-label', isPasswordVisible ? 'Hide password' : 'Show password');
-                    registerToggle.title = isPasswordVisible ? 'Hide password' : 'Show password';
-
-                    // Swap icons
-                    if (isPasswordVisible) {
-                        if (registerIconShow) registerIconShow.style.display = 'none';
-                        if (registerIconHide) registerIconHide.style.display = 'inline';
-                    } else {
-                        if (registerIconShow) registerIconShow.style.display = 'inline';
-                        if (registerIconHide) registerIconHide.style.display = 'none';
-                    }
-
-                    // Keep focus on the input after toggling for better UX
-                    setTimeout(() => registerPassword.focus(), 10);
-                });
-
-                // Allow keyboard activation
-                registerToggle.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        registerToggle.click();
-                    }
-                });
-
-                // Prevent form reset from affecting password visibility
-                const originalReset = registerPassword.form.reset;
-                if (originalReset) {
-                    registerPassword.form.reset = function() {
-                        originalReset.call(this);
-                        // Restore password visibility state after reset
-                        setTimeout(() => {
-                            if (isPasswordVisible) {
-                                registerPassword.type = 'text';
-                                if (registerIconShow) registerIconShow.style.display = 'none';
-                                if (registerIconHide) registerIconHide.style.display = 'inline';
-                            }
-                        }, 10);
-                    };
-                }
-            }
             
             // Setup for confirm password field
             const confirmPassword = document.getElementById('confirm_password');
@@ -2758,6 +2490,8 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             setupPasswordToggles();
             setupVerificationForm();
             setupForgotPasswordForm();
+            setupPasswordSetupForm();
+            checkPasswordSetupToken();
         });
         
         // Setup forgot password functionality
@@ -2767,7 +2501,6 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             const resetCodeForm = document.getElementById('reset-code-form');
             const newPasswordForm = document.getElementById('new-password-form');
             const authForm = document.getElementById('auth-form');
-            const registerForm = document.getElementById('register-form');
             const verificationForm = document.getElementById('verification-form');
             const authTitle = document.getElementById('auth-title');
             
@@ -2890,7 +2623,7 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
         
         // Hide all forms
         function hideAllForms() {
-            const forms = ['auth-form', 'register-form', 'verification-form', 'forgot-password-form', 'reset-code-form', 'new-password-form'];
+            const forms = ['auth-form', 'verification-form', 'forgot-password-form', 'reset-code-form', 'new-password-form', 'password-setup-form'];
             forms.forEach(formId => {
                 const form = document.getElementById(formId);
                 if (form) form.style.display = 'none';
@@ -2995,6 +2728,87 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             } catch (error) {
                 showMessage('An error occurred. Please try again later.', 'error');
                 console.error('Update password error:', error);
+            }
+        }
+        
+        // Setup password setup form
+        function setupPasswordSetupForm() {
+            const passwordSetupForm = document.getElementById('password-setup-form');
+            const setupPasswordBtn = document.getElementById('setup-password-btn');
+            
+            if (passwordSetupForm) {
+                passwordSetupForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const resetToken = document.getElementById('reset_token').value;
+                    const newPassword = document.getElementById('setup_new_password').value;
+                    const confirmPassword = document.getElementById('setup_confirm_password').value;
+                    
+                    if (!newPassword || !confirmPassword) {
+                        showMessage('Please fill in all password fields', 'error');
+                        return;
+                    }
+                    
+                    if (newPassword !== confirmPassword) {
+                        showMessage('Passwords do not match', 'error');
+                        return;
+                    }
+                    
+                    if (newPassword.length < 6) {
+                        showMessage('Password must be at least 6 characters long', 'error');
+                        return;
+                    }
+                    
+                    await setupPassword(resetToken, newPassword, confirmPassword);
+                });
+            }
+        }
+        
+        // Setup password function
+        async function setupPassword(resetToken, newPassword, confirmPassword) {
+            try {
+                showMessage('Setting up password...', 'info');
+                
+                const formData = new FormData();
+                formData.append('reset_token', resetToken);
+                formData.append('new_password', newPassword);
+                formData.append('confirm_password', confirmPassword);
+                formData.append('ajax_action', 'setup_password');
+                
+                const response = await fetch('/home.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('Password set up successfully! You are now logged in.', 'success');
+                    if (data.redirect) {
+                        setTimeout(() => {
+                            window.location.href = data.redirect;
+                        }, 2000);
+                    }
+                } else {
+                    showMessage(data.message || 'Failed to set up password', 'error');
+                }
+            } catch (error) {
+                showMessage('An error occurred. Please try again later.', 'error');
+                console.error('Setup password error:', error);
+            }
+        }
+        
+        // Check for password setup token in URL
+        function checkPasswordSetupToken() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const setupToken = urlParams.get('setup_password');
+            
+            if (setupToken) {
+                // Show password setup form
+                hideAllForms();
+                document.getElementById('password-setup-form').style.display = 'block';
+                document.getElementById('reset_token').value = setupToken;
+                document.getElementById('auth-title').textContent = 'Set Up Your Password';
+                showMessage('Please set up your password to complete your account setup.', 'info');
             }
         }
 
