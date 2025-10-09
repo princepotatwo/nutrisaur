@@ -342,6 +342,23 @@ $userId = $_SESSION['user_id'] ?? null;
 $username = $_SESSION['username'] ?? null;
 $email = $_SESSION['email'] ?? null;
 
+// Get user's municipality for filtering
+$user_municipality = null;
+if (isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
+    try {
+        require_once __DIR__ . "/../config.php";
+        $pdo = getDatabaseConnection();
+        if ($pdo) {
+            $stmt = $pdo->prepare("SELECT municipality FROM users WHERE user_id = ?");
+            $stmt->execute([$_SESSION['user_id']]);
+            $user_data = $stmt->fetch();
+            $user_municipality = $user_data['municipality'] ?? 'LIMAY'; // Default to LIMAY if no municipality assigned
+        }
+    } catch (Exception $e) {
+        error_log("Error getting user municipality in event.php: " . $e->getMessage());
+    }
+}
+
 // Check if user is authenticated (skip for API calls)
 $isApiCall = isset($_GET['action']) || (isset($_POST['action']) && in_array($_POST['action'], ['create_new_event', 'save_event_only', 'test_ajax', 'debug_fcm_tokens', 'debug_notification']));
 if (!$isApiCall && (!$userId || !$username || !$email)) {
@@ -4902,21 +4919,27 @@ header:hover {
                 
                 <div class="form-group">
                     <label for="eventMunicipality">Municipality</label>
-                    <select id="eventMunicipality" name="eventMunicipality" onchange="updateBarangayOptions()" required>
-                        <option value="">Select Municipality</option>
-                        <option value="all">All Municipalities</option>
-                        <option value="ABUCAY">ABUCAY</option>
-                        <option value="BAGAC">BAGAC</option>
-                        <option value="CITY OF BALANGA">CITY OF BALANGA</option>
-                        <option value="DINALUPIHAN">DINALUPIHAN</option>
-                        <option value="HERMOSA">HERMOSA</option>
-                        <option value="LIMAY">LIMAY</option>
-                        <option value="MARIVELES">MARIVELES</option>
-                        <option value="MORONG">MORONG</option>
-                        <option value="ORANI">ORANI</option>
-                        <option value="ORION">ORION</option>
-                        <option value="PILAR">PILAR</option>
-                        <option value="SAMAL">SAMAL</option>
+                    <select id="eventMunicipality" name="eventMunicipality" onchange="updateBarangayOptions()" required <?php echo (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin') ? '' : 'disabled'; ?>>
+                        <?php if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin'): ?>
+                            <option value="">Select Municipality</option>
+                            <option value="all">All Municipalities</option>
+                            <option value="ABUCAY">ABUCAY</option>
+                            <option value="BAGAC">BAGAC</option>
+                            <option value="CITY OF BALANGA">CITY OF BALANGA</option>
+                            <option value="DINALUPIHAN">DINALUPIHAN</option>
+                            <option value="HERMOSA">HERMOSA</option>
+                            <option value="LIMAY">LIMAY</option>
+                            <option value="MARIVELES">MARIVELES</option>
+                            <option value="MORONG">MORONG</option>
+                            <option value="ORANI">ORANI</option>
+                            <option value="ORION">ORION</option>
+                            <option value="PILAR">PILAR</option>
+                            <option value="SAMAL">SAMAL</option>
+                        <?php else: ?>
+                            <option value="<?php echo htmlspecialchars($user_municipality ?? 'LIMAY'); ?>" selected>
+                                <?php echo htmlspecialchars($user_municipality ?? 'LIMAY'); ?>
+                            </option>
+                        <?php endif; ?>
                     </select>
                                 </div>
                                 
@@ -5133,21 +5156,27 @@ header:hover {
                 
                 <div class="form-group">
                     <label for="editEventMunicipality">Municipality</label>
-                    <select id="editEventMunicipality" name="editEventMunicipality" onchange="updateEditBarangayOptions()" required>
-                        <option value="">Select Municipality</option>
-                        <option value="all">All Municipalities</option>
-                        <option value="ABUCAY">ABUCAY</option>
-                        <option value="BAGAC">BAGAC</option>
-                        <option value="CITY OF BALANGA">CITY OF BALANGA</option>
-                        <option value="DINALUPIHAN">DINALUPIHAN</option>
-                        <option value="HERMOSA">HERMOSA</option>
-                        <option value="LIMAY">LIMAY</option>
-                        <option value="MARIVELES">MARIVELES</option>
-                        <option value="MORONG">MORONG</option>
-                        <option value="ORANI">ORANI</option>
-                        <option value="ORION">ORION</option>
-                        <option value="PILAR">PILAR</option>
-                        <option value="SAMAL">SAMAL</option>
+                    <select id="editEventMunicipality" name="editEventMunicipality" onchange="updateEditBarangayOptions()" required <?php echo (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin') ? '' : 'disabled'; ?>>
+                        <?php if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin'): ?>
+                            <option value="">Select Municipality</option>
+                            <option value="all">All Municipalities</option>
+                            <option value="ABUCAY">ABUCAY</option>
+                            <option value="BAGAC">BAGAC</option>
+                            <option value="CITY OF BALANGA">CITY OF BALANGA</option>
+                            <option value="DINALUPIHAN">DINALUPIHAN</option>
+                            <option value="HERMOSA">HERMOSA</option>
+                            <option value="LIMAY">LIMAY</option>
+                            <option value="MARIVELES">MARIVELES</option>
+                            <option value="MORONG">MORONG</option>
+                            <option value="ORANI">ORANI</option>
+                            <option value="ORION">ORION</option>
+                            <option value="PILAR">PILAR</option>
+                            <option value="SAMAL">SAMAL</option>
+                        <?php else: ?>
+                            <option value="<?php echo htmlspecialchars($user_municipality ?? 'LIMAY'); ?>" selected>
+                                <?php echo htmlspecialchars($user_municipality ?? 'LIMAY'); ?>
+                            </option>
+                        <?php endif; ?>
                     </select>
                 </div>
                 
@@ -5557,6 +5586,19 @@ function closeCreateEventModal() {
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Event.php page loaded, checking for program recommendations...');
+        
+        // Auto-set municipality for non-super admins
+        <?php if (!isset($_SESSION['admin_id']) || $_SESSION['admin_id'] !== 'super_admin'): ?>
+        const municipalityValue = <?php echo json_encode($user_municipality ?? 'LIMAY'); ?>;
+        if (municipalityValue) {
+            const municipalitySelect = document.getElementById('eventMunicipality');
+            if (municipalitySelect) {
+                municipalitySelect.value = municipalityValue;
+                updateBarangayOptions(); // Trigger barangay options update
+                console.log('🏛️ Auto-selected municipality for user:', municipalityValue);
+            }
+        }
+        <?php endif; ?>
         
         // Check if program recommendation was passed in URL
         const urlParams = new URLSearchParams(window.location.search);
