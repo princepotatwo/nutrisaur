@@ -352,7 +352,7 @@ if (isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
             $stmt = $pdo->prepare("SELECT municipality FROM users WHERE user_id = ?");
             $stmt->execute([$_SESSION['user_id']]);
             $user_data = $stmt->fetch();
-            $user_municipality = $user_data['municipality'] ?? 'LIMAY'; // Default to LIMAY if no municipality assigned
+            $user_municipality = $user_data['municipality'] ?? null;
         }
     } catch (Exception $e) {
         error_log("Error getting user municipality in event.php: " . $e->getMessage());
@@ -4936,8 +4936,8 @@ header:hover {
                             <option value="PILAR">PILAR</option>
                             <option value="SAMAL">SAMAL</option>
                         <?php else: ?>
-                            <option value="<?php echo htmlspecialchars($user_municipality ?? 'LIMAY'); ?>" selected>
-                                <?php echo htmlspecialchars($user_municipality ?? 'LIMAY'); ?>
+                            <option value="<?php echo htmlspecialchars($user_municipality ?? 'No Municipality Assigned'); ?>" selected>
+                                <?php echo htmlspecialchars($user_municipality ?? 'No Municipality Assigned'); ?>
                             </option>
                         <?php endif; ?>
                     </select>
@@ -5173,8 +5173,8 @@ header:hover {
                             <option value="PILAR">PILAR</option>
                             <option value="SAMAL">SAMAL</option>
                         <?php else: ?>
-                            <option value="<?php echo htmlspecialchars($user_municipality ?? 'LIMAY'); ?>" selected>
-                                <?php echo htmlspecialchars($user_municipality ?? 'LIMAY'); ?>
+                            <option value="<?php echo htmlspecialchars($user_municipality ?? 'No Municipality Assigned'); ?>" selected>
+                                <?php echo htmlspecialchars($user_municipality ?? 'No Municipality Assigned'); ?>
                             </option>
                         <?php endif; ?>
                     </select>
@@ -5589,7 +5589,7 @@ function closeCreateEventModal() {
         
         // Auto-set municipality for non-super admins
         <?php if (!isset($_SESSION['admin_id']) || $_SESSION['admin_id'] !== 'super_admin'): ?>
-        const municipalityValue = <?php echo json_encode($user_municipality ?? 'LIMAY'); ?>;
+        const municipalityValue = <?php echo json_encode($user_municipality); ?>;
         if (municipalityValue) {
             const municipalitySelect = document.getElementById('eventMunicipality');
             if (municipalitySelect) {

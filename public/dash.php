@@ -27,7 +27,7 @@ if (isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
             $stmt = $pdo->prepare("SELECT municipality FROM users WHERE user_id = ?");
             $stmt->execute([$_SESSION['user_id']]);
             $user_data = $stmt->fetch();
-            $user_municipality = $user_data['municipality'] ?? 'LIMAY'; // Default to LIMAY if no municipality assigned
+            $user_municipality = $user_data['municipality'] ?? null;
         }
     } catch (Exception $e) {
         error_log("Error getting user municipality in dash.php: " . $e->getMessage());
@@ -12198,8 +12198,8 @@ body {
             
             // Auto-set municipality for non-super admins
             <?php if (!isset($_SESSION['admin_id']) || $_SESSION['admin_id'] !== 'super_admin'): ?>
-            const municipalityValue = <?php echo json_encode($user_municipality ?? 'LIMAY'); ?>;
-            const municipalityText = <?php echo json_encode($user_municipality ?? 'LIMAY'); ?>;
+            const municipalityValue = <?php echo json_encode($user_municipality); ?>;
+            const municipalityText = <?php echo json_encode($user_municipality); ?>;
             selectMunicipality(municipalityValue, municipalityText);
             console.log('🏛️ Auto-selected municipality for user:', municipalityText);
             <?php endif; ?>
