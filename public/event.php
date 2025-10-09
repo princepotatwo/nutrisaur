@@ -158,6 +158,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         $classification = $_POST['classification'] ?? null;
         $userStatus = $_POST['user_status'] ?? null;
         
+        // Convert 'null' strings to actual null values
+        if ($whoStandard === 'null' || $whoStandard === '') $whoStandard = null;
+        if ($classification === 'null' || $classification === '') $classification = null;
+        if ($userStatus === 'null' || $userStatus === '') $userStatus = null;
+        
         error_log("🎯 WHO Standard: '$whoStandard', Classification: '$classification', User Status: '$userStatus'");
         
         // Auto-set type to "Event" since we removed the type field
@@ -771,7 +776,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         if ($notificationType !== 'none') {
             try {
                 error_log("📱 AJAX: Sending notifications for event: $title at $location");
-                error_log("🔍 Before sendEventNotifications - WHO Standard: '$whoStandard', Classification: '$classification'");
+                error_log("🔍 Before sendEventNotifications - WHO Standard: '$whoStandard', Classification: '$classification', User Status: '$userStatus'");
                 
                 // Use the centralized sendEventNotifications function with WHO classification and user status targeting
                 $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer, $whoStandard, $classification, $userStatus);
