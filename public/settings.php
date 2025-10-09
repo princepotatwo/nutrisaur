@@ -8,13 +8,15 @@ if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
     exit;
 }
 
-// Use direct database connection for AJAX requests to avoid DatabaseAPI conflicts
-require_once __DIR__ . "/../config.php";
+// Use centralized DatabaseAPI - NO MORE HARDCODED CONNECTIONS!
+require_once __DIR__ . '/api/DatabaseHelper.php';
 
-// Get database connection
-$pdo = getDatabaseConnection();
+// Get database helper instance
+$db = DatabaseHelper::getInstance();
+
+// Check if database is available
 $dbError = null;
-if (!$pdo) {
+if (!$db->isAvailable()) {
     $dbError = "Database connection not available";
     error_log($dbError);
 }
@@ -141,8 +143,8 @@ $municipalities = [
     'SAMAL' => ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan (Pob.)', 'San Roque (Pob.)', 'Santa Lucia', 'Sapa', 'Tabing Ilog', 'Gugo', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
 ];
 
-// Handle form submission (only for non-AJAX requests)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $screening_data = [
             'municipality' => $_POST['municipality'] ?? '',
@@ -178,22 +180,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
             'fcm_token' => $_POST['fcm_token'] ?? null
         ];
         
-        // Insert using direct PDO
-        $stmt = $pdo->prepare("INSERT INTO community_users (municipality, barangay, sex, birthday, weight, height, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
-        $result = $stmt->execute([
-            $screening_data['municipality'], 
-            $screening_data['barangay'], 
-            $screening_data['sex'], 
-            $screening_data['birthday'], 
-            $screening_data['weight'], 
-            $screening_data['height']
-        ]);
-        
-        if ($result) {
-            $result = ['success' => true, 'message' => 'Screening assessment saved successfully'];
-        } else {
-            $result = ['success' => false, 'message' => 'Failed to save screening assessment'];
-        }
+        // Insert using DatabaseHelper
+        $result = $db->insert('community_users', $insertData);
                 
                 if ($result['success']) {
             $success_message = "Screening assessment saved successfully!";
@@ -208,18 +196,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
 
 // Handle AJAX requests for table management
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($_POST['municipality'])) {
-    // Set JSON header
     header('Content-Type: application/json');
     
-    // Check authentication
-    if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
-        echo json_encode(['success' => false, 'error' => 'Not authenticated']);
-        exit;
-    }
-    
     $action = $_POST['action'];
-        
-        switch ($action) {
+    
+    switch ($action) {
         case 'update_profile':
             try {
                 $name = $_POST['name'] ?? '';
@@ -231,6 +212,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                     break;
                 }
                 
+                require_once __DIR__ . "/../config.php";
+                $pdo = getDatabaseConnection();
                 if (!$pdo) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
@@ -293,6 +276,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                     break;
                 }
                 
+                require_once __DIR__ . "/../config.php";
+                $pdo = getDatabaseConnection();
                 if (!$pdo) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
@@ -412,6 +397,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                     break;
                 }
                 
+                require_once __DIR__ . "/../config.php";
+                $pdo = getDatabaseConnection();
                 if (!$pdo) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
@@ -441,6 +428,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
             
         case 'get_users_table':
             try {
+                require_once __DIR__ . "/../config.php";
+                $pdo = getDatabaseConnection();
                 if (!$pdo) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
@@ -468,6 +457,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                     break;
                 }
                 
+                require_once __DIR__ . "/../config.php";
+                $pdo = getDatabaseConnection();
                 if (!$pdo) {
                     echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                     break;
@@ -502,22 +493,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
             
        case 'add_user':
            try {
-               // Debug: Log the request
-               error_log("Add user request received. POST data: " . print_r($_POST, true));
-               
                $email = $_POST['email'] ?? '';
                $municipality = $_POST['municipality'] ?? '';
                
-               error_log("Email: $email, Municipality: $municipality");
-               
                if (empty($email) || empty($municipality)) {
-                   error_log("Missing required fields");
                    echo json_encode(['success' => false, 'error' => 'Email and municipality are required']);
                    break;
                }
                
                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                   error_log("Invalid email format: $email");
                    echo json_encode(['success' => false, 'error' => 'Invalid email format']);
                    break;
                }
@@ -525,23 +509,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                require_once __DIR__ . "/../config.php";
                $pdo = getDatabaseConnection();
                if (!$pdo) {
-                   error_log("Database connection failed");
                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                    break;
                }
-               
-               error_log("Database connection successful");
                
                // Check if user already exists
                $checkStmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
                $checkStmt->execute([$email]);
                if ($checkStmt->fetch()) {
-                   error_log("User already exists with email: $email");
                    echo json_encode(['success' => false, 'error' => 'User with this email already exists']);
                    break;
                }
-               
-               error_log("User does not exist, proceeding with creation");
                
                // Generate default password and reset token
                $defaultPassword = 'mho123';
@@ -572,27 +550,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                    $username = 'admin' . rand(1000, 9999);
                }
                
-               error_log("Generated username: $username");
-               
-               // All required columns exist in the database
-               
-               error_log("Attempting to insert user with data: username=$username, email=$email, municipality=$municipality");
-               
                $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, municipality, password_reset_code, password_reset_expires, email_verified, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, 1, NOW())");
                $result = $insertStmt->execute([$username, $email, $hashedPassword, $municipality, $resetToken, $resetExpires]);
                
                if ($result) {
                    $userId = $pdo->lastInsertId();
-                   error_log("User inserted successfully with ID: $userId");
                    
                    // Send password setup email
-                   try {
-                       $emailSent = sendPasswordSetupEmail($email, $username, $resetToken);
-                       error_log("Email sent result: " . ($emailSent ? 'true' : 'false'));
-                   } catch (Exception $emailError) {
-                       error_log("Email sending failed: " . $emailError->getMessage());
-                       $emailSent = false;
-                   }
+                   $emailSent = sendPasswordSetupEmail($email, $username, $resetToken);
                    
                    echo json_encode([
                        'success' => true, 
@@ -600,12 +565,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                        'email_sent' => $emailSent
                    ]);
                } else {
-                   error_log("Failed to insert user. PDO error: " . print_r($insertStmt->errorInfo(), true));
-                   echo json_encode(['success' => false, 'error' => 'Failed to add user to database']);
+                   echo json_encode(['success' => false, 'error' => 'Failed to add user']);
                }
            } catch (Exception $e) {
-               error_log("Exception in add_user: " . $e->getMessage() . " Stack trace: " . $e->getTraceAsString());
-               echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
+               echo json_encode(['success' => false, 'error' => $e->getMessage()]);
            }
            break;
            
@@ -854,19 +817,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
         default:
             echo json_encode(['success' => false, 'error' => 'Unknown action']);
             break;
-        }
-    
+    }
     exit;
 }
 
-// Get existing screening assessments using direct PDO
+// Get existing screening assessments using DatabaseHelper
 $screening_assessments = [];
-if ($pdo) {
+if ($db->isAvailable()) {
     try {
         $user_email = $_SESSION['user_email'] ?? 'user@example.com';
-        $stmt = $pdo->prepare("SELECT * FROM community_users WHERE email = ? ORDER BY screening_date DESC");
-        $stmt->execute([$user_email]);
-        $screening_assessments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $db->select(
+            'community_users', 
+            '*', 
+            'email = ?', 
+            [$user_email], 
+            'screening_date DESC'
+        );
+        $screening_assessments = $result['success'] ? $result['data'] : [];
     } catch (Exception $e) {
         error_log("Error fetching screening assessments: " . $e->getMessage());
     }
@@ -5261,12 +5228,19 @@ header {
                 <tbody id="usersTableBody">
                     <?php
                         // Get community_users data directly from database
-                    if ($pdo) {
+                    if ($db->isAvailable()) {
                         try {
-                            // Get all community users using direct PDO
-                            $stmt = $pdo->prepare("SELECT * FROM community_users ORDER BY name ASC");
-                            $stmt->execute();
-                            $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                            // Use Universal DatabaseAPI to get users for HTML display
+                            // First get all community users
+                            $result = $db->select(
+                                    'community_users',
+                                    '*',
+                                '',
+                                [],
+                                    'name ASC'
+                            );
+                            
+                            $users = $result['success'] ? $result['data'] : [];
                             
                             if (!empty($users)) {
                                 foreach ($users as $user) {
