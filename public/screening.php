@@ -2317,6 +2317,17 @@ header {
             backdrop-filter: blur(10px);
         }
 
+        .profile-food-btn {
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+        }
+        
+        .profile-food-btn:hover {
+            background: rgba(76, 175, 80, 1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+        }
+        
         .profile-note-btn {
             background: rgba(255, 193, 7, 0.9);
             color: #1B1B1B;
@@ -6092,6 +6103,9 @@ header {
                             </div>
                         </div>
                         <div class="profile-header-buttons">
+                            <button class="profile-action-btn profile-food-btn" onclick="viewFoodHistory('${userData.email}', '${userData.name}');" title="View Food History">
+                                🍽️ Food History
+                            </button>
                             ${userData.notes && userData.notes.trim() ? 
                                 `<button class="profile-action-btn profile-note-btn" onclick="closeUserModal(this); addUserNote('${userData.email}', '${userData.name}');" title="View/Edit Note">
                                     Note
@@ -7643,6 +7657,146 @@ header {
             .catch(error => {
                 console.error('❌ Error toggling flag:', error);
             });
+        }
+
+        function viewFoodHistory(userEmail, userName) {
+            console.log('🍽️ View Food History function called for:', userEmail, userName);
+            
+            if (!userEmail || userEmail === 'undefined' || userEmail === 'null') {
+                console.error('❌ Invalid userEmail:', userEmail);
+                alert('Error: Invalid user email');
+                return;
+            }
+
+            // Show loading modal
+            const loadingModal = document.createElement('div');
+            loadingModal.className = 'modal';
+            loadingModal.style.display = 'block';
+            loadingModal.innerHTML = `
+                <div class="modal-content" style="text-align: center; padding: 40px;">
+                    <h3>Loading food history...</h3>
+                    <div style="margin: 20px 0;">
+                        <div style="border: 4px solid #f3f3f3; border-top: 4px solid var(--color-highlight); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(loadingModal);
+
+            // Fetch food history from API
+            fetch('api/food_history_api.php?action=get_user_history&user_email=' + encodeURIComponent(userEmail))
+                .then(response => {
+                    console.log('📥 Food History API Response:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('📋 Food history data received:', data);
+                    
+                    // Remove loading modal
+                    loadingModal.remove();
+                    
+                    if (!data.success) {
+                        console.error('❌ API Error:', data.message);
+                        alert('Error loading food history: ' + data.message);
+                        return;
+                    }
+                    
+                    // Show food history modal
+                    showFoodHistoryModal(userName, userEmail, data.data || []);
+                })
+                .catch(error => {
+                    console.error('❌ Fetch Error:', error);
+                    loadingModal.remove();
+                    alert('Error loading food history: ' + error.message);
+                });
+        }
+
+        function showFoodHistoryModal(userName, userEmail, foodData) {
+            // Remove any existing modals
+            const existingModals = document.querySelectorAll('.modal');
+            existingModals.forEach(modal => modal.remove());
+            
+            // Group food data by date
+            const groupedByDate = {};
+            foodData.forEach(food => {
+                if (!groupedByDate[food.date]) {
+                    groupedByDate[food.date] = [];
+                }
+                groupedByDate[food.date].push(food);
+            });
+            
+            // Sort dates
+            const sortedDates = Object.keys(groupedByDate).sort((a, b) => new Date(b) - new Date(a));
+            
+            // Create modal HTML
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 90vw; max-height: 90vh; overflow-y: auto;">
+                    <div class="modal-header">
+                        <h3>🍽️ Food History - ${userName}</h3>
+                        <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                    </div>
+                    <div class="food-history-content">
+                        ${sortedDates.length === 0 ? 
+                            '<div style="text-align: center; padding: 40px; color: #666;">No food history found for this user.</div>' :
+                            sortedDates.map(date => {
+                                const dayFoods = groupedByDate[date];
+                                const totalCalories = dayFoods.reduce((sum, food) => sum + parseInt(food.calories), 0);
+                                const totalProtein = dayFoods.reduce((sum, food) => sum + parseFloat(food.protein), 0);
+                                const totalCarbs = dayFoods.reduce((sum, food) => sum + parseFloat(food.carbs), 0);
+                                const totalFat = dayFoods.reduce((sum, food) => sum + parseFloat(food.fat), 0);
+                                
+                                return `
+                                    <div class="food-day-section" style="margin-bottom: 30px; border: 1px solid #ddd; border-radius: 10px; padding: 20px;">
+                                        <div class="day-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #4CAF50;">
+                                            <h4 style="margin: 0; color: #4CAF50;">📅 ${new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h4>
+                                            <div class="day-totals" style="text-align: right; font-size: 14px; color: #666;">
+                                                <div><strong>Total: ${totalCalories} kcal</strong></div>
+                                                <div>Protein: ${totalProtein.toFixed(1)}g | Carbs: ${totalCarbs.toFixed(1)}g | Fat: ${totalFat.toFixed(1)}g</div>
+                                            </div>
+                                        </div>
+                                        <div class="meals-container">
+                                            ${['Breakfast', 'Lunch', 'Dinner', 'Snacks'].map(meal => {
+                                                const mealFoods = dayFoods.filter(food => food.meal_category === meal);
+                                                if (mealFoods.length === 0) return '';
+                                                
+                                                const mealCalories = mealFoods.reduce((sum, food) => sum + parseInt(food.calories), 0);
+                                                
+                                                return `
+                                                    <div class="meal-section" style="margin-bottom: 15px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
+                                                        <div class="meal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                                            <h5 style="margin: 0; color: #333;">${meal} (${mealCalories} kcal)</h5>
+                                                        </div>
+                                                        <div class="meal-foods">
+                                                            ${mealFoods.map(food => `
+                                                                <div class="food-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee;">
+                                                                    <div class="food-info">
+                                                                        <span style="font-weight: 600;">${food.food_name}</span>
+                                                                        <span style="color: #666; margin-left: 10px;">(${food.serving_size})</span>
+                                                                    </div>
+                                                                    <div class="food-nutrition" style="text-align: right; font-size: 12px; color: #666;">
+                                                                        <div>${food.calories} kcal</div>
+                                                                        <div>P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
+                                                                    </div>
+                                                                </div>
+                                                            `).join('')}
+                                                        </div>
+                                                    </div>
+                                                `;
+                                            }).join('')}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')
+                        }
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
         }
 
 
