@@ -553,6 +553,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                    error_log("Municipality column exists");
                }
                
+               // Ensure password_reset_code column is large enough
+               $checkResetColumn = $pdo->query("SHOW COLUMNS FROM users LIKE 'password_reset_code'");
+               $resetColumn = $checkResetColumn->fetch();
+               if ($resetColumn && strpos($resetColumn['Type'], 'varchar(32)') !== false) {
+                   error_log("Expanding password_reset_code column...");
+                   $pdo->exec("ALTER TABLE users MODIFY COLUMN password_reset_code VARCHAR(64) NULL");
+                   error_log("Password reset code column expanded");
+               }
+               
                // Check if email already exists
                error_log("Checking if email exists...");
                $check = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
