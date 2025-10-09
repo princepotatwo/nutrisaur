@@ -553,15 +553,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                    error_log("Municipality column exists");
                }
                
-               // Ensure password_reset_code column is large enough
-               $checkResetColumn = $pdo->query("SHOW COLUMNS FROM users LIKE 'password_reset_code'");
-               $resetColumn = $checkResetColumn->fetch();
-               if ($resetColumn && strpos($resetColumn['Type'], 'varchar(32)') !== false) {
-                   error_log("Expanding password_reset_code column...");
-                   $pdo->exec("ALTER TABLE users MODIFY COLUMN password_reset_code VARCHAR(64) NULL");
-                   error_log("Password reset code column expanded");
-               }
-               
                // Check if email already exists
                error_log("Checking if email exists...");
                $check = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
@@ -590,36 +581,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                }
                error_log("Final username: $username");
                
-               // Create user
+               // Create user - SIMPLE VERSION
                $password = 'mho123';
                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-               $resetToken = bin2hex(random_bytes(16)); // Shorter token (32 chars instead of 64)
-               $resetExpires = date('Y-m-d H:i:s', strtotime('+7 days'));
                
                error_log("About to insert user with data:");
                error_log("Username: $username");
                error_log("Email: $email");
                error_log("Municipality: $municipality");
-               error_log("Reset token: $resetToken");
                
-               $stmt = $pdo->prepare("INSERT INTO users (username, email, password, municipality, password_reset_code, password_reset_expires, email_verified, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, 1, NOW())");
-               $result = $stmt->execute([$username, $email, $hashedPassword, $municipality, $resetToken, $resetExpires]);
+               // Simple INSERT - only essential columns
+               $stmt = $pdo->prepare("INSERT INTO users (username, email, password, municipality, email_verified, is_active, created_at) VALUES (?, ?, ?, ?, 1, 1, NOW())");
+               $result = $stmt->execute([$username, $email, $hashedPassword, $municipality]);
                
                error_log("Insert result: " . ($result ? 'SUCCESS' : 'FAILED'));
                
                if ($result) {
-                   error_log("User created successfully, sending email...");
-                   // Send email
-                   $setupLink = "https://" . $_SERVER['HTTP_HOST'] . "/home.php?setup_password=" . $resetToken;
-                   $emailSent = sendVerificationEmail($email, $username, $setupLink, 'Admin Account Setup');
-                   
-                   error_log("Email sent: " . ($emailSent ? 'SUCCESS' : 'FAILED'));
+                   error_log("User created successfully!");
                    error_log("=== ADD USER DEBUG END - SUCCESS ===");
                    
                    echo json_encode([
                        'success' => true, 
-                       'message' => 'Admin user created successfully! Password setup email sent.',
-                       'email_sent' => $emailSent
+                       'message' => 'Admin user created successfully! Default password: mho123'
                    ]);
                } else {
                    error_log("Insert failed. PDO error: " . print_r($stmt->errorInfo(), true));
