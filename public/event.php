@@ -770,6 +770,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         if ($notificationType !== 'none') {
             try {
                 error_log("📱 AJAX: Sending notifications for event: $title at $location");
+                error_log("🔍 Before sendEventNotifications - WHO Standard: '$whoStandard', Classification: '$classification'");
                 
                 // Use the centralized sendEventNotifications function with WHO classification targeting
                 $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer, $whoStandard, $classification);
