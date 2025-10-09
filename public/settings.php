@@ -591,7 +591,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                error_log("Municipality: $municipality");
                
                // Simple INSERT - only essential columns
-               $stmt = $pdo->prepare("INSERT INTO users (username, email, password, municipality, email_verified, is_active, created_at) VALUES (?, ?, ?, ?, 1, 1, NOW())");
+               $stmt = $pdo->prepare("INSERT INTO users (username, email, password, municipality, email_verified, is_active) VALUES (?, ?, ?, ?, 1, 1)");
                $result = $stmt->execute([$username, $email, $hashedPassword, $municipality]);
                
                error_log("Insert result: " . ($result ? 'SUCCESS' : 'FAILED'));
