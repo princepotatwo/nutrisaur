@@ -30,6 +30,23 @@ if (!$db->isAvailable()) {
 $username = $_SESSION['username'] ?? 'Unknown User';
 $user_id = $_SESSION['user_id'] ?? $_SESSION['admin_id'] ?? null;
 
+// Get user's municipality for filtering
+$user_municipality = null;
+if (isset($_SESSION['user_id']) && $_SESSION['user_id'] !== 'super_admin') {
+    try {
+        require_once __DIR__ . "/../config.php";
+        $pdo = getDatabaseConnection();
+        if ($pdo) {
+            $stmt = $pdo->prepare("SELECT municipality FROM users WHERE user_id = ?");
+            $stmt->execute([$_SESSION['user_id']]);
+            $user_data = $stmt->fetch();
+            $user_municipality = $user_data['municipality'] ?? null;
+        }
+    } catch (Exception $e) {
+        error_log("Error getting user municipality: " . $e->getMessage());
+    }
+}
+
 // Email sending function using SendGrid API (consistent with home.php)
 function sendVerificationEmail($email, $username, $verificationCode, $subject = 'Email Verification') {
     // SendGrid API configuration
@@ -5266,9 +5283,11 @@ header {
                     <!-- Row 1: Action Buttons and Search -->
                     <div class="control-row-1">
                         <div class="action-section">
+                            <?php if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin'): ?>
                             <button class="btn-add" id="tableToggleBtn" onclick="downloadCSVTemplate()">
                                 <span class="btn-text">Switch to Admin</span>
                             </button>
+                            <?php endif; ?>
                             <button class="btn-secondary" onclick="showAddUserModal()">
                                 <span class="btn-icon">➕</span>
                                 <span class="btn-text">Add User</span>
@@ -5361,12 +5380,20 @@ header {
                     if ($db->isAvailable()) {
                         try {
                             // Use Universal DatabaseAPI to get users for HTML display
-                            // First get all community users
+                            // Filter community users by municipality if user is not super admin
+                            $whereClause = '';
+                            $whereParams = [];
+                            
+                            if (isset($user_municipality) && $user_municipality && !isset($_SESSION['admin_id'])) {
+                                $whereClause = 'municipality = ?';
+                                $whereParams = [$user_municipality];
+                            }
+                            
                             $result = $db->select(
                                     'community_users',
                                     '*',
-                                '',
-                                [],
+                                    $whereClause,
+                                    $whereParams,
                                     'name ASC'
                             );
                             
