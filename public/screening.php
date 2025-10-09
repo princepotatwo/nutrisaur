@@ -7714,6 +7714,8 @@ header {
         }
 
         function showFoodHistoryModal(userName, userEmail, foodData) {
+            console.log('🎯 showFoodHistoryModal called with:', { userName, userEmail, foodDataLength: foodData.length });
+            
             // Remove any existing modals
             const existingModals = document.querySelectorAll('.modal');
             existingModals.forEach(modal => modal.remove());
@@ -7796,7 +7798,10 @@ header {
                 </div>
             `;
             
+            console.log('🎯 About to append modal to DOM:', modal);
             document.body.appendChild(modal);
+            console.log('🎯 Modal appended to DOM. Modal display style:', modal.style.display);
+            console.log('🎯 Modal visibility:', window.getComputedStyle(modal).display);
         }
 
 
