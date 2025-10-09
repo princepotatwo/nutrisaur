@@ -14,6 +14,23 @@ require_once __DIR__ . '/api/DatabaseHelper.php';
 // Use WHO Growth Standards directly
 require_once __DIR__ . '/../who_growth_standards.php';
 
+// Get user's municipality for filtering
+$user_municipality = null;
+if (isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
+    try {
+        require_once __DIR__ . "/../config.php";
+        $pdo = getDatabaseConnection();
+        if ($pdo) {
+            $stmt = $pdo->prepare("SELECT municipality FROM users WHERE user_id = ?");
+            $stmt->execute([$_SESSION['user_id']]);
+            $user_data = $stmt->fetch();
+            $user_municipality = $user_data['municipality'] ?? 'LIMAY'; // Default to LIMAY if no municipality assigned
+        }
+    } catch (Exception $e) {
+        error_log("Error getting user municipality in screening.php: " . $e->getMessage());
+    }
+}
+
 // Function to get adult BMI classification (for children over 71 months)
 // This is only used as fallback for children over 71 months when WHO standards don't apply
 function getAdultBMIClassification($bmi) {
@@ -4951,20 +4968,26 @@ header {
                         <div class="filter-section">
                             <div class="filter-item">
                                 <label>MUNICIPALITY</label>
-                                <select id="municipalityFilter" onchange="filterByMunicipality()">
-                                    <option value="">All</option>
-                                    <option value="ABUCAY">ABUCAY</option>
-                                    <option value="BAGAC">BAGAC</option>
-                                    <option value="CITY OF BALANGA">CITY OF BALANGA</option>
-                                    <option value="DINALUPIHAN">DINALUPIHAN</option>
-                                    <option value="HERMOSA">HERMOSA</option>
-                                    <option value="LIMAY">LIMAY</option>
-                                    <option value="MARIVELES">MARIVELES</option>
-                                    <option value="MORONG">MORONG</option>
-                                    <option value="ORANI">ORANI</option>
-                                    <option value="ORION">ORION</option>
-                                    <option value="PILAR">PILAR</option>
-                                    <option value="SAMAL">SAMAL</option>
+                                <select id="municipalityFilter" onchange="filterByMunicipality()" <?php echo (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin') ? '' : 'disabled'; ?>>
+                                    <?php if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin'): ?>
+                                        <option value="">All</option>
+                                        <option value="ABUCAY">ABUCAY</option>
+                                        <option value="BAGAC">BAGAC</option>
+                                        <option value="CITY OF BALANGA">CITY OF BALANGA</option>
+                                        <option value="DINALUPIHAN">DINALUPIHAN</option>
+                                        <option value="HERMOSA">HERMOSA</option>
+                                        <option value="LIMAY">LIMAY</option>
+                                        <option value="MARIVELES">MARIVELES</option>
+                                        <option value="MORONG">MORONG</option>
+                                        <option value="ORANI">ORANI</option>
+                                        <option value="ORION">ORION</option>
+                                        <option value="PILAR">PILAR</option>
+                                        <option value="SAMAL">SAMAL</option>
+                                    <?php else: ?>
+                                        <option value="<?php echo htmlspecialchars($user_municipality ?? 'LIMAY'); ?>" selected>
+                                            <?php echo htmlspecialchars($user_municipality ?? 'LIMAY'); ?>
+                                        </option>
+                                    <?php endif; ?>
                                 </select>
                             </div>
                             
@@ -5769,6 +5792,19 @@ header {
             updateTableHeaders(); // Initialize table headers on page load
             updateClassificationOptions(); // Initialize classification dropdown based on default standard
             filterByStandard(); // Initialize with default WHO standard (weight-for-age)
+            
+            // Auto-set municipality for non-super admins
+            <?php if (!isset($_SESSION['admin_id']) || $_SESSION['admin_id'] !== 'super_admin'): ?>
+            const municipalityValue = <?php echo json_encode($user_municipality ?? 'LIMAY'); ?>;
+            if (municipalityValue) {
+                const municipalityFilter = document.getElementById('municipalityFilter');
+                if (municipalityFilter) {
+                    municipalityFilter.value = municipalityValue;
+                    filterByMunicipality(); // Trigger the filter
+                    console.log('🏛️ Auto-selected municipality for user:', municipalityValue);
+                }
+            }
+            <?php endif; ?>
         });
 
 
