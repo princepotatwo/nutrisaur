@@ -17,6 +17,23 @@ function getAdultBMIClassification($bmi) {
 $dbAPI = DatabaseAPI::getInstance();
 $db = DatabaseHelper::getInstance();
 
+// Get user's municipality for filtering
+$user_municipality = null;
+if (isset($_SESSION['user_id']) && $_SESSION['user_id'] !== 'super_admin') {
+    try {
+        require_once __DIR__ . "/../config.php";
+        $pdo = getDatabaseConnection();
+        if ($pdo) {
+            $stmt = $pdo->prepare("SELECT municipality FROM users WHERE user_id = ?");
+            $stmt->execute([$_SESSION['user_id']]);
+            $user_data = $stmt->fetch();
+            $user_municipality = $user_data['municipality'] ?? null;
+        }
+    } catch (Exception $e) {
+        error_log("Error getting user municipality in dash.php: " . $e->getMessage());
+    }
+}
+
 // Helper function to calculate age
 function calculateAge($birthday) {
     $birthDate = new DateTime($birthday);
@@ -8196,27 +8213,34 @@ body {
                 <div class="filter-group">
                     <label>Select Municipality:</label>
                     <div class="custom-select-container small-width">
-                        <div class="select-header" onclick="toggleMunicipalityDropdown()">
-                            <span id="selected-municipality-option">All Municipalities</span>
-                            <span class="dropdown-arrow">▼</span>
-                        </div>
-                        <div class="dropdown-content" id="municipality-dropdown-content">
-                            <div class="options-container">
-                                <div class="option-item" data-value="">All Municipalities</div>
-                                <div class="option-item" data-value="ABUCAY">ABUCAY</div>
-                                <div class="option-item" data-value="BAGAC">BAGAC</div>
-                                <div class="option-item" data-value="CITY OF BALANGA">CITY OF BALANGA</div>
-                                <div class="option-item" data-value="DINALUPIHAN">DINALUPIHAN</div>
-                                <div class="option-item" data-value="HERMOSA">HERMOSA</div>
-                                <div class="option-item" data-value="LIMAY">LIMAY</div>
-                                <div class="option-item" data-value="MARIVELES">MARIVELES</div>
-                                <div class="option-item" data-value="MORONG">MORONG</div>
-                                <div class="option-item" data-value="ORANI">ORANI</div>
-                                <div class="option-item" data-value="ORION">ORION</div>
-                                <div class="option-item" data-value="PILAR">PILAR</div>
-                                <div class="option-item" data-value="SAMAL">SAMAL</div>
+                        <?php if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin'): ?>
+                            <div class="select-header" onclick="toggleMunicipalityDropdown()">
+                                <span id="selected-municipality-option">All Municipalities</span>
+                                <span class="dropdown-arrow">▼</span>
                             </div>
-                        </div>
+                            <div class="dropdown-content" id="municipality-dropdown-content">
+                                <div class="options-container">
+                                    <div class="option-item" data-value="">All Municipalities</div>
+                                    <div class="option-item" data-value="ABUCAY">ABUCAY</div>
+                                    <div class="option-item" data-value="BAGAC">BAGAC</div>
+                                    <div class="option-item" data-value="CITY OF BALANGA">CITY OF BALANGA</div>
+                                    <div class="option-item" data-value="DINALUPIHAN">DINALUPIHAN</div>
+                                    <div class="option-item" data-value="HERMOSA">HERMOSA</div>
+                                    <div class="option-item" data-value="LIMAY">LIMAY</div>
+                                    <div class="option-item" data-value="MARIVELES">MARIVELES</div>
+                                    <div class="option-item" data-value="MORONG">MORONG</div>
+                                    <div class="option-item" data-value="ORANI">ORANI</div>
+                                    <div class="option-item" data-value="ORION">ORION</div>
+                                    <div class="option-item" data-value="PILAR">PILAR</div>
+                                    <div class="option-item" data-value="SAMAL">SAMAL</div>
+                                </div>
+                            </div>
+                        <?php else: ?>
+                            <div class="select-header" style="background-color: #f5f5f5; cursor: not-allowed; opacity: 0.7;">
+                                <span id="selected-municipality-option"><?php echo htmlspecialchars($user_municipality ?? 'No Municipality Assigned'); ?></span>
+                                <span class="dropdown-arrow" style="opacity: 0.5;">▼</span>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="filter-group">
@@ -12171,6 +12195,16 @@ body {
             // Initialize dropdown selections
             setupBarangaySelection();
             setupMunicipalitySelection();
+            
+            // Auto-set municipality for non-super admins
+            <?php if (!isset($_SESSION['admin_id']) || $_SESSION['admin_id'] !== 'super_admin'): ?>
+            if (<?php echo json_encode($user_municipality); ?>) {
+                const municipalityValue = <?php echo json_encode($user_municipality); ?>;
+                const municipalityText = <?php echo json_encode($user_municipality); ?>;
+                selectMunicipality(municipalityValue, municipalityText);
+                console.log('🏛️ Auto-selected municipality for user:', municipalityText);
+            }
+            <?php endif; ?>
             
             // Initialize trends chart
             initializeTrendsChart();
