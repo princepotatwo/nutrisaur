@@ -714,7 +714,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             
             try {
                 // Verify reset token
-                $stmt = $pdo->prepare("SELECT user_id, username, email FROM users WHERE password_reset_token = ? AND password_reset_expires > NOW()");
+                $stmt = $pdo->prepare("SELECT user_id, username, email FROM users WHERE password_reset_code = ? AND password_reset_expires > NOW()");
                 $stmt->execute([$resetToken]);
                 $user = $stmt->fetch();
                 
@@ -723,7 +723,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                     $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
                     
                     // Update password and clear reset token
-                    $updateStmt = $pdo->prepare("UPDATE users SET password = ?, password_reset_token = NULL, password_reset_expires = NULL WHERE user_id = ?");
+                    $updateStmt = $pdo->prepare("UPDATE users SET password = ?, password_reset_code = NULL, password_reset_expires = NULL WHERE user_id = ?");
                     $updateStmt->execute([$hashedPassword, $user['user_id']]);
                     
                     // Log the user in after successful password setup
