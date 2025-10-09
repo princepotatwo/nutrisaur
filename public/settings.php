@@ -492,83 +492,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
             break;
             
        case 'add_user':
+           // Simple admin user creation
+           $email = trim($_POST['email'] ?? '');
+           $municipality = trim($_POST['municipality'] ?? '');
+           
+           // Basic validation
+           if (empty($email) || empty($municipality)) {
+               echo json_encode(['success' => false, 'error' => 'Email and municipality are required']);
+               exit;
+           }
+           
+           if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+               echo json_encode(['success' => false, 'error' => 'Invalid email format']);
+               exit;
+           }
+           
+           // Database connection
+           require_once __DIR__ . "/../config.php";
+           $pdo = getDatabaseConnection();
+           if (!$pdo) {
+               echo json_encode(['success' => false, 'error' => 'Database connection failed']);
+               exit;
+           }
+           
            try {
-               $email = $_POST['email'] ?? '';
-               $municipality = $_POST['municipality'] ?? '';
-               
-               if (empty($email) || empty($municipality)) {
-                   echo json_encode(['success' => false, 'error' => 'Email and municipality are required']);
-                   break;
+               // Check if email already exists
+               $check = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
+               $check->execute([$email]);
+               if ($check->fetch()) {
+                   echo json_encode(['success' => false, 'error' => 'Email already exists']);
+                   exit;
                }
-               
-               if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                   echo json_encode(['success' => false, 'error' => 'Invalid email format']);
-                   break;
-               }
-               
-               require_once __DIR__ . "/../config.php";
-               $pdo = getDatabaseConnection();
-               if (!$pdo) {
-                   echo json_encode(['success' => false, 'error' => 'Database connection not available']);
-                   break;
-               }
-               
-               // Check if user already exists
-               $checkStmt = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
-               $checkStmt->execute([$email]);
-               if ($checkStmt->fetch()) {
-                   echo json_encode(['success' => false, 'error' => 'User with this email already exists']);
-                   break;
-               }
-               
-               // Generate default password and reset token
-               $defaultPassword = 'mho123';
-               $hashedPassword = password_hash($defaultPassword, PASSWORD_DEFAULT);
-               
-               // Generate reset token for password change
-               $resetToken = bin2hex(random_bytes(32));
-               $resetExpires = date('Y-m-d H:i:s', strtotime('+7 days'));
                
                // Generate username from email
                $username = explode('@', $email)[0];
                $username = preg_replace('/[^a-zA-Z0-9_]/', '', $username);
                
-               // Ensure username is unique
+               // Make username unique
                $originalUsername = $username;
                $counter = 1;
-               $maxAttempts = 50;
-               $attempts = 0;
-               while ($attempts < $maxAttempts) {
-                   $stmt = $pdo->prepare("SELECT user_id FROM users WHERE username = ?");
-                   $stmt->execute([$username]);
-                   if (!$stmt->fetch()) break;
+               while ($counter < 100) {
+                   $check = $pdo->prepare("SELECT user_id FROM users WHERE username = ?");
+                   $check->execute([$username]);
+                   if (!$check->fetch()) break;
                    $username = $originalUsername . $counter;
                    $counter++;
-                   $attempts++;
-               }
-               if ($attempts >= $maxAttempts) {
-                   $username = 'admin' . rand(1000, 9999);
                }
                
-               $insertStmt = $pdo->prepare("INSERT INTO users (username, email, password, municipality, password_reset_code, password_reset_expires, email_verified, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, 1, NOW())");
-               $result = $insertStmt->execute([$username, $email, $hashedPassword, $municipality, $resetToken, $resetExpires]);
+               // Create user
+               $password = 'mho123';
+               $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+               $resetToken = bin2hex(random_bytes(32));
+               $resetExpires = date('Y-m-d H:i:s', strtotime('+7 days'));
+               
+               $stmt = $pdo->prepare("INSERT INTO users (username, email, password, municipality, password_reset_code, password_reset_expires, email_verified, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, 1, NOW())");
+               $result = $stmt->execute([$username, $email, $hashedPassword, $municipality, $resetToken, $resetExpires]);
                
                if ($result) {
-                   $userId = $pdo->lastInsertId();
-                   
-                   // Send password setup email
-                   $emailSent = sendPasswordSetupEmail($email, $username, $resetToken);
+                   // Send email
+                   $setupLink = "https://" . $_SERVER['HTTP_HOST'] . "/home.php?setup_password=" . $resetToken;
+                   $emailSent = sendVerificationEmail($email, $username, $setupLink, 'Admin Account Setup');
                    
                    echo json_encode([
                        'success' => true, 
-                       'message' => 'Admin user added successfully! Password setup email sent.',
+                       'message' => 'Admin user created successfully! Password setup email sent.',
                        'email_sent' => $emailSent
                    ]);
                } else {
-                   echo json_encode(['success' => false, 'error' => 'Failed to add user']);
+                   echo json_encode(['success' => false, 'error' => 'Failed to create user']);
                }
+               
            } catch (Exception $e) {
-               echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+               echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
            }
            break;
            
@@ -7204,16 +7199,16 @@ header {
         }
 
         function addNewUser() {
-            const form = document.getElementById('userForm');
-            const formData = new FormData(form);
-            
-            const email = formData.get('email');
-            const municipality = formData.get('municipality');
+            const email = document.getElementById('email').value.trim();
+            const municipality = document.getElementById('municipality').value.trim();
             
             if (!email || !municipality) {
                 showMessage('Please fill in all fields', 'error');
                 return;
             }
+            
+            // Show loading
+            showMessage('Creating admin user...', 'info');
             
             fetch('/settings.php', {
                 method: 'POST',
@@ -7225,7 +7220,7 @@ header {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showMessage('User added successfully!', 'success');
+                    showMessage(data.message || 'Admin user created successfully!', 'success');
                     closeUserImportModal();
                     // Reload the appropriate table
                     if (currentTableType === 'users') {
@@ -7234,7 +7229,7 @@ header {
                         loadCommunityUsersTable();
                     }
                 } else {
-                    showMessage('Failed to add user: ' + data.error, 'error');
+                    showMessage('Failed to create admin user: ' + data.error, 'error');
                 }
             })
             .catch(error => {
