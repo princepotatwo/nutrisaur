@@ -208,26 +208,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
 
 // Handle AJAX requests for table management
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($_POST['municipality'])) {
-    try {
-        // Start output buffering first to catch any unexpected output
-        ob_start();
-        
-        // Check authentication first before any output
-        if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
-            ob_end_clean();
-            header('Content-Type: application/json');
-            echo json_encode(['success' => false, 'error' => 'Not authenticated']);
-            exit;
-        }
-        
-        // Ensure we always return JSON
-        header('Content-Type: application/json');
-        
-        // Disable error display to prevent HTML output
-        ini_set('display_errors', 0);
-        error_reporting(E_ALL);
-        
-        $action = $_POST['action'];
+    // Set JSON header
+    header('Content-Type: application/json');
+    
+    // Check authentication
+    if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
+        echo json_encode(['success' => false, 'error' => 'Not authenticated']);
+        exit;
+    }
+    
+    $action = $_POST['action'];
         
         switch ($action) {
         case 'update_profile':
@@ -865,30 +855,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
             echo json_encode(['success' => false, 'error' => 'Unknown action']);
             break;
         }
-        
-        // Clean any unexpected output and ensure JSON response
-        $unexpectedOutput = ob_get_clean();
-        if (!empty($unexpectedOutput)) {
-            error_log("Unexpected output in AJAX handler: " . $unexpectedOutput);
-            // If there was unexpected output, send it as an error with details
-            echo json_encode([
-                'success' => false, 
-                'error' => 'Server error: Unexpected output detected',
-                'debug_output' => substr($unexpectedOutput, 0, 200) // First 200 chars for debugging
-            ]);
-        }
-        
-    } catch (Exception $e) {
-        // Clean any output buffer
-        ob_end_clean();
-        
-        // Log the error
-        error_log("Fatal error in AJAX handler: " . $e->getMessage() . " Stack trace: " . $e->getTraceAsString());
-        
-        // Return JSON error
-        header('Content-Type: application/json');
-        echo json_encode(['success' => false, 'error' => 'Server error: ' . $e->getMessage()]);
-    }
     
     exit;
 }
