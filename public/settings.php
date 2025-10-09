@@ -492,47 +492,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
             break;
             
        case 'add_user':
+           // Debug: Log everything
+           error_log("=== ADD USER DEBUG START ===");
+           error_log("POST data: " . print_r($_POST, true));
+           error_log("Session data: " . print_r($_SESSION, true));
+           
            // Simple admin user creation
            $email = trim($_POST['email'] ?? '');
            $municipality = trim($_POST['municipality'] ?? '');
            
+           error_log("Email: '$email', Municipality: '$municipality'");
+           
            // Basic validation
            if (empty($email) || empty($municipality)) {
+               error_log("Validation failed: empty fields");
                echo json_encode(['success' => false, 'error' => 'Email and municipality are required']);
                exit;
            }
            
            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+               error_log("Validation failed: invalid email format");
                echo json_encode(['success' => false, 'error' => 'Invalid email format']);
                exit;
            }
+           
+           error_log("Validation passed, connecting to database...");
            
            // Database connection
            require_once __DIR__ . "/../config.php";
            $pdo = getDatabaseConnection();
            if (!$pdo) {
+               error_log("Database connection failed");
                echo json_encode(['success' => false, 'error' => 'Database connection failed']);
                exit;
            }
            
+           error_log("Database connection successful");
+           
            try {
+               error_log("Starting database operations...");
+               
                // Check if municipality column exists, create if missing
                $checkColumn = $pdo->query("SHOW COLUMNS FROM users LIKE 'municipality'");
                if (!$checkColumn->fetch()) {
+                   error_log("Municipality column missing, creating it...");
                    $pdo->exec("ALTER TABLE users ADD COLUMN municipality VARCHAR(100) NULL");
+                   error_log("Municipality column created");
+               } else {
+                   error_log("Municipality column exists");
                }
                
                // Check if email already exists
+               error_log("Checking if email exists...");
                $check = $pdo->prepare("SELECT user_id FROM users WHERE email = ?");
                $check->execute([$email]);
                if ($check->fetch()) {
+                   error_log("Email already exists");
                    echo json_encode(['success' => false, 'error' => 'Email already exists']);
                    exit;
                }
+               error_log("Email is unique");
                
                // Generate username from email
                $username = explode('@', $email)[0];
                $username = preg_replace('/[^a-zA-Z0-9_]/', '', $username);
+               error_log("Generated username: $username");
                
                // Make username unique
                $originalUsername = $username;
@@ -544,6 +568,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                    $username = $originalUsername . $counter;
                    $counter++;
                }
+               error_log("Final username: $username");
                
                // Create user
                $password = 'mho123';
@@ -551,13 +576,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                $resetToken = bin2hex(random_bytes(32));
                $resetExpires = date('Y-m-d H:i:s', strtotime('+7 days'));
                
+               error_log("About to insert user with data:");
+               error_log("Username: $username");
+               error_log("Email: $email");
+               error_log("Municipality: $municipality");
+               error_log("Reset token: $resetToken");
+               
                $stmt = $pdo->prepare("INSERT INTO users (username, email, password, municipality, password_reset_code, password_reset_expires, email_verified, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, 1, NOW())");
                $result = $stmt->execute([$username, $email, $hashedPassword, $municipality, $resetToken, $resetExpires]);
                
+               error_log("Insert result: " . ($result ? 'SUCCESS' : 'FAILED'));
+               
                if ($result) {
+                   error_log("User created successfully, sending email...");
                    // Send email
                    $setupLink = "https://" . $_SERVER['HTTP_HOST'] . "/home.php?setup_password=" . $resetToken;
                    $emailSent = sendVerificationEmail($email, $username, $setupLink, 'Admin Account Setup');
+                   
+                   error_log("Email sent: " . ($emailSent ? 'SUCCESS' : 'FAILED'));
+                   error_log("=== ADD USER DEBUG END - SUCCESS ===");
                    
                    echo json_encode([
                        'success' => true, 
@@ -565,10 +602,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && !isset($
                        'email_sent' => $emailSent
                    ]);
                } else {
+                   error_log("Insert failed. PDO error: " . print_r($stmt->errorInfo(), true));
+                   error_log("=== ADD USER DEBUG END - INSERT FAILED ===");
                    echo json_encode(['success' => false, 'error' => 'Failed to create user']);
                }
                
            } catch (Exception $e) {
+               error_log("Exception caught: " . $e->getMessage());
+               error_log("Stack trace: " . $e->getTraceAsString());
+               error_log("=== ADD USER DEBUG END - EXCEPTION ===");
                echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
            }
            break;
