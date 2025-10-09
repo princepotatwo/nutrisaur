@@ -36,56 +36,115 @@ function sendVerificationEmail($email, $username, $verificationCode, $subject = 
     $apiKey = $_ENV['SENDGRID_API_KEY'] ?? 'YOUR_SENDGRID_API_KEY_HERE';
     $apiUrl = 'https://api.sendgrid.com/v3/mail/send';
     
-    $emailData = [
-        'personalizations' => [
-            [
-                'to' => [
-                    ['email' => $email, 'name' => $username]
-                ],
-                'subject' => 'NUTRISAUR - ' . $subject
-            ]
-        ],
-        'from' => [
-            'email' => 'noreply.nutrisaur@gmail.com',
-            'name' => 'NUTRISAUR'
-        ],
-        'content' => [
-            [
-                'type' => 'text/plain',
-                'value' => "Hello " . htmlspecialchars($username) . ",\n\nYour verification code is: " . $verificationCode . "\n\nThis code will expire in 10 minutes.\n\nIf you did not request this verification code, please ignore this email.\n\nBest regards,\nNUTRISAUR Team"
+    // Check if this is a password setup email (contains a link)
+    $isPasswordSetup = strpos($verificationCode, 'http') === 0;
+    
+    if ($isPasswordSetup) {
+        // Password setup email content
+        $emailData = [
+            'personalizations' => [
+                [
+                    'to' => [
+                        ['email' => $email, 'name' => $username]
+                    ],
+                    'subject' => 'NUTRISAUR - ' . $subject
+                ]
             ],
-            [
-                'type' => 'text/html',
-                'value' => "
-                <html>
-                <head>
-                    <title>NUTRISAUR - $subject</title>
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                </head>
-                <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4;'>
-                    <div style='max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);'>
-                        <div style='text-align: center; background-color: #2A3326; color: #A1B454; padding: 20px; border-radius: 8px 8px 0 0; margin: -20px -20px 20px -20px;'>
-                            <h1 style='margin: 0; font-size: 24px;'>NUTRISAUR</h1>
-                        </div>
-                        <div style='padding: 20px 0;'>
-                            <p>Hello " . htmlspecialchars($username) . ",</p>
-                            <p>Your verification code is:</p>
-                            <div style='background-color: #f8f9fa; border: 2px solid #2A3326; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px;'>
-                                <span style='font-size: 28px; font-weight: bold; color: #2A3326; letter-spacing: 4px;'>" . $verificationCode . "</span>
+            'from' => [
+                'email' => 'noreply.nutrisaur@gmail.com',
+                'name' => 'NUTRISAUR'
+            ],
+            'content' => [
+                [
+                    'type' => 'text/plain',
+                    'value' => "Hello " . htmlspecialchars($username) . ",\n\nYour admin account has been created successfully!\n\nTo complete your account setup, please click the link below to set your password:\n\n" . $verificationCode . "\n\nThis link will expire in 7 days.\n\nIf you did not request this account, please ignore this email.\n\nBest regards,\nNUTRISAUR Team"
+                ],
+                [
+                    'type' => 'text/html',
+                    'value' => "
+                    <html>
+                    <head>
+                        <title>NUTRISAUR - $subject</title>
+                        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                    </head>
+                    <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4;'>
+                        <div style='max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);'>
+                            <div style='text-align: center; background-color: #2A3326; color: #A1B454; padding: 20px; border-radius: 8px 8px 0 0; margin: -20px -20px 20px -20px;'>
+                                <h1 style='margin: 0; font-size: 24px;'>NUTRISAUR</h1>
                             </div>
-                            <p><strong>This code will expire in 10 minutes.</strong></p>
-                            <p>If you did not request this verification code, please ignore this email.</p>
+                            <div style='padding: 20px 0;'>
+                                <p>Hello " . htmlspecialchars($username) . ",</p>
+                                <p>Your admin account has been created successfully!</p>
+                                <p>To complete your account setup, please click the button below to set your password:</p>
+                                <div style='text-align: center; margin: 30px 0;'>
+                                    <a href='" . $verificationCode . "' style='display: inline-block; background-color: #A1B454; color: #2A3326; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;'>Set Up Password</a>
+                                </div>
+                                <p><strong>This link will expire in 7 days.</strong></p>
+                                <p>If you did not request this account, please ignore this email.</p>
+                            </div>
+                            <div style='text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 14px;'>
+                                <p>Best regards,<br>NUTRISAUR Team</p>
+                            </div>
                         </div>
-                        <div style='text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 14px;'>
-                            <p>Best regards,<br>NUTRISAUR Team</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-                "
+                    </body>
+                    </html>
+                    "
+                ]
             ]
-        ]
-    ];
+        ];
+    } else {
+        // Regular verification code email content
+        $emailData = [
+            'personalizations' => [
+                [
+                    'to' => [
+                        ['email' => $email, 'name' => $username]
+                    ],
+                    'subject' => 'NUTRISAUR - ' . $subject
+                ]
+            ],
+            'from' => [
+                'email' => 'noreply.nutrisaur@gmail.com',
+                'name' => 'NUTRISAUR'
+            ],
+            'content' => [
+                [
+                    'type' => 'text/plain',
+                    'value' => "Hello " . htmlspecialchars($username) . ",\n\nYour verification code is: " . $verificationCode . "\n\nThis code will expire in 10 minutes.\n\nIf you did not request this verification code, please ignore this email.\n\nBest regards,\nNUTRISAUR Team"
+                ],
+                [
+                    'type' => 'text/html',
+                    'value' => "
+                    <html>
+                    <head>
+                        <title>NUTRISAUR - $subject</title>
+                        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                    </head>
+                    <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4;'>
+                        <div style='max-width: 600px; margin: 20px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);'>
+                            <div style='text-align: center; background-color: #2A3326; color: #A1B454; padding: 20px; border-radius: 8px 8px 0 0; margin: -20px -20px 20px -20px;'>
+                                <h1 style='margin: 0; font-size: 24px;'>NUTRISAUR</h1>
+                            </div>
+                            <div style='padding: 20px 0;'>
+                                <p>Hello " . htmlspecialchars($username) . ",</p>
+                                <p>Your verification code is:</p>
+                                <div style='background-color: #f8f9fa; border: 2px solid #2A3326; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px;'>
+                                    <span style='font-size: 28px; font-weight: bold; color: #2A3326; letter-spacing: 4px;'>" . $verificationCode . "</span>
+                                </div>
+                                <p><strong>This code will expire in 10 minutes.</strong></p>
+                                <p>If you did not request this verification code, please ignore this email.</p>
+                            </div>
+                            <div style='text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 14px;'>
+                                <p>Best regards,<br>NUTRISAUR Team</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                    "
+                ]
+            ]
+        ];
+    }
     
     // Send email via SendGrid API
     $ch = curl_init();
@@ -597,18 +656,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                error_log("Insert result: " . ($result ? 'SUCCESS' : 'FAILED'));
                
                if ($result) {
-                   error_log("User created successfully, sending notification email...");
+                   error_log("User created successfully, sending password setup email...");
                    
-                   // Send simple notification email with login details
-                   $loginLink = "https://" . $_SERVER['HTTP_HOST'] . "/home.php";
-                   $emailSent = sendVerificationEmail($email, $username, $loginLink, 'Admin Account Created - Login Details');
+                   // Generate password reset token for email
+                   $resetToken = bin2hex(random_bytes(16)); // 32 character token
+                   $resetExpires = date('Y-m-d H:i:s', strtotime('+7 days'));
+                   
+                   // Update user with reset token
+                   $updateStmt = $pdo->prepare("UPDATE users SET password_reset_code = ?, password_reset_expires = ? WHERE email = ?");
+                   $updateStmt->execute([$resetToken, $resetExpires, $email]);
+                   
+                   // Send password setup email
+                   $setupLink = "https://" . $_SERVER['HTTP_HOST'] . "/home.php?setup_password=" . $resetToken;
+                   $emailSent = sendVerificationEmail($email, $username, $setupLink, 'Admin Account Setup - Password Required');
                    
                    error_log("Email sent: " . ($emailSent ? 'SUCCESS' : 'FAILED'));
                    error_log("=== ADD USER DEBUG END - SUCCESS ===");
                    
                    echo json_encode([
                        'success' => true, 
-                       'message' => 'Admin user created successfully! Login email sent.',
+                       'message' => 'Admin user created successfully! Password setup email sent.',
                        'email_sent' => $emailSent
                    ]);
                } else {
