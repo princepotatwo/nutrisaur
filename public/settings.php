@@ -5311,20 +5311,26 @@ header {
                         <div class="filter-section">
                             <div class="filter-item">
                                 <label>MUNICIPALITY</label>
-                                <select id="municipalityFilter" onchange="filterByMunicipality()">
-                                    <option value="">All</option>
-                                    <option value="ABUCAY">ABUCAY</option>
-                                    <option value="BAGAC">BAGAC</option>
-                                    <option value="CITY OF BALANGA">CITY OF BALANGA</option>
-                                    <option value="DINALUPIHAN">DINALUPIHAN</option>
-                                    <option value="HERMOSA">HERMOSA</option>
-                                    <option value="LIMAY">LIMAY</option>
-                                    <option value="MARIVELES">MARIVELES</option>
-                                    <option value="MORONG">MORONG</option>
-                                    <option value="ORANI">ORANI</option>
-                                    <option value="ORION">ORION</option>
-                                    <option value="PILAR">PILAR</option>
-                                    <option value="SAMAL">SAMAL</option>
+                                <select id="municipalityFilter" onchange="filterByMunicipality()" <?php echo (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin') ? '' : 'disabled'; ?>>
+                                    <?php if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin'): ?>
+                                        <option value="">All</option>
+                                        <option value="ABUCAY">ABUCAY</option>
+                                        <option value="BAGAC">BAGAC</option>
+                                        <option value="CITY OF BALANGA">CITY OF BALANGA</option>
+                                        <option value="DINALUPIHAN">DINALUPIHAN</option>
+                                        <option value="HERMOSA">HERMOSA</option>
+                                        <option value="LIMAY">LIMAY</option>
+                                        <option value="MARIVELES">MARIVELES</option>
+                                        <option value="MORONG">MORONG</option>
+                                        <option value="ORANI">ORANI</option>
+                                        <option value="ORION">ORION</option>
+                                        <option value="PILAR">PILAR</option>
+                                        <option value="SAMAL">SAMAL</option>
+                                    <?php else: ?>
+                                        <option value="<?php echo htmlspecialchars($user_municipality ?? ''); ?>" selected>
+                                            <?php echo htmlspecialchars($user_municipality ?? 'No Municipality Assigned'); ?>
+                                        </option>
+                                    <?php endif; ?>
                                 </select>
                             </div>
 
