@@ -3,6 +3,7 @@
  * Food History API
  * Handles CRUD operations for user food history data
  * Enables admin/BHW to monitor community nutrition intake
+ * Version: 2.2 - Force redeploy
  */
 
 require_once '../../config.php';
