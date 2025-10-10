@@ -8022,6 +8022,12 @@ header {
         function viewFoodHistory(userEmail, userName) {
             console.log('🍽️ View Food History function called for:', userEmail, userName);
             
+            // Remove any existing food history modal to ensure fresh data
+            const existingModal = document.querySelector('.food-history-modal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
             if (!userEmail || userEmail === 'undefined' || userEmail === 'null') {
                 console.error('❌ Invalid userEmail:', userEmail);
                 alert('Error: Invalid user email');
@@ -8232,7 +8238,12 @@ header {
                 .then(data => {
                     if (data.success) {
                         alert('Food item unflagged successfully');
-                        // Refresh the food history modal
+                        // Force refresh the food history modal to show updated flag status
+                        const modal = document.querySelector('.food-history-modal');
+                        if (modal) {
+                            modal.remove(); // Remove old modal
+                        }
+                        // Re-fetch and display updated food history
                         viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
                     } else {
                         alert('Error: ' + data.error);
@@ -8261,7 +8272,12 @@ header {
                     console.log('Flag response:', data);
                     if (data.success) {
                         alert('Food item flagged successfully');
-                        // Refresh the food history modal
+                        // Force refresh the food history modal to show updated flag status
+                        const modal = document.querySelector('.food-history-modal');
+                        if (modal) {
+                            modal.remove(); // Remove old modal
+                        }
+                        // Re-fetch and display updated food history
                         viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
                     } else {
                         alert('Error flagging food item: ' + (data.error || 'Unknown error'));
