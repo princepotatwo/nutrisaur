@@ -677,6 +677,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
         $errorMessage = "Please fill in all required fields.";
         error_log("Validation failed: Missing required fields");
     } else {
+        // Validate date is in the future
+        $eventDateTime = new DateTime($date_time);
+        $now = new DateTime();
+        
+        if ($eventDateTime <= $now) {
+            $errorMessage = "Event date must be in the future. Please select a future date and time.";
+            error_log("Validation failed: Event date is in the past");
+        } else {
         try {
             // Insert event into database using DatabaseAPI
             $db = DatabaseAPI::getInstance();
@@ -706,6 +714,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
             $errorMessage = "Error creating event: " . $e->getMessage();
             error_log("❌ Event creation failed: " . $e->getMessage());
         }
+        } // Close the date validation else block
     }
     
     // IMPORTANT: NO REDIRECTS, NO EXIT - Just set messages and continue
@@ -742,6 +751,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     // Validate required fields
     if (empty($title) || empty($type) || empty($description) || empty($date_time) || empty($organizer)) {
         echo json_encode(['success' => false, 'message' => 'Invalid request']);
+        exit;
+    }
+    
+    // Validate date is in the future
+    $eventDateTime = new DateTime($date_time);
+    $now = new DateTime();
+    
+    if ($eventDateTime <= $now) {
+        echo json_encode(['success' => false, 'message' => 'Event date must be in the future. Please select a future date and time.']);
         exit;
     }
     
@@ -4984,7 +5002,8 @@ header:hover {
                 
                 <div class="form-group">
                     <label for="eventDate">Date & Time</label>
-                    <input type="datetime-local" id="eventDate" name="eventDate" required>
+                    <input type="datetime-local" id="eventDate" name="eventDate" required min="<?php echo date('Y-m-d\TH:i'); ?>">
+                    <small class="form-help">Event date must be in the future</small>
                 </div>
                 
                 <div class="form-group">
@@ -5253,7 +5272,8 @@ header:hover {
                 
                 <div class="form-group">
                     <label for="editEventDate">Date & Time</label>
-                    <input type="datetime-local" id="editEventDate" name="editEventDate" required>
+                    <input type="datetime-local" id="editEventDate" name="editEventDate" required min="<?php echo date('Y-m-d\TH:i'); ?>">
+                    <small class="form-help">Event date must be in the future</small>
                 </div>
                 
                 <div class="form-group">
@@ -5525,6 +5545,17 @@ function closeCreateEventModal() {
         // Handle edit event submission
         window.handleEditEventSubmission = async function() {
             const form = document.getElementById('editEventForm');
+            
+            // Validate date is in the future
+            const eventDate = form.querySelector('#editEventDate').value;
+            const now = new Date();
+            const selectedDate = new Date(eventDate);
+            
+            if (selectedDate <= now) {
+                alert('Event date must be in the future. Please select a future date and time.');
+                return;
+            }
+            
             const formData = new FormData(form);
             
             // Get municipality and barangay values
@@ -5588,6 +5619,16 @@ function closeCreateEventModal() {
             const form = document.getElementById('newCreateEventForm');
             if (!form) {
                 console.error('Form not found!');
+                return;
+            }
+            
+            // Validate date is in the future
+            const eventDate = form.querySelector('#eventDate').value;
+            const now = new Date();
+            const selectedDate = new Date(eventDate);
+            
+            if (selectedDate <= now) {
+                alert('Event date must be in the future. Please select a future date and time.');
                 return;
             }
             
