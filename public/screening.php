@@ -8670,21 +8670,20 @@ header {
                         flagged_by: '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>'
                     })
                 })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Food item flagged successfully!');
-                            // Refresh the modal
-                            showFoodHistoryModal(userEmail.split('@')[0], userEmail, []);
-                        } else {
-                            alert('Error flagging food item: ' + data.error);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error flagging food item');
-                    });
-                }
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Food item flagged successfully!');
+                        // Refresh the modal
+                        showFoodHistoryModal(userEmail.split('@')[0], userEmail, []);
+                    } else {
+                        alert('Error flagging food item: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error flagging food item');
+                });
             }
         }
 
