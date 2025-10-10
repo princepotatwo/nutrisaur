@@ -2407,8 +2407,8 @@ header {
         }
 
         .food-day-section.flagged {
-            border-left: 6px solid #f44336;
-            background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
+            border-left: 6px solid #ff9800;
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%);
         }
 
         .day-header {
@@ -2442,7 +2442,7 @@ header {
         }
 
         .day-flag-icon {
-            color: #f44336;
+            color: #ff9800;
             font-size: 20px;
             animation: pulse 2s infinite;
         }
@@ -2484,14 +2484,14 @@ header {
         }
 
         .food-flag-btn {
-            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
-            color: white;
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: #1B1B1B;
         }
 
         .food-flag-btn:hover {
-            background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%);
+            background: linear-gradient(135deg, #f57c00 0%, #ff9800 100%);
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
         }
 
         .food-comment-btn {
@@ -2506,7 +2506,7 @@ header {
         }
 
         .day-comment {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%);
             padding: 16px;
             border-radius: 12px;
             margin-bottom: 20px;
@@ -2521,10 +2521,10 @@ header {
         }
 
         .meal-section {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, rgba(161, 180, 84, 0.05) 0%, rgba(161, 180, 84, 0.02) 100%);
             border-radius: 12px;
             padding: 20px;
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
 
@@ -2571,9 +2571,9 @@ header {
             justify-content: space-between;
             align-items: center;
             padding: 16px;
-            background: white;
+            background: var(--card-bg);
             border-radius: 12px;
-            border: 1px solid #e9ecef;
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
@@ -2585,8 +2585,8 @@ header {
         }
 
         .food-item.flagged {
-            background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
-            border-left: 6px solid #f44336;
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%);
+            border-left: 6px solid #ff9800;
         }
 
         .food-info {
@@ -2635,7 +2635,7 @@ header {
         }
 
         .food-comment {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%);
             padding: 8px 12px;
             border-radius: 8px;
             font-size: 12px;
@@ -2685,12 +2685,13 @@ header {
         }
 
         .food-flag-action {
-            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
-            color: white;
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: #1B1B1B;
         }
 
         .food-flag-action.unflag {
             background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
         }
 
         .food-flag-action:hover {
@@ -8185,7 +8186,7 @@ header {
                                                                     <div class="food-info">
                                                                         <div class="food-name">
                                                                             <span>${food.food_name}</span>
-                                                                            ${food.is_flagged == 1 ? '<span style="color: #f44336; font-size: 16px;" title="Flagged by MHO">🚩</span>' : ''}
+                                                                            ${food.is_flagged == 1 ? '<span style="color: #ff9800; font-size: 16px;" title="Flagged by MHO">🚩</span>' : ''}
                                                                         </div>
                                                                         <div class="food-serving">
                                                                             <span>(${food.serving_size})</span>
