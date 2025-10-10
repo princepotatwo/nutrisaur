@@ -3,10 +3,9 @@
  * Food History API
  * Handles CRUD operations for user food history data
  * Enables admin/BHW to monitor community nutrition intake
- * Version: 2.2 - Force redeploy
  */
 
-require_once '../config.php';
+require_once '../../config.php';
 
 // Set content type
 header('Content-Type: application/json');
@@ -58,20 +57,32 @@ try {
             handleDeleteFood($pdo);
             break;
             
-        case 'delete_all_user_foods':
-            handleDeleteAllUserFoods($pdo);
+        case 'flag_food':
+            handleFlagFood($pdo);
             break;
             
-        case 'delete_meal_foods':
-            handleDeleteMealFoods($pdo);
+        case 'flag_day':
+            handleFlagDay($pdo);
             break;
             
-        case 'test':
-            echo json_encode([
-                'success' => true,
-                'message' => 'API is working - Version 2.1',
-                'timestamp' => date('Y-m-d H:i:s')
-            ]);
+        case 'unflag_food':
+            handleUnflagFood($pdo);
+            break;
+            
+        case 'unflag_day':
+            handleUnflagDay($pdo);
+            break;
+            
+        case 'update_serving_size':
+            handleUpdateServingSize($pdo);
+            break;
+            
+        case 'add_comment':
+            handleAddComment($pdo);
+            break;
+            
+        case 'get_flagged_dates':
+            handleGetFlaggedDates($pdo);
             break;
             
         default:
@@ -253,8 +264,14 @@ function handleGetUserHistory($pdo) {
         throw new Exception('User email is required');
     }
     
-    // Build query
-    $sql = "SELECT * FROM user_food_history WHERE user_email = ?";
+    // Build query to include flag and comment data
+    $sql = "SELECT *, 
+            is_flagged, 
+            is_day_flagged, 
+            mho_comment, 
+            flagged_by, 
+            flagged_at 
+            FROM user_food_history WHERE user_email = ?";
     $params = [$userEmail];
     
     if (!empty($startDate)) {
@@ -394,35 +411,18 @@ function handleUpdateFood($pdo) {
 }
 
 /**
- * Delete food entry - Updated to support field combination deletion
- * Version: 2.0 - Supports both ID and field combination deletion
+ * Delete food entry
  */
 function handleDeleteFood($pdo) {
     $id = $_GET['id'] ?? $_POST['id'] ?? '';
-    $user_email = $_GET['user_email'] ?? $_POST['user_email'] ?? '';
-    $date = $_GET['date'] ?? $_POST['date'] ?? '';
-    $food_name = $_GET['food_name'] ?? $_POST['food_name'] ?? '';
-    $meal_category = $_GET['meal_category'] ?? $_POST['meal_category'] ?? '';
     
-    // Debug logging
-    error_log("Delete request - ID: $id, Email: $user_email, Date: $date, Food: $food_name, Meal: $meal_category");
-    
-    if (!empty($id)) {
-        // Delete by ID (preferred method)
-        error_log("Deleting by ID: $id");
-        $sql = "DELETE FROM user_food_history WHERE id = ?";
-        $stmt = $pdo->prepare($sql);
-        $result = $stmt->execute([$id]);
-    } elseif (!empty($user_email) && !empty($date) && !empty($food_name) && !empty($meal_category)) {
-        // Delete by combination of fields (fallback method)
-        error_log("Deleting by field combination");
-        $sql = "DELETE FROM user_food_history WHERE user_email = ? AND date = ? AND food_name = ? AND meal_category = ?";
-        $stmt = $pdo->prepare($sql);
-        $result = $stmt->execute([$user_email, $date, $food_name, $meal_category]);
-    } else {
-        error_log("Delete failed - missing required parameters");
-        throw new Exception('Either food entry ID or (user_email, date, food_name, meal_category) combination is required');
+    if (empty($id)) {
+        throw new Exception('Food entry ID is required');
     }
+    
+    $sql = "DELETE FROM user_food_history WHERE id = ?";
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute([$id]);
     
     if ($result) {
         echo json_encode([
@@ -435,57 +435,224 @@ function handleDeleteFood($pdo) {
 }
 
 /**
- * Delete all foods for a specific user and date
+ * Flag individual food item
  */
-function handleDeleteAllUserFoods($pdo) {
-    $user_email = $_GET['user_email'] ?? $_POST['user_email'] ?? '';
-    $date = $_GET['date'] ?? $_POST['date'] ?? '';
+function handleFlagFood($pdo) {
+    $data = json_decode(file_get_contents('php://input'), true);
     
-    if (empty($user_email) || empty($date)) {
-        throw new Exception('User email and date are required');
+    if (!$data || !isset($data['id']) || !isset($data['mho_email'])) {
+        throw new Exception('Food ID and MHO email are required');
     }
     
-    $sql = "DELETE FROM user_food_history WHERE user_email = ? AND date = ?";
+    $id = $data['id'];
+    $mhoEmail = $data['mho_email'];
+    $comment = $data['comment'] ?? '';
+    
+    $sql = "UPDATE user_food_history SET 
+            is_flagged = 1, 
+            mho_comment = ?, 
+            flagged_by = ?, 
+            flagged_at = NOW() 
+            WHERE id = ?";
+    
     $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute([$user_email, $date]);
+    $result = $stmt->execute([$comment, $mhoEmail, $id]);
     
     if ($result) {
-        $deletedCount = $stmt->rowCount();
         echo json_encode([
             'success' => true,
-            'message' => "Deleted all food entries for user",
-            'deleted_count' => $deletedCount
+            'message' => 'Food item flagged successfully'
         ]);
     } else {
-        throw new Exception('Failed to delete all food entries');
+        throw new Exception('Failed to flag food item');
     }
 }
 
 /**
- * Delete all foods for a specific user, date, and meal category
+ * Flag entire day for a user
  */
-function handleDeleteMealFoods($pdo) {
-    $user_email = $_GET['user_email'] ?? $_POST['user_email'] ?? '';
-    $date = $_GET['date'] ?? $_POST['date'] ?? '';
-    $meal_category = $_GET['meal_category'] ?? $_POST['meal_category'] ?? '';
+function handleFlagDay($pdo) {
+    $data = json_decode(file_get_contents('php://input'), true);
     
-    if (empty($user_email) || empty($date) || empty($meal_category)) {
-        throw new Exception('User email, date, and meal category are required');
+    if (!$data || !isset($data['user_email']) || !isset($data['date']) || !isset($data['mho_email'])) {
+        throw new Exception('User email, date, and MHO email are required');
     }
     
-    $sql = "DELETE FROM user_food_history WHERE user_email = ? AND date = ? AND meal_category = ?";
+    $userEmail = $data['user_email'];
+    $date = $data['date'];
+    $mhoEmail = $data['mho_email'];
+    $comment = $data['comment'] ?? '';
+    
+    $sql = "UPDATE user_food_history SET 
+            is_day_flagged = 1, 
+            mho_comment = ?, 
+            flagged_by = ?, 
+            flagged_at = NOW() 
+            WHERE user_email = ? AND date = ?";
+    
     $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute([$user_email, $date, $meal_category]);
+    $result = $stmt->execute([$comment, $mhoEmail, $userEmail, $date]);
     
     if ($result) {
-        $deletedCount = $stmt->rowCount();
         echo json_encode([
             'success' => true,
-            'message' => "Deleted all food entries for meal category",
-            'deleted_count' => $deletedCount
+            'message' => 'Day flagged successfully',
+            'affected_rows' => $stmt->rowCount()
         ]);
     } else {
-        throw new Exception('Failed to delete meal food entries');
+        throw new Exception('Failed to flag day');
     }
+}
+
+/**
+ * Unflag individual food item
+ */
+function handleUnflagFood($pdo) {
+    $data = json_decode(file_get_contents('php://input'), true);
+    
+    if (!$data || !isset($data['id'])) {
+        throw new Exception('Food ID is required');
+    }
+    
+    $id = $data['id'];
+    
+    $sql = "UPDATE user_food_history SET 
+            is_flagged = 0, 
+            mho_comment = NULL, 
+            flagged_by = NULL, 
+            flagged_at = NULL 
+            WHERE id = ?";
+    
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute([$id]);
+    
+    if ($result) {
+        echo json_encode([
+            'success' => true,
+            'message' => 'Food item unflagged successfully'
+        ]);
+    } else {
+        throw new Exception('Failed to unflag food item');
+    }
+}
+
+/**
+ * Unflag entire day for a user
+ */
+function handleUnflagDay($pdo) {
+    $data = json_decode(file_get_contents('php://input'), true);
+    
+    if (!$data || !isset($data['user_email']) || !isset($data['date'])) {
+        throw new Exception('User email and date are required');
+    }
+    
+    $userEmail = $data['user_email'];
+    $date = $data['date'];
+    
+    $sql = "UPDATE user_food_history SET 
+            is_day_flagged = 0, 
+            mho_comment = NULL, 
+            flagged_by = NULL, 
+            flagged_at = NULL 
+            WHERE user_email = ? AND date = ?";
+    
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute([$userEmail, $date]);
+    
+    if ($result) {
+        echo json_encode([
+            'success' => true,
+            'message' => 'Day unflagged successfully',
+            'affected_rows' => $stmt->rowCount()
+        ]);
+    } else {
+        throw new Exception('Failed to unflag day');
+    }
+}
+
+/**
+ * Update serving size of food item
+ */
+function handleUpdateServingSize($pdo) {
+    $data = json_decode(file_get_contents('php://input'), true);
+    
+    if (!$data || !isset($data['id']) || !isset($data['serving_size'])) {
+        throw new Exception('Food ID and serving size are required');
+    }
+    
+    $id = $data['id'];
+    $servingSize = $data['serving_size'];
+    
+    $sql = "UPDATE user_food_history SET serving_size = ? WHERE id = ?";
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute([$servingSize, $id]);
+    
+    if ($result) {
+        echo json_encode([
+            'success' => true,
+            'message' => 'Serving size updated successfully'
+        ]);
+    } else {
+        throw new Exception('Failed to update serving size');
+    }
+}
+
+/**
+ * Add or update comment
+ */
+function handleAddComment($pdo) {
+    $data = json_decode(file_get_contents('php://input'), true);
+    
+    if (!$data || !isset($data['id']) || !isset($data['comment']) || !isset($data['mho_email'])) {
+        throw new Exception('Food ID, comment, and MHO email are required');
+    }
+    
+    $id = $data['id'];
+    $comment = $data['comment'];
+    $mhoEmail = $data['mho_email'];
+    
+    $sql = "UPDATE user_food_history SET 
+            mho_comment = ?, 
+            flagged_by = ?, 
+            flagged_at = NOW() 
+            WHERE id = ?";
+    
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute([$comment, $mhoEmail, $id]);
+    
+    if ($result) {
+        echo json_encode([
+            'success' => true,
+            'message' => 'Comment added successfully'
+        ]);
+    } else {
+        throw new Exception('Failed to add comment');
+    }
+}
+
+/**
+ * Get flagged dates for a user
+ */
+function handleGetFlaggedDates($pdo) {
+    $userEmail = $_GET['user_email'] ?? '';
+    
+    if (empty($userEmail)) {
+        throw new Exception('User email is required');
+    }
+    
+    $sql = "SELECT DISTINCT date, is_day_flagged, mho_comment, flagged_by, flagged_at 
+            FROM user_food_history 
+            WHERE user_email = ? AND (is_flagged = 1 OR is_day_flagged = 1)
+            ORDER BY date DESC";
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$userEmail]);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    echo json_encode([
+        'success' => true,
+        'data' => $results,
+        'count' => count($results)
+    ]);
 }
 ?>
