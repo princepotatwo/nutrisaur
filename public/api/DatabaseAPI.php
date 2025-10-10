@@ -7822,6 +7822,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 $updateData = [
                     'is_day_flagged' => 1,
+                    'is_flagged' => 1,  // Also flag individual food items
                     'mho_comment' => $comment,
                     'flagged_by' => $mhoEmail,
                     'flagged_at' => date('Y-m-d H:i:s')
@@ -7893,6 +7894,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 $updateData = [
                     'is_day_flagged' => 0,
+                    'is_flagged' => 0,  // Also unflag individual food items
                     'mho_comment' => null,
                     'flagged_by' => null,
                     'flagged_at' => null
