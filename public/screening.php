@@ -8010,8 +8010,8 @@ header {
                         return;
                     }
                     
-                    // Show food history modal
-                    showFoodHistoryModal(userName, userEmail, data.data || []);
+                    // Show food history modal with table layout
+                    showFoodHistoryTableModal(userName, userEmail, data.data || []);
                 })
                 .catch(error => {
                     console.error('❌ Fetch Error:', error);
@@ -8721,6 +8721,78 @@ header {
                     alert('Error updating serving size');
                 });
             }
+        }
+
+        // New table-based food history modal
+        function showFoodHistoryTableModal(userName, userEmail, foodData) {
+            console.log('🎯 showFoodHistoryTableModal called with:', { userName, userEmail, foodDataLength: foodData.length });
+            
+            // Remove any existing modals
+            const existingModals = document.querySelectorAll('.modal');
+            existingModals.forEach(modal => modal.remove());
+            
+            // Create modal HTML with table structure
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 95vw; max-height: 90vh; overflow-y: auto;">
+                    <div class="modal-header">
+                        <h3>🍽️ Food History - ${userName}</h3>
+                        <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                    </div>
+                    <div class="food-history-content">
+                        ${foodData.length === 0 ? 
+                            '<div style="text-align: center; padding: 40px; color: #666;">No food history found for this user.</div>' :
+                            `
+                            <table class="food-history-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Meal</th>
+                                        <th>Food Item</th>
+                                        <th>Serving</th>
+                                        <th>Nutrition</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${foodData.map(food => `
+                                        <tr class="${food.is_flagged == 1 ? 'flagged' : ''}">
+                                            <td class="food-date-cell">${new Date(food.date).toLocaleDateString()}</td>
+                                            <td class="food-meal-cell">${food.meal_category}</td>
+                                            <td class="food-name-cell">
+                                                ${food.food_name}
+                                                ${food.is_flagged == 1 ? '<span class="food-flag-indicator">🚩</span>' : ''}
+                                            </td>
+                                            <td class="food-serving-cell">
+                                                ${food.serving_size}
+                                                <button class="food-edit-btn" onclick="editServingSize(${food.id}, '${userEmail}', '${food.date}', '${food.serving_size}')" title="Edit serving size">
+                                                    ✏️
+                                                </button>
+                                            </td>
+                                            <td class="food-nutrition-cell">
+                                                <div class="food-calories">${food.calories} kcal</div>
+                                                <div class="food-macros">P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
+                                            </td>
+                                            <td class="food-actions-cell">
+                                                <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${food.date}', ${food.is_flagged == 1})" title="${food.is_flagged == 1 ? 'Unflag food' : 'Flag food'}">
+                                                    ${food.is_flagged == 1 ? '🚩 Unflag' : '🚩 Flag'}
+                                                </button>
+                                                <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${food.date}')" title="Add comment">
+                                                    💬
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                            `}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
         }
 
 
