@@ -8106,6 +8106,316 @@ header {
             }
         }
 
+        // Complete the showFoodHistoryModal function
+        function showFoodHistoryModal(userName, userEmail, foodData) {
+            console.log('🎯 showFoodHistoryModal called with:', { userName, userEmail, foodDataLength: foodData.length });
+            
+            // Remove any existing modals
+            const existingModals = document.querySelectorAll('.modal');
+            existingModals.forEach(modal => modal.remove());
+            
+            // Group food data by date
+            const groupedByDate = {};
+            foodData.forEach(food => {
+                if (!groupedByDate[food.date]) {
+                    groupedByDate[food.date] = [];
+                }
+                groupedByDate[food.date].push(food);
+            });
+            
+            // Sort dates
+            const sortedDates = Object.keys(groupedByDate).sort((a, b) => new Date(b) - new Date(a));
+            
+            // Create modal HTML
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 90vw; max-height: 90vh; overflow-y: auto;">
+                    <div class="modal-header">
+                        <h3>🍽️ Food History - ${userName}</h3>
+                        <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                    </div>
+                    <div class="food-history-content">
+                        ${sortedDates.length === 0 ? 
+                            '<div style="text-align: center; padding: 40px; color: #666;">No food history found for this user.</div>' :
+                            sortedDates.map(date => {
+                                const dayFoods = groupedByDate[date];
+                                const totalCalories = dayFoods.reduce((sum, food) => sum + parseInt(food.calories), 0);
+                                const totalProtein = dayFoods.reduce((sum, food) => sum + parseFloat(food.protein), 0);
+                                const totalCarbs = dayFoods.reduce((sum, food) => sum + parseFloat(food.carbs), 0);
+                                const totalFat = dayFoods.reduce((sum, food) => sum + parseFloat(food.fat), 0);
+                                
+                                // Check if any food in this day is flagged
+                                const isDayFlagged = dayFoods.some(food => food.is_day_flagged == 1);
+                                const dayComment = dayFoods.find(food => food.mho_comment)?.mho_comment || '';
+                                
+                                return `
+                                    <div class="food-day-section" style="margin-bottom: 30px; border: 1px solid #ddd; border-radius: 10px; padding: 20px; ${isDayFlagged ? 'border-left: 5px solid #f44336; background-color: #ffebee;' : ''}">
+                                        <div class="day-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #4CAF50;">
+                                            <div style="display: flex; align-items: center; gap: 10px;">
+                                                <h4 style="margin: 0; color: #4CAF50;">📅 ${new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h4>
+                                                ${isDayFlagged ? '<span style="color: #f44336; font-size: 18px;" title="Day flagged by MHO">🚩</span>' : ''}
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 10px;">
+                                                <div class="day-totals" style="text-align: right; font-size: 14px; color: #666;">
+                                                    <div><strong>Total: ${totalCalories} kcal</strong></div>
+                                                    <div>Protein: ${totalProtein.toFixed(1)}g | Carbs: ${totalCarbs.toFixed(1)}g | Fat: ${totalFat.toFixed(1)}g</div>
+                                                </div>
+                                                <div class="day-actions" style="display: flex; gap: 5px;">
+                                                    <button class="food-flag-btn" onclick="flagEntireDay('${userEmail}', '${date}')" style="padding: 5px 10px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;" title="Flag entire day">
+                                                        ${isDayFlagged ? '🚩 Unflag Day' : '🚩 Flag Day'}
+                                                    </button>
+                                                    <button class="food-comment-btn" onclick="addCommentToDay('${userEmail}', '${date}')" style="padding: 5px 10px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;" title="Add comment to day">
+                                                        💬 Comment
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        ${dayComment ? `
+                                            <div class="day-comment" style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #2196F3;">
+                                                <strong>MHO Comment:</strong> ${dayComment}
+                                            </div>
+                                        ` : ''}
+                                        <div class="meals-container">
+                                            ${['Breakfast', 'Lunch', 'Dinner', 'Snacks'].map(meal => {
+                                                const mealFoods = dayFoods.filter(food => food.meal_category === meal);
+                                                if (mealFoods.length === 0) return '';
+                                                
+                                                const mealCalories = mealFoods.reduce((sum, food) => sum + parseInt(food.calories), 0);
+                                                
+                                                return `
+                                                    <div class="meal-section" style="margin-bottom: 15px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
+                                                        <div class="meal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                                            <h5 style="margin: 0; color: #333;">${meal} (${mealCalories} kcal)</h5>
+                                                        </div>
+                                                        <div class="meal-foods">
+                                                            ${mealFoods.map(food => `
+                                                                <div class="food-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; ${food.is_flagged == 1 ? 'background-color: var(--flagged-bg, #ffebee); border-left: 3px solid var(--flagged-border, #f44336);' : ''}">
+                                                                    <div class="food-info" style="flex: 1;">
+                                                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                                                            <span style="font-weight: 600;">${food.food_name}</span>
+                                                                            ${food.is_flagged == 1 ? '<span style="color: var(--flagged-border, #f44336); font-size: 16px;" title="Flagged by MHO">🚩</span>' : ''}
+                                                                        </div>
+                                                                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
+                                                                            <span style="color: #666;">(${food.serving_size})</span>
+                                                                            <button onclick="editServingSize(${food.id}, '${userEmail}', '${date}', '${food.serving_size}')" style="padding: 2px 6px; background: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="Edit serving size">
+                                                                                ✏️ Edit
+                                                                            </button>
+                                                                        </div>
+                                                                        <div style="font-size: 12px; color: #888; margin-top: 2px;">
+                                                                            ${food.calories} kcal | ${food.protein}g protein | ${food.carbs}g carbs | ${food.fat}g fat
+                                                                        </div>
+                                                                        ${food.mho_comment ? `
+                                                                            <div style="background: #fff3cd; padding: 5px; border-radius: 3px; margin-top: 5px; border-left: 3px solid #ffc107; font-size: 11px;">
+                                                                                <strong>MHO Comment:</strong> ${food.mho_comment}
+                                                                            </div>
+                                                                        ` : ''}
+                                                                    </div>
+                                                                    <div class="food-actions" style="display: flex; gap: 5px;">
+                                                                        <button onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${date}', ${food.is_flagged == 1})" style="padding: 4px 8px; background: ${food.is_flagged == 1 ? '#4CAF50' : '#f44336'}; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="${food.is_flagged == 1 ? 'Unflag this food' : 'Flag this food'}">
+                                                                            ${food.is_flagged == 1 ? '🚩 Unflag' : '🚩 Flag'}
+                                                                        </button>
+                                                                        <button onclick="addCommentToFood(${food.id}, '${userEmail}', '${date}')" style="padding: 4px 8px; background: #2196F3; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="Add comment to this food">
+                                                                            💬 Comment
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            `).join('')}
+                                                        </div>
+                                                    </div>
+                                                `;
+                                            }).join('')}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                    </div>
+                </div>
+            `;
+            
+            // Add modal to DOM
+            document.body.appendChild(modal);
+            
+            // Add click outside to close
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        // Helper functions for food history actions
+        function toggleFoodItemFlag(foodId, userEmail, date, isCurrentlyFlagged) {
+            if (isCurrentlyFlagged) {
+                // Unflag
+                fetch(`api/DatabaseAPI.php?action=unflag_food`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: foodId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Food item unflagged successfully!');
+                        // Refresh the modal
+                        showFoodHistoryModal(userEmail.split('@')[0], userEmail, []);
+                    } else {
+                        alert('Error unflagging food item: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error unflagging food item');
+                });
+            } else {
+                // Flag with comment
+                const comment = prompt('Enter reason for flagging this food item:');
+                if (comment) {
+                    fetch(`api/DatabaseAPI.php?action=flag_food`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            id: foodId, 
+                            mho_comment: comment,
+                            flagged_by: '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>'
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Food item flagged successfully!');
+                            // Refresh the modal
+                            showFoodHistoryModal(userEmail.split('@')[0], userEmail, []);
+                        } else {
+                            alert('Error flagging food item: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error flagging food item');
+                    });
+                }
+            }
+        }
+
+        function addCommentToFood(foodId, userEmail, date) {
+            const comment = prompt('Enter comment for this food item:');
+            if (comment) {
+                fetch(`api/DatabaseAPI.php?action=add_comment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        id: foodId, 
+                        mho_comment: comment,
+                        flagged_by: '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Comment added successfully!');
+                        // Refresh the modal
+                        showFoodHistoryModal(userEmail.split('@')[0], userEmail, []);
+                    } else {
+                        alert('Error adding comment: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error adding comment');
+                });
+            }
+        }
+
+        function flagEntireDay(userEmail, date) {
+            const comment = prompt('Enter reason for flagging this entire day:');
+            if (comment) {
+                fetch(`api/DatabaseAPI.php?action=flag_day`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        user_email: userEmail, 
+                        date: date,
+                        mho_comment: comment,
+                        flagged_by: '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Entire day flagged successfully!');
+                        // Refresh the modal
+                        showFoodHistoryModal(userEmail.split('@')[0], userEmail, []);
+                    } else {
+                        alert('Error flagging day: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error flagging day');
+                });
+            }
+        }
+
+        function addCommentToDay(userEmail, date) {
+            const comment = prompt('Enter comment for this day:');
+            if (comment) {
+                fetch(`api/DatabaseAPI.php?action=add_comment`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        user_email: userEmail, 
+                        date: date,
+                        mho_comment: comment,
+                        flagged_by: '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Comment added successfully!');
+                        // Refresh the modal
+                        showFoodHistoryModal(userEmail.split('@')[0], userEmail, []);
+                    } else {
+                        alert('Error adding comment: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error adding comment');
+                });
+            }
+        }
+
+        function editServingSize(foodId, userEmail, date, currentServing) {
+            const newServing = prompt('Enter new serving size:', currentServing);
+            if (newServing && newServing !== currentServing) {
+                fetch(`api/DatabaseAPI.php?action=update_serving_size`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        id: foodId, 
+                        serving_size: newServing
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Serving size updated successfully!');
+                        // Refresh the modal
+                        showFoodHistoryModal(userEmail.split('@')[0], userEmail, []);
+                    } else {
+                        alert('Error updating serving size: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error updating serving size');
+                });
+            }
+        }
+
 
     </script>
 </body>
