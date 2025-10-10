@@ -34,6 +34,9 @@ if (isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
     }
 }
 
+// Debug logging for municipality
+error_log("🏛️ DASH.PHP - User ID: " . ($_SESSION['user_id'] ?? 'not set') . ", Admin ID: " . ($_SESSION['admin_id'] ?? 'not set') . ", Municipality: " . ($user_municipality ?? 'null'));
+
 // Helper function to calculate age
 function calculateAge($birthday) {
     $birthDate = new DateTime($birthday);
