@@ -5,7 +5,7 @@
  * Enables admin/BHW to monitor community nutrition intake
  */
 
-require_once '../../config.php';
+require_once 'config.php';
 
 // Set content type
 header('Content-Type: application/json');
