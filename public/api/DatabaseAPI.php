@@ -4246,8 +4246,17 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
     // Initialize the database API using singleton pattern
     $db = DatabaseAPI::getInstance();
     
-    // Get the action from query parameter or POST data
+    // Get the action from query parameter, POST data, or JSON body
     $action = $_GET['action'] ?? $_POST['action'] ?? '';
+    
+    // If no action found in GET/POST, try to parse from JSON body
+    if (empty($action) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+        $input = file_get_contents('php://input');
+        $jsonData = json_decode($input, true);
+        if ($jsonData && isset($jsonData['action'])) {
+            $action = $jsonData['action'];
+        }
+    }
     
     // DEBUG: Log the action being processed
     error_log("🔍 DatabaseAPI Debug - Action received: '" . $action . "'");
