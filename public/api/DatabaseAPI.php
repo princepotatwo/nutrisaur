@@ -7780,6 +7780,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     'flagged_at' => date('Y-m-d H:i:s')
                 ];
                 
+                error_log("Flag Food Update Data: " . json_encode($updateData));
+                error_log("Flag Food Update ID: " . $id);
+                
                 $result = $db->universalUpdate('user_food_history', $updateData, 'id = ?', [$id]);
                 
                 if ($result['success']) {

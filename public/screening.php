@@ -8256,6 +8256,9 @@ header {
             } else {
                 // Flag the food item
                 const comment = prompt('Add a comment (optional):') || '';
+                console.log('🚩 Comment collected:', comment);
+                console.log('🚩 Sending flag request with:', { id: foodId, mho_email: mhoEmail, comment: comment });
+                
                 fetch('api/DatabaseAPI.php?action=flag_food', {
                     method: 'POST',
                     headers: {
