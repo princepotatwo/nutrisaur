@@ -2384,9 +2384,22 @@ header {
         }
 
         .food-history-content {
-            padding: 0;
+            padding: 20px;
             max-height: 80vh;
             overflow-y: auto;
+        }
+
+        .meal-section {
+            margin-bottom: 30px;
+        }
+
+        .meal-title {
+            color: var(--color-highlight);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--color-highlight);
         }
 
         .food-history-table {
@@ -2537,25 +2550,36 @@ header {
 
         .food-actions-cell {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             justify-content: flex-start;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .food-action-btn {
-            padding: 8px 16px;
+            padding: 6px 12px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            min-width: 70px;
+            gap: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            min-width: 60px;
             justify-content: center;
+        }
+
+        .food-edit-action {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .food-edit-action:hover {
+            background: #45a049;
+            opacity: 0.9;
         }
 
         .food-flag-action {
@@ -8769,48 +8793,54 @@ header {
                         ${foodData.length === 0 ? 
                             '<div style="text-align: center; padding: 40px; color: #666;">No food history found for this user.</div>' :
                             `
-                            <table class="food-history-table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Meal</th>
-                                        <th>Food Item</th>
-                                        <th>Serving</th>
-                                        <th>Nutrition</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${foodData.map(food => `
-                                        <tr class="${food.is_flagged == 1 ? 'flagged' : ''}">
-                                            <td class="food-date-cell">${new Date(food.date).toLocaleDateString()}</td>
-                                            <td class="food-meal-cell">${food.meal_category}</td>
-                                            <td class="food-name-cell">
-                                                ${food.food_name}
-                                                ${food.is_flagged == 1 ? '<span class="food-flag-indicator">🚩</span>' : ''}
-                                            </td>
-                                            <td class="food-serving-cell">
-                                                ${food.serving_size}
-                                                <button class="food-edit-btn" onclick="editServingSize(${food.id}, '${userEmail}', '${food.date}', '${food.serving_size}')" title="Edit serving size">
-                                                    ✏️
-                                                </button>
-                                            </td>
-                                            <td class="food-nutrition-cell">
-                                                <div class="food-calories">${food.calories} kcal</div>
-                                                <div class="food-macros">P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
-                                            </td>
-                                            <td class="food-actions-cell">
-                                                <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${food.date}', ${food.is_flagged == 1})" title="${food.is_flagged == 1 ? 'Unflag food' : 'Flag food'}">
-                                                    ${food.is_flagged == 1 ? '🚩 Unflag' : '🚩 Flag'}
-                                                </button>
-                                                <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${food.date}')" title="Add comment">
-                                                    💬
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
+                            ${['Breakfast', 'Lunch', 'Dinner', 'Snacks'].map(meal => {
+                                const mealFoods = foodData.filter(food => food.meal_category === meal);
+                                if (mealFoods.length === 0) return '';
+                                
+                                return `
+                                    <div class="meal-section">
+                                        <h4 class="meal-title">${meal} (${mealFoods.length} items)</h4>
+                                        <table class="food-history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Food Item</th>
+                                                    <th>Serving</th>
+                                                    <th>Nutrition</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${mealFoods.map(food => `
+                                                    <tr class="${food.is_flagged == 1 ? 'flagged' : ''}">
+                                                        <td class="food-date-cell">${new Date(food.date).toLocaleDateString()}</td>
+                                                        <td class="food-name-cell">
+                                                            ${food.food_name}
+                                                            ${food.is_flagged == 1 ? '<span class="food-flag-indicator">🚩</span>' : ''}
+                                                        </td>
+                                                        <td class="food-serving-cell">${food.serving_size}</td>
+                                                        <td class="food-nutrition-cell">
+                                                            <div class="food-calories">${food.calories} kcal</div>
+                                                            <div class="food-macros">P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
+                                                        </td>
+                                                        <td class="food-actions-cell">
+                                                            <button class="food-action-btn food-edit-action" onclick="editServingSize(${food.id}, '${userEmail}', '${food.date}', '${food.serving_size}')" title="Edit serving size">
+                                                                ✏️ Edit
+                                                            </button>
+                                                            <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${food.date}', ${food.is_flagged == 1})" title="${food.is_flagged == 1 ? 'Unflag food' : 'Flag food'}">
+                                                                ${food.is_flagged == 1 ? '🚩 Unflag' : '🚩 Flag'}
+                                                            </button>
+                                                            <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${food.date}')" title="Add comment">
+                                                                💬 Comment
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                `;
+                            }).join('')}
                             `}
                     </div>
                 </div>
