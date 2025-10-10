@@ -8739,17 +8739,21 @@ header {
             
             if (isCurrentlyFlagged) {
                 // Unflag the day
+                const unflagData = { 
+                    user_email: userEmail, 
+                    date: date,
+                    flagged_by: '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>'
+                };
+                console.log('🚩 Unflag Day Debug - Data being sent:', unflagData);
+                
                 fetch(`api/DatabaseAPI.php?action=unflag_day`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        user_email: userEmail, 
-                        date: date,
-                        flagged_by: '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>'
-                    })
+                    body: JSON.stringify(unflagData)
                 })
                 .then(response => response.json())
                 .then(data => {
+                    console.log('🚩 Unflag Day Debug - API Response:', data);
                     if (data.success) {
                         updateFoodHistoryModal(userEmail);
                     } else {

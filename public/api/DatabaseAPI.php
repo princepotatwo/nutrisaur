@@ -7898,7 +7898,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     'flagged_at' => null
                 ];
                 
+                // Debug logging
+                error_log("Unflag Day Debug - User: " . $userEmail . ", Date: " . $date);
+                error_log("Unflag Day Debug - Update Data: " . json_encode($updateData));
+                
                 $result = $db->universalUpdate('user_food_history', $updateData, 'user_email = ? AND date = ?', [$userEmail, $date]);
+                
+                // Debug logging for result
+                error_log("Unflag Day Debug - Result: " . json_encode($result));
                 
                 if ($result['success']) {
                     echo json_encode(['success' => true, 'message' => 'Day unflagged successfully']);
