@@ -7683,7 +7683,7 @@ header {
             document.body.appendChild(loadingModal);
 
             // Fetch food history from API
-            fetch('api/food_history_api.php?action=get_user_history&user_email=' + encodeURIComponent(userEmail))
+            fetch('api/DatabaseAPI.php?action=get_user_history&user_email=' + encodeURIComponent(userEmail))
                 .then(response => {
                     console.log('📥 Food History API Response:', response.status);
                     if (!response.ok) {
@@ -7852,7 +7852,7 @@ header {
         function flagFoodItem(foodId, userEmail, date) {
             const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
             
-            fetch('api/food_history_api.php', {
+            fetch('api/DatabaseAPI.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -7883,7 +7883,7 @@ header {
         function flagEntireDay(userEmail, date) {
             const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
             
-            fetch('api/food_history_api.php', {
+            fetch('api/DatabaseAPI.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -7913,7 +7913,7 @@ header {
         }
 
         function unflagFoodItem(foodId, userEmail, date) {
-            fetch('api/food_history_api.php', {
+            fetch('api/DatabaseAPI.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -7940,7 +7940,7 @@ header {
         }
 
         function unflagEntireDay(userEmail, date) {
-            fetch('api/food_history_api.php', {
+            fetch('api/DatabaseAPI.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -7970,7 +7970,7 @@ header {
         function editServingSize(foodId, userEmail, date, currentSize) {
             const newSize = prompt('Enter new serving size:', currentSize);
             if (newSize && newSize !== currentSize) {
-                fetch('api/food_history_api.php', {
+                fetch('api/DatabaseAPI.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -8003,7 +8003,7 @@ header {
             if (comment) {
                 const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
                 
-                fetch('api/food_history_api.php', {
+                fetch('api/DatabaseAPI.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -8038,7 +8038,7 @@ header {
                 const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
                 
                 // Get the first food item for this day to add comment
-                fetch('api/food_history_api.php?action=get_user_history&user_email=' + encodeURIComponent(userEmail))
+                fetch('api/DatabaseAPI.php?action=get_user_history&user_email=' + encodeURIComponent(userEmail))
                     .then(response => response.json())
                     .then(data => {
                         if (data.success && data.data.length > 0) {
@@ -8046,7 +8046,7 @@ header {
                             if (dayFoods.length > 0) {
                                 const firstFoodId = dayFoods[0].id;
                                 
-                                fetch('api/food_history_api.php', {
+                                fetch('api/DatabaseAPI.php', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',

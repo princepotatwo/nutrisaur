@@ -7703,6 +7703,273 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             break;
 
         // ========================================
+        // FOOD HISTORY API
+        // ========================================
+        case 'get_user_history':
+            $userEmail = $_GET['user_email'] ?? '';
+            $date = $_GET['date'] ?? '';
+            
+            if (empty($userEmail)) {
+                echo json_encode(['success' => false, 'error' => 'User email is required']);
+                break;
+            }
+            
+            $whereClause = "user_email = ?";
+            $params = [$userEmail];
+            
+            if (!empty($date)) {
+                $whereClause .= " AND date = ?";
+                $params[] = $date;
+            }
+            
+            $result = $db->universalSelect('user_food_history', '*', $whereClause, 'ORDER BY date DESC, meal_category ASC', '', $params);
+            
+            if ($result['success']) {
+                echo json_encode([
+                    'success' => true,
+                    'data' => $result['data'],
+                    'count' => count($result['data'])
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Failed to fetch food history']);
+            }
+            break;
+            
+        case 'flag_food':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                if (!$data) {
+                    $data = $_POST;
+                }
+                
+                $id = $data['id'] ?? '';
+                $mhoEmail = $data['mho_email'] ?? '';
+                $comment = $data['comment'] ?? '';
+                
+                if (empty($id) || empty($mhoEmail)) {
+                    echo json_encode(['success' => false, 'error' => 'Food ID and MHO email are required']);
+                    break;
+                }
+                
+                $updateData = [
+                    'is_flagged' => 1,
+                    'mho_comment' => $comment,
+                    'flagged_by' => $mhoEmail,
+                    'flagged_at' => date('Y-m-d H:i:s')
+                ];
+                
+                $result = $db->universalUpdate('user_food_history', $updateData, 'id = ?', [$id]);
+                
+                if ($result['success']) {
+                    echo json_encode(['success' => true, 'message' => 'Food item flagged successfully']);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to flag food item']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Invalid request method']);
+            }
+            break;
+            
+        case 'flag_day':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                if (!$data) {
+                    $data = $_POST;
+                }
+                
+                $userEmail = $data['user_email'] ?? '';
+                $date = $data['date'] ?? '';
+                $mhoEmail = $data['mho_email'] ?? '';
+                $comment = $data['comment'] ?? '';
+                
+                if (empty($userEmail) || empty($date) || empty($mhoEmail)) {
+                    echo json_encode(['success' => false, 'error' => 'User email, date, and MHO email are required']);
+                    break;
+                }
+                
+                $updateData = [
+                    'is_day_flagged' => 1,
+                    'mho_comment' => $comment,
+                    'flagged_by' => $mhoEmail,
+                    'flagged_at' => date('Y-m-d H:i:s')
+                ];
+                
+                $result = $db->universalUpdate('user_food_history', $updateData, 'user_email = ? AND date = ?', [$userEmail, $date]);
+                
+                if ($result['success']) {
+                    echo json_encode(['success' => true, 'message' => 'Day flagged successfully']);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to flag day']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Invalid request method']);
+            }
+            break;
+            
+        case 'unflag_food':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                if (!$data) {
+                    $data = $_POST;
+                }
+                
+                $id = $data['id'] ?? '';
+                
+                if (empty($id)) {
+                    echo json_encode(['success' => false, 'error' => 'Food ID is required']);
+                    break;
+                }
+                
+                $updateData = [
+                    'is_flagged' => 0,
+                    'mho_comment' => null,
+                    'flagged_by' => null,
+                    'flagged_at' => null
+                ];
+                
+                $result = $db->universalUpdate('user_food_history', $updateData, 'id = ?', [$id]);
+                
+                if ($result['success']) {
+                    echo json_encode(['success' => true, 'message' => 'Food item unflagged successfully']);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to unflag food item']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Invalid request method']);
+            }
+            break;
+            
+        case 'unflag_day':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                if (!$data) {
+                    $data = $_POST;
+                }
+                
+                $userEmail = $data['user_email'] ?? '';
+                $date = $data['date'] ?? '';
+                
+                if (empty($userEmail) || empty($date)) {
+                    echo json_encode(['success' => false, 'error' => 'User email and date are required']);
+                    break;
+                }
+                
+                $updateData = [
+                    'is_day_flagged' => 0,
+                    'mho_comment' => null,
+                    'flagged_by' => null,
+                    'flagged_at' => null
+                ];
+                
+                $result = $db->universalUpdate('user_food_history', $updateData, 'user_email = ? AND date = ?', [$userEmail, $date]);
+                
+                if ($result['success']) {
+                    echo json_encode(['success' => true, 'message' => 'Day unflagged successfully']);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to unflag day']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Invalid request method']);
+            }
+            break;
+            
+        case 'update_serving_size':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                if (!$data) {
+                    $data = $_POST;
+                }
+                
+                $id = $data['id'] ?? '';
+                $servingSize = $data['serving_size'] ?? '';
+                
+                if (empty($id) || empty($servingSize)) {
+                    echo json_encode(['success' => false, 'error' => 'Food ID and serving size are required']);
+                    break;
+                }
+                
+                $updateData = ['serving_size' => $servingSize];
+                $result = $db->universalUpdate('user_food_history', $updateData, 'id = ?', [$id]);
+                
+                if ($result['success']) {
+                    echo json_encode(['success' => true, 'message' => 'Serving size updated successfully']);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to update serving size']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Invalid request method']);
+            }
+            break;
+            
+        case 'add_comment':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                if (!$data) {
+                    $data = $_POST;
+                }
+                
+                $id = $data['id'] ?? '';
+                $comment = $data['comment'] ?? '';
+                $mhoEmail = $data['mho_email'] ?? '';
+                
+                if (empty($id) || empty($comment) || empty($mhoEmail)) {
+                    echo json_encode(['success' => false, 'error' => 'Food ID, comment, and MHO email are required']);
+                    break;
+                }
+                
+                $updateData = [
+                    'mho_comment' => $comment,
+                    'flagged_by' => $mhoEmail,
+                    'flagged_at' => date('Y-m-d H:i:s')
+                ];
+                
+                $result = $db->universalUpdate('user_food_history', $updateData, 'id = ?', [$id]);
+                
+                if ($result['success']) {
+                    echo json_encode(['success' => true, 'message' => 'Comment added successfully']);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to add comment']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Invalid request method']);
+            }
+            break;
+            
+        case 'get_flagged_dates':
+            $userEmail = $_GET['user_email'] ?? '';
+            
+            if (empty($userEmail)) {
+                echo json_encode(['success' => false, 'error' => 'User email is required']);
+                break;
+            }
+            
+            $result = $db->universalSelect('user_food_history', 'DISTINCT date', 'user_email = ? AND (is_flagged = 1 OR is_day_flagged = 1)', 'ORDER BY date DESC', '', [$userEmail]);
+            
+            if ($result['success']) {
+                $dates = array_column($result['data'], 'date');
+                echo json_encode([
+                    'success' => true,
+                    'data' => $dates,
+                    'count' => count($dates)
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Failed to fetch flagged dates']);
+            }
+            break;
+
+        // ========================================
         // DEFAULT: SHOW USAGE - Fixed syntax errors
         // ========================================
         default:
