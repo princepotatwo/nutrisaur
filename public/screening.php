@@ -8298,36 +8298,6 @@ header {
             }
         }
 
-        function flagEntireDay(userEmail, date) {
-            const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
-            
-            fetch('api/DatabaseAPI.php?action=flag_day', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_email: userEmail,
-                    date: date,
-                    mho_email: mhoEmail,
-                    comment: prompt('Add a comment for the entire day (optional):') || ''
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Day flagged successfully');
-                    // Refresh the food history modal
-                    viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
-                } else {
-                    alert('Error: ' + data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error flagging day:', error);
-                alert('Error flagging day');
-            });
-        }
 
         function unflagFoodItem(foodId, userEmail, date) {
             fetch('api/DatabaseAPI.php?action=unflag_food', {
@@ -8763,31 +8733,60 @@ header {
         }
 
         function flagEntireDay(userEmail, date) {
-            const comment = prompt('Enter reason for flagging this entire day:');
-            if (comment) {
-                fetch(`api/DatabaseAPI.php?action=flag_day`, {
+            // Check if day is already flagged by looking at the button text
+            const button = event.target;
+            const isCurrentlyFlagged = button.textContent.includes('Unflag');
+            
+            if (isCurrentlyFlagged) {
+                // Unflag the day
+                fetch(`api/DatabaseAPI.php?action=unflag_day`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         user_email: userEmail, 
                         date: date,
-                        mho_comment: comment,
                         flagged_by: '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>'
                     })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Update the existing modal instead of recreating it
                         updateFoodHistoryModal(userEmail);
                     } else {
-                        alert('Error flagging day: ' + data.error);
+                        alert('Error unflagging day: ' + data.error);
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Error flagging day');
+                    alert('Error unflagging day');
                 });
+            } else {
+                // Flag the day
+                const comment = prompt('Enter reason for flagging this entire day:');
+                if (comment) {
+                    fetch(`api/DatabaseAPI.php?action=flag_day`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            user_email: userEmail, 
+                            date: date,
+                            mho_comment: comment,
+                            flagged_by: '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>'
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            updateFoodHistoryModal(userEmail);
+                        } else {
+                            alert('Error flagging day: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error flagging day');
+                    });
+                }
             }
         }
 
@@ -8875,12 +8874,15 @@ header {
                                 const mealFoods = foodData.filter(food => food.meal_category === meal);
                                 if (mealFoods.length === 0) return '';
                                 
+                                // Check if any food in this meal is day-flagged
+                                const isDayFlagged = mealFoods.some(food => food.is_day_flagged == 1);
+                                
                                 return `
                                     <div class="meal-section">
                                         <div class="meal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                                             <h4 class="meal-title">${meal} (${mealFoods.length} items)</h4>
-                                            <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${mealFoods[0].date}')" style="background: #ff9800; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">
-                                                🚩 Flag Day
+                                            <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${mealFoods[0].date}')" style="background: ${isDayFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">
+                                                ${isDayFlagged ? '✅ Unflag Day' : '🚩 Flag Day'}
                                             </button>
                                         </div>
                                         <table class="food-history-table">
