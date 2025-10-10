@@ -169,46 +169,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
                 
                 echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user']);
             } else {
-                // Create new user with Google OAuth
-                $username = $givenName ?: explode('@', $email)[0];
-                $username = preg_replace('/[^a-zA-Z0-9_]/', '', $username);
-                
-                // Ensure username is unique
-                $originalUsername = $username;
-                $counter = 1;
-                $maxAttempts = 50;
-                $attempts = 0;
-                while ($attempts < $maxAttempts) {
-                    $stmt = $pdo->prepare("SELECT user_id FROM users WHERE username = ?");
-                    $stmt->execute([$username]);
-                    if (!$stmt->fetch()) break;
-                    $username = $originalUsername . $counter;
-                    $counter++;
-                    $attempts++;
-                }
-                if ($attempts >= $maxAttempts) {
-                    // If we can't find unique username, use random one
-                    $username = 'user' . rand(1000, 9999);
-                }
-                
-                // Generate a random password for Google OAuth users (they won't use it)
-                $randomPassword = password_hash(uniqid('google_', true), PASSWORD_DEFAULT);
-                
-                $stmt = $pdo->prepare("INSERT INTO users (username, email, password, google_id, google_name, google_picture, google_given_name, google_family_name, email_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-                $result = $stmt->execute([$username, $email, $randomPassword, $googleId, $name, $picture, $givenName, $familyName, $emailVerified ? 1 : 0]);
-                
-                if ($result) {
-                    $userId = $pdo->lastInsertId();
-                    
-                    $_SESSION['user_id'] = $userId;
-                    $_SESSION['username'] = $username;
-                    $_SESSION['email'] = $email;
-                    $_SESSION['is_admin'] = false;
-                    
-                    echo json_encode(['success' => true, 'message' => 'Google registration successful', 'user_type' => 'user']);
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'Failed to create user account']);
-                }
+                // User doesn't exist - only allow existing users to login
+                echo json_encode(['success' => false, 'message' => 'Account not found. Please contact an administrator to create your account.']);
             }
         }
     } catch (Exception $e) {
@@ -307,46 +269,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
                 
                 echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user']);
             } else {
-                // Create new user with Google OAuth
-                $username = $givenName ?: explode('@', $email)[0];
-                $username = preg_replace('/[^a-zA-Z0-9_]/', '', $username);
-                
-                // Ensure username is unique
-                $originalUsername = $username;
-                $counter = 1;
-                $maxAttempts = 50;
-                $attempts = 0;
-                while ($attempts < $maxAttempts) {
-                    $stmt = $pdo->prepare("SELECT user_id FROM users WHERE username = ?");
-                    $stmt->execute([$username]);
-                    if (!$stmt->fetch()) break;
-                    $username = $originalUsername . $counter;
-                    $counter++;
-                    $attempts++;
-                }
-                if ($attempts >= $maxAttempts) {
-                    // If we can't find unique username, use random one
-                    $username = 'user' . rand(1000, 9999);
-                }
-                
-                // Generate a random password for Google OAuth users (they won't use it)
-                $randomPassword = password_hash(uniqid('google_', true), PASSWORD_DEFAULT);
-                
-                $stmt = $pdo->prepare("INSERT INTO users (username, email, password, google_id, google_name, google_picture, google_given_name, google_family_name, email_verified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-                $result = $stmt->execute([$username, $email, $randomPassword, $googleId, $name, $picture, $givenName, $familyName, $emailVerified ? 1 : 0]);
-                
-                if ($result) {
-                    $userId = $pdo->lastInsertId();
-                    
-                    $_SESSION['user_id'] = $userId;
-                    $_SESSION['username'] = $username;
-                    $_SESSION['email'] = $email;
-                    $_SESSION['is_admin'] = false;
-                    
-                    echo json_encode(['success' => true, 'message' => 'Google registration successful', 'user_type' => 'user']);
-                } else {
-                    echo json_encode(['success' => false, 'message' => 'Failed to create user account']);
-                }
+                // User doesn't exist - only allow existing users to login
+                echo json_encode(['success' => false, 'message' => 'Account not found. Please contact an administrator to create your account.']);
             }
         }
     } catch (Exception $e) {
