@@ -6,7 +6,7 @@
  * Version: 2.2 - Force redeploy
  */
 
-require_once '../../config.php';
+require_once '../config.php';
 
 // Set content type
 header('Content-Type: application/json');
