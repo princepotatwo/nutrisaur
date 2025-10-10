@@ -2464,10 +2464,8 @@ header {
         .food-name-cell {
             font-weight: 600;
             color: white;
-            display: flex;
-            align-items: center;
-            gap: 8px;
             text-align: left;
+            vertical-align: middle;
         }
 
         .food-flag-indicator {
@@ -2485,10 +2483,8 @@ header {
         .food-serving-cell {
             color: #cccccc;
             font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
             text-align: left;
+            vertical-align: middle;
         }
 
         .food-edit-btn {
@@ -2534,6 +2530,7 @@ header {
         .food-nutrition-cell {
             text-align: left;
             font-size: 12px;
+            vertical-align: middle;
         }
 
         .food-calories {
@@ -8818,7 +8815,7 @@ header {
                                                             ${food.food_name}
                                                             ${food.is_flagged == 1 ? '<span class="food-flag-indicator">🚩</span>' : ''}
                                                         </td>
-                                                        <td class="food-serving-cell">${food.serving_size}</td>
+                                                        <td class="food-serving-cell">${food.serving_size || 'N/A'}</td>
                                                         <td class="food-nutrition-cell">
                                                             <div class="food-calories">${food.calories} kcal</div>
                                                             <div class="food-macros">P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
