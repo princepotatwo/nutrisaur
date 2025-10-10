@@ -2377,73 +2377,70 @@ header {
             background: rgba(76, 175, 80, 1);
         }
 
-        /* Food History Modal Styles */
+        /* Food History Modal - Table Design */
         .food-history-modal {
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
         }
 
         .food-history-content {
-            padding: 20px;
-            max-height: 70vh;
+            padding: 0;
+            max-height: 80vh;
             overflow-y: auto;
         }
 
-        .food-day-section {
+        .food-history-table {
+            width: 100%;
+            border-collapse: collapse;
             background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
+            border-radius: 12px;
             overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .food-day-section:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        .food-history-table thead {
+            background: linear-gradient(135deg, var(--color-highlight) 0%, rgba(161, 180, 84, 0.8) 100%);
+            color: white;
         }
 
-        .food-day-section.flagged {
-            border-left: 6px solid #ff9800;
-            background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%);
-        }
-
-        .day-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid var(--color-highlight);
-            position: relative;
-        }
-
-        .day-header::before {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 60px;
-            height: 2px;
-            background: var(--color-highlight);
-        }
-
-        .day-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 0;
-            color: var(--text-color);
-            font-size: 20px;
+        .food-history-table th {
+            padding: 16px 12px;
+            text-align: left;
             font-weight: 600;
+            font-size: 14px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
         }
 
-        .day-flag-icon {
+        .food-history-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        .food-history-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .food-history-table tbody tr:hover {
+            background: rgba(161, 180, 84, 0.05);
+        }
+
+        .food-history-table tbody tr.flagged {
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%);
+            border-left: 4px solid #ff9800;
+        }
+
+        .food-name-cell {
+            font-weight: 600;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .food-flag-indicator {
             color: #ff9800;
-            font-size: 20px;
+            font-size: 16px;
             animation: pulse 2s infinite;
         }
 
@@ -2453,177 +2450,25 @@ header {
             100% { transform: scale(1); }
         }
 
-        .day-totals {
-            text-align: right;
-            background: linear-gradient(135deg, var(--color-highlight) 0%, rgba(161, 180, 84, 0.8) 100%);
-            padding: 12px 16px;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(161, 180, 84, 0.3);
-        }
-
-        .day-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .food-flag-btn, .food-comment-btn {
-            padding: 10px 16px;
-            border: none;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .food-flag-btn {
-            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
-            color: #1B1B1B;
-        }
-
-        .food-flag-btn:hover {
-            background: linear-gradient(135deg, #f57c00 0%, #ff9800 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
-        }
-
-        .food-comment-btn {
-            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-            color: white;
-        }
-
-        .food-comment-btn:hover {
-            background: linear-gradient(135deg, #1976D2 0%, #2196F3 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
-        }
-
-        .day-comment {
-            background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%);
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border-left: 6px solid #2196F3;
-            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.1);
-        }
-
-        .meals-container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .meal-section {
-            background: linear-gradient(135deg, rgba(161, 180, 84, 0.05) 0%, rgba(161, 180, 84, 0.02) 100%);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .meal-section:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        }
-
-        .meal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .meal-title {
-            margin: 0;
-            color: var(--text-color);
-            font-size: 18px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .meal-calories {
-            background: var(--color-highlight);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .meal-foods {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .food-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px;
-            background: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .food-item:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .food-item.flagged {
-            background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%);
-            border-left: 6px solid #ff9800;
-        }
-
-        .food-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .food-name {
-            font-weight: 600;
-            font-size: 16px;
-            color: var(--text-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .food-serving {
+        .food-serving-cell {
             color: #6c757d;
-            font-size: 14px;
+            font-size: 13px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
         .food-edit-btn {
-            padding: 6px 12px;
+            padding: 4px 8px;
             background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             transition: all 0.3s ease;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 4px;
         }
@@ -2631,57 +2476,61 @@ header {
         .food-edit-btn:hover {
             background: linear-gradient(135deg, #45a049 0%, #4CAF50 100%);
             transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+            box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
         }
 
-        .food-comment {
-            background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            border-left: 4px solid #2196F3;
-            margin-top: 8px;
+        .food-date-cell {
+            font-weight: 600;
+            color: var(--text-color);
+            white-space: nowrap;
         }
 
-        .food-nutrition {
+        .food-meal-cell {
+            background: rgba(161, 180, 84, 0.1);
+            color: var(--color-highlight);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .food-nutrition-cell {
             text-align: right;
-            font-size: 13px;
-            color: #6c757d;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            min-width: 120px;
+            font-size: 12px;
         }
 
         .food-calories {
             font-weight: 600;
             color: var(--color-highlight);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .food-macros {
-            font-size: 11px;
             color: #6c757d;
+            font-size: 10px;
+            margin-top: 2px;
         }
 
-        .food-actions {
+        .food-actions-cell {
             display: flex;
-            gap: 8px;
-            margin-left: 16px;
+            gap: 6px;
+            justify-content: flex-end;
         }
 
         .food-action-btn {
-            padding: 8px 12px;
+            padding: 6px 10px;
             border: none;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 4px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .food-flag-action {
@@ -2696,7 +2545,7 @@ header {
 
         .food-flag-action:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
         .food-comment-action {
@@ -2707,46 +2556,120 @@ header {
         .food-comment-action:hover {
             background: linear-gradient(135deg, #1976D2 0%, #2196F3 100%);
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+            box-shadow: 0 2px 6px rgba(33, 150, 243, 0.3);
         }
 
-        /* Responsive Design for Food History */
+        .food-comment-cell {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%);
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            border-left: 3px solid #2196F3;
+            margin-top: 4px;
+        }
+
+        .day-summary {
+            background: linear-gradient(135deg, var(--color-highlight) 0%, rgba(161, 180, 84, 0.8) 100%);
+            color: white;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .day-summary.flagged {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+        }
+
+        .day-summary-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .day-summary-date {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .day-summary-totals {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .day-summary-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .day-action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .day-flag-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .day-flag-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .day-comment-btn {
+            background: rgba(33, 150, 243, 0.8);
+            color: white;
+        }
+
+        .day-comment-btn:hover {
+            background: rgba(33, 150, 243, 1);
+        }
+
+        /* Responsive Design for Food History Table */
         @media (max-width: 768px) {
             .food-history-content {
-                padding: 16px;
+                padding: 0;
             }
 
-            .food-day-section {
-                padding: 16px;
-                margin-bottom: 16px;
+            .food-history-table {
+                font-size: 12px;
             }
 
-            .day-header {
+            .food-history-table th,
+            .food-history-table td {
+                padding: 8px 6px;
+            }
+
+            .food-actions-cell {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
+                gap: 4px;
             }
 
-            .day-actions {
+            .food-action-btn {
+                padding: 4px 8px;
+                font-size: 9px;
+            }
+
+            .day-summary {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+
+            .day-summary-actions {
                 width: 100%;
                 justify-content: flex-start;
-            }
-
-            .food-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-
-            .food-actions {
-                margin-left: 0;
-                width: 100%;
-                justify-content: flex-start;
-            }
-
-            .food-nutrition {
-                text-align: left;
-                min-width: auto;
             }
         }
 
@@ -8121,7 +8044,7 @@ header {
             modal.className = 'modal';
             modal.style.display = 'block';
             modal.innerHTML = `
-                <div class="modal-content" style="max-width: 90vw; max-height: 90vh; overflow-y: auto;">
+                <div class="modal-content" style="max-width: 95vw; max-height: 90vh; overflow-y: auto;">
                     <div class="modal-header">
                         <h3>🍽️ Food History - ${userName}</h3>
                         <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
@@ -8514,7 +8437,7 @@ header {
             modal.className = 'modal';
             modal.style.display = 'block';
             modal.innerHTML = `
-                <div class="modal-content" style="max-width: 90vw; max-height: 90vh; overflow-y: auto;">
+                <div class="modal-content" style="max-width: 95vw; max-height: 90vh; overflow-y: auto;">
                     <div class="modal-header">
                         <h3>🍽️ Food History - ${userName}</h3>
                         <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
