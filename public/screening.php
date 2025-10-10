@@ -2392,15 +2392,15 @@ header {
         .food-history-table {
             width: 100%;
             border-collapse: collapse;
-            background: var(--card-bg);
+            background: #2A3326;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border: 2px solid var(--border-color);
+            border: 2px solid #3A4336;
         }
 
         .food-history-table thead {
-            background: linear-gradient(135deg, var(--color-highlight) 0%, rgba(161, 180, 84, 0.8) 100%);
+            background: #3A4336;
             color: white;
         }
 
@@ -2409,8 +2409,9 @@ header {
             text-align: left;
             font-weight: 600;
             font-size: 14px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 2px solid #4A5346;
+            border-right: 1px solid #4A5346;
+            color: white;
         }
 
         .food-history-table th:last-child {
@@ -2419,9 +2420,10 @@ header {
 
         .food-history-table td {
             padding: 16px 12px;
-            border-bottom: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid #4A5346;
+            border-right: 1px solid #4A5346;
             vertical-align: middle;
+            color: white;
         }
 
         .food-history-table td:last-child {
@@ -2430,20 +2432,25 @@ header {
 
         .food-history-table tbody tr {
             transition: all 0.3s ease;
+            background: #2A3326;
+        }
+
+        .food-history-table tbody tr:nth-child(even) {
+            background: #323B2E;
         }
 
         .food-history-table tbody tr:hover {
-            background: rgba(161, 180, 84, 0.05);
+            background: #3A4336;
         }
 
         .food-history-table tbody tr.flagged {
-            background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%);
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.2) 0%, rgba(255, 152, 0, 0.1) 100%);
             border-left: 4px solid #ff9800;
         }
 
         .food-name-cell {
             font-weight: 600;
-            color: var(--text-color);
+            color: white;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -2463,7 +2470,7 @@ header {
         }
 
         .food-serving-cell {
-            color: #6c757d;
+            color: #cccccc;
             font-size: 13px;
             display: flex;
             align-items: center;
@@ -2494,14 +2501,14 @@ header {
 
         .food-date-cell {
             font-weight: 600;
-            color: var(--text-color);
+            color: white;
             white-space: nowrap;
             text-align: left;
         }
 
         .food-meal-cell {
-            background: rgba(161, 180, 84, 0.1);
-            color: var(--color-highlight);
+            background: rgba(161, 180, 84, 0.2);
+            color: #A1B454;
             padding: 6px 12px;
             border-radius: 12px;
             font-size: 12px;
@@ -2518,13 +2525,13 @@ header {
 
         .food-calories {
             font-weight: 600;
-            color: var(--color-highlight);
+            color: #A1B454;
             font-size: 14px;
             margin-bottom: 4px;
         }
 
         .food-macros {
-            color: #6c757d;
+            color: #cccccc;
             font-size: 11px;
         }
 
@@ -2536,9 +2543,9 @@ header {
         }
 
         .food-action-btn {
-            padding: 10px 16px;
+            padding: 8px 16px;
             border: none;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
             font-size: 12px;
             font-weight: 600;
@@ -2547,34 +2554,33 @@ header {
             align-items: center;
             gap: 6px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            min-width: 80px;
+            min-width: 70px;
             justify-content: center;
         }
 
         .food-flag-action {
-            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            background: #ff9800;
             color: #1B1B1B;
         }
 
         .food-flag-action.unflag {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            background: #4CAF50;
             color: white;
         }
 
         .food-flag-action:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            background: #ff9800;
+            opacity: 0.9;
         }
 
         .food-comment-action {
-            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            background: #2196F3;
             color: white;
         }
 
         .food-comment-action:hover {
-            background: linear-gradient(135deg, #1976D2 0%, #2196F3 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 2px 6px rgba(33, 150, 243, 0.3);
+            background: #1976D2;
+            opacity: 0.9;
         }
 
         .food-comment-cell {
