@@ -8213,6 +8213,8 @@ header {
         function toggleFoodItemFlag(foodId, userEmail, date, isCurrentlyFlagged) {
             const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
             
+            console.log('Flagging food item:', { foodId, userEmail, date, isCurrentlyFlagged, mhoEmail });
+            
             if (isCurrentlyFlagged) {
                 // Unflag the food item
                 fetch('api/DatabaseAPI.php?action=unflag_food', {
@@ -8254,12 +8256,13 @@ header {
                 })
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Flag response:', data);
                     if (data.success) {
                         alert('Food item flagged successfully');
                         // Refresh the food history modal
                         viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
                     } else {
-                        alert('Error: ' + data.error);
+                        alert('Error flagging food item: ' + (data.error || 'Unknown error'));
                     }
                 })
                 .catch(error => {
