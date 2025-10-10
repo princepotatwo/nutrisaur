@@ -8059,6 +8059,11 @@ header {
                 })
                 .then(data => {
                     console.log('📋 Food history data received:', data);
+                    console.log('📋 Food history data details:', data.data);
+                    if (data.data && data.data.length > 0) {
+                        console.log('📋 First food item:', data.data[0]);
+                        console.log('📋 First food item mho_comment:', data.data[0].mho_comment);
+                    }
                     
                     // Remove loading modal
                     loadingModal.remove();
