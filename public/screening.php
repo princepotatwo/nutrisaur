@@ -8213,7 +8213,9 @@ header {
         function toggleFoodItemFlag(foodId, userEmail, date, isCurrentlyFlagged) {
             const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
             
-            console.log('Flagging food item:', { foodId, userEmail, date, isCurrentlyFlagged, mhoEmail });
+            console.log('🚩 Flagging food item:', { foodId, userEmail, date, isCurrentlyFlagged, mhoEmail });
+            console.log('🚩 foodId type:', typeof foodId, 'value:', foodId);
+            console.log('🚩 mhoEmail type:', typeof mhoEmail, 'value:', mhoEmail);
             
             if (isCurrentlyFlagged) {
                 // Unflag the food item
