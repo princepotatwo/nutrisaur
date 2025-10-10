@@ -7852,13 +7852,12 @@ header {
         function flagFoodItem(foodId, userEmail, date) {
             const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
             
-            fetch('api/DatabaseAPI.php', {
+            fetch('api/DatabaseAPI.php?action=flag_food', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    action: 'flag_food',
                     id: foodId,
                     mho_email: mhoEmail,
                     comment: prompt('Add a comment (optional):') || ''
@@ -7883,13 +7882,12 @@ header {
         function flagEntireDay(userEmail, date) {
             const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
             
-            fetch('api/DatabaseAPI.php', {
+            fetch('api/DatabaseAPI.php?action=flag_day', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    action: 'flag_day',
                     user_email: userEmail,
                     date: date,
                     mho_email: mhoEmail,
@@ -7913,13 +7911,12 @@ header {
         }
 
         function unflagFoodItem(foodId, userEmail, date) {
-            fetch('api/DatabaseAPI.php', {
+            fetch('api/DatabaseAPI.php?action=unflag_food', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    action: 'unflag_food',
                     id: foodId
                 })
             })
@@ -7940,13 +7937,12 @@ header {
         }
 
         function unflagEntireDay(userEmail, date) {
-            fetch('api/DatabaseAPI.php', {
+            fetch('api/DatabaseAPI.php?action=unflag_day', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    action: 'unflag_day',
                     user_email: userEmail,
                     date: date
                 })
@@ -7970,13 +7966,12 @@ header {
         function editServingSize(foodId, userEmail, date, currentSize) {
             const newSize = prompt('Enter new serving size:', currentSize);
             if (newSize && newSize !== currentSize) {
-                fetch('api/DatabaseAPI.php', {
+                fetch('api/DatabaseAPI.php?action=update_serving_size', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        action: 'update_serving_size',
                         id: foodId,
                         serving_size: newSize
                     })
@@ -8003,13 +7998,12 @@ header {
             if (comment) {
                 const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
                 
-                fetch('api/DatabaseAPI.php', {
+                fetch('api/DatabaseAPI.php?action=add_comment', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        action: 'add_comment',
                         id: foodId,
                         comment: comment,
                         mho_email: mhoEmail
@@ -8046,18 +8040,17 @@ header {
                             if (dayFoods.length > 0) {
                                 const firstFoodId = dayFoods[0].id;
                                 
-                                fetch('api/DatabaseAPI.php', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({
-                                        action: 'add_comment',
-                                        id: firstFoodId,
-                                        comment: comment,
-                                        mho_email: mhoEmail
-                                    })
-                                })
+                fetch('api/DatabaseAPI.php?action=add_comment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: firstFoodId,
+                        comment: comment,
+                        mho_email: mhoEmail
+                    })
+                })
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.success) {
