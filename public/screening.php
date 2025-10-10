@@ -8412,6 +8412,55 @@ header {
             }
         }
 
+        // Function to update existing food history modal without recreating it
+        function updateFoodHistoryModal(userEmail) {
+            console.log('🔄 Updating food history modal for:', userEmail);
+            
+            // Find the existing modal
+            const existingModal = document.querySelector('.food-history-modal');
+            if (!existingModal) {
+                console.log('❌ No existing modal found, refreshing completely');
+                // Fallback to full refresh if no modal found
+                viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                return;
+            }
+            
+            // Show loading state in the existing modal
+            const modalContent = existingModal.querySelector('.food-history-content');
+            if (modalContent) {
+                modalContent.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <div class="loading-spinner"></div>
+                        <p>Updating food history...</p>
+                    </div>
+                `;
+            }
+            
+            // Fetch updated data
+            fetch(`api/DatabaseAPI.php?action=get_user_history&user_email=${encodeURIComponent(userEmail)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('📋 Updated food history data received:', data);
+                    
+                    if (data.success && data.data) {
+                        // Update the modal content with new data
+                        showFoodHistoryTableModal(userEmail, data.data);
+                    } else {
+                        console.error('❌ API Error:', data.message);
+                        modalContent.innerHTML = '<p>Error loading updated food history: ' + (data.message || 'Unknown error') + '</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error updating food history:', error);
+                    modalContent.innerHTML = '<p>Error updating food history: ' + error.message + '</p>';
+                });
+        }
+
         function addCommentToFood(foodId, userEmail, date) {
             const comment = prompt('Add a comment for this food item:');
             if (comment) {
@@ -8432,8 +8481,8 @@ header {
                 .then(data => {
                     if (data.success) {
                         alert('Comment added successfully');
-                        // Refresh the food history modal
-                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                        // Update the existing modal instead of recreating it
+                        updateFoodHistoryModal(userEmail);
                     } else {
                         alert('Error: ' + data.error);
                     }
@@ -8647,8 +8696,8 @@ header {
                 .then(data => {
                     if (data.success) {
                         alert('Food item unflagged successfully!');
-                        // Refresh the modal
-                        showFoodHistoryModal(userEmail.split('@')[0], userEmail, []);
+                        // Update the existing modal instead of recreating it
+                        updateFoodHistoryModal(userEmail);
                     } else {
                         alert('Error unflagging food item: ' + data.error);
                     }
@@ -8674,8 +8723,8 @@ header {
                 .then(data => {
                     if (data.success) {
                         alert('Food item flagged successfully!');
-                        // Refresh the modal
-                        showFoodHistoryModal(userEmail.split('@')[0], userEmail, []);
+                        // Update the existing modal instead of recreating it
+                        updateFoodHistoryModal(userEmail);
                     } else {
                         alert('Error flagging food item: ' + data.error);
                     }
