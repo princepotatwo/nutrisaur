@@ -218,6 +218,24 @@ class ScreeningManager {
         // Handle both 'is_pregnant' (from Android) and 'pregnant' (from web)
         $processed['is_pregnant'] = $this->parsePregnantStatus($data['is_pregnant'] ?? $data['pregnant'] ?? 'Not Applicable');
         
+        // Parent contact information
+        if (isset($data['parent_contact_info'])) {
+            $parentInfo = is_string($data['parent_contact_info']) ? json_decode($data['parent_contact_info'], true) : $data['parent_contact_info'];
+            if (is_array($parentInfo)) {
+                $processed['parent_name'] = $parentInfo['name'] ?? '';
+                $processed['parent_phone'] = $parentInfo['phone'] ?? '';
+                $processed['parent_email'] = $parentInfo['email'] ?? '';
+            } else {
+                $processed['parent_name'] = '';
+                $processed['parent_phone'] = '';
+                $processed['parent_email'] = '';
+            }
+        } else {
+            $processed['parent_name'] = '';
+            $processed['parent_phone'] = '';
+            $processed['parent_email'] = '';
+        }
+        
         // Anthropometric data - use correct database field names
         $processed['weight_kg'] = floatval($data['weight'] ?? 0);
         $processed['height_cm'] = floatval($data['height'] ?? 0);

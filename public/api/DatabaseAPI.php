@@ -4908,6 +4908,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $weight = $data['weight'] ?? '0';
                 $height = $data['height'] ?? '0';
                 
+                // Handle parent contact information
+                $parent_name = '';
+                $parent_phone = '';
+                $parent_email = '';
+                if (isset($data['parent_contact_info'])) {
+                    $parentInfo = is_string($data['parent_contact_info']) ? json_decode($data['parent_contact_info'], true) : $data['parent_contact_info'];
+                    if (is_array($parentInfo)) {
+                        $parent_name = $parentInfo['name'] ?? '';
+                        $parent_phone = $parentInfo['phone'] ?? '';
+                        $parent_email = $parentInfo['email'] ?? '';
+                    }
+                }
+                
                 if (empty($email)) {
                     echo json_encode(['success' => false, 'message' => 'Email is required']);
                     break;
@@ -4942,13 +4955,16 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                         is_pregnant = ?, 
                                         weight = ?, 
                                         height = ?, 
+                                        parent_name = ?, 
+                                        parent_phone = ?, 
+                                        parent_email = ?, 
                                         screening_date = NOW()
                                       WHERE email = ?";
                         
                         $updateStmt = $pdo->prepare($updateSql);
                         $result = $updateStmt->execute([
                             $municipality, $barangay, $sex, $birthday, $is_pregnant, 
-                            $weight, $height, $email
+                            $weight, $height, $parent_name, $parent_phone, $parent_email, $email
                         ]);
                         
                         // Verify the update worked
@@ -5001,6 +5017,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'is_pregnant' => $is_pregnant,
                         'weight' => $weight,
                         'height' => $height,
+                        'parent_name' => $parent_name,
+                        'parent_phone' => $parent_phone,
+                        'parent_email' => $parent_email,
                         'screening_date' => date('Y-m-d H:i:s')
                     ];
                     
