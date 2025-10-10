@@ -58,6 +58,14 @@ try {
             handleDeleteFood($pdo);
             break;
             
+        case 'delete_all_user_foods':
+            handleDeleteAllUserFoods($pdo);
+            break;
+            
+        case 'delete_meal_foods':
+            handleDeleteMealFoods($pdo);
+            break;
+            
         case 'test':
             echo json_encode([
                 'success' => true,
@@ -423,6 +431,61 @@ function handleDeleteFood($pdo) {
         ]);
     } else {
         throw new Exception('Failed to delete food entry');
+    }
+}
+
+/**
+ * Delete all foods for a specific user and date
+ */
+function handleDeleteAllUserFoods($pdo) {
+    $user_email = $_GET['user_email'] ?? $_POST['user_email'] ?? '';
+    $date = $_GET['date'] ?? $_POST['date'] ?? '';
+    
+    if (empty($user_email) || empty($date)) {
+        throw new Exception('User email and date are required');
+    }
+    
+    $sql = "DELETE FROM user_food_history WHERE user_email = ? AND date = ?";
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute([$user_email, $date]);
+    
+    if ($result) {
+        $deletedCount = $stmt->rowCount();
+        echo json_encode([
+            'success' => true,
+            'message' => "Deleted all food entries for user",
+            'deleted_count' => $deletedCount
+        ]);
+    } else {
+        throw new Exception('Failed to delete all food entries');
+    }
+}
+
+/**
+ * Delete all foods for a specific user, date, and meal category
+ */
+function handleDeleteMealFoods($pdo) {
+    $user_email = $_GET['user_email'] ?? $_POST['user_email'] ?? '';
+    $date = $_GET['date'] ?? $_POST['date'] ?? '';
+    $meal_category = $_GET['meal_category'] ?? $_POST['meal_category'] ?? '';
+    
+    if (empty($user_email) || empty($date) || empty($meal_category)) {
+        throw new Exception('User email, date, and meal category are required');
+    }
+    
+    $sql = "DELETE FROM user_food_history WHERE user_email = ? AND date = ? AND meal_category = ?";
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute([$user_email, $date, $meal_category]);
+    
+    if ($result) {
+        $deletedCount = $stmt->rowCount();
+        echo json_encode([
+            'success' => true,
+            'message' => "Deleted all food entries for meal category",
+            'deleted_count' => $deletedCount
+        ]);
+    } else {
+        throw new Exception('Failed to delete meal food entries');
     }
 }
 ?>
