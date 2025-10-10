@@ -7806,11 +7806,17 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 $userEmail = $data['user_email'] ?? '';
                 $date = $data['date'] ?? '';
-                $mhoEmail = $data['mho_email'] ?? '';
-                $comment = $data['comment'] ?? '';
+                $mhoEmail = $data['mho_email'] ?? $data['flagged_by'] ?? '';
+                $comment = $data['comment'] ?? $data['mho_comment'] ?? '';
                 
-                if (empty($userEmail) || empty($date) || empty($mhoEmail)) {
-                    echo json_encode(['success' => false, 'error' => 'User email, date, and MHO email are required']);
+                // Try to get MHO email from session if not provided
+                if (empty($mhoEmail)) {
+                    session_start();
+                    $mhoEmail = $_SESSION['user_email'] ?? 'admin@nutrisaur.com';
+                }
+                
+                if (empty($userEmail) || empty($date)) {
+                    echo json_encode(['success' => false, 'error' => 'User email and date are required']);
                     break;
                 }
                 
