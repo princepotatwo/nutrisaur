@@ -2396,6 +2396,7 @@ header {
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--border-color);
         }
 
         .food-history-table thead {
@@ -2409,12 +2410,22 @@ header {
             font-weight: 600;
             font-size: 14px;
             border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .food-history-table th:last-child {
+            border-right: none;
         }
 
         .food-history-table td {
-            padding: 12px;
+            padding: 16px 12px;
             border-bottom: 1px solid var(--border-color);
-            vertical-align: top;
+            border-right: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .food-history-table td:last-child {
+            border-right: none;
         }
 
         .food-history-table tbody tr {
@@ -2436,6 +2447,7 @@ header {
             display: flex;
             align-items: center;
             gap: 8px;
+            text-align: left;
         }
 
         .food-flag-indicator {
@@ -2456,16 +2468,17 @@ header {
             display: flex;
             align-items: center;
             gap: 8px;
+            text-align: left;
         }
 
         .food-edit-btn {
-            padding: 4px 8px;
+            padding: 6px 12px;
             background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 600;
             transition: all 0.3s ease;
             display: inline-flex;
@@ -2483,54 +2496,59 @@ header {
             font-weight: 600;
             color: var(--text-color);
             white-space: nowrap;
+            text-align: left;
         }
 
         .food-meal-cell {
             background: rgba(161, 180, 84, 0.1);
             color: var(--color-highlight);
-            padding: 4px 8px;
+            padding: 6px 12px;
             border-radius: 12px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
             text-align: center;
             display: inline-block;
+            min-width: 80px;
         }
 
         .food-nutrition-cell {
-            text-align: right;
+            text-align: left;
             font-size: 12px;
         }
 
         .food-calories {
             font-weight: 600;
             color: var(--color-highlight);
-            font-size: 13px;
+            font-size: 14px;
+            margin-bottom: 4px;
         }
 
         .food-macros {
             color: #6c757d;
-            font-size: 10px;
-            margin-top: 2px;
+            font-size: 11px;
         }
 
         .food-actions-cell {
             display: flex;
-            gap: 6px;
-            justify-content: flex-end;
+            gap: 8px;
+            justify-content: flex-start;
+            align-items: center;
         }
 
         .food-action-btn {
-            padding: 6px 10px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 600;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 4px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            gap: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-width: 80px;
+            justify-content: center;
         }
 
         .food-flag-action {
