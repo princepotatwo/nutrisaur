@@ -8480,7 +8480,6 @@ header {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Comment added successfully');
                         // Update the existing modal instead of recreating it
                         updateFoodHistoryModal(userEmail);
                     } else {
@@ -8695,7 +8694,6 @@ header {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Food item unflagged successfully!');
                         // Update the existing modal instead of recreating it
                         updateFoodHistoryModal(userEmail);
                     } else {
@@ -8722,7 +8720,6 @@ header {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Food item flagged successfully!');
                         // Update the existing modal instead of recreating it
                         updateFoodHistoryModal(userEmail);
                     } else {
@@ -8781,9 +8778,8 @@ header {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Entire day flagged successfully!');
-                        // Refresh the modal
-                        showFoodHistoryModal(userEmail.split('@')[0], userEmail, []);
+                        // Update the existing modal instead of recreating it
+                        updateFoodHistoryModal(userEmail);
                     } else {
                         alert('Error flagging day: ' + data.error);
                     }
@@ -8881,7 +8877,12 @@ header {
                                 
                                 return `
                                     <div class="meal-section">
-                                        <h4 class="meal-title">${meal} (${mealFoods.length} items)</h4>
+                                        <div class="meal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                            <h4 class="meal-title">${meal} (${mealFoods.length} items)</h4>
+                                            <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${mealFoods[0].date}')" style="background: #ff9800; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">
+                                                🚩 Flag Day
+                                            </button>
+                                        </div>
                                         <table class="food-history-table">
                                             <thead>
                                                 <tr>
