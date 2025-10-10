@@ -7752,15 +7752,37 @@ header {
                                 const totalCarbs = dayFoods.reduce((sum, food) => sum + parseFloat(food.carbs), 0);
                                 const totalFat = dayFoods.reduce((sum, food) => sum + parseFloat(food.fat), 0);
                                 
+                                // Check if any food in this day is flagged
+                                const isDayFlagged = dayFoods.some(food => food.is_day_flagged == 1);
+                                const dayComment = dayFoods.find(food => food.mho_comment)?.mho_comment || '';
+                                
                                 return `
-                                    <div class="food-day-section" style="margin-bottom: 30px; border: 1px solid #ddd; border-radius: 10px; padding: 20px;">
+                                    <div class="food-day-section" style="margin-bottom: 30px; border: 1px solid #ddd; border-radius: 10px; padding: 20px; ${isDayFlagged ? 'border-left: 5px solid #f44336; background-color: #ffebee;' : ''}">
                                         <div class="day-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #4CAF50;">
-                                            <h4 style="margin: 0; color: #4CAF50;">📅 ${new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h4>
-                                            <div class="day-totals" style="text-align: right; font-size: 14px; color: #666;">
-                                                <div><strong>Total: ${totalCalories} kcal</strong></div>
-                                                <div>Protein: ${totalProtein.toFixed(1)}g | Carbs: ${totalCarbs.toFixed(1)}g | Fat: ${totalFat.toFixed(1)}g</div>
+                                            <div style="display: flex; align-items: center; gap: 10px;">
+                                                <h4 style="margin: 0; color: #4CAF50;">📅 ${new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h4>
+                                                ${isDayFlagged ? '<span style="color: #f44336; font-size: 18px;" title="Day flagged by MHO">🚩</span>' : ''}
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 10px;">
+                                                <div class="day-totals" style="text-align: right; font-size: 14px; color: #666;">
+                                                    <div><strong>Total: ${totalCalories} kcal</strong></div>
+                                                    <div>Protein: ${totalProtein.toFixed(1)}g | Carbs: ${totalCarbs.toFixed(1)}g | Fat: ${totalFat.toFixed(1)}g</div>
+                                                </div>
+                                                <div class="day-actions" style="display: flex; gap: 5px;">
+                                                    <button class="food-flag-btn" onclick="flagEntireDay('${userEmail}', '${date}')" style="padding: 5px 10px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;" title="Flag entire day">
+                                                        ${isDayFlagged ? '🚩 Unflag Day' : '🚩 Flag Day'}
+                                                    </button>
+                                                    <button class="food-comment-btn" onclick="addCommentToDay('${userEmail}', '${date}')" style="padding: 5px 10px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;" title="Add comment to day">
+                                                        💬 Comment
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
+                                        ${dayComment ? `
+                                            <div class="day-comment" style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #2196F3;">
+                                                <strong>MHO Comment:</strong> ${dayComment}
+                                            </div>
+                                        ` : ''}
                                         <div class="meals-container">
                                             ${['Breakfast', 'Lunch', 'Dinner', 'Snacks'].map(meal => {
                                                 const mealFoods = dayFoods.filter(food => food.meal_category === meal);
@@ -7775,14 +7797,35 @@ header {
                                                         </div>
                                                         <div class="meal-foods">
                                                             ${mealFoods.map(food => `
-                                                                <div class="food-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee;">
-                                                                    <div class="food-info">
-                                                                        <span style="font-weight: 600;">${food.food_name}</span>
-                                                                        <span style="color: #666; margin-left: 10px;">(${food.serving_size})</span>
+                                                                <div class="food-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; ${food.is_flagged == 1 ? 'background-color: #ffebee; border-left: 3px solid #f44336;' : ''}">
+                                                                    <div class="food-info" style="flex: 1;">
+                                                                        <div style="display: flex; align-items: center; gap: 8px;">
+                                                                            <span style="font-weight: 600;">${food.food_name}</span>
+                                                                            ${food.is_flagged == 1 ? '<span style="color: #f44336; font-size: 16px;" title="Flagged by MHO">🚩</span>' : ''}
+                                                                        </div>
+                                                                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
+                                                                            <span style="color: #666;">(${food.serving_size})</span>
+                                                                            <button onclick="editServingSize(${food.id}, '${userEmail}', '${date}', '${food.serving_size}')" style="padding: 2px 6px; background: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="Edit serving size">
+                                                                                ✏️ Edit
+                                                                            </button>
+                                                                        </div>
+                                                                        ${food.mho_comment ? `
+                                                                            <div class="food-comment" style="background: #e3f2fd; padding: 5px; border-radius: 3px; margin-top: 5px; font-size: 11px; border-left: 3px solid #2196F3;">
+                                                                                <strong>MHO:</strong> ${food.mho_comment}
+                                                                            </div>
+                                                                        ` : ''}
                                                                     </div>
                                                                     <div class="food-nutrition" style="text-align: right; font-size: 12px; color: #666;">
                                                                         <div>${food.calories} kcal</div>
                                                                         <div>P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
+                                                                    </div>
+                                                                    <div class="food-actions" style="display: flex; gap: 5px; margin-left: 10px;">
+                                                                        <button onclick="flagFoodItem(${food.id}, '${userEmail}', '${date}')" style="padding: 3px 6px; background: ${food.is_flagged == 1 ? '#4CAF50' : '#f44336'}; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="${food.is_flagged == 1 ? 'Unflag food' : 'Flag food'}">
+                                                                            ${food.is_flagged == 1 ? '🚩 Unflag' : '🚩 Flag'}
+                                                                        </button>
+                                                                        <button onclick="addCommentToFood(${food.id}, '${userEmail}', '${date}')" style="padding: 3px 6px; background: #2196F3; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="Add comment">
+                                                                            💬
+                                                                        </button>
                                                                     </div>
                                                                 </div>
                                                             `).join('')}
@@ -7803,6 +7846,240 @@ header {
             document.body.appendChild(modal);
             console.log('🎯 Modal appended to DOM. Modal display style:', modal.style.display);
             console.log('🎯 Modal visibility:', window.getComputedStyle(modal).display);
+        }
+
+        // Food History Interactive Functions
+        function flagFoodItem(foodId, userEmail, date) {
+            const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
+            
+            fetch('api/food_history_api.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'flag_food',
+                    id: foodId,
+                    mho_email: mhoEmail,
+                    comment: prompt('Add a comment (optional):') || ''
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Food item flagged successfully');
+                    // Refresh the food history modal
+                    viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error flagging food:', error);
+                alert('Error flagging food item');
+            });
+        }
+
+        function flagEntireDay(userEmail, date) {
+            const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
+            
+            fetch('api/food_history_api.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'flag_day',
+                    user_email: userEmail,
+                    date: date,
+                    mho_email: mhoEmail,
+                    comment: prompt('Add a comment for the entire day (optional):') || ''
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Day flagged successfully');
+                    // Refresh the food history modal
+                    viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error flagging day:', error);
+                alert('Error flagging day');
+            });
+        }
+
+        function unflagFoodItem(foodId, userEmail, date) {
+            fetch('api/food_history_api.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'unflag_food',
+                    id: foodId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Food item unflagged successfully');
+                    // Refresh the food history modal
+                    viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error unflagging food:', error);
+                alert('Error unflagging food item');
+            });
+        }
+
+        function unflagEntireDay(userEmail, date) {
+            fetch('api/food_history_api.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'unflag_day',
+                    user_email: userEmail,
+                    date: date
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Day unflagged successfully');
+                    // Refresh the food history modal
+                    viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error unflagging day:', error);
+                alert('Error unflagging day');
+            });
+        }
+
+        function editServingSize(foodId, userEmail, date, currentSize) {
+            const newSize = prompt('Enter new serving size:', currentSize);
+            if (newSize && newSize !== currentSize) {
+                fetch('api/food_history_api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'update_serving_size',
+                        id: foodId,
+                        serving_size: newSize
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Serving size updated successfully');
+                        // Refresh the food history modal
+                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating serving size:', error);
+                    alert('Error updating serving size');
+                });
+            }
+        }
+
+        function addCommentToFood(foodId, userEmail, date) {
+            const comment = prompt('Add a comment for this food item:');
+            if (comment) {
+                const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
+                
+                fetch('api/food_history_api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'add_comment',
+                        id: foodId,
+                        comment: comment,
+                        mho_email: mhoEmail
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Comment added successfully');
+                        // Refresh the food history modal
+                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error adding comment:', error);
+                    alert('Error adding comment');
+                });
+            }
+        }
+
+        function addCommentToDay(userEmail, date) {
+            const comment = prompt('Add a comment for this day:');
+            if (comment) {
+                const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
+                
+                // Get the first food item for this day to add comment
+                fetch('api/food_history_api.php?action=get_user_history&user_email=' + encodeURIComponent(userEmail))
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.data.length > 0) {
+                            const dayFoods = data.data.filter(food => food.date === date);
+                            if (dayFoods.length > 0) {
+                                const firstFoodId = dayFoods[0].id;
+                                
+                                fetch('api/food_history_api.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        action: 'add_comment',
+                                        id: firstFoodId,
+                                        comment: comment,
+                                        mho_email: mhoEmail
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        alert('Comment added successfully');
+                                        // Refresh the food history modal
+                                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                                    } else {
+                                        alert('Error: ' + data.error);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error adding comment:', error);
+                                    alert('Error adding comment');
+                                });
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error getting food data:', error);
+                        alert('Error adding comment');
+                    });
+            }
         }
 
 
