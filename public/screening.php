@@ -8732,6 +8732,74 @@ header {
             }
         }
 
+        function flagMealCategory(userEmail, date, mealCategory) {
+            // Check if meal is already flagged by looking at the button text
+            const button = event.target;
+            const isCurrentlyFlagged = button.textContent.includes('Unflag');
+            
+            if (isCurrentlyFlagged) {
+                // Unflag the meal category
+                const unflagData = { 
+                    user_email: userEmail, 
+                    date: date,
+                    meal_category: mealCategory,
+                    flagged_by: '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>'
+                };
+                console.log('🚩 Unflag Meal Debug - Data being sent:', unflagData);
+                
+                fetch(`api/DatabaseAPI.php?action=unflag_meal`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(unflagData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('🚩 Unflag Meal Debug - API Response:', data);
+                    if (data.success) {
+                        updateFoodHistoryModal(userEmail);
+                    } else {
+                        alert('Error unflagging meal: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error unflagging meal');
+                });
+            } else {
+                // Flag the meal category
+                const comment = prompt(`Enter reason for flagging ${mealCategory}:`);
+                if (comment) {
+                    const flagData = { 
+                        user_email: userEmail, 
+                        date: date,
+                        meal_category: mealCategory,
+                        mho_comment: comment,
+                        flagged_by: '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>'
+                    };
+                    console.log('🚩 Flag Meal Debug - Data being sent:', flagData);
+                    
+                    fetch(`api/DatabaseAPI.php?action=flag_meal`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(flagData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('🚩 Flag Meal Debug - API Response:', data);
+                        if (data.success) {
+                            updateFoodHistoryModal(userEmail);
+                        } else {
+                            alert('Error flagging meal: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error flagging meal');
+                    });
+                }
+            }
+        }
+
         function flagEntireDay(userEmail, date) {
             // Check if day is already flagged by looking at the button text
             const button = event.target;
@@ -8874,6 +8942,14 @@ header {
                         ${foodData.length === 0 ? 
                             '<div style="text-align: center; padding: 40px; color: #666;">No food history found for this user.</div>' :
                             `
+                            <div class="day-flag-section" style="margin-bottom: 20px; padding: 15px; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <h4 style="margin: 0; color: var(--text-primary);">📅 Day Actions</h4>
+                                    <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${foodData[0].date}')" style="background: ${foodData.some(food => food.is_day_flagged == 1) ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;">
+                                        ${foodData.some(food => food.is_day_flagged == 1) ? '✅ Unflag Day' : '🚩 Flag Day'}
+                                    </button>
+                                </div>
+                            </div>
                             ${['Breakfast', 'Lunch', 'Dinner', 'Snacks'].map(meal => {
                                 const mealFoods = foodData.filter(food => food.meal_category === meal);
                                 if (mealFoods.length === 0) return '';
@@ -8881,12 +8957,15 @@ header {
                                 // Check if any food in this meal is day-flagged
                                 const isDayFlagged = mealFoods.some(food => food.is_day_flagged == 1);
                                 
+                                // Check if this specific meal is flagged
+                                const isMealFlagged = mealFoods.some(food => food.is_flagged == 1);
+                                
                                 return `
                                     <div class="meal-section">
                                         <div class="meal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                                             <h4 class="meal-title">${meal} (${mealFoods.length} items)</h4>
-                                            <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${mealFoods[0].date}')" style="background: ${isDayFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">
-                                                ${isDayFlagged ? '✅ Unflag Day' : '🚩 Flag Day'}
+                                            <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${mealFoods[0].date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">
+                                                ${isMealFlagged ? '✅ Unflag ' + meal : '🚩 Flag ' + meal}
                                             </button>
                                         </div>
                                         <table class="food-history-table">

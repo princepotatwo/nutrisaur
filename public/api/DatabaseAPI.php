@@ -7917,6 +7917,102 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             }
             break;
             
+        case 'flag_meal':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                if (!$data) {
+                    $data = $_POST;
+                }
+                
+                $userEmail = $data['user_email'] ?? '';
+                $date = $data['date'] ?? '';
+                $mealCategory = $data['meal_category'] ?? '';
+                $mhoEmail = $data['mho_email'] ?? $data['flagged_by'] ?? '';
+                $comment = $data['comment'] ?? $data['mho_comment'] ?? '';
+                
+                // Try to get MHO email from session if not provided
+                if (empty($mhoEmail)) {
+                    session_start();
+                    $mhoEmail = $_SESSION['user_email'] ?? 'admin@nutrisaur.com';
+                }
+                
+                if (empty($userEmail) || empty($date) || empty($mealCategory)) {
+                    echo json_encode(['success' => false, 'error' => 'User email, date, and meal category are required']);
+                    break;
+                }
+                
+                $updateData = [
+                    'is_flagged' => 1,
+                    'mho_comment' => $comment,
+                    'flagged_by' => $mhoEmail,
+                    'flagged_at' => date('Y-m-d H:i:s')
+                ];
+                
+                // Debug logging
+                error_log("Flag Meal Debug - User: " . $userEmail . ", Date: " . $date . ", Meal: " . $mealCategory);
+                error_log("Flag Meal Debug - Update Data: " . json_encode($updateData));
+                
+                $result = $db->universalUpdate('user_food_history', $updateData, 'user_email = ? AND date = ? AND meal_category = ?', [$userEmail, $date, $mealCategory]);
+                
+                // Debug logging for result
+                error_log("Flag Meal Debug - Result: " . json_encode($result));
+                
+                if ($result['success']) {
+                    echo json_encode(['success' => true, 'message' => 'Meal flagged successfully']);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to flag meal']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Invalid request method']);
+            }
+            break;
+            
+        case 'unflag_meal':
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $input = file_get_contents('php://input');
+                $data = json_decode($input, true);
+                
+                if (!$data) {
+                    $data = $_POST;
+                }
+                
+                $userEmail = $data['user_email'] ?? '';
+                $date = $data['date'] ?? '';
+                $mealCategory = $data['meal_category'] ?? '';
+                
+                if (empty($userEmail) || empty($date) || empty($mealCategory)) {
+                    echo json_encode(['success' => false, 'error' => 'User email, date, and meal category are required']);
+                    break;
+                }
+                
+                $updateData = [
+                    'is_flagged' => 0,
+                    'mho_comment' => null,
+                    'flagged_by' => null,
+                    'flagged_at' => null
+                ];
+                
+                // Debug logging
+                error_log("Unflag Meal Debug - User: " . $userEmail . ", Date: " . $date . ", Meal: " . $mealCategory);
+                error_log("Unflag Meal Debug - Update Data: " . json_encode($updateData));
+                
+                $result = $db->universalUpdate('user_food_history', $updateData, 'user_email = ? AND date = ? AND meal_category = ?', [$userEmail, $date, $mealCategory]);
+                
+                // Debug logging for result
+                error_log("Unflag Meal Debug - Result: " . json_encode($result));
+                
+                if ($result['success']) {
+                    echo json_encode(['success' => true, 'message' => 'Meal unflagged successfully']);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Failed to unflag meal']);
+                }
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Invalid request method']);
+            }
+            break;
+            
         case 'update_serving_size':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $input = file_get_contents('php://input');
