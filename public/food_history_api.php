@@ -378,6 +378,7 @@ function handleUpdateFood($pdo) {
 
 /**
  * Delete food entry - Updated to support field combination deletion
+ * Version: 2.0 - Supports both ID and field combination deletion
  */
 function handleDeleteFood($pdo) {
     $id = $_GET['id'] ?? $_POST['id'] ?? '';
@@ -386,17 +387,23 @@ function handleDeleteFood($pdo) {
     $food_name = $_GET['food_name'] ?? $_POST['food_name'] ?? '';
     $meal_category = $_GET['meal_category'] ?? $_POST['meal_category'] ?? '';
     
+    // Debug logging
+    error_log("Delete request - ID: $id, Email: $user_email, Date: $date, Food: $food_name, Meal: $meal_category");
+    
     if (!empty($id)) {
         // Delete by ID (preferred method)
+        error_log("Deleting by ID: $id");
         $sql = "DELETE FROM user_food_history WHERE id = ?";
         $stmt = $pdo->prepare($sql);
         $result = $stmt->execute([$id]);
     } elseif (!empty($user_email) && !empty($date) && !empty($food_name) && !empty($meal_category)) {
         // Delete by combination of fields (fallback method)
+        error_log("Deleting by field combination");
         $sql = "DELETE FROM user_food_history WHERE user_email = ? AND date = ? AND food_name = ? AND meal_category = ?";
         $stmt = $pdo->prepare($sql);
         $result = $stmt->execute([$user_email, $date, $food_name, $meal_category]);
     } else {
+        error_log("Delete failed - missing required parameters");
         throw new Exception('Either food entry ID or (user_email, date, food_name, meal_category) combination is required');
     }
     
