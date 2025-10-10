@@ -381,14 +381,24 @@ function handleUpdateFood($pdo) {
  */
 function handleDeleteFood($pdo) {
     $id = $_GET['id'] ?? $_POST['id'] ?? '';
+    $user_email = $_GET['user_email'] ?? $_POST['user_email'] ?? '';
+    $date = $_GET['date'] ?? $_POST['date'] ?? '';
+    $food_name = $_GET['food_name'] ?? $_POST['food_name'] ?? '';
+    $meal_category = $_GET['meal_category'] ?? $_POST['meal_category'] ?? '';
     
-    if (empty($id)) {
-        throw new Exception('Food entry ID is required');
+    if (!empty($id)) {
+        // Delete by ID (preferred method)
+        $sql = "DELETE FROM user_food_history WHERE id = ?";
+        $stmt = $pdo->prepare($sql);
+        $result = $stmt->execute([$id]);
+    } elseif (!empty($user_email) && !empty($date) && !empty($food_name) && !empty($meal_category)) {
+        // Delete by combination of fields (fallback method)
+        $sql = "DELETE FROM user_food_history WHERE user_email = ? AND date = ? AND food_name = ? AND meal_category = ?";
+        $stmt = $pdo->prepare($sql);
+        $result = $stmt->execute([$user_email, $date, $food_name, $meal_category]);
+    } else {
+        throw new Exception('Either food entry ID or (user_email, date, food_name, meal_category) combination is required');
     }
-    
-    $sql = "DELETE FROM user_food_history WHERE id = ?";
-    $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute([$id]);
     
     if ($result) {
         echo json_encode([
