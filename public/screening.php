@@ -2410,6 +2410,7 @@ header {
             overflow: hidden;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             border: 2px solid #3A4336;
+            table-layout: fixed;
         }
 
         .food-history-table thead {
@@ -2426,6 +2427,12 @@ header {
             border-right: 1px solid #4A5346;
             color: white;
         }
+
+        .food-history-table th:nth-child(1) { width: 12%; } /* Date */
+        .food-history-table th:nth-child(2) { width: 25%; } /* Food Item */
+        .food-history-table th:nth-child(3) { width: 20%; } /* Serving */
+        .food-history-table th:nth-child(4) { width: 20%; } /* Nutrition */
+        .food-history-table th:nth-child(5) { width: 23%; } /* Actions */
 
         .food-history-table th:last-child {
             border-right: none;
@@ -2554,7 +2561,7 @@ header {
         }
 
         .food-action-btn {
-            padding: 6px 12px;
+            padding: 12px 16px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -2567,6 +2574,7 @@ header {
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             min-width: 60px;
             justify-content: center;
+            height: 40px;
         }
 
         .food-edit-action {
@@ -8174,7 +8182,7 @@ header {
                                                                     </div>
                                                                     <div class="food-actions">
                                                                         <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${date}', ${food.is_flagged == 1})" title="${food.is_flagged == 1 ? 'Unflag food' : 'Flag food'}">
-                                                                            ${food.is_flagged == 1 ? '🚩 Unflag' : '🚩 Flag'}
+                                                                            ${food.is_flagged == 1 ? 'Unflag' : 'Flag'}
                                                                         </button>
                                                                         <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${date}')" title="Add comment">
                                                                             💬
@@ -8566,7 +8574,7 @@ header {
                                                                     </div>
                                                                     <div class="food-actions" style="display: flex; gap: 5px;">
                                                                         <button onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${date}', ${food.is_flagged == 1})" style="padding: 4px 8px; background: ${food.is_flagged == 1 ? '#4CAF50' : '#f44336'}; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="${food.is_flagged == 1 ? 'Unflag this food' : 'Flag this food'}">
-                                                                            ${food.is_flagged == 1 ? '🚩 Unflag' : '🚩 Flag'}
+                                                                            ${food.is_flagged == 1 ? 'Unflag' : 'Flag'}
                                                                         </button>
                                                                         <button onclick="addCommentToFood(${food.id}, '${userEmail}', '${date}')" style="padding: 4px 8px; background: #2196F3; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="Add comment to this food">
                                                                             💬 Comment
@@ -8813,7 +8821,6 @@ header {
                                                         <td class="food-date-cell">${new Date(food.date).toLocaleDateString()}</td>
                                                         <td class="food-name-cell">
                                                             ${food.food_name}
-                                                            ${food.is_flagged == 1 ? '<span class="food-flag-indicator">🚩</span>' : ''}
                                                         </td>
                                                         <td class="food-serving-cell">${food.serving_size || 'N/A'}</td>
                                                         <td class="food-nutrition-cell">
@@ -8825,7 +8832,7 @@ header {
                                                                 ✏️ Edit
                                                             </button>
                                                             <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${food.date}', ${food.is_flagged == 1})" title="${food.is_flagged == 1 ? 'Unflag food' : 'Flag food'}">
-                                                                ${food.is_flagged == 1 ? '🚩 Unflag' : '🚩 Flag'}
+                                                                ${food.is_flagged == 1 ? 'Unflag' : 'Flag'}
                                                             </button>
                                                             <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${food.date}')" title="Add comment">
                                                                 💬 Comment
