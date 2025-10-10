@@ -2320,14 +2320,23 @@ header {
         }
 
         .profile-food-btn {
-            background: rgba(76, 175, 80, 0.9);
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .profile-food-btn:hover {
-            background: rgba(76, 175, 80, 1);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+            background: linear-gradient(135deg, #45a049 0%, #4CAF50 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
         }
         
         .profile-note-btn {
@@ -2366,6 +2375,378 @@ header {
 
         .profile-flag-btn.flagged:hover {
             background: rgba(76, 175, 80, 1);
+        }
+
+        /* Food History Modal Styles */
+        .food-history-modal {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .food-history-content {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .food-day-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .food-day-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .food-day-section.flagged {
+            border-left: 6px solid #f44336;
+            background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--color-highlight);
+            position: relative;
+        }
+
+        .day-header::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: var(--color-highlight);
+        }
+
+        .day-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+            color: var(--text-color);
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .day-flag-icon {
+            color: #f44336;
+            font-size: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .day-totals {
+            text-align: right;
+            background: linear-gradient(135deg, var(--color-highlight) 0%, rgba(161, 180, 84, 0.8) 100%);
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(161, 180, 84, 0.3);
+        }
+
+        .day-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .food-flag-btn, .food-comment-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .food-flag-btn {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            color: white;
+        }
+
+        .food-flag-btn:hover {
+            background: linear-gradient(135deg, #d32f2f 0%, #f44336 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+        }
+
+        .food-comment-btn {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+        }
+
+        .food-comment-btn:hover {
+            background: linear-gradient(135deg, #1976D2 0%, #2196F3 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+        }
+
+        .day-comment {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 6px solid #2196F3;
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.1);
+        }
+
+        .meals-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .meal-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        .meal-section:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .meal-title {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meal-calories {
+            background: var(--color-highlight);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .meal-foods {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .food-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .food-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .food-item.flagged {
+            background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
+            border-left: 6px solid #f44336;
+        }
+
+        .food-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .food-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .food-serving {
+            color: #6c757d;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .food-edit-btn {
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .food-edit-btn:hover {
+            background: linear-gradient(135deg, #45a049 0%, #4CAF50 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+        }
+
+        .food-comment {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            border-left: 4px solid #2196F3;
+            margin-top: 8px;
+        }
+
+        .food-nutrition {
+            text-align: right;
+            font-size: 13px;
+            color: #6c757d;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 120px;
+        }
+
+        .food-calories {
+            font-weight: 600;
+            color: var(--color-highlight);
+            font-size: 14px;
+        }
+
+        .food-macros {
+            font-size: 11px;
+            color: #6c757d;
+        }
+
+        .food-actions {
+            display: flex;
+            gap: 8px;
+            margin-left: 16px;
+        }
+
+        .food-action-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .food-flag-action {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            color: white;
+        }
+
+        .food-flag-action.unflag {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+
+        .food-flag-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .food-comment-action {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+        }
+
+        .food-comment-action:hover {
+            background: linear-gradient(135deg, #1976D2 0%, #2196F3 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+        }
+
+        /* Responsive Design for Food History */
+        @media (max-width: 768px) {
+            .food-history-content {
+                padding: 16px;
+            }
+
+            .food-day-section {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+
+            .day-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .day-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .food-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .food-actions {
+                margin-left: 0;
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .food-nutrition {
+                text-align: left;
+                min-width: auto;
+            }
         }
 
         .profile-content {
@@ -7759,29 +8140,29 @@ header {
                                 const dayComment = dayFoods.find(food => food.mho_comment)?.mho_comment || '';
                                 
                                 return `
-                                    <div class="food-day-section" style="margin-bottom: 30px; border: 1px solid #ddd; border-radius: 10px; padding: 20px; ${isDayFlagged ? 'border-left: 5px solid #f44336; background-color: #ffebee;' : ''}">
-                                        <div class="day-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #4CAF50;">
-                                            <div style="display: flex; align-items: center; gap: 10px;">
-                                                <h4 style="margin: 0; color: #4CAF50;">📅 ${new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h4>
-                                                ${isDayFlagged ? '<span style="color: #f44336; font-size: 18px;" title="Day flagged by MHO">🚩</span>' : ''}
+                                    <div class="food-day-section ${isDayFlagged ? 'flagged' : ''}">
+                                        <div class="day-header">
+                                            <div class="day-title">
+                                                <h4>📅 ${new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h4>
+                                                ${isDayFlagged ? '<span class="day-flag-icon" title="Day flagged by MHO">🚩</span>' : ''}
                                             </div>
-                                            <div style="display: flex; align-items: center; gap: 10px;">
-                                                <div class="day-totals" style="text-align: right; font-size: 14px; color: #666;">
+                                            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
+                                                <div class="day-totals">
                                                     <div><strong>Total: ${totalCalories} kcal</strong></div>
                                                     <div>Protein: ${totalProtein.toFixed(1)}g | Carbs: ${totalCarbs.toFixed(1)}g | Fat: ${totalFat.toFixed(1)}g</div>
                                                 </div>
-                                                <div class="day-actions" style="display: flex; gap: 5px;">
-                                                    <button class="food-flag-btn" onclick="flagEntireDay('${userEmail}', '${date}')" style="padding: 5px 10px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;" title="Flag entire day">
+                                                <div class="day-actions">
+                                                    <button class="food-flag-btn" onclick="flagEntireDay('${userEmail}', '${date}')" title="Flag entire day">
                                                         ${isDayFlagged ? '🚩 Unflag Day' : '🚩 Flag Day'}
                                                     </button>
-                                                    <button class="food-comment-btn" onclick="addCommentToDay('${userEmail}', '${date}')" style="padding: 5px 10px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;" title="Add comment to day">
+                                                    <button class="food-comment-btn" onclick="addCommentToDay('${userEmail}', '${date}')" title="Add comment to day">
                                                         💬 Comment
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
                                         ${dayComment ? `
-                                            <div class="day-comment" style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #2196F3;">
+                                            <div class="day-comment">
                                                 <strong>MHO Comment:</strong> ${dayComment}
                                             </div>
                                         ` : ''}
@@ -7793,39 +8174,40 @@ header {
                                                 const mealCalories = mealFoods.reduce((sum, food) => sum + parseInt(food.calories), 0);
                                                 
                                                 return `
-                                                    <div class="meal-section" style="margin-bottom: 15px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
-                                                        <div class="meal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                                            <h5 style="margin: 0; color: #333;">${meal} (${mealCalories} kcal)</h5>
+                                                    <div class="meal-section">
+                                                        <div class="meal-header">
+                                                            <h5 class="meal-title">${meal}</h5>
+                                                            <span class="meal-calories">${mealCalories} kcal</span>
                                                         </div>
                                                         <div class="meal-foods">
                                                             ${mealFoods.map(food => `
-                                                                <div class="food-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; ${food.is_flagged == 1 ? 'background-color: var(--flagged-bg, #ffebee); border-left: 3px solid var(--flagged-border, #f44336);' : ''}">
-                                                                    <div class="food-info" style="flex: 1;">
-                                                                        <div style="display: flex; align-items: center; gap: 8px;">
-                                                                            <span style="font-weight: 600;">${food.food_name}</span>
-                                                                            ${food.is_flagged == 1 ? '<span style="color: var(--flagged-border, #f44336); font-size: 16px;" title="Flagged by MHO">🚩</span>' : ''}
+                                                                <div class="food-item ${food.is_flagged == 1 ? 'flagged' : ''}">
+                                                                    <div class="food-info">
+                                                                        <div class="food-name">
+                                                                            <span>${food.food_name}</span>
+                                                                            ${food.is_flagged == 1 ? '<span style="color: #f44336; font-size: 16px;" title="Flagged by MHO">🚩</span>' : ''}
                                                                         </div>
-                                                                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
-                                                                            <span style="color: #666;">(${food.serving_size})</span>
-                                                                            <button onclick="editServingSize(${food.id}, '${userEmail}', '${date}', '${food.serving_size}')" style="padding: 2px 6px; background: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="Edit serving size">
+                                                                        <div class="food-serving">
+                                                                            <span>(${food.serving_size})</span>
+                                                                            <button class="food-edit-btn" onclick="editServingSize(${food.id}, '${userEmail}', '${date}', '${food.serving_size}')" title="Edit serving size">
                                                                                 ✏️ Edit
                                                                             </button>
                                                                         </div>
                                                                         ${food.mho_comment ? `
-                                                                            <div class="food-comment" style="background: #e3f2fd; padding: 5px; border-radius: 3px; margin-top: 5px; font-size: 11px; border-left: 3px solid #2196F3;">
+                                                                            <div class="food-comment">
                                                                                 <strong>MHO:</strong> ${food.mho_comment}
                                                                             </div>
                                                                         ` : ''}
                                                                     </div>
-                                                                    <div class="food-nutrition" style="text-align: right; font-size: 12px; color: #666;">
-                                                                        <div>${food.calories} kcal</div>
-                                                                        <div>P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
+                                                                    <div class="food-nutrition">
+                                                                        <div class="food-calories">${food.calories} kcal</div>
+                                                                        <div class="food-macros">P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
                                                                     </div>
-                                                                    <div class="food-actions" style="display: flex; gap: 5px; margin-left: 10px;">
-                                                                        <button onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${date}', ${food.is_flagged == 1})" style="padding: 3px 6px; background: ${food.is_flagged == 1 ? '#4CAF50' : '#f44336'}; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="${food.is_flagged == 1 ? 'Unflag food' : 'Flag food'}">
+                                                                    <div class="food-actions">
+                                                                        <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${date}', ${food.is_flagged == 1})" title="${food.is_flagged == 1 ? 'Unflag food' : 'Flag food'}">
                                                                             ${food.is_flagged == 1 ? '🚩 Unflag' : '🚩 Flag'}
                                                                         </button>
-                                                                        <button onclick="addCommentToFood(${food.id}, '${userEmail}', '${date}')" style="padding: 3px 6px; background: #2196F3; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="Add comment">
+                                                                        <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${date}')" title="Add comment">
                                                                             💬
                                                                         </button>
                                                                     </div>
@@ -8151,29 +8533,29 @@ header {
                                 const dayComment = dayFoods.find(food => food.mho_comment)?.mho_comment || '';
                                 
                                 return `
-                                    <div class="food-day-section" style="margin-bottom: 30px; border: 1px solid #ddd; border-radius: 10px; padding: 20px; ${isDayFlagged ? 'border-left: 5px solid #f44336; background-color: #ffebee;' : ''}">
-                                        <div class="day-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #4CAF50;">
-                                            <div style="display: flex; align-items: center; gap: 10px;">
-                                                <h4 style="margin: 0; color: #4CAF50;">📅 ${new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h4>
-                                                ${isDayFlagged ? '<span style="color: #f44336; font-size: 18px;" title="Day flagged by MHO">🚩</span>' : ''}
+                                    <div class="food-day-section ${isDayFlagged ? 'flagged' : ''}">
+                                        <div class="day-header">
+                                            <div class="day-title">
+                                                <h4>📅 ${new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h4>
+                                                ${isDayFlagged ? '<span class="day-flag-icon" title="Day flagged by MHO">🚩</span>' : ''}
                                             </div>
-                                            <div style="display: flex; align-items: center; gap: 10px;">
-                                                <div class="day-totals" style="text-align: right; font-size: 14px; color: #666;">
+                                            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
+                                                <div class="day-totals">
                                                     <div><strong>Total: ${totalCalories} kcal</strong></div>
                                                     <div>Protein: ${totalProtein.toFixed(1)}g | Carbs: ${totalCarbs.toFixed(1)}g | Fat: ${totalFat.toFixed(1)}g</div>
                                                 </div>
-                                                <div class="day-actions" style="display: flex; gap: 5px;">
-                                                    <button class="food-flag-btn" onclick="flagEntireDay('${userEmail}', '${date}')" style="padding: 5px 10px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;" title="Flag entire day">
+                                                <div class="day-actions">
+                                                    <button class="food-flag-btn" onclick="flagEntireDay('${userEmail}', '${date}')" title="Flag entire day">
                                                         ${isDayFlagged ? '🚩 Unflag Day' : '🚩 Flag Day'}
                                                     </button>
-                                                    <button class="food-comment-btn" onclick="addCommentToDay('${userEmail}', '${date}')" style="padding: 5px 10px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;" title="Add comment to day">
+                                                    <button class="food-comment-btn" onclick="addCommentToDay('${userEmail}', '${date}')" title="Add comment to day">
                                                         💬 Comment
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
                                         ${dayComment ? `
-                                            <div class="day-comment" style="background: #e3f2fd; padding: 10px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #2196F3;">
+                                            <div class="day-comment">
                                                 <strong>MHO Comment:</strong> ${dayComment}
                                             </div>
                                         ` : ''}
@@ -8185,9 +8567,10 @@ header {
                                                 const mealCalories = mealFoods.reduce((sum, food) => sum + parseInt(food.calories), 0);
                                                 
                                                 return `
-                                                    <div class="meal-section" style="margin-bottom: 15px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
-                                                        <div class="meal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                                            <h5 style="margin: 0; color: #333;">${meal} (${mealCalories} kcal)</h5>
+                                                    <div class="meal-section">
+                                                        <div class="meal-header">
+                                                            <h5 class="meal-title">${meal}</h5>
+                                                            <span class="meal-calories">${mealCalories} kcal</span>
                                                         </div>
                                                         <div class="meal-foods">
                                                             ${mealFoods.map(food => `
