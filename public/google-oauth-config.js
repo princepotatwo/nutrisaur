@@ -314,10 +314,17 @@ class GoogleOAuth {
             const result = await response.json();
             
             if (result.success) {
-                this.showMessage('Google sign-in successful! Redirecting...', 'success');
-                setTimeout(() => {
-                    window.location.href = '/dash';
-                }, 1000);
+                if (result.needs_password_change) {
+                    this.showMessage('Google sign-in successful! Please change your password.', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/settings';
+                    }, 1000);
+                } else {
+                    this.showMessage('Google sign-in successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/dash';
+                    }, 1000);
+                }
             } else {
                 this.showMessage(result.message || 'Google sign-in failed. Please try again.', 'error');
             }
@@ -353,10 +360,17 @@ class GoogleOAuth {
             const result = await response.json();
             
             if (result.success) {
-                this.showMessage('Google sign-in successful! Redirecting...', 'success');
-                setTimeout(() => {
-                    window.location.href = '/dash';
-                }, 1000);
+                if (result.needs_password_change) {
+                    this.showMessage('Google sign-in successful! Please change your password.', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/settings';
+                    }, 1000);
+                } else {
+                    this.showMessage('Google sign-in successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/dash';
+                    }, 1000);
+                }
             } else {
                 this.showMessage(result.message || 'Google sign-in failed. Please try again.', 'error');
             }

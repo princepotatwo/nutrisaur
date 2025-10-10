@@ -123,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
         }
         
         // Check if user already exists by Google ID
-        $stmt = $pdo->prepare("SELECT user_id, username, email, email_verified, is_active FROM users WHERE google_id = ?");
+        $stmt = $pdo->prepare("SELECT user_id, username, email, email_verified, is_active, password FROM users WHERE google_id = ?");
         $stmt->execute([$googleId]);
         $existingUser = $stmt->fetch();
         
@@ -133,6 +133,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
                 echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
                 exit;
             }
+            
+            // Check if user still has default password
+            $hasDefaultPassword = password_verify('password123', $existingUser['password']);
             
             // User exists, log them in
             $_SESSION['user_id'] = $existingUser['user_id'];
@@ -144,10 +147,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
             $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
             $updateStmt->execute([$existingUser['user_id']]);
             
-            echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user']);
+            if ($hasDefaultPassword) {
+                echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user', 'needs_password_change' => true]);
+            } else {
+                echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user']);
+            }
         } else {
             // Check if user exists by email
-            $stmt = $pdo->prepare("SELECT user_id, username, email, is_active FROM users WHERE email = ?");
+            $stmt = $pdo->prepare("SELECT user_id, username, email, is_active, password FROM users WHERE email = ?");
             $stmt->execute([$email]);
             $userByEmail = $stmt->fetch();
             
@@ -158,6 +165,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
                     exit;
                 }
                 
+                // Check if user still has default password
+                $hasDefaultPassword = password_verify('password123', $userByEmail['password']);
+                
                 // Link Google account to existing user
                 $updateStmt = $pdo->prepare("UPDATE users SET google_id = ?, google_name = ?, google_picture = ?, email_verified = 1 WHERE user_id = ?");
                 $updateStmt->execute([$googleId, $name, $picture, $userByEmail['user_id']]);
@@ -167,7 +177,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
                 $_SESSION['email'] = $userByEmail['email'];
                 $_SESSION['is_admin'] = false;
                 
-                echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user']);
+                if ($hasDefaultPassword) {
+                    echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user', 'needs_password_change' => true]);
+                } else {
+                    echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user']);
+                }
             } else {
                 // User doesn't exist - only allow existing users to login
                 echo json_encode(['success' => false, 'message' => 'Account not found. Please contact an administrator to create your account.']);
@@ -223,7 +237,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
         }
         
         // Check if user already exists by Google ID
-        $stmt = $pdo->prepare("SELECT user_id, username, email, email_verified, is_active FROM users WHERE google_id = ?");
+        $stmt = $pdo->prepare("SELECT user_id, username, email, email_verified, is_active, password FROM users WHERE google_id = ?");
         $stmt->execute([$googleId]);
         $existingUser = $stmt->fetch();
         
@@ -233,6 +247,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
                 echo json_encode(['success' => false, 'message' => 'Your account has been archived. Please contact an administrator.']);
                 exit;
             }
+            
+            // Check if user still has default password
+            $hasDefaultPassword = password_verify('password123', $existingUser['password']);
             
             // User exists, log them in
             $_SESSION['user_id'] = $existingUser['user_id'];
@@ -244,10 +261,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
             $updateStmt = $pdo->prepare("UPDATE users SET last_login = NOW() WHERE user_id = ?");
             $updateStmt->execute([$existingUser['user_id']]);
             
-            echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user']);
+            if ($hasDefaultPassword) {
+                echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user', 'needs_password_change' => true]);
+            } else {
+                echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user']);
+            }
         } else {
             // Check if user exists by email
-            $stmt = $pdo->prepare("SELECT user_id, username, email, is_active FROM users WHERE email = ?");
+            $stmt = $pdo->prepare("SELECT user_id, username, email, is_active, password FROM users WHERE email = ?");
             $stmt->execute([$email]);
             $userByEmail = $stmt->fetch();
             
@@ -258,6 +279,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
                     exit;
                 }
                 
+                // Check if user still has default password
+                $hasDefaultPassword = password_verify('password123', $userByEmail['password']);
+                
                 // Link Google account to existing user
                 $updateStmt = $pdo->prepare("UPDATE users SET google_id = ?, google_name = ?, google_picture = ?, email_verified = 1 WHERE user_id = ?");
                 $updateStmt->execute([$googleId, $name, $picture, $userByEmail['user_id']]);
@@ -267,7 +291,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
                 $_SESSION['email'] = $userByEmail['email'];
                 $_SESSION['is_admin'] = false;
                 
-                echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user']);
+                if ($hasDefaultPassword) {
+                    echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user', 'needs_password_change' => true]);
+                } else {
+                    echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user']);
+                }
             } else {
                 // User doesn't exist - only allow existing users to login
                 echo json_encode(['success' => false, 'message' => 'Account not found. Please contact an administrator to create your account.']);
