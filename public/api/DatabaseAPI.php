@@ -7755,7 +7755,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 
                 $id = $data['id'] ?? '';
                 $mhoEmail = $data['mho_email'] ?? '';
-                $comment = $data['comment'] ?? '';
+                $comment = $data['comment'] ?? $data['mho_comment'] ?? '';
                 
                 // Try to get MHO email from session if not provided
                 if (empty($mhoEmail)) {
