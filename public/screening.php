@@ -8655,6 +8655,9 @@ header {
             } else {
                 // Flag with comment
                 const comment = prompt('Enter reason for flagging this food item:');
+                console.log('🚩 Comment collected (function 2):', comment);
+                console.log('🚩 Sending flag request with (function 2):', { id: foodId, comment: comment });
+                
                 if (comment) {
                     fetch(`api/DatabaseAPI.php?action=flag_food`, {
                         method: 'POST',
