@@ -57,6 +57,14 @@ try {
             handleDeleteFood($pdo);
             break;
             
+        case 'test':
+            echo json_encode([
+                'success' => true,
+                'message' => 'API is working - Version 2.1',
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            break;
+            
         default:
             throw new Exception('Invalid action specified');
     }
