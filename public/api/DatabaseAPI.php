@@ -7731,7 +7731,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $params[] = $date;
             }
             
-            $result = $db->universalSelect('user_food_history', '*', $whereClause, 'ORDER BY date DESC, meal_category ASC', '', $params);
+            $result = $db->universalSelect('user_food_history', '*', $whereClause, 'date DESC, meal_category ASC', '', $params);
             
             if ($result['success']) {
                 echo json_encode([
