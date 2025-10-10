@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 // Use centralized session management
 require_once __DIR__ . "/api/DatabaseAPI.php";
 require_once __DIR__ . "/api/DatabaseHelper.php";
