@@ -318,6 +318,8 @@ if ($db->isAvailable()) {
     --color-shadow: rgba(0, 0, 0, 0.1);
     --color-hover: rgba(161, 180, 84, 0.08);
     --color-active: rgba(161, 180, 84, 0.15);
+    --flagged-bg: #4A2C2C;
+    --flagged-border: #CF8686;
 }
 
 /* Apply dark theme by default to prevent flash */
@@ -7797,11 +7799,11 @@ header {
                                                         </div>
                                                         <div class="meal-foods">
                                                             ${mealFoods.map(food => `
-                                                                <div class="food-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; ${food.is_flagged == 1 ? 'background-color: #ffebee; border-left: 3px solid #f44336;' : ''}">
+                                                                <div class="food-item" style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; ${food.is_flagged == 1 ? 'background-color: var(--flagged-bg, #ffebee); border-left: 3px solid var(--flagged-border, #f44336);' : ''}">
                                                                     <div class="food-info" style="flex: 1;">
                                                                         <div style="display: flex; align-items: center; gap: 8px;">
                                                                             <span style="font-weight: 600;">${food.food_name}</span>
-                                                                            ${food.is_flagged == 1 ? '<span style="color: #f44336; font-size: 16px;" title="Flagged by MHO">🚩</span>' : ''}
+                                                                            ${food.is_flagged == 1 ? '<span style="color: var(--flagged-border, #f44336); font-size: 16px;" title="Flagged by MHO">🚩</span>' : ''}
                                                                         </div>
                                                                         <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
                                                                             <span style="color: #666;">(${food.serving_size})</span>
@@ -7820,7 +7822,7 @@ header {
                                                                         <div>P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
                                                                     </div>
                                                                     <div class="food-actions" style="display: flex; gap: 5px; margin-left: 10px;">
-                                                                        <button onclick="flagFoodItem(${food.id}, '${userEmail}', '${date}')" style="padding: 3px 6px; background: ${food.is_flagged == 1 ? '#4CAF50' : '#f44336'}; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="${food.is_flagged == 1 ? 'Unflag food' : 'Flag food'}">
+                                                                        <button onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${date}', ${food.is_flagged == 1})" style="padding: 3px 6px; background: ${food.is_flagged == 1 ? '#4CAF50' : '#f44336'}; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="${food.is_flagged == 1 ? 'Unflag food' : 'Flag food'}">
                                                                             ${food.is_flagged == 1 ? '🚩 Unflag' : '🚩 Flag'}
                                                                         </button>
                                                                         <button onclick="addCommentToFood(${food.id}, '${userEmail}', '${date}')" style="padding: 3px 6px; background: #2196F3; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="Add comment">
@@ -7849,34 +7851,63 @@ header {
         }
 
         // Food History Interactive Functions
-        function flagFoodItem(foodId, userEmail, date) {
+        function toggleFoodItemFlag(foodId, userEmail, date, isCurrentlyFlagged) {
             const mhoEmail = 'admin@nutrisaur.com'; // You can get this from session or pass as parameter
             
-            fetch('api/DatabaseAPI.php?action=flag_food', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    id: foodId,
-                    mho_email: mhoEmail,
-                    comment: prompt('Add a comment (optional):') || ''
+            if (isCurrentlyFlagged) {
+                // Unflag the food item
+                fetch('api/DatabaseAPI.php?action=unflag_food', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: foodId
+                    })
                 })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Food item flagged successfully');
-                    // Refresh the food history modal
-                    viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
-                } else {
-                    alert('Error: ' + data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error flagging food:', error);
-                alert('Error flagging food item');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Food item unflagged successfully');
+                        // Refresh the food history modal
+                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error unflagging food:', error);
+                    alert('Error unflagging food item');
+                });
+            } else {
+                // Flag the food item
+                const comment = prompt('Add a comment (optional):') || '';
+                fetch('api/DatabaseAPI.php?action=flag_food', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: foodId,
+                        mho_email: mhoEmail,
+                        comment: comment
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Food item flagged successfully');
+                        // Refresh the food history modal
+                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error flagging food:', error);
+                    alert('Error flagging food item');
+                });
+            }
         }
 
         function flagEntireDay(userEmail, date) {
