@@ -377,7 +377,7 @@ function handleUpdateFood($pdo) {
 }
 
 /**
- * Delete food entry
+ * Delete food entry - Updated to support field combination deletion
  */
 function handleDeleteFood($pdo) {
     $id = $_GET['id'] ?? $_POST['id'] ?? '';
