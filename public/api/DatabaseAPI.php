@@ -7944,17 +7944,11 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 }
                 
                 $id = $data['id'] ?? '';
-                $comment = $data['comment'] ?? $data['mho_comment'] ?? '';
+                $comment = $data['comment'] ?? '';
                 $mhoEmail = $data['mho_email'] ?? '';
                 
-                // Try to get MHO email from session if not provided
-                if (empty($mhoEmail)) {
-                    session_start();
-                    $mhoEmail = $_SESSION['user_email'] ?? 'admin@nutrisaur.com';
-                }
-                
-                if (empty($id) || empty($comment)) {
-                    echo json_encode(['success' => false, 'error' => 'Food ID and comment are required']);
+                if (empty($id) || empty($comment) || empty($mhoEmail)) {
+                    echo json_encode(['success' => false, 'error' => 'Food ID, comment, and MHO email are required']);
                     break;
                 }
                 
