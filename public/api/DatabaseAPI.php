@@ -7757,8 +7757,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 $mhoEmail = $data['mho_email'] ?? '';
                 $comment = $data['comment'] ?? '';
                 
+                // Try to get MHO email from session if not provided
+                if (empty($mhoEmail)) {
+                    session_start();
+                    $mhoEmail = $_SESSION['user_email'] ?? 'admin@nutrisaur.com';
+                }
+                
+                // Debug logging
+                error_log("Flag Food Debug - ID: " . $id . ", MHO Email: " . $mhoEmail . ", Comment: " . $comment);
+                error_log("Flag Food Debug - Full data: " . json_encode($data));
+                error_log("Flag Food Debug - Session user_email: " . ($_SESSION['user_email'] ?? 'not set'));
+                
                 if (empty($id) || empty($mhoEmail)) {
-                    echo json_encode(['success' => false, 'error' => 'Food ID and MHO email are required']);
+                    echo json_encode(['success' => false, 'error' => 'Food ID and MHO email are required', 'debug' => ['id' => $id, 'mho_email' => $mhoEmail]]);
                     break;
                 }
                 
