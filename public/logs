@@ -1,293 +1,174 @@
-ta for: kevinpotatrue@gmail.com
-2025-10-10 09:29:22.409 32641-32641 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-10 09:29:22.409 32641-32641 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
-2025-10-10 09:29:22.410 32641-32641 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpotatrue@gmail.com
-2025-10-10 09:29:22.418 32641-32641 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpotatrue@gmail.com
-2025-10-10 09:29:22.418 32641-32641 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-10 09:29:22.419 32641-32641 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpotatrue@gmail.com
-2025-10-10 09:29:22.419 32641-32641 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-10 09:29:22.419 32641-32641 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-10 09:29:22.420 32641-32641 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpotatrue@gmail.com
-2025-10-10 09:29:22.646 32641-32641 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760059762646
-2025-10-10 09:29:22.742 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Attempting to remove food: Kare-Kare (calories: 550, meal: Lunch)
-2025-10-10 09:29:22.749 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Checking daily foods for Breakfast: 1 items
-2025-10-10 09:29:22.750 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Checking daily foods for Lunch: 4 items
-2025-10-10 09:29:22.757 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Successfully removed from daily foods system (meal: Lunch)
-2025-10-10 09:29:22.757 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved user email: 'kevinpotatrue@gmail.com'
-2025-10-10 09:29:22.774 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Removed Kare-Kare from Lunch for date 2025-10-10. Calories before: 2000, after: 1450
-2025-10-10 09:29:22.779 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Syncing with 4 added foods for date: 2025-10-10
-2025-10-10 09:29:22.780 32641-32641 CalorieTracker          com.example.nutrisaur11              D    Daily foods: 4
-2025-10-10 09:29:22.780 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Available database fields: [is_pregnant, birthday, muac_category, notes, nutritional_risk, weight_kg, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, age, email, status, bmi]
-2025-10-10 09:29:22.780 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Calculated age from birthday '2005-10-20': 19
-2025-10-10 09:29:22.780 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Weight field lookup - weight_kg: '65', weight: 'null', final: '65'
-2025-10-10 09:29:22.780 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Set weight from database: 65
-2025-10-10 09:29:22.780 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Height field lookup - height_cm: '170', height: 'null', final: '170'
-2025-10-10 09:29:22.780 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Set height from database: 170
-2025-10-10 09:29:22.780 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Created user profile from database data: Joshua Hernandez (Age: 19, Weight: 65.0, Height: 170.0, Gender: Male, Activity: Moderate)
-2025-10-10 09:29:22.780 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Using user profile from database data
-2025-10-10 09:29:22.781 32641-32641 KcalSuggestionCache     com.example.nutrisaur11              D  User profile changed, cache invalid
-2025-10-10 09:29:22.781 32641-32641 CalorieTracker          com.example.nutrisaur11              D  No valid AI cache found, using fallback calculation...
-2025-10-10 09:29:22.781 32641-32641 CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1622.5 for Joshua Hernandez
-2025-10-10 09:29:22.781 32641-32641 CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2514.875 (BMR: 1622.5 × Activity: 1.55)
-2025-10-10 09:29:22.781 32641-32641 CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2514 (TDEE: 2514.875 + Adjustment: 0.0)
-2025-10-10 09:29:22.781 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Using fallback calculation (AI will update cache): 2514
-2025-10-10 09:29:22.781 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Using AI-calculated daily calorie target: 2514
-2025-10-10 09:29:22.781 32641-32641 CalorieCal...ionService com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=628, Lunch=879, Dinner=754, Snacks=251
-2025-10-10 09:29:22.781 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=628, Lunch=879, Dinner=754, Snacks=251
-2025-10-10 09:29:22.781 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=628, Dinner=754, Snacks=251, Lunch=879}
-2025-10-10 09:29:22.782 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Created Breakfast meal with 628 max calories
-2025-10-10 09:29:22.782 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Added Munggo Guisado with Pandesal (230 cal) to Breakfast for date 2025-10-10
-2025-10-10 09:29:22.782 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Created Lunch meal with 879 max calories
-2025-10-10 09:29:22.782 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Added Chicken Adobo (450 cal) to Lunch for date 2025-10-10
-2025-10-10 09:29:22.782 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Added Lechon Kawali (600 cal) to Lunch for date 2025-10-10
-2025-10-10 09:29:22.782 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Added Sinigang na Baboy (400 cal) to Lunch for date 2025-10-10
-2025-10-10 09:29:22.784 32641-948   NutritionService        com.example.nutrisaur11              D  Starting nutrition recommendations...
-2025-10-10 09:29:22.784 32641-948   NutritionService        com.example.nutrisaur11              D  Getting user profile from SharedPreferences...
-2025-10-10 09:29:22.784 32641-948   NutritionService        com.example.nutrisaur11              D  User data: name=, age=25, weight=70.0, height=170.0
-2025-10-10 09:29:22.784 32641-948   NutritionService        com.example.nutrisaur11              D  User profile loaded: , BMI: 24.221453287197235
-2025-10-10 09:29:22.784 32641-948   KcalSuggestionCache     com.example.nutrisaur11              D  Cached kcal suggestion is valid
-2025-10-10 09:29:22.784 32641-948   NutritionService        com.example.nutrisaur11              D  Using cached kcal suggestion - user profile unchanged
-2025-10-10 09:29:22.785 32641-948   KcalSuggestionCache     com.example.nutrisaur11              D  Successfully loaded cached kcal suggestion
-2025-10-10 09:29:22.785 32641-948   CalorieTracker          com.example.nutrisaur11              D  Background AI calculation completed: 2545
-2025-10-10 09:29:22.790 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-10. Total meals: 2
-2025-10-10 09:29:22.790 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Meal Breakfast: 230/628 kcal
-2025-10-10 09:29:22.790 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Meal Lunch: 1450/879 kcal
-2025-10-10 09:29:22.792 32641-32641 FoodLoggingActivity     com.example.nutrisaur11              D  Updated meal category text: Lunch
-2025-10-10 09:29:22.793 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Calories updated for Lunch: 0/879 kcal
-2025-10-10 09:29:22.797 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 2 meal categories for 2025-10-10
-2025-10-10 09:29:22.797 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-10 09:29:22.797 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:22.797 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Lunch has 3 foods
-2025-10-10 09:29:22.797 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Chicken Adobo in Lunch
-2025-10-10 09:29:22.797 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:22.797 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:22.797 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 4 foods from daily storage for 2025-10-10
-2025-10-10 09:29:22.797 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Exact match found for Chicken Adobo in Lunch
-2025-10-10 09:29:22.797 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Meal activity - Chicken Adobo isAddedToMeal(Lunch): true (final: true)
-2025-10-10 09:29:22.801 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 2 meal categories for 2025-10-10
-2025-10-10 09:29:22.801 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-10 09:29:22.801 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:22.801 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Lunch has 3 foods
-2025-10-10 09:29:22.801 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Chicken Adobo in Lunch
-2025-10-10 09:29:22.801 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:22.801 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:22.801 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 4 foods from daily storage for 2025-10-10
-2025-10-10 09:29:22.801 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Checking if Kare-Kare is in Lunch: false
-2025-10-10 09:29:22.801 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Stored foods for 2025-10-10:
-2025-10-10 09:29:22.801 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:22.801 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Chicken Adobo in Lunch
-2025-10-10 09:29:22.801 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:22.801 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:22.801 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Meal activity - Kare-Kare isAddedToMeal(Lunch): false (final: false)
-2025-10-10 09:29:22.804 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 2 meal categories for 2025-10-10
-2025-10-10 09:29:22.805 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-10 09:29:22.805 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:22.805 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Lunch has 3 foods
-2025-10-10 09:29:22.805 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Chicken Adobo in Lunch
-2025-10-10 09:29:22.805 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:22.805 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:22.805 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 4 foods from daily storage for 2025-10-10
-2025-10-10 09:29:22.805 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Exact match found for Sinigang na Baboy in Lunch
-2025-10-10 09:29:22.805 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Meal activity - Sinigang na Baboy isAddedToMeal(Lunch): true (final: true)
-2025-10-10 09:29:22.808 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 2 meal categories for 2025-10-10
-2025-10-10 09:29:22.808 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-10 09:29:22.808 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:22.808 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Lunch has 3 foods
-2025-10-10 09:29:22.808 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Chicken Adobo in Lunch
-2025-10-10 09:29:22.808 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:22.808 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:22.808 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 4 foods from daily storage for 2025-10-10
-2025-10-10 09:29:22.808 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Exact match found for Lechon Kawali in Lunch
-2025-10-10 09:29:22.808 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Meal activity - Lechon Kawali isAddedToMeal(Lunch): true (final: true)
-2025-10-10 09:29:22.811 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 2 meal categories for 2025-10-10
-2025-10-10 09:29:22.811 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-10 09:29:22.812 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:22.812 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Lunch has 3 foods
-2025-10-10 09:29:22.812 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Chicken Adobo in Lunch
-2025-10-10 09:29:22.812 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:22.812 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:22.812 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 4 foods from daily storage for 2025-10-10
-2025-10-10 09:29:22.812 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Checking if Pancit Palabok is in Lunch: false
-2025-10-10 09:29:22.812 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Stored foods for 2025-10-10:
-2025-10-10 09:29:22.812 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:22.812 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Chicken Adobo in Lunch
-2025-10-10 09:29:22.812 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:22.812 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:22.812 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Meal activity - Pancit Palabok isAddedToMeal(Lunch): false (final: false)
-2025-10-10 09:29:22.815 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 2 meal categories for 2025-10-10
-2025-10-10 09:29:22.815 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-10 09:29:22.815 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:22.815 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Lunch has 3 foods
-2025-10-10 09:29:22.815 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Chicken Adobo in Lunch
-2025-10-10 09:29:22.815 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:22.815 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:22.815 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 4 foods from daily storage for 2025-10-10
-2025-10-10 09:29:22.815 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Checking if Beef Caldereta is in Lunch: false
-2025-10-10 09:29:22.815 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Stored foods for 2025-10-10:
-2025-10-10 09:29:22.815 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:22.815 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Chicken Adobo in Lunch
-2025-10-10 09:29:22.815 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:22.815 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:22.815 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Meal activity - Beef Caldereta isAddedToMeal(Lunch): false (final: false)
-2025-10-10 09:29:22.818 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 2 meal categories for 2025-10-10
-2025-10-10 09:29:22.818 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-10 09:29:22.818 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:22.818 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Lunch has 3 foods
-2025-10-10 09:29:22.818 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Chicken Adobo in Lunch
-2025-10-10 09:29:22.818 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:22.818 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:22.818 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 4 foods from daily storage for 2025-10-10
-2025-10-10 09:29:22.818 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Checking if Sisig is in Lunch: false
-2025-10-10 09:29:22.818 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Stored foods for 2025-10-10:
-2025-10-10 09:29:22.818 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:22.818 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Chicken Adobo in Lunch
-2025-10-10 09:29:22.818 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:22.818 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:22.818 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Meal activity - Sisig isAddedToMeal(Lunch): false (final: false)
-2025-10-10 09:29:22.924 32641-946   ApiClient               com.example.nutrisaur11              D  Delete food response: {"success":true,"message":"Food entry deleted successfully"}
-2025-10-10 09:29:22.924 32641-946   AddedFoodManager        com.example.nutrisaur11              D  ✅ Database delete call completed
-2025-10-10 09:29:23.233 32641-32641 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760059763232
-2025-10-10 09:29:23.305 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Attempting to remove food: Chicken Adobo (calories: 450, meal: Lunch)
-2025-10-10 09:29:23.309 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Checking daily foods for Breakfast: 1 items
-2025-10-10 09:29:23.309 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Checking daily foods for Lunch: 3 items
-2025-10-10 09:29:23.313 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Successfully removed from daily foods system (meal: Lunch)
-2025-10-10 09:29:23.313 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved user email: 'kevinpotatrue@gmail.com'
-2025-10-10 09:29:23.326 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Removed Chicken Adobo from Lunch for date 2025-10-10. Calories before: 1450, after: 1000
-2025-10-10 09:29:23.333 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Syncing with 3 added foods for date: 2025-10-10
-2025-10-10 09:29:23.333 32641-32641 CalorieTracker          com.example.nutrisaur11              D    Daily foods: 3
-2025-10-10 09:29:23.333 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Available database fields: [is_pregnant, birthday, muac_category, notes, nutritional_risk, weight_kg, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, age, email, status, bmi]
-2025-10-10 09:29:23.334 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Calculated age from birthday '2005-10-20': 19
-2025-10-10 09:29:23.334 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Weight field lookup - weight_kg: '65', weight: 'null', final: '65'
-2025-10-10 09:29:23.334 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Set weight from database: 65
-2025-10-10 09:29:23.334 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Height field lookup - height_cm: '170', height: 'null', final: '170'
-2025-10-10 09:29:23.334 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Set height from database: 170
-2025-10-10 09:29:23.334 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Created user profile from database data: Joshua Hernandez (Age: 19, Weight: 65.0, Height: 170.0, Gender: Male, Activity: Moderate)
-2025-10-10 09:29:23.334 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Using user profile from database data
-2025-10-10 09:29:23.334 32641-32641 KcalSuggestionCache     com.example.nutrisaur11              D  User profile changed, cache invalid
-2025-10-10 09:29:23.334 32641-32641 CalorieTracker          com.example.nutrisaur11              D  No valid AI cache found, using fallback calculation...
-2025-10-10 09:29:23.334 32641-32641 CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1622.5 for Joshua Hernandez
-2025-10-10 09:29:23.334 32641-32641 CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2514.875 (BMR: 1622.5 × Activity: 1.55)
-2025-10-10 09:29:23.335 32641-32641 CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2514 (TDEE: 2514.875 + Adjustment: 0.0)
-2025-10-10 09:29:23.335 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Using fallback calculation (AI will update cache): 2514
-2025-10-10 09:29:23.335 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Using AI-calculated daily calorie target: 2514
-2025-10-10 09:29:23.335 32641-32641 CalorieCal...ionService com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=628, Lunch=879, Dinner=754, Snacks=251
-2025-10-10 09:29:23.335 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=628, Lunch=879, Dinner=754, Snacks=251
-2025-10-10 09:29:23.335 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=628, Dinner=754, Snacks=251, Lunch=879}
-2025-10-10 09:29:23.335 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Created Breakfast meal with 628 max calories
-2025-10-10 09:29:23.335 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Added Munggo Guisado with Pandesal (230 cal) to Breakfast for date 2025-10-10
-2025-10-10 09:29:23.335 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Created Lunch meal with 879 max calories
-2025-10-10 09:29:23.335 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Added Lechon Kawali (600 cal) to Lunch for date 2025-10-10
-2025-10-10 09:29:23.335 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Added Sinigang na Baboy (400 cal) to Lunch for date 2025-10-10
-2025-10-10 09:29:23.337 32641-951   NutritionService        com.example.nutrisaur11              D  Starting nutrition recommendations...
-2025-10-10 09:29:23.337 32641-951   NutritionService        com.example.nutrisaur11              D  Getting user profile from SharedPreferences...
-2025-10-10 09:29:23.338 32641-951   NutritionService        com.example.nutrisaur11              D  User data: name=, age=25, weight=70.0, height=170.0
-2025-10-10 09:29:23.338 32641-951   NutritionService        com.example.nutrisaur11              D  User profile loaded: , BMI: 24.221453287197235
-2025-10-10 09:29:23.338 32641-951   KcalSuggestionCache     com.example.nutrisaur11              D  Cached kcal suggestion is valid
-2025-10-10 09:29:23.338 32641-951   NutritionService        com.example.nutrisaur11              D  Using cached kcal suggestion - user profile unchanged
-2025-10-10 09:29:23.338 32641-951   KcalSuggestionCache     com.example.nutrisaur11              D  Successfully loaded cached kcal suggestion
-2025-10-10 09:29:23.339 32641-951   CalorieTracker          com.example.nutrisaur11              D  Background AI calculation completed: 2545
-2025-10-10 09:29:23.343 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-10. Total meals: 2
-2025-10-10 09:29:23.344 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Meal Breakfast: 230/628 kcal
-2025-10-10 09:29:23.344 32641-32641 CalorieTracker          com.example.nutrisaur11              D  Meal Lunch: 1000/879 kcal
-2025-10-10 09:29:23.346 32641-32641 FoodLoggingActivity     com.example.nutrisaur11              D  Updated meal category text: Lunch
-2025-10-10 09:29:23.347 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Calories updated for Lunch: 0/879 kcal
-2025-10-10 09:29:23.351 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 2 meal categories for 2025-10-10
-2025-10-10 09:29:23.351 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-10 09:29:23.351 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:23.351 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Lunch has 2 foods
-2025-10-10 09:29:23.352 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:23.352 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:23.352 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 3 foods from daily storage for 2025-10-10
-2025-10-10 09:29:23.352 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Checking if Chicken Adobo is in Lunch: false
-2025-10-10 09:29:23.352 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Stored foods for 2025-10-10:
-2025-10-10 09:29:23.352 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:23.352 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:23.352 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:23.352 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Meal activity - Chicken Adobo isAddedToMeal(Lunch): false (final: false)
-2025-10-10 09:29:23.355 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 2 meal categories for 2025-10-10
-2025-10-10 09:29:23.355 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-10 09:29:23.355 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:23.355 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Lunch has 2 foods
-2025-10-10 09:29:23.355 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:23.355 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:23.355 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 3 foods from daily storage for 2025-10-10
-2025-10-10 09:29:23.355 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Checking if Kare-Kare is in Lunch: false
-2025-10-10 09:29:23.355 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Stored foods for 2025-10-10:
-2025-10-10 09:29:23.355 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:23.355 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:23.355 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:23.355 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Meal activity - Kare-Kare isAddedToMeal(Lunch): false (final: false)
-2025-10-10 09:29:23.358 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 2 meal categories for 2025-10-10
-2025-10-10 09:29:23.358 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-10 09:29:23.358 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:23.358 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Lunch has 2 foods
-2025-10-10 09:29:23.358 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:23.359 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:23.359 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 3 foods from daily storage for 2025-10-10
-2025-10-10 09:29:23.359 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Exact match found for Sinigang na Baboy in Lunch
-2025-10-10 09:29:23.359 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Meal activity - Sinigang na Baboy isAddedToMeal(Lunch): true (final: true)
-2025-10-10 09:29:23.362 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 2 meal categories for 2025-10-10
-2025-10-10 09:29:23.362 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-10 09:29:23.362 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:23.362 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Lunch has 2 foods
-2025-10-10 09:29:23.362 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:23.362 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:23.362 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 3 foods from daily storage for 2025-10-10
-2025-10-10 09:29:23.362 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Exact match found for Lechon Kawali in Lunch
-2025-10-10 09:29:23.362 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Meal activity - Lechon Kawali isAddedToMeal(Lunch): true (final: true)
-2025-10-10 09:29:23.365 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 2 meal categories for 2025-10-10
-2025-10-10 09:29:23.365 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-10 09:29:23.365 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:23.365 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Lunch has 2 foods
-2025-10-10 09:29:23.365 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:23.365 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:23.365 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 3 foods from daily storage for 2025-10-10
-2025-10-10 09:29:23.365 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Checking if Pancit Palabok is in Lunch: false
-2025-10-10 09:29:23.365 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Stored foods for 2025-10-10:
-2025-10-10 09:29:23.365 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:23.365 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:23.365 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:23.365 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Meal activity - Pancit Palabok isAddedToMeal(Lunch): false (final: false)
-2025-10-10 09:29:23.368 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 2 meal categories for 2025-10-10
-2025-10-10 09:29:23.368 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-10 09:29:23.368 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:23.368 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Lunch has 2 foods
-2025-10-10 09:29:23.368 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:23.368 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:23.368 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 3 foods from daily storage for 2025-10-10
-2025-10-10 09:29:23.368 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Checking if Beef Caldereta is in Lunch: false
-2025-10-10 09:29:23.368 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Stored foods for 2025-10-10:
-2025-10-10 09:29:23.368 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:23.368 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:23.368 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:23.368 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Meal activity - Beef Caldereta isAddedToMeal(Lunch): false (final: false)
-2025-10-10 09:29:23.371 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  getDailyFoods returned: 2 meal categories for 2025-10-10
-2025-10-10 09:29:23.371 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Breakfast has 1 foods
-2025-10-10 09:29:23.371 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:23.371 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Meal category Lunch has 2 foods
-2025-10-10 09:29:23.371 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:23.371 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:23.371 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Retrieved 3 foods from daily storage for 2025-10-10
-2025-10-10 09:29:23.371 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Checking if Sisig is in Lunch: false
-2025-10-10 09:29:23.371 32641-32641 AddedFoodManager        com.example.nutrisaur11              D  Stored foods for 2025-10-10:
-2025-10-10 09:29:23.372 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Munggo Guisado with Pandesal in Breakfast
-2025-10-10 09:29:23.372 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Lechon Kawali in Lunch
-2025-10-10 09:29:23.372 32641-32641 AddedFoodManager        com.example.nutrisaur11              D    - Sinigang na Baboy in Lunch
-2025-10-10 09:29:23.372 32641-32641 FoodItemAdapter         com.example.nutrisaur11              D  Meal activity - Sisig isAddedToMeal(Lunch): false (final: false)
-2025-10-10 09:29:23.395 32641-702   OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223360204152ms; Flags=0, FrameTimelineVsyncId=286224, IntendedVsync=11832702025869, Vsync=11832735359201, InputEventId=0, HandleInputStart=11832736843192, AnimationStart=11832736846473, PerformTraversalsStart=11832736937515, DrawStart=11832762097098, FrameDeadline=11832718692535, FrameInterval=11832736824911, FrameStartTime=16666666, SyncQueued=11832764167046, SyncStart=11832764623244, IssueDrawCommandsStart=11832764854807, SwapBuffers=11832766001890, FrameCompleted=9223372036854775807, DequeueBufferDuration=20365, QueueBufferDuration=1487761, GpuCompleted=9223372036854775807, SwapBuffersCompleted=11832767874598, DisplayPresentTime=0, 
-2025-10-10 09:29:23.430 32641-949   ApiClient               com.example.nutrisaur11              D  Delete food response: {"success":true,"message":"Food entry deleted successfully"}
-2025-10-10 09:29:23.431 32641-949   AddedFoodManager        com.example.nutrisaur11              D  ✅ Database delete call completed
-2025-10-10 09:29:25.422 32641-32641 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-10 09:29:25.423 32641-32641 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-10 09:29:25.423 32641-32641 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpotatrue@gmail.com
-2025-10-10 09:29:25.423 32641-32641 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-10 09:29:25.425 32641-32641 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpotatrue@gmail.com
-2025-10-10 09:29:25.425 32641-32641 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-10 09:29:25.425 32641-32641 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
-2025-10-10 09:29:25.426 32641-32641 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpotatrue@gmail.com
-2025-10-10 09:29:25.431 32641-32641 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpotatrue@gmail.com
-2025-10-10 09:29:25.432 32641-32641 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-10 09:29:25.433 32641-32641 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpotatrue@gmail.com
-2025-10-10 09:29:25.433 32641-32641 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-10 09:29:25.434 32641-32641 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-10 09:29:25.435 32641-32641 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpo
+2025-10-10 13:57:13.376  5921-5921  SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-10 13:57:14.695  5921-6765  OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223345538423ms; Flags=0, FrameTimelineVsyncId=827276, IntendedVsync=26498430789129, Vsync=26498430789129, InputEventId=705611032, HandleInputStart=26498433084004, AnimationStart=26498433088066, PerformTraversalsStart=26498433090827, DrawStart=26498439728170, FrameDeadline=26498447455795, FrameInterval=26498433062493, FrameStartTime=16666666, SyncQueued=26498442099681, SyncStart=26498442367702, IssueDrawCommandsStart=26498442889472, SwapBuffers=26498444420775, FrameCompleted=9223372036854775807, DequeueBufferDuration=35886, QueueBufferDuration=1078021, GpuCompleted=9223372036854775807, SwapBuffersCompleted=26498446357441, DisplayPresentTime=0, 
+2025-10-10 13:57:15.640  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  Showing birthday picker
+2025-10-10 13:57:15.644  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  Created birthday button, container now has 6 children
+2025-10-10 13:57:16.249  5921-5921  IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-10 13:57:16.249  5921-5921  MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-10 13:57:16.339  5921-5921  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
+2025-10-10 13:57:16.355  5921-5921  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-10-10 13:57:16.389  5921-5921  SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-10 13:57:16.955  5921-5921  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-10-10 13:57:17.300  5921-5921  InputMethodManager      com.example.nutrisaur11              D  showSoftInput() view=androidx.appcompat.widget.AppCompatEditText{983d7ac VFED..CL. .F....I. 0,0-0,0 #7f080240 app:id/parent_name_input aid=1073741826} flags=1 reason=SHOW_SOFT_INPUT
+2025-10-10 13:57:17.405  5921-5921  InsetsController        com.example.nutrisaur11              D  show(ime(), fromIme=true)
+2025-10-10 13:57:18.680  5921-5921  InputMethodManager      com.example.nutrisaur11              D  showSoftInput() view=androidx.appcompat.widget.AppCompatEditText{3e16c75 VFED..CL. .F.P..ID 0,187-948,341 #7f080241 app:id/parent_phone_input aid=1073741827} flags=0 reason=SHOW_SOFT_INPUT
+2025-10-10 13:57:18.694  5921-5921  IInputConnectionWrapper com.example.nutrisaur11              W  requestCursorAnchorInfo on inactive InputConnection
+2025-10-10 13:57:18.765  5921-5921  InsetsController        com.example.nutrisaur11              D  show(ime(), fromIme=true)
+2025-10-10 13:57:18.776  5921-5921  InsetsController        com.example.nutrisaur11              D  show(ime(), fromIme=true)
+2025-10-10 13:57:19.390  5921-5921  SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-10 13:57:20.042  5921-5921  InputMethodManager      com.example.nutrisaur11              D  showSoftInput() view=androidx.appcompat.widget.AppCompatEditText{d85040a VFED..CL. .F.P..ID 0,374-948,528 #7f08023e app:id/parent_email_input aid=1073741828} flags=0 reason=SHOW_SOFT_INPUT
+2025-10-10 13:57:20.050  5921-5921  IInputConnectionWrapper com.example.nutrisaur11              W  requestCursorAnchorInfo on inactive InputConnection
+2025-10-10 13:57:20.086  5921-5921  InsetsController        com.example.nutrisaur11              D  show(ime(), fromIme=true)
+2025-10-10 13:57:20.094  5921-5921  InsetsController        com.example.nutrisaur11              D  show(ime(), fromIme=true)
+2025-10-10 13:57:21.991  5921-5936  OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223345531123ms; Flags=0, FrameTimelineVsyncId=827588, IntendedVsync=26505730753461, Vsync=26505730753461, InputEventId=0, HandleInputStart=26505733411397, AnimationStart=26505733414730, PerformTraversalsStart=26505733418063, DrawStart=26505735177491, FrameDeadline=26505764086793, FrameInterval=26505733393376, FrameStartTime=16666666, SyncQueued=26505736046397, SyncStart=26505736153116, IssueDrawCommandsStart=26505736234470, SwapBuffers=26505736949209, FrameCompleted=9223372036854775807, DequeueBufferDuration=22448, QueueBufferDuration=1206354, GpuCompleted=9223372036854775807, SwapBuffersCompleted=26505738498168, DisplayPresentTime=0, 
+2025-10-10 13:57:22.162  5921-5921  MIUIInput               com.example.nutrisaur11              D  [KeyEvent] ViewRootImpl KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=26505914, downTime=26505914, deviceId=-1, source=0x101, displayId=0 }
+2025-10-10 13:57:22.228  5921-5921  MIUIInput               com.example.nutrisaur11              D  [KeyEvent] ViewRootImpl KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=26505984, downTime=26505914, deviceId=-1, source=0x101, displayId=0 }
+2025-10-10 13:57:22.391  5921-5921  SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-10 13:57:24.495  5921-5921  InputMethodManager      com.example.nutrisaur11              D  showSoftInput() view=androidx.appcompat.widget.AppCompatEditText{62201c8 VFED..CL. .F....I. 0,0-0,0 #7f08036e app:id/weight_input_new aid=1073741824} flags=1 reason=SHOW_SOFT_INPUT
+2025-10-10 13:57:24.538  5921-5921  InsetsController        com.example.nutrisaur11              D  show(ime(), fromIme=true)
+2025-10-10 13:57:25.393  5921-5921  SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-10 13:57:26.126  5921-5921  MIUIInput               com.example.nutrisaur11              D  [KeyEvent] ViewRootImpl KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=26509882, downTime=26509882, deviceId=-1, source=0x101, displayId=0 }
+2025-10-10 13:57:26.182  5921-5921  MIUIInput               com.example.nutrisaur11              D  [KeyEvent] ViewRootImpl KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=26509939, downTime=26509882, deviceId=-1, source=0x101, displayId=0 }
+2025-10-10 13:57:26.632  5921-5921  InputMethodManager      com.example.nutrisaur11              D  showSoftInput() view=androidx.appcompat.widget.AppCompatEditText{a5343e3 VFED..CL. .F....I. 0,0-0,0 #7f080169 app:id/height_input aid=1073741825} flags=1 reason=SHOW_SOFT_INPUT
+2025-10-10 13:57:26.654  5921-5921  InsetsController        com.example.nutrisaur11              D  show(ime(), fromIme=true)
+2025-10-10 13:57:26.659  5921-6765  OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223345526457ms; Flags=0, FrameTimelineVsyncId=827681, IntendedVsync=26510397539260, Vsync=26510397539260, InputEventId=455959059, HandleInputStart=26510398185770, AnimationStart=26510398190353, PerformTraversalsStart=26510398193843, DrawStart=26510406992697, FrameDeadline=26510414205926, FrameInterval=26510398161760, FrameStartTime=16666666, SyncQueued=26510409567593, SyncStart=26510409662176, IssueDrawCommandsStart=26510409759624, SwapBuffers=26510410342437, FrameCompleted=9223372036854775807, DequeueBufferDuration=14948, QueueBufferDuration=512761, GpuCompleted=9223372036854775807, SwapBuffersCompleted=26510411168166, DisplayPresentTime=0, 
+2025-10-10 13:57:28.394  5921-5921  SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-10 13:57:28.426  5921-5921  MIUIInput               com.example.nutrisaur11              D  [KeyEvent] ViewRootImpl KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=26512182, downTime=26512182, deviceId=-1, source=0x101, displayId=0 }
+2025-10-10 13:57:28.471  5921-5921  MIUIInput               com.example.nutrisaur11              D  [KeyEvent] ViewRootImpl KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=26512229, downTime=26512182, deviceId=-1, source=0x101, displayId=0 }
+2025-10-10 13:57:28.897  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  === COMPLETING SCREENING ===
+2025-10-10 13:57:28.898  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  Current answers: {question_0=HERMOSA, question_3=2005-10-10, question_1=Bamban, question_2=Male, question_7=171, question_5={"name":"jdjdd","phone":"6165","email":"jejd@udjd.d"}, question_6=50}
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  === SAVING SCREENING DATA ===
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  User logged in: true
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  User email: azizahnaimatututu@gmail.com
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  User is logged in, updating screening data
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  Saving screening data using save_screening API
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  Email: azizahnaimatututu@gmail.com
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  Name: azizah
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  Municipality: HERMOSA
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  Barangay: Bamban
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  Sex: Male
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  Birth Date: 2005-10-10
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  Pregnancy: Not Applicable
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  Parent Contact Info: {"name":"jdjdd","phone":"6165","email":"jejd@udjd.d"}
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  Weight: 50
+2025-10-10 13:57:28.899  5921-5921  NutritionalScreening    com.example.nutrisaur11              D  Height: 171
+2025-10-10 13:57:28.915  5921-5921  IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-10 13:57:28.915  5921-5921  MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-10 13:57:28.990  5921-5921  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
+2025-10-10 13:57:29.006  5921-5921  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-10-10 13:57:29.373  5921-8822  NutritionalScreening    com.example.nutrisaur11              D  Screening API response code: 200
+2025-10-10 13:57:29.374  5921-8822  NutritionalScreening    com.example.nutrisaur11              D  Screening API response: {"success":true,"message":"Screening data updated successfully","data":{"municipality":"HERMOSA","barangay":"Bamban","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-10-10 13:57:29"}}
+2025-10-10 13:57:29.375  5921-8822  NutritionalScreening    com.example.nutrisaur11              D  Screening data saved successfully: Screening data updated successfully
+2025-10-10 13:57:29.375  5921-8822  CommunityUserManager    com.example.nutrisaur11              D  Cleared user data cache for: azizahnaimatututu@gmail.com
+2025-10-10 13:57:29.375  5921-8822  NutritionalScreening    com.example.nutrisaur11              D  User data cache cleared after screening completion
+2025-10-10 13:57:29.375  5921-8822  NutritionalScreening    com.example.nutrisaur11              D  Registering FCM token after screening completion for user: azizahnaimatututu@gmail.com in Bamban
+2025-10-10 13:57:29.375  5921-8822  FCMTokenManager         com.example.nutrisaur11              D  Registering token after screening for user: azizahnaimatututu@gmail.com in Bamban
+2025-10-10 13:57:29.415  5921-5921  FCMTokenManager         com.example.nutrisaur11              D  FCM token obtained for screening registration: dDgJr74pRHukYxdkYiGyAE:APA91bGRwC6pXjPQVyYGtkcZ6ea...
+2025-10-10 13:57:29.423  5921-5921  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-10-10 13:57:29.463  5921-8888  MyFirebaseMsgService    com.example.nutrisaur11              D  From: 43537903747
+2025-10-10 13:57:29.468  5921-8888  MyFirebaseMsgService    com.example.nutrisaur11              D  Message data payload: {body=Your nutritional screening data has been updated, type=screening_updated, title=📊 Screening Data Updated, click_action=FLUTTER_NOTIFICATION_CLICK}
+2025-10-10 13:57:29.468  5921-8888  MyFirebaseMsgService    com.example.nutrisaur11              D  Data update notification received - type: screening_updated
+2025-10-10 13:57:29.469  5921-8888  MyFirebaseMsgService    com.example.nutrisaur11              D  Cleared caches for data type: screening_updated
+2025-10-10 13:57:29.470  5921-8888  MyFirebaseMsgService    com.example.nutrisaur11              D  Data refresh triggered for type: screening_updated
+2025-10-10 13:57:29.592  5921-6001  ple.nutrisaur1          com.example.nutrisaur11              W  Long monitor contention with owner Firebase Background Thread #2 (5991) at java.lang.Void com.google.firebase.heartbeatinfo.DefaultHeartBeatController.lambda$registerHeartBeat$0$com-google-firebase-heartbeatinfo-DefaultHeartBeatController()(DefaultHeartBeatController.java:71) waiters=1 in java.lang.Void com.google.firebase.heartbeatinfo.DefaultHeartBeatController.lambda$registerHeartBeat$0$com-google-firebase-heartbeatinfo-DefaultHeartBeatController() for 127ms
+2025-10-10 13:57:29.726  5921-8883  FCMTokenManager         com.example.nutrisaur11              D  FCM token registered successfully: {"success":true,"message":"Record updated successfully","affected_rows":0,"sql":"UPDATE community_users SET fcm_token = ?, barangay = ? WHERE email = ?"}
+2025-10-10 13:57:31.023  5921-6765  OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223345522107ms; Flags=0, FrameTimelineVsyncId=827823, IntendedVsync=26514747319121, Vsync=26514763985787, InputEventId=0, HandleInputStart=26514773680925, AnimationStart=26514773682643, PerformTraversalsStart=26514773683841, DrawStart=26514773850664, FrameDeadline=26514763985787, FrameInterval=26514773664727, FrameStartTime=16666666, SyncQueued=26514774106237, SyncStart=26514774220300, IssueDrawCommandsStart=26514774271654, SwapBuffers=26514774856081, FrameCompleted=9223372036854775807, DequeueBufferDuration=14739, QueueBufferDuration=648230, GpuCompleted=9223372036854775807, SwapBuffersCompleted=26514775844987, DisplayPresentTime=0, 
+2025-10-10 13:57:31.030  5921-5921  SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760075851030
+2025-10-10 13:57:31.030  5921-5921  SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-10 13:57:31.030  5921-5921  SessionManager          com.example.nutrisaur11              D  No recent valid session found, performing real-time database check
+2025-10-10 13:57:31.031  5921-5921  SessionManager          com.example.nutrisaur11              D  Checking user existence in database: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.031  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-10 13:57:31.031  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  Cache expired for user: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.032  5921-9043  CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
+2025-10-10 13:57:31.032  5921-9043  CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"azizahnaimatututu@gmail.com"}
+2025-10-10 13:57:31.110  3026-3369  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=10847   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.SplashActivity }
+2025-10-10 13:57:31.110  3026-3369  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=10784   userId=0   baseIntent=Intent { act=android.settings.APPLICATION_DETAILS_SETTINGS dat=package:com.example.nutrisaur11 flg=0x10008000 cmp=com.android.settings/.applications.InstalledAppDetails }
+2025-10-10 13:57:31.325  5921-9043  CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
+2025-10-10 13:57:31.325  5921-9043  CommunityUserManager    com.example.nutrisaur11              D  API response message: 
+2025-10-10 13:57:31.326  5921-9043  CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"azizah","email":"azizahnaimatututu@gmail.com","municipality":"HERMOSA","barangay":"Bamban","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-10-10 05:57:29","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGRwC6pXjPQVyYGtkcZ6eafSGk0tUnWsyaKl1pZXOygSPN5hrxQ57-QoEbT0Q4AnrxZle82T4gCM6sx46ruDB-KiAtQGKfYr3uHOkNiwosJ5lmui9A","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
+2025-10-10 13:57:31.327  5921-9043  CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.327  5921-9043  CommunityUserManager    com.example.nutrisaur11              D  User data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=HERMOSA, muac_cm=, screening_date=2025-10-10 05:57:29, bmi_category=, name=azizah, barangay=Bamban, email=azizahnaimatututu@gmail.com, age=, bmi=, status=1}
+2025-10-10 13:57:31.327  5921-5921  SessionManager          com.example.nutrisaur11              D  Database check completed in 296ms
+2025-10-10 13:57:31.327  5921-5921  SessionManager          com.example.nutrisaur11              D  User exists and is valid: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.327  5921-5921  SessionManager          com.example.nutrisaur11              D  Real-time validation successful
+2025-10-10 13:57:31.328  5921-5921  DailyResetManager       com.example.nutrisaur11              D  New day detected. Performing daily reset. Current: 2025-10-10, Last: 
+2025-10-10 13:57:31.331  5921-5921  DailyResetManager       com.example.nutrisaur11              D  CalorieTracker data reset completed for user: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.331  5921-5921  DailyResetManager       com.example.nutrisaur11              D  Daily reset completed successfully
+2025-10-10 13:57:31.333  5921-5921  IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-10 13:57:31.334  5921-5921  MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-10 13:57:31.335  5921-5921  DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
+2025-10-10 13:57:31.401  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-10 13:57:31.402  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.402  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-10 13:57:31.407  5921-5921  MainActivity            com.example.nutrisaur11              D  Fetched barangay from database for azizahnaimatututu@gmail.com: 
+2025-10-10 13:57:31.407  5921-5921  MainActivity            com.example.nutrisaur11              D  User has no barangay data, FCM initialization delayed until screening completion
+2025-10-10 13:57:31.409  5921-5921  MainActivity            com.example.nutrisaur11              D  Data update receiver registered
+2025-10-10 13:57:31.412  5921-5921  CalorieTracker          com.example.nutrisaur11              D  Cleared all calorie data for the day
+2025-10-10 13:57:31.419  5921-5921  SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760075851419
+2025-10-10 13:57:31.419  5921-5921  SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-10 13:57:31.419  5921-5921  SessionManager          com.example.nutrisaur11              D  Using cached valid session
+2025-10-10 13:57:31.419  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  === CHECKING ARCHIVE STATUS ===
+2025-10-10 13:57:31.419  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
+2025-10-10 13:57:31.419  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.420  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  === CHECKING USER EXISTENCE ===
+2025-10-10 13:57:31.420  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
+2025-10-10 13:57:31.420  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.421  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  === CHECKING ARCHIVE STATUS ===
+2025-10-10 13:57:31.421  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
+2025-10-10 13:57:31.421  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.421  5921-5921  MainActivity            com.example.nutrisaur11              D  Checking for new events for user: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.422  5921-9065  CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
+2025-10-10 13:57:31.422  5921-9065  CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"azizahnaimatututu@gmail.com"}
+2025-10-10 13:57:31.423  5921-9064  CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
+2025-10-10 13:57:31.423  5921-9064  CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"azizahnaimatututu@gmail.com"}
+2025-10-10 13:57:31.424  5921-9060  CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
+2025-10-10 13:57:31.424  5921-9060  CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"azizahnaimatututu@gmail.com"}
+2025-10-10 13:57:31.428  5921-5921  Looper                  com.example.nutrisaur11              W  PerfMonitor looperActivity : package=com.example.nutrisaur11/.MainActivity time=0ms latency=423ms running=0ms  procState=-1  historyMsgCount=3 (msgIndex=3 wall=414ms seq=2132 running=71ms runnable=2ms io=28ms binder=18ms late=11ms h=android.app.ActivityThread$H w=159)
+2025-10-10 13:57:31.428  5921-5921  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
+2025-10-10 13:57:31.429  5921-5921  SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-10 13:57:31.429  5921-5921  SessionManager          com.example.nutrisaur11              D  Using cached session validation result: true
+2025-10-10 13:57:31.430  5921-5921  SessionManager          com.example.nutrisaur11              D  Checking user existence in database: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.430  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-10 13:57:31.430  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.430  5921-5921  CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
+2025-10-10 13:57:31.430  5921-5921  SessionManager          com.example.nutrisaur11              D  Database check completed in 0ms
+2025-10-10 13:57:31.430  5921-5921  SessionManager          com.example.nutrisaur11              D  User exists and is valid: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.541  5921-5921  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-10-10 13:57:31.676  5921-9060  CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
+2025-10-10 13:57:31.676  5921-9060  CommunityUserManager    com.example.nutrisaur11              D  API response message: 
+2025-10-10 13:57:31.677  5921-9060  CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"azizah","email":"azizahnaimatututu@gmail.com","municipality":"HERMOSA","barangay":"Bamban","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-10-10 05:57:29","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGRwC6pXjPQVyYGtkcZ6eafSGk0tUnWsyaKl1pZXOygSPN5hrxQ57-QoEbT0Q4AnrxZle82T4gCM6sx46ruDB-KiAtQGKfYr3uHOkNiwosJ5lmui9A","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
+2025-10-10 13:57:31.678  5921-9060  CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.678  5921-9060  CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=HERMOSA, muac_cm=, screening_date=2025-10-10 05:57:29, bmi_category=, name=azizah, barangay=Bamban, email=azizahnaimatututu@gmail.com, age=, bmi=, status=1}
+2025-10-10 13:57:31.678  5921-9060  CommunityUserManager    com.example.nutrisaur11              D  User status: 1
+2025-10-10 13:57:31.678  5921-9060  CommunityUserManager    com.example.nutrisaur11              D  User is active (status = 1)
+2025-10-10 13:57:31.690  5921-9064  CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
+2025-10-10 13:57:31.690  5921-9064  CommunityUserManager    com.example.nutrisaur11              D  API response message: 
+2025-10-10 13:57:31.692  5921-9064  CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"azizah","email":"azizahnaimatututu@gmail.com","municipality":"HERMOSA","barangay":"Bamban","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-10-10 05:57:29","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGRwC6pXjPQVyYGtkcZ6eafSGk0tUnWsyaKl1pZXOygSPN5hrxQ57-QoEbT0Q4AnrxZle82T4gCM6sx46ruDB-KiAtQGKfYr3uHOkNiwosJ5lmui9A","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
+2025-10-10 13:57:31.693  5921-9064  CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.693  5921-9064  CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=HERMOSA, muac_cm=, screening_date=2025-10-10 05:57:29, bmi_category=, name=azizah, barangay=Bamban, email=azizahnaimatututu@gmail.com, age=, bmi=, status=1}
+2025-10-10 13:57:31.693  5921-9064  CommunityUserManager    com.example.nutrisaur11              D  User exists and has valid data
+2025-10-10 13:57:31.708  5921-9065  CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
+2025-10-10 13:57:31.708  5921-9065  CommunityUserManager    com.example.nutrisaur11              D  API response message: 
+2025-10-10 13:57:31.710  5921-9065  CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"azizah","email":"azizahnaimatututu@gmail.com","municipality":"HERMOSA","barangay":"Bamban","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-10-10 05:57:29","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGRwC6pXjPQVyYGtkcZ6eafSGk0tUnWsyaKl1pZXOygSPN5hrxQ57-QoEbT0Q4AnrxZle82T4gCM6sx46ruDB-KiAtQGKfYr3uHOkNiwosJ5lmui9A","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
+2025-10-10 13:57:31.711  5921-9065  CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: azizahnaimatututu@gmail.com
+2025-10-10 13:57:31.711  5921-9065  CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=HERMOSA, muac_cm=, screening_date=2025-10-10 05:57:29, bmi_category=, name=azizah, barangay=Bamban, email=azizahnaimatututu@gmail.com, age=, bmi=, status=1}
+2025-10-10 13:57:31.711  5921-9065  CommunityUserManager    com.example.nutrisaur11              D  User status: 1
+2025-10-10 13:57:31.711  5921-9065  CommunityUserManager    com.example.nutrisaur11              D  User is active (status = 1)
+2025-10-10 13:57:31.734  5921-9066  MainActivity            com.example.nutrisaur11              D  Events API response code: 200
+2025-10-10 13:57:31.735  5921-9066  MainActivity            com.example.nutrisaur11              D  Events API response: {"success":true,"events":[{"id":4,"title":"bhvehjfve","type":"Event","description":"sfs","date_time":"2024-02-09 10:01:00","location":"Binukawan","organizer":"kevin112","created_at":1760075851},{"id":5,"title":"bhbhbhgh h","type":"Event","description":"uhbbbh","date_time":"2025-10-09 21:06:00","location":"Kitang I","organizer":"nerayushi","created_at":1760075851},{"id":6,"title":"dadad","type":"Event","description":"dadadada","date_time":"2025-10-09 21:22:00","location":"Kitang I","organizer":"nerayushi","created_at":1760075851},{"id":7,"title":"Community Nutrition Maintenance Program","type":"Event","description":"bjhbhjh","date_time":"2025-10-09 21:24:00","location":"Kitang I","organizer":"nerayushi","created_at":1760075851},{"id":8,"title":"Nutrition Education Program","type":"Event","description":"njbhbhj","date_time":"2025-10-09 21:24:00","location":"Kitang I","organizer":"nerayushi","created_at":1760075851},{"id":9,"title":"hjbh h h ","type":"Event","description":"rwrwr","date_time":"2025-10-09 21:25:00","location":"Lamao","organizer":"nerayushi","created_at":1760075851},{"id":10,"title":"vghvhg","type":"Event","description":"vhgvgh","date_time":"2025-10-10 04:02:00","location":"Kitang I","organizer":"nerayushi","created_at":1760075851},{"id":11,"title":"kkkkk","type":"Event","description":"vchcgfc","date_time":"2025-10-10 04:04:00","location":"Kitang I","organizer":"nerayushi","created_at":1760075851},{"id":12,"title":"dada","type":"Event","description":"dadadad","date_time":"2025-10-10 04:04:00","location":"Kitang I","organizer":"nerayushi","created_at":1760075851},{"id":1,"title":"Nutrition Workshop","type":"Event","description":"Free nutrition screening and health consultation","date_time":"2025-10-16 09:49:00","location":"CITY OF BALANGA","organizer":"Dr. Maria Santos","created_at":1760075851},{"id":13,"title":"Feeding Program","type":"Event","description":"Resources: GMA Foundation","date_time":"2025-10-20 10:00:00","location":"A. Rivera (Pob.)","organizer":"afd3s13b","created_at":1760075851},{"id":2,"title":"Health Seminar","type":"Event","description":"Community health education and awareness (all barangays)","date_time":"2025-10-23 09:49:00","location":"ABUCAY","organizer":"Dr. Juan Cruz","created_at":1760075851},{"id":3,"title":"Medical Mission","type":"Event","description":"Free medical checkup and consultation","date_time":"2025-10-30 09:49:00","location":"LIMAY","organizer":"Dr. Ana Reyes","created_at":1760075851},{"id":14,"title":"Zumba Program","type":"Event","description":"Wear ####\nBring ####","date_time":"2025-11-02 10:00:00","location":"Bangkal","organizer":"aehachiroku4age","created_at":1760075851}]}
+2025-10-10 13:57:31.736  5921-9066  MainActivity            com.example.nutrisaur11              D  Found 14 events
+2025-10-10 13:57:31.739  5921-9066  MainActivity            com.example.nutrisaur11              D  New event detected: bhvehjfve
+2025-10-10 13:57:31.739  5921-9066  MainActivity            com.example.nutrisaur11              D  New event detected: bhbhbhgh h
+2025-10-10 13:57:31.739  5921-9066  MainActivity            com.example.nutrisaur11              D  New event detected: dadad
+2025-10-10 13:57:31.739  5921-9066  MainActivity            com.example.nutrisaur11              D  New event detected: Community Nutrition Maintenance Program
+2025-10-10 13:57:31.740  5921-9066  MainActivity            com.example.nutrisaur11              D  New event detected: Nutrition Education Program
+2025-10-10 13:57:31.740  5921-9066  MainActivity            com.example.nutrisaur11              D  New event detected: hjbh h h 
+2025-10-10 13:57:31.740  5921-9066  MainActivity            com.example.nutrisaur11              D  New event detected: vghvhg
+2025-10-10 13:57:31.740  5921-9066  MainActivity            com.example.nutrisaur11              D  New event detected: kkkkk
+2025-10-10 13:57:31.740  5921-9066  MainActivity            com.example.nutrisaur11              D  New event detected: dada
+2025-10-10 13:57:31.740  5921-9066  MainActivity            com.example.nutrisaur11              D  New event detected: Nutrition Workshop
+2025-10-10 13:57:31.740  5921-9066  MainActivity            com.example.nutrisaur11              D  New event detected: Feeding Program
+2025-10-10 13:57:31.740  5921-9066  MainActivity            com.example.nutrisaur11              D  New event detected: Health Seminar
+2025-10-10 13:57:31.740  5921-9066  MainActivity            com.example.nutrisaur11              D  New event detected: Medical Mission
+2025-10-10 13:57:31.740  5921-9066  MainActivity            com.example.nutrisaur11              D  New event detected: Zumba Program
+2025-10-10 13:57:31.740  5921-9066  MainActivity            com.example.nutrisaur11              D  Found 14 new events, refreshing dashboard
+2025-10-10 13:57:31.942  5921-5936  OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223345521190ms; Flags=0, FrameTimelineVsyncId=827882, IntendedVsync=26515664197382, Vsync=26515664197382, InputEventId=0, HandleInputStart=26515665323060, AnimationStart=26515665326914, PerformTraversalsStart=26515665330560, DrawStart=26515689864883, FrameDeadline=26515697530714, FrameInterval=26515665298581, FrameStartTime=16666666, SyncQueued=26515692516966, SyncStart=26515693028060, IssueDrawCommandsStart=26515693288685, SwapBuffers=26515695498112, FrameCompleted=9223372036854775807, DequeueBufferDuration=29635, QueueBufferDuration=2210469, GpuCompleted=9223372036854775807, SwapBuffersCompleted=26515698487122, DisplayPresentTime=0, 
