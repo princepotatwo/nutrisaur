@@ -19,7 +19,10 @@ $db = DatabaseHelper::getInstance();
 
 // Get user's municipality for filtering
 $user_municipality = null;
-if (isset($_SESSION['user_id'])) {
+if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin') {
+    // Super admin - no municipality filtering, show all
+    $user_municipality = null;
+} elseif (isset($_SESSION['user_id'])) {
     try {
         require_once __DIR__ . "/../config.php";
         $pdo = getDatabaseConnection();
@@ -12199,8 +12202,8 @@ body {
             setupBarangaySelection();
             setupMunicipalitySelection();
             
-            // Auto-set municipality for all users if they have one assigned
-            <?php if ($user_municipality): ?>
+            // Auto-set municipality for regular users if they have one assigned
+            <?php if ($user_municipality && (!isset($_SESSION['admin_id']) || $_SESSION['admin_id'] !== 'super_admin')): ?>
             const municipalityValue = <?php echo json_encode($user_municipality); ?>;
             const municipalityText = <?php echo json_encode($user_municipality); ?>;
             selectMunicipality(municipalityValue, municipalityText);
