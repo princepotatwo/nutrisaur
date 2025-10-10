@@ -8658,21 +8658,18 @@ header {
                     alert('Error unflagging food item');
                 });
             } else {
-                // Flag with comment
-                const comment = prompt('Enter reason for flagging this food item:');
-                console.log('🚩 Comment collected (function 2):', comment);
-                console.log('🚩 Sending flag request with (function 2):', { id: foodId, comment: comment });
+                // Flag without comment
+                console.log('🚩 Flagging food item (no comment):', { id: foodId });
                 
-                if (comment) {
-                    fetch(`api/DatabaseAPI.php?action=flag_food`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            id: foodId, 
-                            mho_comment: comment,
-                            flagged_by: '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>'
-                        })
+                fetch(`api/DatabaseAPI.php?action=flag_food`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        id: foodId, 
+                        mho_comment: '',
+                        flagged_by: '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>'
                     })
+                })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
