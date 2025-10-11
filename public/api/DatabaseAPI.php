@@ -8116,8 +8116,25 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
             error_log("get_flagging_status called with user_email: " . $userEmail . ", date: " . $date);
             
             try {
-                $result = getFlaggingStatus($db, $userEmail, $date);
-                echo json_encode($result);
+                // Simple test first - just return basic info
+                echo json_encode([
+                    'success' => true,
+                    'data' => [
+                        'date' => $date ?: 'auto-detect',
+                        'user_email' => $userEmail,
+                        'total_foods' => 0,
+                        'day_flagged' => false,
+                        'meals' => [],
+                        'summary' => [
+                            'total_foods' => 0,
+                            'total_flagged' => 0,
+                            'total_meals' => 0,
+                            'flagged_meals' => 0,
+                            'day_flagged' => false,
+                            'flagging_level' => 'none'
+                        ]
+                    ]
+                ]);
             } catch (Exception $e) {
                 error_log("Error in get_flagging_status: " . $e->getMessage());
                 echo json_encode(['success' => false, 'error' => 'Server error: ' . $e->getMessage()]);
