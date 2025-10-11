@@ -8944,148 +8944,205 @@ header {
                             `
                             <!-- Filter Header -->
                             <div class="filter-header" style="background: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
-                                <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                                    <div style="flex: 1; min-width: 200px;">
-                                        <input type="text" id="foodSearchInput" placeholder="🔍 Search foods..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary); font-size: 14px;">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 15px; align-items: center;">
+                                    <div>
+                                        <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Search Food</label>
+                                        <input type="text" id="foodSearch" placeholder="Search food items..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary); font-size: 14px;" onkeyup="filterFoodHistory()">
                                     </div>
-                                    <div style="display: flex; gap: 10px; align-items: center;">
-                                        <select id="dateFilter" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary); font-size: 14px;">
-                                            <option value="">📅 All Dates</option>
+                                    <div>
+                                        <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Filter Date</label>
+                                        <select id="dateFilter" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary); font-size: 14px;" onchange="filterFoodHistory()">
+                                            <option value="">All Dates</option>
+                                            ${[...new Set(foodData.map(food => food.date))].sort().map(date => `
+                                                <option value="${date}">${new Date(date).toLocaleDateString()}</option>
+                                            `).join('')}
                                         </select>
-                                        <select id="mealFilter" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary); font-size: 14px;">
-                                            <option value="">🍽️ All Meals</option>
-                                            <option value="Breakfast">Breakfast</option>
-                                            <option value="Lunch">Lunch</option>
-                                            <option value="Dinner">Dinner</option>
-                                            <option value="Snacks">Snacks</option>
-                                        </select>
-                                        <select id="flagFilter" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary); font-size: 14px;">
-                                            <option value="">🚩 All Items</option>
+                                    </div>
+                                    <div>
+                                        <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Show Only</label>
+                                        <select id="flagFilter" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary); font-size: 14px;" onchange="filterFoodHistory()">
+                                            <option value="">All Foods</option>
                                             <option value="flagged">Flagged Only</option>
                                             <option value="unflagged">Unflagged Only</option>
                                         </select>
                                     </div>
+                                    <div>
+                                        <button onclick="clearFilters()" style="background: #666; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; margin-top: 20px;">
+                                            Clear Filters
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <!-- Food History Table -->
-                            <div id="foodHistoryContainer">
-                                <table class="food-history-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
-                                    <thead>
-                                        <tr style="background: var(--card-bg);">
-                                            <th style="padding: 10px 8px; text-align: left; font-size: 12px; color: var(--text-primary); font-weight: 600;">Date</th>
-                                            <th style="padding: 10px 8px; text-align: left; font-size: 12px; color: var(--text-primary); font-weight: 600;">Meal</th>
-                                            <th style="padding: 10px 8px; text-align: left; font-size: 12px; color: var(--text-primary); font-weight: 600;">Food Item</th>
-                                            <th style="padding: 10px 8px; text-align: left; font-size: 12px; color: var(--text-primary); font-weight: 600;">Serving</th>
-                                            <th style="padding: 10px 8px; text-align: left; font-size: 12px; color: var(--text-primary); font-weight: 600;">Nutrition</th>
-                                            <th style="padding: 10px 8px; text-align: left; font-size: 12px; color: var(--text-primary); font-weight: 600;">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${foodData.map(food => `
-                                            <tr class="food-row ${food.is_flagged == 1 ? 'flagged' : ''}" data-date="${food.date}" data-meal="${food.meal_category}" data-flagged="${food.is_flagged}" style="border-bottom: 1px solid var(--border-color);">
-                                                <td style="padding: 8px; color: var(--text-primary); font-weight: 500;">${new Date(food.date).toLocaleDateString()}</td>
-                                                <td style="padding: 8px; color: var(--text-secondary); font-size: 12px;">${food.meal_category}</td>
-                                                <td style="padding: 8px; font-weight: 500; color: var(--text-primary);">${food.food_name}</td>
-                                                <td style="padding: 8px; color: var(--text-secondary); font-size: 12px;">${food.serving_size || 'N/A'}</td>
-                                                <td style="padding: 8px;">
-                                                    <div style="font-weight: 600; color: #4caf50; font-size: 12px;">${food.calories} kcal</div>
-                                                    <div style="color: var(--text-secondary); font-size: 11px;">P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
-                                                </td>
-                                                <td style="padding: 8px;">
-                                                    <div style="display: flex; gap: 4px; flex-wrap: wrap;">
-                                                        <button class="food-action-btn food-edit-action" onclick="editServingSize(${food.id}, '${userEmail}', '${food.date}', '${food.serving_size}')" style="background: #2196f3; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
-                                                            ✏️ Edit
-                                                        </button>
-                                                        <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${food.date}', ${food.is_flagged == 1})" style="background: ${food.is_flagged == 1 ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
-                                                            ${food.is_flagged == 1 ? 'Unflag' : 'Flag'}
-                                                        </button>
-                                                        <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${food.date}')" style="background: #9c27b0; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
-                                                            💬 Comment
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
-                            </div>
+                            `
+                            ${(() => {
+                                // Group food data by date first
+                                const groupedByDate = {};
+                                foodData.forEach(food => {
+                                    if (!groupedByDate[food.date]) {
+                                        groupedByDate[food.date] = [];
+                                    }
+                                    groupedByDate[food.date].push(food);
+                                });
+                                
+                                // Create sections for each date
+                                return Object.keys(groupedByDate).sort().map(date => {
+                                    const dateFoods = groupedByDate[date];
+                                    const isDayFlagged = dateFoods.some(food => food.is_day_flagged == 1);
+                                    
+                                    return `
+                                        <div class="date-section" style="margin-bottom: 25px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                                            <div class="date-header" style="background: var(--card-bg); padding: 12px 15px; border-bottom: 1px solid var(--border-color);">
+                                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                    <h3 style="margin: 0; color: var(--text-primary); font-size: 16px;">📅 ${new Date(date).toLocaleDateString()}</h3>
+                                                    <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${date}')" style="background: ${isDayFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">
+                                                        ${isDayFlagged ? '✅ Unflag Day' : '🚩 Flag Day'}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="date-content" style="padding: 10px;">
+                                                ${['Breakfast', 'Lunch', 'Dinner', 'Snacks'].map(meal => {
+                                                    const mealFoods = dateFoods.filter(food => food.meal_category === meal);
+                                                    if (mealFoods.length === 0) return '';
+                                                    
+                                                    const isMealFlagged = mealFoods.some(food => food.is_flagged == 1);
+                                                    
+                                                    return `
+                                                        <div class="meal-section" style="margin-bottom: 15px;">
+                                                            <div class="meal-header" style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 10px; align-items: center; margin-bottom: 8px; padding: 8px 10px; background: var(--card-bg); border-radius: 4px; font-size: 12px; font-weight: 600;">
+                                                                <div style="color: var(--text-primary);">${meal}</div>
+                                                                <div style="color: var(--text-secondary);">${mealFoods.length} items</div>
+                                                                <div style="color: var(--text-secondary);">${mealFoods.filter(f => f.is_flagged == 1).length} flagged</div>
+                                                                <div style="color: var(--text-secondary);">${mealFoods.reduce((sum, f) => sum + f.calories, 0)} kcal</div>
+                                                                <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 600;">
+                                                                    ${isMealFlagged ? '✅ Unflag' : '🚩 Flag'}
+                                                                </button>
+                                                            </div>
+                                                            <table class="food-history-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                                                                <thead>
+                                                                    <tr style="background: var(--card-bg);">
+                                                                        <th style="padding: 8px 6px; text-align: left; font-size: 12px; color: var(--text-primary);">Food Item</th>
+                                                                        <th style="padding: 8px 6px; text-align: left; font-size: 12px; color: var(--text-primary);">Serving</th>
+                                                                        <th style="padding: 8px 6px; text-align: left; font-size: 12px; color: var(--text-primary);">Nutrition</th>
+                                                                        <th style="padding: 8px 6px; text-align: left; font-size: 12px; color: var(--text-primary);">Actions</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    ${mealFoods.map(food => `
+                                                                        <tr class="${food.is_flagged == 1 ? 'flagged' : ''}" style="border-bottom: 1px solid var(--border-color);">
+                                                                            <td class="food-name-cell" style="padding: 6px; font-weight: 500; color: var(--text-primary);">${food.food_name}</td>
+                                                                            <td class="food-serving-cell" style="padding: 6px; color: var(--text-secondary); font-size: 12px;">${food.serving_size || 'N/A'}</td>
+                                                                            <td class="food-nutrition-cell" style="padding: 6px;">
+                                                                                <div style="font-weight: 600; color: #4caf50; font-size: 12px;">${food.calories} kcal</div>
+                                                                                <div style="color: var(--text-secondary); font-size: 11px;">P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
+                                                                            </td>
+                                                                            <td class="food-actions-cell" style="padding: 6px;">
+                                                                                <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                                                                                    <button class="food-action-btn food-edit-action" onclick="editServingSize(${food.id}, '${userEmail}', '${food.date}', '${food.serving_size}')" style="background: #2196f3; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
+                                                                                        ✏️ Edit
+                                                                                    </button>
+                                                                                    <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${food.date}', ${food.is_flagged == 1})" style="background: ${food.is_flagged == 1 ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
+                                                                                        ${food.is_flagged == 1 ? 'Unflag' : 'Flag'}
+                                                                                    </button>
+                                                                                    <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${food.date}')" style="background: #9c27b0; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
+                                                                                        💬 Comment
+                                                                                    </button>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    `).join('')}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    `;
+                                                }).join('')}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('');
+                            })()}
                             `}
                     </div>
                 </div>
             `;
             
             document.body.appendChild(modal);
-            
-            // Add filter functionality
-            setupFoodHistoryFilters();
         }
-        
-        // Setup filter functionality for food history
-        function setupFoodHistoryFilters() {
-            const searchInput = document.getElementById('foodSearchInput');
-            const dateFilter = document.getElementById('dateFilter');
-            const mealFilter = document.getElementById('mealFilter');
-            const flagFilter = document.getElementById('flagFilter');
-            const foodRows = document.querySelectorAll('.food-row');
+
+        // Filter food history function
+        function filterFoodHistory() {
+            const searchTerm = document.getElementById('foodSearch').value.toLowerCase();
+            const dateFilter = document.getElementById('dateFilter').value;
+            const flagFilter = document.getElementById('flagFilter').value;
             
-            if (!searchInput || !dateFilter || !mealFilter || !flagFilter) return;
+            // Get all food rows
+            const allRows = document.querySelectorAll('.food-history-table tbody tr');
             
-            // Populate date filter with unique dates
-            const uniqueDates = [...new Set(Array.from(foodRows).map(row => row.dataset.date))].sort();
-            uniqueDates.forEach(date => {
-                const option = document.createElement('option');
-                option.value = date;
-                option.textContent = new Date(date).toLocaleDateString();
-                dateFilter.appendChild(option);
+            allRows.forEach(row => {
+                const foodName = row.querySelector('.food-name-cell').textContent.toLowerCase();
+                const dateCell = row.closest('.date-section');
+                const foodDate = dateCell ? dateCell.querySelector('.date-header h3').textContent : '';
+                const isFlagged = row.classList.contains('flagged');
+                
+                let showRow = true;
+                
+                // Search filter
+                if (searchTerm && !foodName.includes(searchTerm)) {
+                    showRow = false;
+                }
+                
+                // Date filter
+                if (dateFilter && foodDate && !foodDate.includes(new Date(dateFilter).toLocaleDateString())) {
+                    showRow = false;
+                }
+                
+                // Flag filter
+                if (flagFilter === 'flagged' && !isFlagged) {
+                    showRow = false;
+                } else if (flagFilter === 'unflagged' && isFlagged) {
+                    showRow = false;
+                }
+                
+                // Show/hide row
+                row.style.display = showRow ? '' : 'none';
             });
             
-            // Filter function
-            function applyFilters() {
-                const searchTerm = searchInput.value.toLowerCase();
-                const selectedDate = dateFilter.value;
-                const selectedMeal = mealFilter.value;
-                const selectedFlag = flagFilter.value;
-                
-                foodRows.forEach(row => {
-                    const foodName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                    const rowDate = row.dataset.date;
-                    const rowMeal = row.dataset.meal;
-                    const isFlagged = row.dataset.flagged === '1';
-                    
-                    let showRow = true;
-                    
-                    // Search filter
-                    if (searchTerm && !foodName.includes(searchTerm)) {
-                        showRow = false;
-                    }
-                    
-                    // Date filter
-                    if (selectedDate && rowDate !== selectedDate) {
-                        showRow = false;
-                    }
-                    
-                    // Meal filter
-                    if (selectedMeal && rowMeal !== selectedMeal) {
-                        showRow = false;
-                    }
-                    
-                    // Flag filter
-                    if (selectedFlag === 'flagged' && !isFlagged) {
-                        showRow = false;
-                    } else if (selectedFlag === 'unflagged' && isFlagged) {
-                        showRow = false;
-                    }
-                    
-                    row.style.display = showRow ? '' : 'none';
-                });
-            }
+            // Hide empty meal sections
+            document.querySelectorAll('.meal-section').forEach(mealSection => {
+                const visibleRows = mealSection.querySelectorAll('tbody tr:not([style*="display: none"])');
+                if (visibleRows.length === 0) {
+                    mealSection.style.display = 'none';
+                } else {
+                    mealSection.style.display = '';
+                }
+            });
             
-            // Add event listeners
-            searchInput.addEventListener('input', applyFilters);
-            dateFilter.addEventListener('change', applyFilters);
-            mealFilter.addEventListener('change', applyFilters);
-            flagFilter.addEventListener('change', applyFilters);
+            // Hide empty date sections
+            document.querySelectorAll('.date-section').forEach(dateSection => {
+                const visibleMeals = dateSection.querySelectorAll('.meal-section:not([style*="display: none"])');
+                if (visibleMeals.length === 0) {
+                    dateSection.style.display = 'none';
+                } else {
+                    dateSection.style.display = '';
+                }
+            });
+        }
+
+        // Clear all filters
+        function clearFilters() {
+            document.getElementById('foodSearch').value = '';
+            document.getElementById('dateFilter').value = '';
+            document.getElementById('flagFilter').value = '';
+            
+            // Show all rows and sections
+            document.querySelectorAll('.food-history-table tbody tr').forEach(row => {
+                row.style.display = '';
+            });
+            document.querySelectorAll('.meal-section').forEach(section => {
+                section.style.display = '';
+            });
+            document.querySelectorAll('.date-section').forEach(section => {
+                section.style.display = '';
+            });
         }
 
 
