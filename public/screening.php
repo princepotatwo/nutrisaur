@@ -8489,27 +8489,20 @@ header {
                         mho_email: mhoEmail
                     })
                 })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        alert('Comment added successfully');
-                                        // Refresh the food history modal
-                                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
-                                    } else {
-                                        alert('Error: ' + data.error);
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Error adding comment:', error);
-                                    alert('Error adding comment');
-                                });
-                            }
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error getting food data:', error);
-                        alert('Error adding comment');
-                    });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Comment added successfully');
+                        // Refresh the food history modal
+                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error adding comment:', error);
+                    alert('Error adding comment');
+                });
             }
         }
 
