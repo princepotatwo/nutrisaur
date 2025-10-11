@@ -61,9 +61,13 @@ try {
             handleDeleteAllUserFoods($pdo);
             break;
             
-        case 'delete_meal_foods':
-            handleDeleteMealFoods($pdo);
-            break;
+    case 'delete_meal_foods':
+        handleDeleteMealFoods($pdo);
+        break;
+    
+    case 'debug_user_foods':
+        handleDebugUserFoods($pdo);
+        break;
             
         case 'flag_food':
             handleFlagFood($pdo);
@@ -719,6 +723,40 @@ function handleDeleteAllUserFoods($pdo) {
         } else {
             throw new Exception('Failed to delete foods');
         }
+        
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Debug function to show all foods for a user on a specific date
+ */
+function handleDebugUserFoods($pdo) {
+    try {
+        $userEmail = $_GET['user_email'] ?? '';
+        $date = $_GET['date'] ?? '';
+        
+        if (empty($userEmail) || empty($date)) {
+            throw new Exception('User email and date are required');
+        }
+        
+        // Get all foods for the user on the specified date
+        $sql = "SELECT id, user_email, date, food_name, meal_category, calories, serving_size FROM user_food_history WHERE user_email = ? AND date = ? ORDER BY meal_category, food_name";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$userEmail, $date]);
+        $foods = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo json_encode([
+            'success' => true,
+            'message' => "Found " . count($foods) . " foods for user on " . $date,
+            'user_email' => $userEmail,
+            'date' => $date,
+            'foods' => $foods
+        ]);
         
     } catch (Exception $e) {
         echo json_encode([
