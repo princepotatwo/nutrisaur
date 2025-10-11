@@ -8112,8 +8112,16 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 break;
             }
             
-            $result = getFlaggingStatus($db, $userEmail, $date);
-            echo json_encode($result);
+            // Add debugging
+            error_log("get_flagging_status called with user_email: " . $userEmail . ", date: " . $date);
+            
+            try {
+                $result = getFlaggingStatus($db, $userEmail, $date);
+                echo json_encode($result);
+            } catch (Exception $e) {
+                error_log("Error in get_flagging_status: " . $e->getMessage());
+                echo json_encode(['success' => false, 'error' => 'Server error: ' . $e->getMessage()]);
+            }
             break;
 
         // ========================================
@@ -8260,13 +8268,20 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
  */
 function getFlaggingStatus($db, $userEmail, $date = null) {
     try {
+        error_log("getFlaggingStatus called with userEmail: " . $userEmail . ", date: " . ($date ?: 'null'));
+        
         // If no date provided, get the most recent date with food data
         if (!$date) {
+            error_log("No date provided, getting most recent date for user: " . $userEmail);
             $dateQuery = "SELECT DISTINCT date FROM user_food_history WHERE user_email = ? ORDER BY date DESC LIMIT 1";
             $dateResult = $db->query($dateQuery, [$userEmail]);
+            error_log("Date query result: " . json_encode($dateResult));
+            
             if ($dateResult && count($dateResult) > 0) {
                 $date = $dateResult[0]['date'];
+                error_log("Using date: " . $date);
             } else {
+                error_log("No food data found for user: " . $userEmail);
                 return [
                     'success' => false,
                     'error' => 'No food data found for this user'
@@ -8276,9 +8291,12 @@ function getFlaggingStatus($db, $userEmail, $date = null) {
         
         // Get all food items for the user and date
         $foodQuery = "SELECT * FROM user_food_history WHERE user_email = ? AND date = ? ORDER BY meal_category, created_at";
+        error_log("Food query: " . $foodQuery . " with params: " . $userEmail . ", " . $date);
         $foodData = $db->query($foodQuery, [$userEmail, $date]);
+        error_log("Food query result count: " . (is_array($foodData) ? count($foodData) : 'not array'));
         
         if (!$foodData || count($foodData) === 0) {
+            error_log("No food data found for user: " . $userEmail . " and date: " . $date);
             return [
                 'success' => false,
                 'error' => 'No food data found for this user and date'
