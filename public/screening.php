@@ -8076,6 +8076,11 @@ header {
                     
                     // Show food history modal with table layout
                     showFoodHistoryTableModal(userName, userEmail, data.data || []);
+                    
+                    // Automatically show flagging status modal after a short delay
+                    setTimeout(() => {
+                        showFlaggingStatusModal(userEmail, userName);
+                    }, 500);
                 })
                 .catch(error => {
                     console.error('❌ Fetch Error:', error);
@@ -8943,11 +8948,19 @@ header {
                             '<div style="text-align: center; padding: 40px; color: #666;">No food history found for this user.</div>' :
                             `
                             <div class="day-flag-section" style="margin-bottom: 20px; padding: 15px; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                                     <h4 style="margin: 0; color: var(--text-primary);">📅 Day Actions</h4>
-                                    <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${foodData[0].date}')" style="background: ${foodData.some(food => food.is_day_flagged == 1) ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;">
-                                        ${foodData.some(food => food.is_day_flagged == 1) ? '✅ Unflag Day' : '🚩 Flag Day'}
-                                    </button>
+                                    <div style="display: flex; gap: 10px;">
+                                        <button class="btn-flag-status" onclick="showFlaggingStatusModal('${userEmail}', '${userName}')" style="background: #2196f3; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;">
+                                            🚩 Flagging Status
+                                        </button>
+                                        <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${foodData[0].date}')" style="background: ${foodData.some(food => food.is_day_flagged == 1) ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;">
+                                            ${foodData.some(food => food.is_day_flagged == 1) ? '✅ Unflag Day' : '🚩 Flag Day'}
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="font-size: 12px; color: var(--text-secondary); text-align: center;">
+                                    Click "Flagging Status" to see detailed breakdown of flagged items
                                 </div>
                             </div>
                             ${['Breakfast', 'Lunch', 'Dinner', 'Snacks'].map(meal => {
@@ -9014,6 +9027,210 @@ header {
             `;
             
             document.body.appendChild(modal);
+        }
+
+        // Flagging Status Modal - Shows comprehensive flagging information
+        function showFlaggingStatusModal(userEmail, userName) {
+            console.log('🚩 Showing flagging status for:', userEmail, userName);
+            
+            // Remove any existing flagging status modals
+            const existingModals = document.querySelectorAll('.flagging-status-modal');
+            existingModals.forEach(modal => modal.remove());
+            
+            // Show loading modal
+            const loadingModal = document.createElement('div');
+            loadingModal.className = 'modal flagging-status-modal';
+            loadingModal.style.display = 'block';
+            loadingModal.innerHTML = `
+                <div class="modal-content" style="max-width: 90vw; max-height: 85vh; overflow-y: auto;">
+                    <div class="modal-header">
+                        <h3>🚩 Flagging Status - ${userName}</h3>
+                        <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                    </div>
+                    <div style="text-align: center; padding: 40px;">
+                        <div class="loading-spinner"></div>
+                        <p>Loading flagging status...</p>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(loadingModal);
+            
+            // Fetch flagging status
+            fetch(`api/DatabaseAPI.php?action=get_flagging_status&user_email=${encodeURIComponent(userEmail)}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('🚩 Flagging status data:', data);
+                    
+                    if (data.success && data.data) {
+                        const status = data.data;
+                        loadingModal.innerHTML = generateFlaggingStatusHTML(status, userName);
+                    } else {
+                        loadingModal.innerHTML = `
+                            <div class="modal-content" style="max-width: 90vw; max-height: 85vh; overflow-y: auto;">
+                                <div class="modal-header">
+                                    <h3>🚩 Flagging Status - ${userName}</h3>
+                                    <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                                </div>
+                                <div style="text-align: center; padding: 40px; color: #666;">
+                                    <p>❌ Error loading flagging status: ${data.error || 'Unknown error'}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error fetching flagging status:', error);
+                    loadingModal.innerHTML = `
+                        <div class="modal-content" style="max-width: 90vw; max-height: 85vh; overflow-y: auto;">
+                            <div class="modal-header">
+                                <h3>🚩 Flagging Status - ${userName}</h3>
+                                <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                            </div>
+                            <div style="text-align: center; padding: 40px; color: #666;">
+                                <p>❌ Error loading flagging status: ${error.message}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+        }
+
+        // Generate HTML for flagging status modal
+        function generateFlaggingStatusHTML(status, userName) {
+            const { date, day_flagged, meals, summary } = status;
+            
+            // Determine overall status and color
+            let statusColor, statusIcon, statusText;
+            switch(summary.flagging_level) {
+                case 'day':
+                    statusColor = '#ff4444';
+                    statusIcon = '🚩';
+                    statusText = 'ENTIRE DAY FLAGGED';
+                    break;
+                case 'all_meals':
+                    statusColor = '#ff8800';
+                    statusIcon = '⚠️';
+                    statusText = 'ALL MEALS FLAGGED';
+                    break;
+                case 'partial_meals':
+                    statusColor = '#ffaa00';
+                    statusIcon = '⚠️';
+                    statusText = 'SOME MEALS FLAGGED';
+                    break;
+                case 'individual_items':
+                    statusColor = '#ffcc00';
+                    statusIcon = '⚠️';
+                    statusText = 'SOME ITEMS FLAGGED';
+                    break;
+                default:
+                    statusColor = '#4caf50';
+                    statusIcon = '✅';
+                    statusText = 'NO FLAGS';
+            }
+            
+            return `
+                <div class="modal-content" style="max-width: 90vw; max-height: 85vh; overflow-y: auto;">
+                    <div class="modal-header">
+                        <h3>🚩 Flagging Status - ${userName}</h3>
+                        <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                    </div>
+                    
+                    <div class="flagging-status-content" style="padding: 20px;">
+                        <!-- Overall Status Banner -->
+                        <div class="status-banner" style="background: ${statusColor}; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                            <h2 style="margin: 0; font-size: 24px;">${statusIcon} ${statusText}</h2>
+                            <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Date: ${date}</p>
+                        </div>
+                        
+                        <!-- Summary Statistics -->
+                        <div class="summary-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+                            <div class="stat-card" style="background: var(--card-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
+                                <h4 style="margin: 0 0 10px 0; color: var(--text-primary);">Total Foods</h4>
+                                <div style="font-size: 24px; font-weight: bold; color: var(--color-primary);">${summary.total_foods}</div>
+                            </div>
+                            <div class="stat-card" style="background: var(--card-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
+                                <h4 style="margin: 0 0 10px 0; color: var(--text-primary);">Flagged Items</h4>
+                                <div style="font-size: 24px; font-weight: bold; color: ${summary.total_flagged > 0 ? '#ff4444' : '#4caf50'};">${summary.total_flagged}</div>
+                            </div>
+                            <div class="stat-card" style="background: var(--card-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
+                                <h4 style="margin: 0 0 10px 0; color: var(--text-primary);">Total Meals</h4>
+                                <div style="font-size: 24px; font-weight: bold; color: var(--color-primary);">${summary.total_meals}</div>
+                            </div>
+                            <div class="stat-card" style="background: var(--card-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); text-align: center;">
+                                <h4 style="margin: 0 0 10px 0; color: var(--text-primary);">Flagged Meals</h4>
+                                <div style="font-size: 24px; font-weight: bold; color: ${summary.flagged_meals > 0 ? '#ff4444' : '#4caf50'};">${summary.flagged_meals}</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Day Status -->
+                        <div class="day-status" style="background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+                            <h3 style="margin: 0 0 15px 0; color: var(--text-primary); display: flex; align-items: center;">
+                                📅 Day Status
+                                <span style="margin-left: 10px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: ${day_flagged ? '#ff4444' : '#4caf50'}; color: white;">
+                                    ${day_flagged ? 'FLAGGED' : 'CLEAR'}
+                                </span>
+                            </h3>
+                            <p style="margin: 0; color: var(--text-secondary);">
+                                ${day_flagged ? 
+                                    '🚩 This entire day has been flagged for review. All food items and meals are marked as flagged.' : 
+                                    '✅ This day has no flags. All food items are clear for review.'
+                                }
+                            </p>
+                        </div>
+                        
+                        <!-- Meal Breakdown -->
+                        <div class="meals-breakdown">
+                            <h3 style="margin: 0 0 20px 0; color: var(--text-primary);">🍽️ Meal Breakdown</h3>
+                            ${meals.map(meal => `
+                                <div class="meal-status" style="background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 15px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                        <h4 style="margin: 0; color: var(--text-primary); display: flex; align-items: center;">
+                                            ${meal.name}
+                                            <span style="margin-left: 10px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: ${meal.is_meal_flagged ? '#ff4444' : '#4caf50'}; color: white;">
+                                                ${meal.is_meal_flagged ? 'FLAGGED' : 'CLEAR'}
+                                            </span>
+                                        </h4>
+                                        <div style="color: var(--text-secondary); font-size: 14px;">
+                                            ${meal.flagged_items}/${meal.total_items} items flagged
+                                        </div>
+                                    </div>
+                                    
+                                    ${meal.items.length > 0 ? `
+                                        <div class="food-items" style="display: grid; gap: 8px;">
+                                            ${meal.items.map(item => `
+                                                <div class="food-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: ${item.is_flagged ? '#ffe6e6' : '#f0f8f0'}; border-radius: 6px; border-left: 4px solid ${item.is_flagged ? '#ff4444' : '#4caf50'};">
+                                                    <div style="display: flex; align-items: center;">
+                                                        <span style="margin-right: 8px;">${item.is_flagged ? '🚩' : '✅'}</span>
+                                                        <span style="font-weight: 500; color: var(--text-primary);">${item.name}</span>
+                                                    </div>
+                                                    ${item.is_flagged ? `
+                                                        <div style="font-size: 12px; color: var(--text-secondary);">
+                                                            ${item.comment ? `"${item.comment}"` : 'No comment'}
+                                                        </div>
+                                                    ` : ''}
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    ` : `
+                                        <p style="color: var(--text-secondary); font-style: italic; margin: 0;">No food items in this meal</p>
+                                    `}
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="action-buttons" style="display: flex; gap: 15px; justify-content: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                            <button onclick="viewFoodHistory('${status.user_email}', '${userName}'); this.closest('.modal').remove();" 
+                                    style="background: var(--color-primary); color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                                🍽️ View Food History
+                            </button>
+                            <button onclick="this.closest('.modal').remove();" 
+                                    style="background: #666; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
 

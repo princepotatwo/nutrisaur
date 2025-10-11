@@ -8102,6 +8102,19 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 echo json_encode(['success' => false, 'error' => 'Failed to fetch flagged dates']);
             }
             break;
+            
+        case 'get_flagging_status':
+            $userEmail = $_GET['user_email'] ?? '';
+            $date = $_GET['date'] ?? '';
+            
+            if (empty($userEmail)) {
+                echo json_encode(['success' => false, 'error' => 'User email is required']);
+                break;
+            }
+            
+            $result = getFlaggingStatus($db, $userEmail, $date);
+            echo json_encode($result);
+            break;
 
         // ========================================
         // DEFAULT: SHOW USAGE - Fixed syntax errors
@@ -8240,6 +8253,130 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
     
     error_log("SendGrid password reset API failed. HTTP Code: $httpCode, Response: $response");
     return false;
+}
+
+/**
+ * Get comprehensive flagging status for a user
+ */
+function getFlaggingStatus($db, $userEmail, $date = null) {
+    try {
+        // If no date provided, get the most recent date with food data
+        if (!$date) {
+            $dateQuery = "SELECT DISTINCT date FROM user_food_history WHERE user_email = ? ORDER BY date DESC LIMIT 1";
+            $dateResult = $db->query($dateQuery, [$userEmail]);
+            if ($dateResult && count($dateResult) > 0) {
+                $date = $dateResult[0]['date'];
+            } else {
+                return [
+                    'success' => false,
+                    'error' => 'No food data found for this user'
+                ];
+            }
+        }
+        
+        // Get all food items for the user and date
+        $foodQuery = "SELECT * FROM user_food_history WHERE user_email = ? AND date = ? ORDER BY meal_category, created_at";
+        $foodData = $db->query($foodQuery, [$userEmail, $date]);
+        
+        if (!$foodData || count($foodData) === 0) {
+            return [
+                'success' => false,
+                'error' => 'No food data found for this user and date'
+            ];
+        }
+        
+        // Analyze flagging status
+        $status = [
+            'date' => $date,
+            'user_email' => $userEmail,
+            'total_foods' => count($foodData),
+            'day_flagged' => false,
+            'meals' => [],
+            'individual_flags' => [],
+            'summary' => []
+        ];
+        
+        // Check if entire day is flagged
+        $dayFlagged = $foodData[0]['is_day_flagged'] ?? 0;
+        $status['day_flagged'] = $dayFlagged == 1;
+        
+        // Group by meal category
+        $meals = [];
+        foreach ($foodData as $food) {
+            $mealCategory = $food['meal_category'] ?? 'Unknown';
+            if (!isset($meals[$mealCategory])) {
+                $meals[$mealCategory] = [];
+            }
+            $meals[$mealCategory][] = $food;
+        }
+        
+        // Analyze each meal
+        foreach ($meals as $mealCategory => $mealFoods) {
+            $mealStatus = [
+                'name' => $mealCategory,
+                'total_items' => count($mealFoods),
+                'flagged_items' => 0,
+                'is_meal_flagged' => false,
+                'items' => []
+            ];
+            
+            // Check if meal is flagged (all items in meal are flagged)
+            $flaggedCount = 0;
+            foreach ($mealFoods as $food) {
+                $isFlagged = $food['is_flagged'] ?? 0;
+                if ($isFlagged == 1) {
+                    $flaggedCount++;
+                }
+                
+                $mealStatus['items'][] = [
+                    'id' => $food['id'],
+                    'name' => $food['food_name'],
+                    'is_flagged' => $isFlagged == 1,
+                    'comment' => $food['mho_comment'] ?? '',
+                    'flagged_by' => $food['flagged_by'] ?? '',
+                    'flagged_at' => $food['flagged_at'] ?? ''
+                ];
+            }
+            
+            $mealStatus['flagged_items'] = $flaggedCount;
+            $mealStatus['is_meal_flagged'] = $flaggedCount == count($mealFoods) && count($mealFoods) > 0;
+            
+            $status['meals'][] = $mealStatus;
+        }
+        
+        // Create summary
+        $totalFlagged = 0;
+        $totalMeals = count($status['meals']);
+        $flaggedMeals = 0;
+        
+        foreach ($status['meals'] as $meal) {
+            $totalFlagged += $meal['flagged_items'];
+            if ($meal['is_meal_flagged']) {
+                $flaggedMeals++;
+            }
+        }
+        
+        $status['summary'] = [
+            'total_foods' => $status['total_foods'],
+            'total_flagged' => $totalFlagged,
+            'total_meals' => $totalMeals,
+            'flagged_meals' => $flaggedMeals,
+            'day_flagged' => $status['day_flagged'],
+            'flagging_level' => $status['day_flagged'] ? 'day' : ($flaggedMeals == $totalMeals ? 'all_meals' : ($flaggedMeals > 0 ? 'partial_meals' : ($totalFlagged > 0 ? 'individual_items' : 'none')))
+        ];
+        
+        return [
+            'success' => true,
+            'data' => $status
+        ];
+        
+    } catch (Exception $e) {
+        error_log("Error getting flagging status: " . $e->getMessage());
+        return [
+            'success' => false,
+            'error' => 'Failed to get flagging status: ' . $e->getMessage()
+        ];
+    }
 }
 
 ?>
