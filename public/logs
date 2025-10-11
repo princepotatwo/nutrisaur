@@ -1,152 +1,103 @@
-2025-10-12 01:47:21.396 22757-22757 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760204841396
-2025-10-12 01:47:21.438 22757-22757 FoodActivity            com.example.nutrisaur11              D  MHO Recommended card clicked
-2025-10-12 01:47:21.438 22757-22757 FoodActivity            com.example.nutrisaur11              D  showMHORecommendedFoods called
-2025-10-12 01:47:21.441 22757-22757 IS_CTS_MODE             com.example.nutrisaur11              D  false
-2025-10-12 01:47:21.441 22757-22757 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
-2025-10-12 01:47:21.555 22757-22757 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
-2025-10-12 01:47:21.588 22757-22757 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
-2025-10-12 01:47:21.599 22757-22767 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223280794011ms; Flags=0, FrameTimelineVsyncId=4850817, IntendedVsync=91242842948664, Vsync=91242842948664, InputEventId=917176694, HandleInputStart=91242844514305, AnimationStart=91242844518367, PerformTraversalsStart=91242844522065, DrawStart=91242844641909, FrameDeadline=91242876281996, FrameInterval=91242844491128, FrameStartTime=16666666, SyncQueued=91242849906961, SyncStart=91242850339774, IssueDrawCommandsStart=91242850795763, SwapBuffers=91242853438992, FrameCompleted=9223372036854775807, DequeueBufferDuration=32500, QueueBufferDuration=956198, GpuCompleted=9223372036854775807, SwapBuffersCompleted=91242855040607, DisplayPresentTime=0, 
-2025-10-12 01:47:21.659 22757-24482 ApiClient               com.example.nutrisaur11              D  MHO Recommended Foods response: {"success":true,"message":"Recommended foods retrieved successfully","data":{"Breakfast":[{"id":265,"user_email":"kevinpingol123@gmail.com","date":null,"meal_category":"Breakfast","food_name":"giniling giling","calories":20,"serving_size":"1 cup","protein":"20.00","carbs":"20.00","fat":"20.00","fiber":"20.00","created_at":"2025-10-11 17:46:49","is_flagged":0,"is_day_flagged":0,"mho_comment":null,"flagged_by":null,"flagged_at":null,"is_mho_recommended":1}]},"count":1}
-2025-10-12 01:47:21.730 22757-22757 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760204841730
-2025-10-12 01:47:21.733 22757-22757 SessionManager          com.example.nutrisaur11              D  User marked as idle
-2025-10-12 01:47:21.747 22757-22757 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
-2025-10-12 01:47:21.759 22757-22757 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760204841759
-2025-10-12 01:47:21.759 22757-22757 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
-2025-10-12 01:47:21.759 22757-22757 SessionManager          com.example.nutrisaur11              D  No recent valid session found, performing real-time database check
-2025-10-12 01:47:21.761 22757-22757 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-12 01:47:21.761 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-12 01:47:21.761 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-12 01:47:21.761 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-12 01:47:21.761 22757-22757 SessionManager          com.example.nutrisaur11              D  Database check completed in 0ms
-2025-10-12 01:47:21.761 22757-22757 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-12 01:47:21.761 22757-22757 SessionManager          com.example.nutrisaur11              D  Real-time validation successful
-2025-10-12 01:47:21.762 22757-22757 IS_CTS_MODE             com.example.nutrisaur11              D  false
-2025-10-12 01:47:21.762 22757-22757 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
-2025-10-12 01:47:21.764 22757-22757 DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
-2025-10-12 01:47:21.787 22757-22757 DailyResetManager       com.example.nutrisaur11              D  Same day, no reset needed. Current: 2025-10-12
-2025-10-12 01:47:21.787 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              D  Custom ingredient from intent: null
-2025-10-12 01:47:21.787 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              D  FoodLoggingActivity initialized for date: 2025-10-12
-2025-10-12 01:47:21.787 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              W  No user data received from FoodActivity, will use SharedPreferences fallback
-2025-10-12 01:47:21.790 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Syncing with 0 added foods for date: 2025-10-12
-2025-10-12 01:47:21.790 22757-22757 CalorieTracker          com.example.nutrisaur11              D    Daily foods: 0
-2025-10-12 01:47:21.790 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Cleared SharedPreferences user profile cache to force fresh database data
-2025-10-12 01:47:21.790 22757-22757 CalorieTracker          com.example.nutrisaur11              W  No user profile found in SharedPreferences - will use database data
-2025-10-12 01:47:21.790 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Using user profile from SharedPreferences
-2025-10-12 01:47:21.790 22757-22757 CalorieTracker          com.example.nutrisaur11              W  No user profile found, using default meal distribution
-2025-10-12 01:47:21.790 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=500, Dinner=600, Snacks=200, Lunch=700}
-2025-10-12 01:47:21.794 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-12. Total meals: 0
-2025-10-12 01:47:21.794 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              W  No database user data available, cannot create user profile
-2025-10-12 01:47:21.797 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Syncing with 0 added foods for date: 2025-10-12
-2025-10-12 01:47:21.797 22757-22757 CalorieTracker          com.example.nutrisaur11              D    Daily foods: 0
-2025-10-12 01:47:21.797 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Cleared SharedPreferences user profile cache to force fresh database data
-2025-10-12 01:47:21.797 22757-22757 CalorieTracker          com.example.nutrisaur11              W  No user profile found in SharedPreferences - will use database data
-2025-10-12 01:47:21.797 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Using user profile from SharedPreferences
-2025-10-12 01:47:21.797 22757-22757 CalorieTracker          com.example.nutrisaur11              W  No user profile found, using default meal distribution
-2025-10-12 01:47:21.797 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=500, Dinner=600, Snacks=200, Lunch=700}
-2025-10-12 01:47:21.801 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-12. Total meals: 0
-2025-10-12 01:47:21.802 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              D  Creating user profile from community_users table data...
-2025-10-12 01:47:21.802 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              E  Error creating user profile from database data: Attempt to invoke interface method 'java.lang.Object java.util.Map.getOrDefault(java.lang.Object, java.lang.Object)' on a null object reference
-2025-10-12 01:47:21.802 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              D  Updated meal category text: null
-2025-10-12 01:47:21.804 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Syncing with 0 added foods for date: 2025-10-12
-2025-10-12 01:47:21.804 22757-22757 CalorieTracker          com.example.nutrisaur11              D    Daily foods: 0
-2025-10-12 01:47:21.804 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Cleared SharedPreferences user profile cache to force fresh database data
-2025-10-12 01:47:21.804 22757-22757 CalorieTracker          com.example.nutrisaur11              W  No user profile found in SharedPreferences - will use database data
-2025-10-12 01:47:21.804 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Using user profile from SharedPreferences
-2025-10-12 01:47:21.804 22757-22757 CalorieTracker          com.example.nutrisaur11              W  No user profile found, using default meal distribution
-2025-10-12 01:47:21.804 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=500, Dinner=600, Snacks=200, Lunch=700}
-2025-10-12 01:47:21.807 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-12. Total meals: 0
-2025-10-12 01:47:21.807 22757-22757 CalorieTracker          com.example.nutrisaur11              E  Error setting meal max calories: key == null
-2025-10-12 01:47:21.807 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              D  Loading MHO recommended foods
-2025-10-12 01:47:21.807 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              D  Loaded 1 MHO recommended foods from intent
-2025-10-12 01:47:21.807 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              D  FoodLoggingActivity created for null (max 500 kcal)
-2025-10-12 01:47:21.807 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              D  Initial food items count: 1
-2025-10-12 01:47:21.810 22757-22757 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760204841810
-2025-10-12 01:47:21.810 22757-22757 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
-2025-10-12 01:47:21.810 22757-22757 SessionManager          com.example.nutrisaur11              D  Using cached valid session
-2025-10-12 01:47:21.810 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  === CHECKING ARCHIVE STATUS ===
-2025-10-12 01:47:21.810 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
-2025-10-12 01:47:21.810 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: kevinpingol123@gmail.com
-2025-10-12 01:47:21.811 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  === CHECKING USER EXISTENCE ===
-2025-10-12 01:47:21.811 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
-2025-10-12 01:47:21.811 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: kevinpingol123@gmail.com
-2025-10-12 01:47:21.815 22757-24490 CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
-2025-10-12 01:47:21.815 22757-24490 CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
-2025-10-12 01:47:21.815 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Syncing with 0 added foods for date: 2025-10-12
-2025-10-12 01:47:21.815 22757-22757 CalorieTracker          com.example.nutrisaur11              D    Daily foods: 0
-2025-10-12 01:47:21.815 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Cleared SharedPreferences user profile cache to force fresh database data
-2025-10-12 01:47:21.815 22757-22757 CalorieTracker          com.example.nutrisaur11              W  No user profile found in SharedPreferences - will use database data
-2025-10-12 01:47:21.815 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Using user profile from SharedPreferences
-2025-10-12 01:47:21.815 22757-22757 CalorieTracker          com.example.nutrisaur11              W  No user profile found, using default meal distribution
-2025-10-12 01:47:21.815 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=500, Dinner=600, Snacks=200, Lunch=700}
-2025-10-12 01:47:21.815 22757-24491 CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
-2025-10-12 01:47:21.815 22757-24491 CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
-2025-10-12 01:47:21.818 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-12. Total meals: 0
-2025-10-12 01:47:21.818 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              D  Refreshed food data for tab: recent for date: 2025-10-12
-2025-10-12 01:47:21.843 22757-22769 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223280793828ms; Flags=0, FrameTimelineVsyncId=4850843, IntendedVsync=91243026338373, Vsync=91243093005037, InputEventId=0, HandleInputStart=91243100688628, AnimationStart=91243100690346, PerformTraversalsStart=91243100691492, DrawStart=91243100746596, FrameDeadline=91243059671705, FrameInterval=91243100678576, FrameStartTime=16666666, SyncQueued=91243102456648, SyncStart=91243102572482, IssueDrawCommandsStart=91243103370190, SwapBuffers=91243106440867, FrameCompleted=9223372036854775807, DequeueBufferDuration=32552, QueueBufferDuration=1115729, GpuCompleted=9223372036854775807, SwapBuffersCompleted=91243108207534, DisplayPresentTime=0, 
-2025-10-12 01:47:21.850 13453-14496 ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=10960   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.SplashActivity }
-2025-10-12 01:47:21.866 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              D  Loaded 1 recent/recommended foods
-2025-10-12 01:47:21.866 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              D  Loaded 1 recent/recommended foods
-2025-10-12 01:47:21.866 22757-22757 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
-2025-10-12 01:47:21.898 22757-22757 SessionManager          com.example.nutrisaur11              D  User marked as idle
-2025-10-12 01:47:21.900 22757-22757 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
-2025-10-12 01:47:21.910 22757-22769 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223280793690ms; Flags=0, FrameTimelineVsyncId=4850858, IntendedVsync=91243159548036, Vsync=91243159548036, InputEventId=0, HandleInputStart=91243161222378, AnimationStart=91243161224201, PerformTraversalsStart=91243161750346, DrawStart=91243163918315, FrameDeadline=91243176214702, FrameInterval=91243161208315, FrameStartTime=16666666, SyncQueued=91243164079565, SyncStart=91243169099982, IssueDrawCommandsStart=91243170465242, SwapBuffers=91243171823628, FrameCompleted=9223372036854775807, DequeueBufferDuration=18542, QueueBufferDuration=998333, GpuCompleted=9223372036854775807, SwapBuffersCompleted=91243173079669, DisplayPresentTime=0, 
-2025-10-12 01:47:22.095 22757-24490 CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
-2025-10-12 01:47:22.096 22757-24490 CommunityUserManager    com.example.nutrisaur11              D  API response message: 
-2025-10-12 01:47:22.097 22757-24490 CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Burgos","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGRwC6pXjPQVyYGtkcZ6eafSGk0tUnWsyaKl1pZXOygSPN5hrxQ57-QoEbT0Q4AnrxZle82T4gCM6sx46ruDB-KiAtQGKfYr3uHOkNiwosJ5lmui9A","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
-2025-10-12 01:47:22.098 22757-24490 CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
-2025-10-12 01:47:22.098 22757-24490 CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Burgos, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
-2025-10-12 01:47:22.098 22757-24490 CommunityUserManager    com.example.nutrisaur11              D  User status: 1
-2025-10-12 01:47:22.098 22757-24490 CommunityUserManager    com.example.nutrisaur11              D  User is active (status = 1)
-2025-10-12 01:47:22.108 22757-24491 CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
-2025-10-12 01:47:22.109 22757-24491 CommunityUserManager    com.example.nutrisaur11              D  API response message: 
-2025-10-12 01:47:22.110 22757-24491 CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Burgos","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGRwC6pXjPQVyYGtkcZ6eafSGk0tUnWsyaKl1pZXOygSPN5hrxQ57-QoEbT0Q4AnrxZle82T4gCM6sx46ruDB-KiAtQGKfYr3uHOkNiwosJ5lmui9A","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
-2025-10-12 01:47:22.111 22757-24491 CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
-2025-10-12 01:47:22.112 22757-24491 CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Burgos, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
-2025-10-12 01:47:22.112 22757-24491 CommunityUserManager    com.example.nutrisaur11              D  User exists and has valid data
-2025-10-12 01:47:22.447 22757-22757 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-12 01:47:22.676 22757-22757 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760204842676
-2025-10-12 01:47:22.745 22757-22757 FoodItemAdapter         com.example.nutrisaur11              D  Plus button clicked for: giniling giling, isCategoryActivity: false
-2025-10-12 01:47:22.745 22757-22757 FoodItemAdapter         com.example.nutrisaur11              D  Adding directly to meal category: null
-2025-10-12 01:47:22.745 22757-22757 AddedFoodManager        com.example.nutrisaur11              D  🎯 addFoodToMealTime called: giniling giling -> null on 2025-10-12
-2025-10-12 01:47:22.752 22757-22757 AddedFoodManager        com.example.nutrisaur11              E  Error adding food to meal time: key == null
-2025-10-12 01:47:22.762 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Syncing with 0 added foods for date: 2025-10-12
-2025-10-12 01:47:22.762 22757-22757 CalorieTracker          com.example.nutrisaur11              D    Daily foods: 0
-2025-10-12 01:47:22.762 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Cleared SharedPreferences user profile cache to force fresh database data
-2025-10-12 01:47:22.762 22757-22757 CalorieTracker          com.example.nutrisaur11              W  No user profile found in SharedPreferences - will use database data
-2025-10-12 01:47:22.762 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Using user profile from SharedPreferences
-2025-10-12 01:47:22.762 22757-22757 CalorieTracker          com.example.nutrisaur11              W  No user profile found, using default meal distribution
-2025-10-12 01:47:22.763 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=500, Dinner=600, Snacks=200, Lunch=700}
-2025-10-12 01:47:22.774 22757-22757 CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-12. Total meals: 0
-2025-10-12 01:47:22.775 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              D  Creating user profile from community_users table data...
-2025-10-12 01:47:22.776 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              E  Error creating user profile from database data: Attempt to invoke interface method 'java.lang.Object java.util.Map.getOrDefault(java.lang.Object, java.lang.Object)' on a null object reference
-2025-10-12 01:47:22.776 22757-22757 FoodLoggingActivity     com.example.nutrisaur11              D  Updated meal category text: null
-2025-10-12 01:47:24.412 22757-22769 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223280791194ms; Flags=0, FrameTimelineVsyncId=4850884, IntendedVsync=91245660094767, Vsync=91245660094767, InputEventId=0, HandleInputStart=91245661865450, AnimationStart=91245661878991, PerformTraversalsStart=91245661887220, DrawStart=91245662461127, FrameDeadline=91245676761433, FrameInterval=91245661797481, FrameStartTime=16666666, SyncQueued=91245664094825, SyncStart=91245664382064, IssueDrawCommandsStart=91245665200814, SwapBuffers=91245670689252, FrameCompleted=9223372036854775807, DequeueBufferDuration=102708, QueueBufferDuration=2965730, GpuCompleted=9223372036854775807, SwapBuffersCompleted=91245675794200, DisplayPresentTime=0, 
-2025-10-12 01:47:24.441 22757-22769 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223280791156ms; Flags=0, FrameTimelineVsyncId=4850888, IntendedVsync=91245693029332, Vsync=91245693029332, InputEventId=0, HandleInputStart=91245697001595, AnimationStart=91245697013054, PerformTraversalsStart=91245697020502, DrawStart=91245697496283, FrameDeadline=91245726362664, FrameInterval=91245696946752, FrameStartTime=16666666, SyncQueued=91245698999668, SyncStart=91245704374825, IssueDrawCommandsStart=91245704890814, SwapBuffers=91245707180502, FrameCompleted=9223372036854775807, DequeueBufferDuration=49011, QueueBufferDuration=2344427, GpuCompleted=9223372036854775807, SwapBuffersCompleted=91245710787064, DisplayPresentTime=0, 
-2025-10-12 01:47:25.450 22757-22757 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-12 01:47:25.451 22757-22757 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-12 01:47:25.451 22757-22757 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-12 01:47:25.451 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-12 01:47:25.452 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-12 01:47:25.452 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-12 01:47:25.452 22757-22757 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-12 01:47:25.453 22757-22757 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-12 01:47:25.459 22757-22757 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-12 01:47:25.459 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-12 01:47:25.460 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-12 01:47:25.460 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-12 01:47:25.461 22757-22757 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-12 01:47:25.461 22757-22757 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-12 01:47:28.465 22757-22757 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-12 01:47:28.465 22757-22757 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-12 01:47:28.465 22757-22757 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-12 01:47:28.466 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-12 01:47:28.467 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-12 01:47:28.467 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-12 01:47:28.467 22757-22757 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
-2025-10-12 01:47:28.468 22757-22757 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-12 01:47:28.473 22757-22757 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-12 01:47:28.474 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-12 01:47:28.475 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-12 01:47:28.475 22757-22757 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-12 01:47:28.476 22757-22757 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-12 01:47:28.476 22757-22757 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+ing with 0 added foods for date: 2025-10-12
+2025-10-12 02:57:49.963  9454-9454  CalorieTracker          com.example.nutrisaur11              D    Daily foods: 0
+2025-10-12 02:57:49.963  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Cleared SharedPreferences user profile cache to force fresh database data
+2025-10-12 02:57:49.963  9454-9454  CalorieTracker          com.example.nutrisaur11              W  No user profile found in SharedPreferences - will use database data
+2025-10-12 02:57:49.963  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Using user profile from SharedPreferences
+2025-10-12 02:57:49.963  9454-9454  CalorieTracker          com.example.nutrisaur11              W  No user profile found, using default meal distribution
+2025-10-12 02:57:49.963  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=500, Dinner=600, Snacks=200, Lunch=700}
+2025-10-12 02:57:49.966  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-12. Total meals: 0
+2025-10-12 02:57:49.967  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Creating user profile from community_users table data...
+2025-10-12 02:57:49.967  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              E  Error creating user profile from database data: Attempt to invoke interface method 'java.lang.Object java.util.Map.getOrDefault(java.lang.Object, java.lang.Object)' on a null object reference
+2025-10-12 02:57:49.967  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Updated meal category text: null
+2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Syncing with 0 added foods for date: 2025-10-12
+2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              D    Daily foods: 0
+2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Cleared SharedPreferences user profile cache to force fresh database data
+2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              W  No user profile found in SharedPreferences - will use database data
+2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Using user profile from SharedPreferences
+2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              W  No user profile found, using default meal distribution
+2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=500, Dinner=600, Snacks=200, Lunch=700}
+2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-12. Total meals: 0
+2025-10-12 02:57:49.971  9454-9454  CalorieTracker          com.example.nutrisaur11              E  Error setting meal max calories: key == null
+2025-10-12 02:57:49.971  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Loading MHO recommended foods
+2025-10-12 02:57:49.971  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Loaded 1 MHO recommended foods from intent
+2025-10-12 02:57:49.971  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Set current meal category to: Breakfast
+2025-10-12 02:57:49.971  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  FoodLoggingActivity created for Breakfast (max 500 kcal)
+2025-10-12 02:57:49.971  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Initial food items count: 2
+2025-10-12 02:57:49.976  9454-9454  SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760209069976
+2025-10-12 02:57:49.976  9454-9454  SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-12 02:57:49.976  9454-9454  SessionManager          com.example.nutrisaur11              D  Using cached valid session
+2025-10-12 02:57:49.976  9454-9454  CommunityUserManager    com.example.nutrisaur11              D  === CHECKING ARCHIVE STATUS ===
+2025-10-12 02:57:49.976  9454-9454  CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
+2025-10-12 02:57:49.976  9454-9454  CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: kevinpingol123@gmail.com
+2025-10-12 02:57:49.976  9454-9454  CommunityUserManager    com.example.nutrisaur11              D  === CHECKING USER EXISTENCE ===
+2025-10-12 02:57:49.976  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
+2025-10-12 02:57:49.977  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
+2025-10-12 02:57:49.977  9454-9454  CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
+2025-10-12 02:57:49.977  9454-9454  CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: kevinpingol123@gmail.com
+2025-10-12 02:57:49.980  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Syncing with 0 added foods for date: 2025-10-12
+2025-10-12 02:57:49.980  9454-9454  CalorieTracker          com.example.nutrisaur11              D    Daily foods: 0
+2025-10-12 02:57:49.980  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Cleared SharedPreferences user profile cache to force fresh database data
+2025-10-12 02:57:49.980  9454-9454  CalorieTracker          com.example.nutrisaur11              W  No user profile found in SharedPreferences - will use database data
+2025-10-12 02:57:49.980  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Using user profile from SharedPreferences
+2025-10-12 02:57:49.980  9454-9454  CalorieTracker          com.example.nutrisaur11              W  No user profile found, using default meal distribution
+2025-10-12 02:57:49.980  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=500, Dinner=600, Snacks=200, Lunch=700}
+2025-10-12 02:57:49.981  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-12. Total meals: 0
+2025-10-12 02:57:49.981  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Refreshed food data for tab: recent for date: 2025-10-12
+2025-10-12 02:57:49.982  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
+2025-10-12 02:57:49.982  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
+2025-10-12 02:57:49.995 13453-14496 ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=10966   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.SplashActivity }
+2025-10-12 02:57:50.042  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Loaded 1 recent/recommended foods
+2025-10-12 02:57:50.042  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Loaded 1 recent/recommended foods
+2025-10-12 02:57:50.042  9454-9454  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
+2025-10-12 02:57:50.075  9454-9454  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-10-12 02:57:50.096  9454-9454  SessionManager          com.example.nutrisaur11              D  User marked as idle
+2025-10-12 02:57:50.289  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
+2025-10-12 02:57:50.289  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  API response message: 
+2025-10-12 02:57:50.291  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Burgos","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGRwC6pXjPQVyYGtkcZ6eafSGk0tUnWsyaKl1pZXOygSPN5hrxQ57-QoEbT0Q4AnrxZle82T4gCM6sx46ruDB-KiAtQGKfYr3uHOkNiwosJ5lmui9A","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
+2025-10-12 02:57:50.292  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
+2025-10-12 02:57:50.292  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Burgos, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
+2025-10-12 02:57:50.292  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  User status: 1
+2025-10-12 02:57:50.292  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  User is active (status = 1)
+2025-10-12 02:57:50.295  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
+2025-10-12 02:57:50.295  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  API response message: 
+2025-10-12 02:57:50.297  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Burgos","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGRwC6pXjPQVyYGtkcZ6eafSGk0tUnWsyaKl1pZXOygSPN5hrxQ57-QoEbT0Q4AnrxZle82T4gCM6sx46ruDB-KiAtQGKfYr3uHOkNiwosJ5lmui9A","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
+2025-10-12 02:57:50.298  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
+2025-10-12 02:57:50.299  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Burgos, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
+2025-10-12 02:57:50.299  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  User exists and has valid data
+2025-10-12 02:57:51.111  9454-9454  SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760209071111
+2025-10-12 02:57:51.174  9454-9454  FoodItemAdapter         com.example.nutrisaur11              D  Plus button clicked for: giniling giling, isCategoryActivity: false
+2025-10-12 02:57:51.175  9454-9454  FoodItemAdapter         com.example.nutrisaur11              D  Adding recommended food to meal plan: giniling giling
+2025-10-12 02:57:51.221  9454-9454  IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-12 02:57:51.221  9454-9454  MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-12 02:57:51.521  9454-9454  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
+2025-10-12 02:57:51.548  9454-9454  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-10-12 02:57:52.491  9454-9454  FoodItemAdapter         com.example.nutrisaur11              D  Adding recommended food to meal plan: giniling giling for Breakfast
+--------- beginning of crash
+2025-10-12 02:57:52.491  9454-9454  AndroidRuntime          com.example.nutrisaur11              D  Shutting down VM
+2025-10-12 02:57:52.506  9454-9454  AndroidRuntime          com.example.nutrisaur11              E  FATAL EXCEPTION: main
+                                                                                                    Process: com.example.nutrisaur11, PID: 9454
+                                                                                                    java.lang.NumberFormatException: s == null
+                                                                                                    	at java.lang.Integer.parseInt(Integer.java:743)
+                                                                                                    	at java.lang.Integer.parseInt(Integer.java:897)
+                                                                                                    	at com.example.nutrisaur11.FoodItemAdapter.lambda$addRecommendedFoodToMealPlan$0(FoodItemAdapter.java:92)
+                                                                                                    	at com.example.nutrisaur11.FoodItemAdapter.$r8$lambda$D6GNWSbkx8ptctqJ1W4iI2NCdXc(Unknown Source:0)
+                                                                                                    	at com.example.nutrisaur11.FoodItemAdapter$$ExternalSyntheticLambda0.onMealTimeSelected(D8$$SyntheticClass:0)
+                                                                                                    	at com.example.nutrisaur11.MealTimeSelectionDialog.lambda$setupMealTimeButton$1(MealTimeSelectionDialog.java:69)
+                                                                                                    	at com.example.nutrisaur11.MealTimeSelectionDialog.$r8$lambda$DWmKezHDOSoD47qHYSBq8sH_kOM(Unknown Source:0)
+                                                                                                    	at com.example.nutrisaur11.MealTimeSelectionDialog$$ExternalSyntheticLambda0.onClick(D8$$SyntheticClass:0)
+                                                                                                    	at android.view.View.performClick(View.java:7750)
+                                                                                                    	at com.google.android.material.button.MaterialButton.performClick(MaterialButton.java:1218)
+                                                                                                    	at android.view.View.performClickInternal(View.java:7727)
+                                                                                                    	at android.view.View.access$3700(View.java:858)
+                                                                                                    	at android.view.View$PerformClick.run(View.java:29115)
+                                                                                                    	at android.os.Handler.handleCallback(Handler.java:938)
+                                                                                                    	at android.os.Handler.dispatchMessage(Handler.java:99)
+                                                                                                    	at android.os.Looper.loopOnce(Looper.java:210)
+                                                                                                    	at android.os.Looper.loop(Looper.java:299)
+                                                                                                    	at android.app.ActivityThread.main(ActivityThread.java:8168)
+                                                                                                    	at java.lang.reflect.Method.invoke(Native Method)
+                                                                                                    	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:556)
+                                                                                                    	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1037)
+2025-10-12 02:57:52.522  9454-9454  OOMEventManagerFK       com.example.nutrisaur11              D  checkEventAndDumpForJE: 0
+2025-10-12 02:57:52.579  9454-9454  Process                 com.example.nutrisaur11              I  Sending signal. PID: 9454 SIG: 9
+---------------------------- PROCESS ENDED (9454) for package com.example.nutrisaur11 ----------------------------
