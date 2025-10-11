@@ -2419,31 +2419,31 @@ header {
         }
 
         .food-history-table th {
-            padding: 16px 12px;
+            padding: 6px 8px;
             text-align: left;
             font-weight: 600;
-            font-size: 14px;
-            border-bottom: 2px solid #4A5346;
+            font-size: 11px;
+            border-bottom: 1px solid #4A5346;
             border-right: 1px solid #4A5346;
             color: white;
         }
 
-        .food-history-table th:nth-child(1) { width: 12%; } /* Date */
-        .food-history-table th:nth-child(2) { width: 25%; } /* Food Item */
-        .food-history-table th:nth-child(3) { width: 20%; } /* Serving */
-        .food-history-table th:nth-child(4) { width: 20%; } /* Nutrition */
-        .food-history-table th:nth-child(5) { width: 23%; } /* Actions */
+        .food-history-table th:nth-child(1) { width: 30%; } /* Food Item */
+        .food-history-table th:nth-child(2) { width: 20%; } /* Serving */
+        .food-history-table th:nth-child(3) { width: 25%; } /* Nutrition */
+        .food-history-table th:nth-child(4) { width: 25%; } /* Actions */
 
         .food-history-table th:last-child {
             border-right: none;
         }
 
         .food-history-table td {
-            padding: 16px 12px;
+            padding: 6px 8px;
             border-bottom: 1px solid #4A5346;
             border-right: 1px solid #4A5346;
             vertical-align: middle;
             color: white;
+            font-size: 11px;
         }
 
         .food-history-table td:last-child {
@@ -2561,20 +2561,21 @@ header {
         }
 
         .food-action-btn {
-            padding: 12px 16px;
+            padding: 4px 8px;
             border: none;
-            border-radius: 4px;
+            border-radius: 3px;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             transition: all 0.3s ease;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 4px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            min-width: 60px;
+            gap: 2px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            min-width: 50px;
             justify-content: center;
-            height: 40px;
+            height: 28px;
+            white-space: nowrap;
         }
 
         .food-edit-action {
@@ -8920,7 +8921,7 @@ header {
             }
         }
 
-        // New table-based food history modal
+        // New table-based food history modal - organized by dates and meal times
         function showFoodHistoryTableModal(userName, userEmail, foodData) {
             console.log('🎯 showFoodHistoryTableModal called with:', { userName, userEmail, foodDataLength: foodData.length });
             
@@ -8928,7 +8929,19 @@ header {
             const existingModals = document.querySelectorAll('.modal');
             existingModals.forEach(modal => modal.remove());
             
-            // Create modal HTML with table structure
+            // Group food data by date
+            const foodByDate = {};
+            foodData.forEach(food => {
+                if (!foodByDate[food.date]) {
+                    foodByDate[food.date] = [];
+                }
+                foodByDate[food.date].push(food);
+            });
+            
+            // Get sorted dates
+            const sortedDates = Object.keys(foodByDate).sort((a, b) => new Date(b) - new Date(a));
+            
+            // Create modal HTML with date-based organization
             const modal = document.createElement('div');
             modal.className = 'modal';
             modal.style.display = 'block';
@@ -8938,79 +8951,92 @@ header {
                         <h3>🍽️ Food History - ${userName}</h3>
                         <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
                     </div>
-                    <div class="food-history-content">
+                    <div class="food-history-content" style="padding: 10px;">
                         ${foodData.length === 0 ? 
                             '<div style="text-align: center; padding: 40px; color: #666;">No food history found for this user.</div>' :
-                            `
-                            <div class="day-flag-section" style="margin-bottom: 20px; padding: 15px; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                    <h4 style="margin: 0; color: var(--text-primary);">📅 Day Actions</h4>
-                                    <div style="display: flex; gap: 10px;">
-                                        <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${foodData[0].date}')" style="background: ${foodData.some(food => food.is_day_flagged == 1) ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;">
-                                            ${foodData.some(food => food.is_day_flagged == 1) ? '✅ Unflag Day' : '🚩 Flag Day'}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            ${['Breakfast', 'Lunch', 'Dinner', 'Snacks'].map(meal => {
-                                const mealFoods = foodData.filter(food => food.meal_category === meal);
-                                if (mealFoods.length === 0) return '';
-                                
-                                // Check if any food in this meal is day-flagged
-                                const isDayFlagged = mealFoods.some(food => food.is_day_flagged == 1);
-                                
-                                // Check if this specific meal is flagged
-                                const isMealFlagged = mealFoods.some(food => food.is_flagged == 1);
+                            sortedDates.map(date => {
+                                const dateFoods = foodByDate[date];
+                                const isDayFlagged = dateFoods.some(food => food.is_day_flagged == 1);
                                 
                                 return `
-                                    <div class="meal-section">
-                                        <div class="meal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                                            <h4 class="meal-title">${meal} (${mealFoods.length} items)</h4>
-                                            <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${mealFoods[0].date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">
-                                                ${isMealFlagged ? '✅ Unflag ' + meal : '🚩 Flag ' + meal}
+                                    <div class="date-section" style="margin-bottom: 20px; background: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color); overflow: hidden;">
+                                        <!-- Date Header with Day Actions -->
+                                        <div class="date-header" style="background: ${isDayFlagged ? '#ff4444' : 'var(--color-primary)'}; color: white; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center;">
+                                            <h4 style="margin: 0; font-size: 16px; font-weight: 600;">
+                                                📅 ${new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                                ${isDayFlagged ? ' 🚩 FLAGGED' : ''}
+                                            </h4>
+                                            <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${date}')" style="background: ${isDayFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">
+                                                ${isDayFlagged ? '✅ Unflag Day' : '🚩 Flag Day'}
                                             </button>
                                         </div>
-                                        <table class="food-history-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Date</th>
-                                                    <th>Food Item</th>
-                                                    <th>Serving</th>
-                                                    <th>Nutrition</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                ${mealFoods.map(food => `
-                                                    <tr class="${food.is_flagged == 1 ? 'flagged' : ''}">
-                                                        <td class="food-date-cell">${new Date(food.date).toLocaleDateString()}</td>
-                                                        <td class="food-name-cell">
-                                                            ${food.food_name}
-                                                        </td>
-                                                        <td class="food-serving-cell">${food.serving_size || 'N/A'}</td>
-                                                        <td class="food-nutrition-cell">
-                                                            <div class="food-calories">${food.calories} kcal</div>
-                                                            <div class="food-macros">P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
-                                                        </td>
-                                                        <td class="food-actions-cell">
-                                                            <button class="food-action-btn food-edit-action" onclick="editServingSize(${food.id}, '${userEmail}', '${food.date}', '${food.serving_size}')" title="Edit serving size">
-                                                                ✏️ Edit
+                                        
+                                        <!-- Meal Tables for this date -->
+                                        <div class="meals-container" style="padding: 10px;">
+                                            ${['Breakfast', 'Lunch', 'Dinner', 'Snacks'].map(meal => {
+                                                const mealFoods = dateFoods.filter(food => food.meal_category === meal);
+                                                if (mealFoods.length === 0) return '';
+                                                
+                                                const isMealFlagged = mealFoods.some(food => food.is_flagged == 1);
+                                                
+                                                return `
+                                                    <div class="meal-section" style="margin-bottom: 15px;">
+                                                        <div class="meal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 5px 10px; background: var(--border-color); border-radius: 4px;">
+                                                            <h5 style="margin: 0; color: var(--text-primary); font-size: 14px; font-weight: 600;">
+                                                                ${meal} (${mealFoods.length} items)
+                                                                ${isMealFlagged ? ' 🚩' : ''}
+                                                            </h5>
+                                                            <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600;">
+                                                                ${isMealFlagged ? '✅ Unflag' : '🚩 Flag'}
                                                             </button>
-                                                            <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${food.date}', ${food.is_flagged == 1})" title="${food.is_flagged == 1 ? 'Unflag food' : 'Flag food'}">
-                                                                ${food.is_flagged == 1 ? 'Unflag' : 'Flag'}
-                                                            </button>
-                                                            <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${food.date}')" title="Add comment">
-                                                                💬 Comment
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                `).join('')}
-                                            </tbody>
-                                        </table>
+                                                        </div>
+                                                        <table class="food-history-table" style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                                                            <thead>
+                                                                <tr style="background: var(--color-primary); color: white;">
+                                                                    <th style="padding: 6px 8px; text-align: left; font-size: 11px; font-weight: 600;">Food Item</th>
+                                                                    <th style="padding: 6px 8px; text-align: left; font-size: 11px; font-weight: 600;">Serving</th>
+                                                                    <th style="padding: 6px 8px; text-align: left; font-size: 11px; font-weight: 600;">Nutrition</th>
+                                                                    <th style="padding: 6px 8px; text-align: center; font-size: 11px; font-weight: 600;">Actions</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                ${mealFoods.map(food => `
+                                                                    <tr class="${food.is_flagged == 1 ? 'flagged' : ''}" style="border-bottom: 1px solid var(--border-color);">
+                                                                        <td style="padding: 6px 8px; font-weight: 500; color: var(--text-primary);">
+                                                                            ${food.food_name}
+                                                                        </td>
+                                                                        <td style="padding: 6px 8px; color: var(--text-secondary); font-size: 11px;">
+                                                                            ${food.serving_size || 'N/A'}
+                                                                        </td>
+                                                                        <td style="padding: 6px 8px; color: var(--text-secondary); font-size: 11px;">
+                                                                            <div style="font-weight: 600; color: #4caf50;">${food.calories} kcal</div>
+                                                                            <div style="font-size: 10px;">P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
+                                                                        </td>
+                                                                        <td style="padding: 6px 8px; text-align: center;">
+                                                                            <div style="display: flex; gap: 4px; justify-content: center; flex-wrap: wrap;">
+                                                                                <button class="food-action-btn food-edit-action" onclick="editServingSize(${food.id}, '${userEmail}', '${food.date}', '${food.serving_size}')" style="background: #2196f3; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 600;">
+                                                                                    ✏️ Edit
+                                                                                </button>
+                                                                                <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${food.date}', ${food.is_flagged == 1})" style="background: ${food.is_flagged == 1 ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 600;">
+                                                                                    ${food.is_flagged == 1 ? '✅ Unflag' : '🚩 Flag'}
+                                                                                </button>
+                                                                                <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${food.date}')" style="background: #9c27b0; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 600;">
+                                                                                    💬 Comment
+                                                                                </button>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                `).join('')}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                `;
+                                            }).join('')}
+                                        </div>
                                     </div>
                                 `;
                             }).join('')}
-                            `}
+                        `}
                     </div>
                 </div>
             `;
