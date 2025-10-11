@@ -371,7 +371,19 @@ if (isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
 
 // Check if user is authenticated (skip for API calls)
 $isApiCall = isset($_GET['action']) || (isset($_POST['action']) && in_array($_POST['action'], ['create_new_event', 'save_event_only', 'test_ajax', 'debug_fcm_tokens', 'debug_notification']));
-if (!$isApiCall && (!$userId || !$username || !$email)) {
+$isAuthenticated = false;
+
+// Check if regular user is authenticated
+if ($userId && $username && $email) {
+    $isAuthenticated = true;
+}
+
+// Check if super admin is authenticated
+if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin') {
+    $isAuthenticated = true;
+}
+
+if (!$isApiCall && !$isAuthenticated) {
     // Redirect to login if not authenticated (only for web interface)
     header("Location: /login");
     exit;
