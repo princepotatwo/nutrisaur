@@ -128,12 +128,21 @@ function handleAddFood($pdo) {
     }
     
     // Validate required fields
-    $required = ['user_email', 'date', 'meal_category', 'food_name', 'calories', 'serving_size'];
+    $required = ['user_email', 'meal_category', 'food_name', 'calories', 'serving_size'];
     foreach ($required as $field) {
         if (!isset($data[$field]) || empty($data[$field])) {
             throw new Exception("Missing required field: $field");
         }
     }
+    
+    // Special validation for date field
+    if (!isset($data['is_mho_recommended']) || $data['is_mho_recommended'] != 1) {
+        // For regular foods, date is required
+        if (!isset($data['date']) || empty($data['date'])) {
+            throw new Exception("Missing required field: date");
+        }
+    }
+    // For MHO recommended foods, date can be null
     
     // Validate meal category
     $validMeals = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
