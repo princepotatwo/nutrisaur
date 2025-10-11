@@ -8478,31 +8478,42 @@ header {
                             if (dayFoods.length > 0) {
                                 const firstFoodId = dayFoods[0].id;
                                 
-                fetch('api/DatabaseAPI.php?action=add_comment', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        id: firstFoodId,
-                        comment: comment,
-                        mho_email: mhoEmail
+                                fetch('api/DatabaseAPI.php?action=add_comment', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        id: firstFoodId,
+                                        comment: comment,
+                                        mho_email: mhoEmail
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        alert('Comment added successfully');
+                                        // Refresh the food history modal
+                                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                                    } else {
+                                        alert('Error: ' + data.error);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error adding comment:', error);
+                                    alert('Error adding comment');
+                                });
+                            } else {
+                                alert('No food items found for this day');
+                            }
+                        } else {
+                            alert('No food data found');
+                        }
                     })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Comment added successfully');
-                        // Refresh the food history modal
-                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
-                    } else {
-                        alert('Error: ' + data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error adding comment:', error);
-                    alert('Error adding comment');
-                });
+                    .catch(error => {
+                        console.error('Error getting food data:', error);
+                        alert('Error getting food data');
+                    });
             }
         }
 
