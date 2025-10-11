@@ -148,26 +148,26 @@ function handleAddFood($pdo) {
         throw new Exception('User not found');
     }
     
-    // Handle MHO recommended foods separately
-    if (isset($data['is_mho_recommended']) && $data['is_mho_recommended'] == 1) {
-        // For MHO recommended foods, store with special date and don't add to user's actual food history
-        $sql = "INSERT INTO user_food_history 
-                (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
-                VALUES (?, 'recommended', ?, ?, ?, ?, ?, ?, ?, ?, 1)";
-        
-        $stmt = $pdo->prepare($sql);
-        $result = $stmt->execute([
-            $data['user_email'],
-            $data['meal_category'],
-            $data['food_name'],
-            $data['calories'],
-            $data['serving_size'],
-            $data['protein'] ?? 0,
-            $data['carbs'] ?? 0,
-            $data['fat'] ?? 0,
-            $data['fiber'] ?? 0
-        ]);
-    } else {
+        // Handle MHO recommended foods separately
+        if (isset($data['is_mho_recommended']) && $data['is_mho_recommended'] == 1) {
+            // For MHO recommended foods, store with NULL date and mark as recommended
+            $sql = "INSERT INTO user_food_history 
+                    (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
+                    VALUES (?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
+            
+            $stmt = $pdo->prepare($sql);
+            $result = $stmt->execute([
+                $data['user_email'],
+                $data['meal_category'],
+                $data['food_name'],
+                $data['calories'],
+                $data['serving_size'],
+                $data['protein'] ?? 0,
+                $data['carbs'] ?? 0,
+                $data['fat'] ?? 0,
+                $data['fiber'] ?? 0
+            ]);
+        } else {
         // Regular food history entry
         $sql = "INSERT INTO user_food_history 
                 (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
@@ -847,9 +847,9 @@ function handleGetRecommendedFoods($pdo) {
             throw new Exception('User email is required');
         }
         
-        // Get all recommended foods for the user (only those with date = 'recommended')
+        // Get all recommended foods for the user (only those with date IS NULL)
         $sql = "SELECT * FROM user_food_history 
-                WHERE user_email = ? AND is_mho_recommended = 1 AND date = 'recommended'
+                WHERE user_email = ? AND is_mho_recommended = 1 AND date IS NULL
                 ORDER BY meal_category, food_name";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$userEmail]);
@@ -897,8 +897,8 @@ function handleAddRecommendedToMeal($pdo) {
             throw new Exception('Missing required fields');
         }
         
-        // Get the recommended food details
-        $sql = "SELECT * FROM user_food_history WHERE id = ? AND user_email = ? AND is_mho_recommended = 1";
+        // Get the recommended food details (only those with date IS NULL)
+        $sql = "SELECT * FROM user_food_history WHERE id = ? AND user_email = ? AND is_mho_recommended = 1 AND date IS NULL";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$recommendedFoodId, $userEmail]);
         $recommendedFood = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -918,7 +918,7 @@ function handleAddRecommendedToMeal($pdo) {
             throw new Exception('This food is already added to your meal plan for this date');
         }
         
-        // Add to user's actual food history
+        // Create a copy of the recommended food with real date and is_mho_recommended = 0
         $sql = "INSERT INTO user_food_history 
                 (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";

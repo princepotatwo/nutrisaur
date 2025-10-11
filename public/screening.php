@@ -9142,7 +9142,7 @@ header {
                 
                 const foodData = {
                     user_email: userEmail,
-                    date: 'recommended', // Special date for MHO recommended foods (not added to user's actual food history)
+                    date: null, // NULL date for MHO recommended foods (not added to user's actual food history)
                     meal_category: formData.get('meal_category'),
                     food_name: formData.get('food_name'),
                     calories: parseInt(formData.get('calories')),
