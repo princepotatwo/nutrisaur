@@ -429,16 +429,31 @@ function handleDeleteFood($pdo) {
     $foodName = $_GET['food_name'] ?? $_POST['food_name'] ?? '';
     $mealCategory = $_GET['meal_category'] ?? $_POST['meal_category'] ?? '';
     
+    // Debug logging
+    error_log("Delete Food Debug - ID: " . $id . ", User: " . $userEmail . ", Date: " . $date . ", Food: " . $foodName . ", Meal: " . $mealCategory);
+    
     if (!empty($id)) {
         // ID-based deletion (for web interface)
         $sql = "DELETE FROM user_food_history WHERE id = ?";
         $stmt = $pdo->prepare($sql);
         $result = $stmt->execute([$id]);
+        error_log("Delete by ID - SQL executed, result: " . ($result ? 'true' : 'false'));
     } else if (!empty($userEmail) && !empty($date) && !empty($foodName) && !empty($mealCategory)) {
         // Parameter-based deletion (for Android app)
+        // First, let's check what exists in the database
+        $checkSql = "SELECT id, user_email, date, food_name, meal_category FROM user_food_history WHERE user_email = ? AND date = ?";
+        $checkStmt = $pdo->prepare($checkSql);
+        $checkStmt->execute([$userEmail, $date]);
+        $existingRecords = $checkStmt->fetchAll(PDO::FETCH_ASSOC);
+        error_log("Delete Debug - Found " . count($existingRecords) . " records for user " . $userEmail . " on date " . $date);
+        foreach ($existingRecords as $record) {
+            error_log("Delete Debug - Record: ID=" . $record['id'] . ", Food=" . $record['food_name'] . ", Meal=" . $record['meal_category']);
+        }
+        
         $sql = "DELETE FROM user_food_history WHERE user_email = ? AND date = ? AND food_name = ? AND meal_category = ?";
         $stmt = $pdo->prepare($sql);
         $result = $stmt->execute([$userEmail, $date, $foodName, $mealCategory]);
+        error_log("Delete by params - SQL executed, result: " . ($result ? 'true' : 'false') . ", rows affected: " . $stmt->rowCount());
     } else {
         throw new Exception('Either food entry ID or (user_email, date, food_name, meal_category) are required');
     }
