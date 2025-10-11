@@ -9008,9 +9008,12 @@ header {
                                                     
                                                     return `
                                                         <div class="meal-section" style="margin-bottom: 15px;">
-                                                            <div class="meal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 8px 10px; background: var(--card-bg); border-radius: 4px;">
-                                                                <h4 style="margin: 0; color: var(--text-primary); font-size: 14px;">${meal} (${mealFoods.length} items)</h4>
-                                                                <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600;">
+                                                            <div class="meal-header" style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 10px; align-items: center; margin-bottom: 8px; padding: 8px 10px; background: var(--card-bg); border-radius: 4px; font-size: 12px; font-weight: 600;">
+                                                                <div style="color: var(--text-primary);">${meal}</div>
+                                                                <div style="color: var(--text-secondary);">${mealFoods.length} items</div>
+                                                                <div style="color: var(--text-secondary);">${mealFoods.filter(f => f.is_flagged == 1).length} flagged</div>
+                                                                <div style="color: var(--text-secondary);">${mealFoods.reduce((sum, f) => sum + f.calories, 0)} kcal</div>
+                                                                <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 600;">
                                                                     ${isMealFlagged ? '✅ Unflag' : '🚩 Flag'}
                                                                 </button>
                                                             </div>
