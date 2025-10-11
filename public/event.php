@@ -5076,6 +5076,13 @@ header:hover {
 }
 
 /* ===== VIEW EVENT MODAL STYLES ===== */
+.large-modal {
+    width: 90%;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
 .event-details-section {
     margin-bottom: 30px;
     padding: 20px;
@@ -5262,6 +5269,211 @@ header:hover {
 .light-theme .form-control:focus {
     border-color: var(--color-highlight);
     box-shadow: 0 0 0 2px rgba(118, 187, 110, 0.2);
+}
+
+/* ===== BULK ADD MODAL STYLES ===== */
+.bulk-add-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bulk-add-content {
+    background: var(--color-card);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.bulk-add-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bulk-add-header h4 {
+    margin: 0;
+    color: var(--color-text);
+}
+
+.bulk-add-body {
+    padding: 20px;
+}
+
+.search-box {
+    margin-bottom: 20px;
+}
+
+.participants-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.participant-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.participant-card:hover {
+    border-color: var(--color-highlight);
+    box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
+}
+
+.participant-info h5 {
+    margin: 0 0 5px 0;
+    color: var(--color-text);
+    font-size: 16px;
+}
+
+.participant-info p {
+    margin: 2px 0;
+    color: var(--color-text);
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.participant-checkbox {
+    transform: scale(1.2);
+}
+
+.selected-participants {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.selected-participants h5 {
+    margin: 0 0 10px 0;
+    color: var(--color-text);
+}
+
+.selected-list {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.selected-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--color-card);
+    border-radius: 6px;
+    margin-bottom: 5px;
+    border: 1px solid var(--color-border);
+}
+
+.selected-item span {
+    color: var(--color-text);
+    font-size: 14px;
+}
+
+.bulk-add-footer {
+    padding: 20px;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* ===== PARTICIPANTS HEADER ===== */
+.participants-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.participant-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* ===== PENDING PARTICIPANTS ===== */
+.pending-participant {
+    background: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid #ffc107;
+}
+
+.pending-badge {
+    background: #ffc107;
+    color: #000;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+/* ===== NOTIFICATIONS ===== */
+.notification {
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ===== RESPONSIVE IMPROVEMENTS ===== */
+@media (max-width: 768px) {
+    .large-modal {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    .participants-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .participants-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .participant-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .bulk-add-content {
+        width: 95%;
+        max-height: 90vh;
+    }
 }
     </style>
 <body class="dark-theme">
@@ -5779,9 +5991,9 @@ header:hover {
 
 <!-- View Event Modal -->
 <div id="viewEventModal" class="modal" style="display: none;">
-    <div class="modal-content">
+    <div class="modal-content large-modal">
         <div class="modal-header">
-            <h2>Event Details</h2>
+            <h2>Event Details & Participants</h2>
             <span class="close" onclick="closeViewEventModal()">&times;</span>
         </div>
         <div class="modal-body">
@@ -5818,18 +6030,38 @@ header:hover {
 
             <!-- Participants Section -->
             <div class="participants-section">
-                <h3>Participants (<span id="participantCount">0</span>)</h3>
-                
-                <!-- Add Participant Form -->
-                <div class="add-participant-form">
-                    <h4>Add Participant</h4>
-                    <div class="form-group">
-                        <label for="participantSelect">Select Community User:</label>
-                        <select id="participantSelect" class="form-control">
-                            <option value="">Loading community users...</option>
-                        </select>
+                <div class="participants-header">
+                    <h3>Participants (<span id="participantCount">0</span>)</h3>
+                    <div class="participant-actions">
+                        <button type="button" class="btn btn-success" onclick="showBulkAddModal()">Bulk Add Participants</button>
+                        <button type="button" class="btn btn-primary" onclick="saveAllParticipants()" id="saveAllBtn" style="display: none;">Save All Changes</button>
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="addParticipant()">Add Participant</button>
+                </div>
+                
+                <!-- Bulk Add Modal -->
+                <div id="bulkAddModal" class="bulk-add-modal" style="display: none;">
+                    <div class="bulk-add-content">
+                        <div class="bulk-add-header">
+                            <h4>Select Multiple Participants</h4>
+                            <span class="close" onclick="closeBulkAddModal()">&times;</span>
+                        </div>
+                        <div class="bulk-add-body">
+                            <div class="search-box">
+                                <input type="text" id="participantSearch" placeholder="Search participants..." class="form-control" onkeyup="filterParticipants()">
+                            </div>
+                            <div class="participants-grid" id="participantsGrid">
+                                <!-- Participants will be loaded here -->
+                            </div>
+                            <div class="selected-participants">
+                                <h5>Selected Participants (<span id="selectedCount">0</span>):</h5>
+                                <div id="selectedList" class="selected-list"></div>
+                            </div>
+                        </div>
+                        <div class="bulk-add-footer">
+                            <button type="button" class="btn btn-secondary" onclick="closeBulkAddModal()">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="addSelectedParticipants()">Add Selected</button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Participants Table -->
@@ -6052,11 +6284,11 @@ function closeCreateEventModal() {
                     document.getElementById('viewEventOrganizer').textContent = event.organizer;
                     document.getElementById('participantCount').textContent = data.participant_count;
                 } else {
-                    alert('Error loading event details: ' + data.message);
+                    showNotification('Error loading event details: ' + data.message, 'error');
                 }
             } catch (error) {
                 console.error('Error loading event details:', error);
-                alert('Error loading event details');
+                showNotification('Error loading event details', 'error');
             }
         }
 
@@ -6070,29 +6302,19 @@ function closeCreateEventModal() {
                 tbody.innerHTML = '';
                 
                 if (data.success && data.participants.length > 0) {
+                    window.currentParticipants = data.participants; // Store for reference
                     data.participants.forEach(participant => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${participant.name}</td>
-                            <td>${participant.email}</td>
-                            <td>${participant.age}</td>
-                            <td>${participant.sex}</td>
-                            <td>${participant.municipality}</td>
-                            <td>${participant.barangay}</td>
-                            <td>
-                                <button onclick="removeParticipant(${participant.participant_id})" class="btn btn-danger btn-sm">Remove</button>
-                            </td>
-                        `;
-                        tbody.appendChild(row);
+                        addParticipantRow(participant, false);
                     });
                 } else {
+                    window.currentParticipants = [];
                     const row = document.createElement('tr');
                     row.innerHTML = '<td colspan="7" class="no-participants">No participants yet</td>';
                     tbody.appendChild(row);
                 }
             } catch (error) {
                 console.error('Error loading participants:', error);
-                alert('Error loading participants');
+                showNotification('Error loading participants', 'error');
             }
         }
 
@@ -6163,10 +6385,6 @@ function closeCreateEventModal() {
 
         // Remove participant from event
         async function removeParticipant(participantId) {
-            if (!confirm('Are you sure you want to remove this participant?')) {
-                return;
-            }
-            
             try {
                 const formData = new FormData();
                 formData.append('action', 'remove_participant');
@@ -6180,17 +6398,17 @@ function closeCreateEventModal() {
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert('Participant removed successfully');
+                    showNotification('Participant removed successfully', 'success');
                     const eventId = getCurrentEventId();
                     loadEventParticipants(eventId);
                     loadAvailableUsers(eventId);
                     loadEventDetails(eventId); // Refresh participant count
                 } else {
-                    alert('Error removing participant: ' + data.message);
+                    showNotification('Error removing participant: ' + data.message, 'error');
                 }
             } catch (error) {
                 console.error('Error removing participant:', error);
-                alert('Error removing participant');
+                showNotification('Error removing participant', 'error');
             }
         }
 
@@ -6203,10 +6421,291 @@ function closeCreateEventModal() {
         // Store event ID when opening modal
         function openViewModal(eventId) {
             window.currentEventId = eventId;
+            window.pendingParticipants = []; // Track participants to be added
             document.getElementById('viewEventModal').style.display = 'block';
             loadEventDetails(eventId);
             loadEventParticipants(eventId);
             loadAvailableUsers(eventId);
+        }
+
+        // Show bulk add modal
+        function showBulkAddModal() {
+            document.getElementById('bulkAddModal').style.display = 'block';
+            loadBulkParticipants();
+        }
+
+        // Close bulk add modal
+        function closeBulkAddModal() {
+            document.getElementById('bulkAddModal').style.display = 'none';
+            document.getElementById('participantSearch').value = '';
+            document.getElementById('selectedList').innerHTML = '';
+            document.getElementById('selectedCount').textContent = '0';
+            window.selectedParticipants = [];
+        }
+
+        // Load participants for bulk selection
+        async function loadBulkParticipants() {
+            try {
+                const eventId = getCurrentEventId();
+                const response = await fetch(`event.php?action=get_available_users&event_id=${eventId}`);
+                const data = await response.json();
+                
+                const grid = document.getElementById('participantsGrid');
+                grid.innerHTML = '';
+                
+                if (data.success && data.users.length > 0) {
+                    data.users.forEach(user => {
+                        const participantCard = document.createElement('div');
+                        participantCard.className = 'participant-card';
+                        participantCard.innerHTML = `
+                            <div class="participant-info">
+                                <h5>${user.name}</h5>
+                                <p>${user.email}</p>
+                                <p>Age: ${user.age} | ${user.sex}</p>
+                                <p>${user.municipality}, ${user.barangay}</p>
+                            </div>
+                            <div class="participant-actions">
+                                <input type="checkbox" class="participant-checkbox" value="${user.email}" onchange="toggleParticipantSelection('${user.email}', '${user.name}', this.checked)">
+                            </div>
+                        `;
+                        grid.appendChild(participantCard);
+                    });
+                } else {
+                    grid.innerHTML = '<div class="no-participants">No available participants</div>';
+                }
+            } catch (error) {
+                console.error('Error loading bulk participants:', error);
+            }
+        }
+
+        // Toggle participant selection
+        function toggleParticipantSelection(email, name, isSelected) {
+            if (!window.selectedParticipants) {
+                window.selectedParticipants = [];
+            }
+            
+            if (isSelected) {
+                if (!window.selectedParticipants.find(p => p.email === email)) {
+                    window.selectedParticipants.push({ email, name });
+                }
+            } else {
+                window.selectedParticipants = window.selectedParticipants.filter(p => p.email !== email);
+            }
+            
+            updateSelectedList();
+        }
+
+        // Update selected participants list
+        function updateSelectedList() {
+            const selectedList = document.getElementById('selectedList');
+            const selectedCount = document.getElementById('selectedCount');
+            
+            selectedList.innerHTML = '';
+            selectedCount.textContent = window.selectedParticipants.length;
+            
+            window.selectedParticipants.forEach(participant => {
+                const item = document.createElement('div');
+                item.className = 'selected-item';
+                item.innerHTML = `
+                    <span>${participant.name} (${participant.email})</span>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="removeFromSelection('${participant.email}')">×</button>
+                `;
+                selectedList.appendChild(item);
+            });
+        }
+
+        // Remove from selection
+        function removeFromSelection(email) {
+            window.selectedParticipants = window.selectedParticipants.filter(p => p.email !== email);
+            updateSelectedList();
+            
+            // Uncheck the checkbox
+            const checkbox = document.querySelector(`input[value="${email}"]`);
+            if (checkbox) {
+                checkbox.checked = false;
+            }
+        }
+
+        // Filter participants
+        function filterParticipants() {
+            const searchTerm = document.getElementById('participantSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.participant-card');
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+
+        // Add selected participants
+        async function addSelectedParticipants() {
+            if (!window.selectedParticipants || window.selectedParticipants.length === 0) {
+                return;
+            }
+            
+            // Add to pending participants
+            if (!window.pendingParticipants) {
+                window.pendingParticipants = [];
+            }
+            
+            window.selectedParticipants.forEach(participant => {
+                if (!window.pendingParticipants.find(p => p.email === participant.email)) {
+                    window.pendingParticipants.push(participant);
+                }
+            });
+            
+            // Update UI
+            updatePendingParticipants();
+            closeBulkAddModal();
+            showSaveButton();
+        }
+
+        // Update pending participants display
+        function updatePendingParticipants() {
+            const tbody = document.getElementById('participantsTableBody');
+            tbody.innerHTML = '';
+            
+            // Add existing participants
+            if (window.currentParticipants) {
+                window.currentParticipants.forEach(participant => {
+                    addParticipantRow(participant, false);
+                });
+            }
+            
+            // Add pending participants
+            if (window.pendingParticipants) {
+                window.pendingParticipants.forEach(participant => {
+                    addParticipantRow(participant, true);
+                });
+            }
+            
+            if (tbody.children.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="7" class="no-participants">No participants yet</td>';
+                tbody.appendChild(row);
+            }
+        }
+
+        // Add participant row
+        function addParticipantRow(participant, isPending = false) {
+            const tbody = document.getElementById('participantsTableBody');
+            const row = document.createElement('tr');
+            if (isPending) {
+                row.className = 'pending-participant';
+            }
+            
+            row.innerHTML = `
+                <td>${participant.name} ${isPending ? '<span class="pending-badge">(Pending)</span>' : ''}</td>
+                <td>${participant.email}</td>
+                <td>${participant.age || 'N/A'}</td>
+                <td>${participant.sex || 'N/A'}</td>
+                <td>${participant.municipality || 'N/A'}</td>
+                <td>${participant.barangay || 'N/A'}</td>
+                <td>
+                    ${isPending ? 
+                        `<button onclick="removePendingParticipant('${participant.email}')" class="btn btn-warning btn-sm">Remove</button>` :
+                        `<button onclick="removeParticipant(${participant.participant_id})" class="btn btn-danger btn-sm">Remove</button>`
+                    }
+                </td>
+            `;
+            tbody.appendChild(row);
+        }
+
+        // Remove pending participant
+        function removePendingParticipant(email) {
+            window.pendingParticipants = window.pendingParticipants.filter(p => p.email !== email);
+            updatePendingParticipants();
+            
+            if (window.pendingParticipants.length === 0) {
+                hideSaveButton();
+            }
+        }
+
+        // Show save button
+        function showSaveButton() {
+            document.getElementById('saveAllBtn').style.display = 'inline-block';
+        }
+
+        // Hide save button
+        function hideSaveButton() {
+            document.getElementById('saveAllBtn').style.display = 'none';
+        }
+
+        // Save all participants
+        async function saveAllParticipants() {
+            if (!window.pendingParticipants || window.pendingParticipants.length === 0) {
+                return;
+            }
+            
+            const eventId = getCurrentEventId();
+            let successCount = 0;
+            let errorCount = 0;
+            
+            for (const participant of window.pendingParticipants) {
+                try {
+                    const formData = new FormData();
+                    formData.append('action', 'add_participant');
+                    formData.append('event_id', eventId);
+                    formData.append('user_email', participant.email);
+                    
+                    const response = await fetch('event.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        successCount++;
+                    } else {
+                        errorCount++;
+                        console.error('Error adding participant:', data.message);
+                    }
+                } catch (error) {
+                    errorCount++;
+                    console.error('Error adding participant:', error);
+                }
+            }
+            
+            // Clear pending participants
+            window.pendingParticipants = [];
+            hideSaveButton();
+            
+            // Refresh the display
+            loadEventParticipants(eventId);
+            loadEventDetails(eventId);
+            
+            // Show success message
+            if (successCount > 0) {
+                showNotification(`Successfully added ${successCount} participant(s)`, 'success');
+            }
+            if (errorCount > 0) {
+                showNotification(`Failed to add ${errorCount} participant(s)`, 'error');
+            }
+        }
+
+        // Show notification (non-blocking)
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 4px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                ${type === 'success' ? 'background: #28a745;' : 'background: #dc3545;'}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
 
         // Edit form submission handler
