@@ -101,6 +101,10 @@ try {
             handleGetRecommendedFoods($pdo);
             break;
             
+        case 'add_recommended_to_meal':
+            handleAddRecommendedToMeal($pdo);
+            break;
+            
         default:
             throw new Exception('Invalid action specified');
     }
@@ -144,30 +148,54 @@ function handleAddFood($pdo) {
         throw new Exception('User not found');
     }
     
-    // Insert food entry
-    $sql = "INSERT INTO user_food_history 
-            (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    
-    $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute([
-        $data['user_email'],
-        $data['date'],
-        $data['meal_category'],
-        $data['food_name'],
-        $data['calories'],
-        $data['serving_size'],
-        $data['protein'] ?? 0,
-        $data['carbs'] ?? 0,
-        $data['fat'] ?? 0,
-        $data['fiber'] ?? 0,
-        $data['is_mho_recommended'] ?? 0
-    ]);
+    // Handle MHO recommended foods separately
+    if (isset($data['is_mho_recommended']) && $data['is_mho_recommended'] == 1) {
+        // For MHO recommended foods, store with special date and don't add to user's actual food history
+        $sql = "INSERT INTO user_food_history 
+                (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
+                VALUES (?, 'recommended', ?, ?, ?, ?, ?, ?, ?, ?, 1)";
+        
+        $stmt = $pdo->prepare($sql);
+        $result = $stmt->execute([
+            $data['user_email'],
+            $data['meal_category'],
+            $data['food_name'],
+            $data['calories'],
+            $data['serving_size'],
+            $data['protein'] ?? 0,
+            $data['carbs'] ?? 0,
+            $data['fat'] ?? 0,
+            $data['fiber'] ?? 0
+        ]);
+    } else {
+        // Regular food history entry
+        $sql = "INSERT INTO user_food_history 
+                (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
+        
+        $stmt = $pdo->prepare($sql);
+        $result = $stmt->execute([
+            $data['user_email'],
+            $data['date'],
+            $data['meal_category'],
+            $data['food_name'],
+            $data['calories'],
+            $data['serving_size'],
+            $data['protein'] ?? 0,
+            $data['carbs'] ?? 0,
+            $data['fat'] ?? 0,
+            $data['fiber'] ?? 0
+        ]);
+    }
     
     if ($result) {
+        $message = (isset($data['is_mho_recommended']) && $data['is_mho_recommended'] == 1) 
+            ? 'MHO recommended food added successfully' 
+            : 'Food entry added successfully';
+        
         echo json_encode([
             'success' => true,
-            'message' => 'Food entry added successfully',
+            'message' => $message,
             'id' => $pdo->lastInsertId()
         ]);
     } else {
@@ -819,9 +847,9 @@ function handleGetRecommendedFoods($pdo) {
             throw new Exception('User email is required');
         }
         
-        // Get all recommended foods for the user
+        // Get all recommended foods for the user (only those with date = 'recommended')
         $sql = "SELECT * FROM user_food_history 
-                WHERE user_email = ? AND is_mho_recommended = 1 
+                WHERE user_email = ? AND is_mho_recommended = 1 AND date = 'recommended'
                 ORDER BY meal_category, food_name";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$userEmail]);
@@ -843,6 +871,81 @@ function handleGetRecommendedFoods($pdo) {
             'data' => $groupedFoods,
             'count' => count($foods)
         ]);
+        
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+function handleAddRecommendedToMeal($pdo) {
+    try {
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        
+        if (!$data) {
+            throw new Exception('Invalid JSON data');
+        }
+        
+        $userEmail = $data['user_email'] ?? '';
+        $date = $data['date'] ?? '';
+        $recommendedFoodId = $data['recommended_food_id'] ?? '';
+        
+        if (empty($userEmail) || empty($date) || empty($recommendedFoodId)) {
+            throw new Exception('Missing required fields');
+        }
+        
+        // Get the recommended food details
+        $sql = "SELECT * FROM user_food_history WHERE id = ? AND user_email = ? AND is_mho_recommended = 1";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$recommendedFoodId, $userEmail]);
+        $recommendedFood = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$recommendedFood) {
+            throw new Exception('Recommended food not found');
+        }
+        
+        // Check if already added to this date
+        $sql = "SELECT COUNT(*) FROM user_food_history 
+                WHERE user_email = ? AND date = ? AND meal_category = ? AND food_name = ? AND is_mho_recommended = 0";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$userEmail, $date, $recommendedFood['meal_category'], $recommendedFood['food_name']]);
+        $count = $stmt->fetchColumn();
+        
+        if ($count > 0) {
+            throw new Exception('This food is already added to your meal plan for this date');
+        }
+        
+        // Add to user's actual food history
+        $sql = "INSERT INTO user_food_history 
+                (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
+        
+        $stmt = $pdo->prepare($sql);
+        $result = $stmt->execute([
+            $userEmail,
+            $date,
+            $recommendedFood['meal_category'],
+            $recommendedFood['food_name'],
+            $recommendedFood['calories'],
+            $recommendedFood['serving_size'],
+            $recommendedFood['protein'],
+            $recommendedFood['carbs'],
+            $recommendedFood['fat'],
+            $recommendedFood['fiber']
+        ]);
+        
+        if ($result) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Recommended food added to your meal plan successfully',
+                'id' => $pdo->lastInsertId()
+            ]);
+        } else {
+            throw new Exception('Failed to add recommended food to meal plan');
+        }
         
     } catch (Exception $e) {
         echo json_encode([

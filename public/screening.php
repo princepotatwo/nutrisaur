@@ -9140,15 +9140,9 @@ header {
                 
                 const formData = new FormData(this);
                 
-                // Get today's date in YYYY-MM-DD format
-                const today = new Date();
-                const todayString = today.getFullYear() + '-' + 
-                    String(today.getMonth() + 1).padStart(2, '0') + '-' + 
-                    String(today.getDate()).padStart(2, '0');
-                
                 const foodData = {
                     user_email: userEmail,
-                    date: todayString, // Use today's date for recommended foods
+                    date: 'recommended', // Special date for MHO recommended foods (not added to user's actual food history)
                     meal_category: formData.get('meal_category'),
                     food_name: formData.get('food_name'),
                     calories: parseInt(formData.get('calories')),
