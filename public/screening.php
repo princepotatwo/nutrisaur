@@ -8959,12 +8959,7 @@ header {
                                     
                                     return `
                                         <div class="date-section" style="margin-bottom: 25px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
-                                            <div style="background: var(--card-bg); padding: 12px 15px; border-bottom: 1px solid var(--border-color);">
-                                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                                    <h3 style="margin: 0; color: var(--text-primary); font-size: 16px;">📅 ${new Date(date).toLocaleDateString()}</h3>
-                                                </div>
-                                            </div>
-                                            <div class="date-content" style="padding: 10px;">
+                                            <div style="padding: 10px;">
                                                 ${['Breakfast', 'Lunch', 'Dinner', 'Snacks'].map(meal => {
                                                     const mealFoods = dateFoods.filter(food => food.meal_category === meal);
                                                     if (mealFoods.length === 0) return '';
