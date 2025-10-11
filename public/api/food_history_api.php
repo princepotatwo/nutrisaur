@@ -422,20 +422,33 @@ function handleUpdateFood($pdo) {
  * Delete food entry
  */
 function handleDeleteFood($pdo) {
+    // Support both ID-based deletion and parameter-based deletion
     $id = $_GET['id'] ?? $_POST['id'] ?? '';
+    $userEmail = $_GET['user_email'] ?? $_POST['user_email'] ?? '';
+    $date = $_GET['date'] ?? $_POST['date'] ?? '';
+    $foodName = $_GET['food_name'] ?? $_POST['food_name'] ?? '';
+    $mealCategory = $_GET['meal_category'] ?? $_POST['meal_category'] ?? '';
     
-    if (empty($id)) {
-        throw new Exception('Food entry ID is required');
+    if (!empty($id)) {
+        // ID-based deletion (for web interface)
+        $sql = "DELETE FROM user_food_history WHERE id = ?";
+        $stmt = $pdo->prepare($sql);
+        $result = $stmt->execute([$id]);
+    } else if (!empty($userEmail) && !empty($date) && !empty($foodName) && !empty($mealCategory)) {
+        // Parameter-based deletion (for Android app)
+        $sql = "DELETE FROM user_food_history WHERE user_email = ? AND date = ? AND food_name = ? AND meal_category = ?";
+        $stmt = $pdo->prepare($sql);
+        $result = $stmt->execute([$userEmail, $date, $foodName, $mealCategory]);
+    } else {
+        throw new Exception('Either food entry ID or (user_email, date, food_name, meal_category) are required');
     }
     
-    $sql = "DELETE FROM user_food_history WHERE id = ?";
-    $stmt = $pdo->prepare($sql);
-    $result = $stmt->execute([$id]);
-    
     if ($result) {
+        $deletedCount = $stmt->rowCount();
         echo json_encode([
             'success' => true,
-            'message' => 'Food entry deleted successfully'
+            'message' => 'Food entry deleted successfully',
+            'deleted_count' => $deletedCount
         ]);
     } else {
         throw new Exception('Failed to delete food entry');
