@@ -8982,17 +8982,17 @@ header {
                                                             <table class="food-history-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
                                                                 <thead>
                                                                     <tr style="background: var(--color-primary); color: white;">
-                                                                        <th colspan="3" style="padding: 10px 8px; text-align: left; font-size: 14px; font-weight: 600;">
-                                                                            🍽️ ${meal} - ${new Date(date).toLocaleDateString()}
-                                                                        </th>
-                                                                        <th style="padding: 10px 8px; text-align: right; font-size: 12px;">
-                                                                            <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                                                                                <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${date}')" style="background: ${isDayFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
-                                                                                    ${isDayFlagged ? '✅ Flag Day' : '🚩 Flag Day'}
-                                                                                </button>
-                                                                                <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
-                                                                                    ${isMealFlagged ? '✅ Flag Meal' : '🚩 Flag Meal'}
-                                                                                </button>
+                                                                        <th colspan="4" style="padding: 10px 8px; text-align: center; font-size: 14px; font-weight: 600; position: relative;">
+                                                                            <div style="display: flex; justify-content: center; align-items: center; position: relative;">
+                                                                                <span>🍽️ ${meal} - ${new Date(date).toLocaleDateString()}</span>
+                                                                                <div style="position: absolute; right: 0; display: flex; gap: 8px;">
+                                                                                    <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${date}')" style="background: ${isDayFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
+                                                                                        ${isDayFlagged ? '✅ Flag Day' : '🚩 Flag Day'}
+                                                                                    </button>
+                                                                                    <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
+                                                                                        ${isMealFlagged ? '✅ Flag Meal' : '🚩 Flag Meal'}
+                                                                                    </button>
+                                                                                </div>
                                                                             </div>
                                                                         </th>
                                                                     </tr>
