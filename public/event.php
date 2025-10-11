@@ -342,6 +342,219 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
     }
 }
 
+// 🚨 PARTICIPANT MANAGEMENT HANDLERS
+// Add participant to event
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'add_participant') {
+    header('Content-Type: application/json');
+    
+    $eventId = $_POST['event_id'] ?? null;
+    $userEmail = $_POST['user_email'] ?? null;
+    
+    if (!$eventId || !$userEmail) {
+        echo json_encode(['success' => false, 'message' => 'Missing required parameters']);
+        exit;
+    }
+    
+    try {
+        $db = DatabaseAPI::getInstance();
+        
+        // Check if participant already exists
+        $checkResult = $db->universalQuery("SELECT id FROM event_participants WHERE event_id = ? AND community_user_email = ?", [$eventId, $userEmail]);
+        
+        if ($checkResult['success'] && !empty($checkResult['data'])) {
+            echo json_encode(['success' => false, 'message' => 'Participant already added to this event']);
+            exit;
+        }
+        
+        // Add participant
+        $result = $db->universalInsert('event_participants', [
+            'event_id' => $eventId,
+            'community_user_email' => $userEmail,
+            'added_by' => $_SESSION['admin_id'] ?? $_SESSION['user_id'] ?? 'system'
+        ]);
+        
+        if ($result['success']) {
+            echo json_encode(['success' => true, 'message' => 'Participant added successfully']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to add participant: ' . ($result['message'] ?? 'Unknown error')]);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
+// Remove participant from event
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'remove_participant') {
+    header('Content-Type: application/json');
+    
+    $participantId = $_POST['participant_id'] ?? null;
+    
+    if (!$participantId) {
+        echo json_encode(['success' => false, 'message' => 'Missing participant ID']);
+        exit;
+    }
+    
+    try {
+        $db = DatabaseAPI::getInstance();
+        $result = $db->universalDelete('event_participants', 'id = ?', [$participantId]);
+        
+        if ($result['success']) {
+            echo json_encode(['success' => true, 'message' => 'Participant removed successfully']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to remove participant: ' . ($result['message'] ?? 'Unknown error')]);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
+// Get event participants
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['action'] === 'get_event_participants') {
+    header('Content-Type: application/json');
+    
+    $eventId = $_GET['event_id'] ?? null;
+    
+    if (!$eventId) {
+        echo json_encode(['success' => false, 'message' => 'Missing event ID']);
+        exit;
+    }
+    
+    try {
+        $db = DatabaseAPI::getInstance();
+        
+        // Join event_participants with community_users to get full user details
+        $sql = "SELECT 
+                    ep.id as participant_id,
+                    ep.added_at,
+                    cu.name,
+                    cu.email,
+                    cu.birthday,
+                    cu.sex,
+                    cu.municipality,
+                    cu.barangay
+                FROM event_participants ep
+                JOIN community_users cu ON ep.community_user_email = cu.email
+                WHERE ep.event_id = ?
+                ORDER BY ep.added_at DESC";
+        
+        $result = $db->universalQuery($sql, [$eventId]);
+        
+        if ($result['success']) {
+            // Calculate age for each participant
+            $participants = $result['data'];
+            foreach ($participants as &$participant) {
+                if ($participant['birthday']) {
+                    $birthDate = new DateTime($participant['birthday']);
+                    $today = new DateTime();
+                    $age = $today->diff($birthDate)->y;
+                    $participant['age'] = $age;
+                } else {
+                    $participant['age'] = 'N/A';
+                }
+            }
+            
+            echo json_encode(['success' => true, 'participants' => $participants]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to fetch participants: ' . ($result['message'] ?? 'Unknown error')]);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
+// Get available community users (not already in the event)
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['action'] === 'get_available_users') {
+    header('Content-Type: application/json');
+    
+    $eventId = $_GET['event_id'] ?? null;
+    
+    try {
+        $db = DatabaseAPI::getInstance();
+        
+        if ($eventId) {
+            // Get users not already in this event
+            $sql = "SELECT name, email, birthday, sex, municipality, barangay 
+                    FROM community_users 
+                    WHERE email NOT IN (
+                        SELECT community_user_email 
+                        FROM event_participants 
+                        WHERE event_id = ?
+                    )
+                    ORDER BY name ASC";
+            $result = $db->universalQuery($sql, [$eventId]);
+        } else {
+            // Get all users
+            $sql = "SELECT name, email, birthday, sex, municipality, barangay 
+                    FROM community_users 
+                    ORDER BY name ASC";
+            $result = $db->universalQuery($sql);
+        }
+        
+        if ($result['success']) {
+            // Calculate age for each user
+            $users = $result['data'];
+            foreach ($users as &$user) {
+                if ($user['birthday']) {
+                    $birthDate = new DateTime($user['birthday']);
+                    $today = new DateTime();
+                    $age = $today->diff($birthDate)->y;
+                    $user['age'] = $age;
+                } else {
+                    $user['age'] = 'N/A';
+                }
+            }
+            
+            echo json_encode(['success' => true, 'users' => $users]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to fetch users: ' . ($result['message'] ?? 'Unknown error')]);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
+// Get event details
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['action'] === 'get_event_details') {
+    header('Content-Type: application/json');
+    
+    $eventId = $_GET['event_id'] ?? null;
+    
+    if (!$eventId) {
+        echo json_encode(['success' => false, 'message' => 'Missing event ID']);
+        exit;
+    }
+    
+    try {
+        $db = DatabaseAPI::getInstance();
+        
+        // Get event details
+        $eventResult = $db->universalSelect('programs', '*', 'program_id = ?', '', '', [$eventId]);
+        
+        if ($eventResult['success'] && !empty($eventResult['data'])) {
+            $event = $eventResult['data'][0];
+            
+            // Get participant count
+            $countResult = $db->universalQuery("SELECT COUNT(*) as count FROM event_participants WHERE event_id = ?", [$eventId]);
+            $participantCount = $countResult['success'] ? $countResult['data'][0]['count'] : 0;
+            
+            echo json_encode([
+                'success' => true,
+                'event' => $event,
+                'participant_count' => $participantCount
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Event not found']);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
 // Start the session only if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -4861,6 +5074,195 @@ header:hover {
         box-sizing: border-box !important;
     }
 }
+
+/* ===== VIEW EVENT MODAL STYLES ===== */
+.event-details-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: var(--color-card);
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+}
+
+.event-details-section h3 {
+    margin: 0 0 20px 0;
+    color: var(--color-highlight);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.event-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.detail-item label {
+    font-weight: 600;
+    color: var(--color-text);
+    font-size: 14px;
+}
+
+.detail-item span {
+    color: var(--color-text);
+    font-size: 14px;
+    padding: 8px 12px;
+    background: rgba(161, 180, 84, 0.1);
+    border-radius: 6px;
+    border: 1px solid rgba(161, 180, 84, 0.2);
+}
+
+.participants-section {
+    margin-top: 30px;
+}
+
+.participants-section h3 {
+    margin: 0 0 20px 0;
+    color: var(--color-highlight);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.add-participant-form {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: var(--color-card);
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+}
+
+.add-participant-form h4 {
+    margin: 0 0 15px 0;
+    color: var(--color-text);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--color-text);
+    font-size: 14px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-highlight);
+    box-shadow: 0 0 0 2px rgba(161, 180, 84, 0.2);
+}
+
+.participants-table-container {
+    background: var(--color-card);
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+}
+
+.participants-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.participants-table th {
+    background: var(--color-accent3);
+    color: var(--color-text);
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.participants-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+}
+
+.participants-table tr:last-child td {
+    border-bottom: none;
+}
+
+.participants-table tr:hover {
+    background: rgba(161, 180, 84, 0.05);
+}
+
+.no-participants {
+    text-align: center;
+    color: var(--color-text);
+    font-style: italic;
+    padding: 20px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+.btn-info {
+    background: #17a2b8;
+    color: white;
+    border: 1px solid #17a2b8;
+}
+
+.btn-info:hover {
+    background: #138496;
+    border-color: #117a8b;
+}
+
+/* Responsive design for event details */
+@media (max-width: 768px) {
+    .event-details-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .participants-table {
+        font-size: 12px;
+    }
+    
+    .participants-table th,
+    .participants-table td {
+        padding: 8px 10px;
+    }
+}
+
+/* Light theme adjustments */
+.light-theme .detail-item span {
+    background: rgba(118, 187, 110, 0.1);
+    border-color: rgba(118, 187, 110, 0.2);
+}
+
+.light-theme .participants-table tr:hover {
+    background: rgba(118, 187, 110, 0.05);
+}
+
+.light-theme .form-control:focus {
+    border-color: var(--color-highlight);
+    box-shadow: 0 0 0 2px rgba(118, 187, 110, 0.2);
+}
     </style>
 <body class="dark-theme">
     <div class="dashboard">
@@ -5173,6 +5575,7 @@ header:hover {
                                 <td><span class="status-badge status-<?php echo $status; ?>"><?php echo ucfirst($status); ?></span></td>
                                 <td>
                                     <div class="action-buttons">
+                                        <button onclick="openViewModal(<?php echo $program['program_id']; ?>)" class="btn btn-info">View</button>
                                         <button onclick="openEditModal(<?php echo $program['program_id']; ?>, '<?php echo htmlspecialchars($program['title']); ?>', '<?php echo htmlspecialchars($program['type']); ?>', '<?php echo htmlspecialchars($program['description']); ?>', '<?php echo $program['date_time']; ?>', '<?php echo htmlspecialchars($program['location']); ?>', '<?php echo htmlspecialchars($program['organizer']); ?>')" class="btn btn-add">Edit</button>
                                         <a href="event.php?delete=<?php echo $program['program_id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this event?')">Delete</a>
                                     </div>
@@ -5374,6 +5777,90 @@ header:hover {
         </div>
     </div>
 
+<!-- View Event Modal -->
+<div id="viewEventModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Event Details</h2>
+            <span class="close" onclick="closeViewEventModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <!-- Event Details Section -->
+            <div class="event-details-section">
+                <h3>Event Information</h3>
+                <div class="event-details-grid">
+                    <div class="detail-item">
+                        <label>Title:</label>
+                        <span id="viewEventTitle"></span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Type:</label>
+                        <span id="viewEventType"></span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Description:</label>
+                        <span id="viewEventDescription"></span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Date & Time:</label>
+                        <span id="viewEventDateTime"></span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Location:</label>
+                        <span id="viewEventLocation"></span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Organizer:</label>
+                        <span id="viewEventOrganizer"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Participants Section -->
+            <div class="participants-section">
+                <h3>Participants (<span id="participantCount">0</span>)</h3>
+                
+                <!-- Add Participant Form -->
+                <div class="add-participant-form">
+                    <h4>Add Participant</h4>
+                    <div class="form-group">
+                        <label for="participantSelect">Select Community User:</label>
+                        <select id="participantSelect" class="form-control">
+                            <option value="">Loading community users...</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="addParticipant()">Add Participant</button>
+                </div>
+
+                <!-- Participants Table -->
+                <div class="participants-table-container">
+                    <table class="participants-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Age</th>
+                                <th>Sex</th>
+                                <th>Municipality</th>
+                                <th>Barangay</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="participantsTableBody">
+                            <tr>
+                                <td colspan="7" class="no-participants">No participants yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeViewEventModal()">Close</button>
+        </div>
+    </div>
+</div>
+
 <script>
 // Municipality to Barangay mapping
 const municipalityBarangays = {
@@ -5541,6 +6028,185 @@ function closeCreateEventModal() {
         function closeEditEventModal() {
             document.getElementById('editEventModal').style.display = 'none';
             document.getElementById('editEventForm').reset();
+        }
+
+
+        // Function to close view event modal
+        function closeViewEventModal() {
+            document.getElementById('viewEventModal').style.display = 'none';
+        }
+
+        // Load event details
+        async function loadEventDetails(eventId) {
+            try {
+                const response = await fetch(`event.php?action=get_event_details&event_id=${eventId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const event = data.event;
+                    document.getElementById('viewEventTitle').textContent = event.title;
+                    document.getElementById('viewEventType').textContent = event.type;
+                    document.getElementById('viewEventDescription').textContent = event.description;
+                    document.getElementById('viewEventDateTime').textContent = new Date(event.date_time).toLocaleString();
+                    document.getElementById('viewEventLocation').textContent = event.location;
+                    document.getElementById('viewEventOrganizer').textContent = event.organizer;
+                    document.getElementById('participantCount').textContent = data.participant_count;
+                } else {
+                    alert('Error loading event details: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error loading event details:', error);
+                alert('Error loading event details');
+            }
+        }
+
+        // Load event participants
+        async function loadEventParticipants(eventId) {
+            try {
+                const response = await fetch(`event.php?action=get_event_participants&event_id=${eventId}`);
+                const data = await response.json();
+                
+                const tbody = document.getElementById('participantsTableBody');
+                tbody.innerHTML = '';
+                
+                if (data.success && data.participants.length > 0) {
+                    data.participants.forEach(participant => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${participant.name}</td>
+                            <td>${participant.email}</td>
+                            <td>${participant.age}</td>
+                            <td>${participant.sex}</td>
+                            <td>${participant.municipality}</td>
+                            <td>${participant.barangay}</td>
+                            <td>
+                                <button onclick="removeParticipant(${participant.participant_id})" class="btn btn-danger btn-sm">Remove</button>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td colspan="7" class="no-participants">No participants yet</td>';
+                    tbody.appendChild(row);
+                }
+            } catch (error) {
+                console.error('Error loading participants:', error);
+                alert('Error loading participants');
+            }
+        }
+
+        // Load available community users
+        async function loadAvailableUsers(eventId) {
+            try {
+                const response = await fetch(`event.php?action=get_available_users&event_id=${eventId}`);
+                const data = await response.json();
+                
+                const select = document.getElementById('participantSelect');
+                select.innerHTML = '<option value="">Select a community user...</option>';
+                
+                if (data.success && data.users.length > 0) {
+                    data.users.forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.email;
+                        option.textContent = `${user.name} (${user.email}) - Age: ${user.age}, ${user.municipality}`;
+                        select.appendChild(option);
+                    });
+                } else {
+                    const option = document.createElement('option');
+                    option.value = '';
+                    option.textContent = 'No available users';
+                    select.appendChild(option);
+                }
+            } catch (error) {
+                console.error('Error loading available users:', error);
+                document.getElementById('participantSelect').innerHTML = '<option value="">Error loading users</option>';
+            }
+        }
+
+        // Add participant to event
+        async function addParticipant() {
+            const eventId = getCurrentEventId();
+            const userEmail = document.getElementById('participantSelect').value;
+            
+            if (!userEmail) {
+                alert('Please select a user to add');
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('action', 'add_participant');
+                formData.append('event_id', eventId);
+                formData.append('user_email', userEmail);
+                
+                const response = await fetch('event.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Participant added successfully');
+                    loadEventParticipants(eventId);
+                    loadAvailableUsers(eventId);
+                    loadEventDetails(eventId); // Refresh participant count
+                } else {
+                    alert('Error adding participant: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error adding participant:', error);
+                alert('Error adding participant');
+            }
+        }
+
+        // Remove participant from event
+        async function removeParticipant(participantId) {
+            if (!confirm('Are you sure you want to remove this participant?')) {
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('action', 'remove_participant');
+                formData.append('participant_id', participantId);
+                
+                const response = await fetch('event.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Participant removed successfully');
+                    const eventId = getCurrentEventId();
+                    loadEventParticipants(eventId);
+                    loadAvailableUsers(eventId);
+                    loadEventDetails(eventId); // Refresh participant count
+                } else {
+                    alert('Error removing participant: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error removing participant:', error);
+                alert('Error removing participant');
+            }
+        }
+
+        // Get current event ID from modal
+        function getCurrentEventId() {
+            // Extract event ID from the modal or store it globally
+            return window.currentEventId;
+        }
+
+        // Store event ID when opening modal
+        function openViewModal(eventId) {
+            window.currentEventId = eventId;
+            document.getElementById('viewEventModal').style.display = 'block';
+            loadEventDetails(eventId);
+            loadEventParticipants(eventId);
+            loadAvailableUsers(eventId);
         }
 
         // Edit form submission handler
