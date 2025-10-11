@@ -5077,14 +5077,14 @@ header:hover {
 
 /* ===== VIEW EVENT MODAL STYLES ===== */
 .large-modal {
-    width: 90%;
-    max-width: 1000px;
-    max-height: 85vh;
+    width: 95%;
+    max-width: 1400px;
+    max-height: 90vh;
     overflow-y: auto;
-    margin: 5vh auto;
+    margin: 2vh auto 0 auto;
     position: relative;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 0;
+    transform: none;
 }
 
 .event-details-section {
@@ -5292,15 +5292,15 @@ header:hover {
 .bulk-add-content {
     background: var(--color-card);
     border-radius: 12px;
-    width: 90%;
-    max-width: 1000px;
-    max-height: 85vh;
+    width: 95%;
+    max-width: 1400px;
+    max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    margin: 5vh auto;
+    margin: 2vh auto 0 auto;
     position: relative;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 0;
+    transform: none;
 }
 
 .bulk-add-header {
@@ -5459,10 +5459,9 @@ header:hover {
 /* ===== RESPONSIVE IMPROVEMENTS ===== */
 @media (max-width: 768px) {
     .large-modal {
-        width: 95%;
+        width: 98%;
         max-height: 95vh;
-        width: 95%;
-        margin: 2.5vh auto;
+        margin: 1vh auto 0 auto;
     }
     
     .participants-grid {
@@ -5481,9 +5480,9 @@ header:hover {
     }
     
     .bulk-add-content {
-        width: 95%;
-        max-height: 90vh;
-        margin: 2.5vh auto;
+        width: 98%;
+        max-height: 95vh;
+        margin: 1vh auto 0 auto;
     }
 }
     </style>
