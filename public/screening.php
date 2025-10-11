@@ -8959,12 +8959,9 @@ header {
                                     
                                     return `
                                         <div class="date-section" style="margin-bottom: 25px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
-                                            <div class="date-header" style="background: var(--card-bg); padding: 12px 15px; border-bottom: 1px solid var(--border-color);">
+                                            <div style="background: var(--card-bg); padding: 12px 15px; border-bottom: 1px solid var(--border-color);">
                                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                                     <h3 style="margin: 0; color: var(--text-primary); font-size: 16px;">📅 ${new Date(date).toLocaleDateString()}</h3>
-                                                    <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${date}')" style="background: ${isDayFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">
-                                                        ${isDayFlagged ? '✅ Unflag Day' : '🚩 Flag Day'}
-                                                    </button>
                                                 </div>
                                             </div>
                                             <div class="date-content" style="padding: 10px;">
@@ -8976,7 +8973,7 @@ header {
                                                     
                                                     return `
                                                         <div class="meal-section" style="margin-bottom: 15px;">
-                                                            <div class="meal-header" style="margin-bottom: 8px; padding: 8px 10px; background: var(--card-bg); border-radius: 4px;">
+                                                            <div style="margin-bottom: 8px; padding: 8px 10px; background: var(--card-bg); border-radius: 4px;">
                                                                 <h4 style="margin: 0; color: var(--text-primary); font-size: 14px;">${meal} (${mealFoods.length} items)</h4>
                                                             </div>
                                                             <table class="food-history-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
@@ -8987,10 +8984,10 @@ header {
                                                                                 <span>🍽️ ${meal} - ${new Date(date).toLocaleDateString()}</span>
                                                                                 <div style="position: absolute; right: 0; display: flex; gap: 8px;">
                                                                                     <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${date}')" style="background: ${isDayFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
-                                                                                        ${isDayFlagged ? '✅ Flag Day' : '🚩 Flag Day'}
+                                                                                        ${isDayFlagged ? '✅ Unflag Day' : '🚩 Flag Day'}
                                                                                     </button>
                                                                                     <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
-                                                                                        ${isMealFlagged ? '✅ Flag Meal' : '🚩 Flag Meal'}
+                                                                                        ${isMealFlagged ? '✅ Unflag Meal' : '🚩 Flag Meal'}
                                                                                     </button>
                                                                                 </div>
                                                                             </div>
