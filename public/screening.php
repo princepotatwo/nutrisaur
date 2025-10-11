@@ -8944,7 +8944,13 @@ header {
                                 <p style="margin: 5px 0 0 0; font-size: 16px; opacity: 0.9; font-weight: 500;">${userName}</p>
                             </div>
                         </div>
-                        <span class="close" onclick="this.closest('.modal').remove()" style="background: rgba(255,255,255,0.2); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">&times;</span>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <button onclick="addMHORecommendedFood('${userEmail}', '${userName}')" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 16px;">⭐</span>
+                                Add MHO Recommended Food
+                            </button>
+                            <span class="close" onclick="this.closest('.modal').remove()" style="background: rgba(255,255,255,0.2); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">&times;</span>
+                        </div>
                     </div>
                     <div class="food-history-content">
                         ${foodData.length === 0 ? 
@@ -9040,6 +9046,138 @@ header {
             `;
             
             document.body.appendChild(modal);
+        }
+
+        function addMHORecommendedFood(userEmail, userName) {
+            console.log('⭐ Add MHO Recommended Food function called for:', userEmail, userName);
+            
+            // Remove any existing modals
+            const existingModals = document.querySelectorAll('.modal');
+            existingModals.forEach(modal => modal.remove());
+            
+            // Create form modal
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
+                    <div class="modal-header" style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                ⭐
+                            </div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 24px; font-weight: 700;">Add MHO Recommended Food</h3>
+                                <p style="margin: 5px 0 0 0; font-size: 16px; opacity: 0.9;">${userName}</p>
+                            </div>
+                        </div>
+                        <span class="close" onclick="this.closest('.modal').remove()" style="background: rgba(255,255,255,0.2); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer;">&times;</span>
+                    </div>
+                    <div style="padding: 20px;">
+                        <form id="mhoRecommendedForm" style="display: flex; flex-direction: column; gap: 15px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Meal Category *</label>
+                                    <select name="meal_category" required style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);">
+                                        <option value="">Select meal category</option>
+                                        <option value="Breakfast">Breakfast</option>
+                                        <option value="Lunch">Lunch</option>
+                                        <option value="Dinner">Dinner</option>
+                                        <option value="Snacks">Snacks</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Food Name *</label>
+                                    <input type="text" name="food_name" required style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);" placeholder="Enter food name">
+                                </div>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Serving Size *</label>
+                                    <input type="text" name="serving_size" required style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);" placeholder="e.g., 1 cup, 2 pieces">
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Calories *</label>
+                                    <input type="number" name="calories" required min="0" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);" placeholder="Enter calories">
+                                </div>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Protein (g)</label>
+                                    <input type="number" name="protein" min="0" step="0.1" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);" placeholder="0.0">
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Carbs (g)</label>
+                                    <input type="number" name="carbs" min="0" step="0.1" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);" placeholder="0.0">
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Fat (g)</label>
+                                    <input type="number" name="fat" min="0" step="0.1" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);" placeholder="0.0">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Fiber (g)</label>
+                                <input type="number" name="fiber" min="0" step="0.1" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);" placeholder="0.0">
+                            </div>
+                            
+                            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                                <button type="button" onclick="this.closest('.modal').remove()" style="padding: 10px 20px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); border-radius: 6px; cursor: pointer; font-weight: 600;">Cancel</button>
+                                <button type="submit" style="padding: 10px 20px; background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Add Recommended Food</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Add form submission handler
+            document.getElementById('mhoRecommendedForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const foodData = {
+                    user_email: userEmail,
+                    date: 'recommended',
+                    meal_category: formData.get('meal_category'),
+                    food_name: formData.get('food_name'),
+                    calories: parseInt(formData.get('calories')),
+                    serving_size: formData.get('serving_size'),
+                    protein: parseFloat(formData.get('protein')) || 0,
+                    carbs: parseFloat(formData.get('carbs')) || 0,
+                    fat: parseFloat(formData.get('fat')) || 0,
+                    fiber: parseFloat(formData.get('fiber')) || 0,
+                    is_mho_recommended: 1
+                };
+                
+                console.log('📤 Submitting MHO recommended food:', foodData);
+                
+                fetch('api/food_history_api.php?action=add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(foodData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('✅ MHO recommended food added successfully!');
+                        modal.remove();
+                        // Refresh the food history modal
+                        viewFoodHistory(userEmail, userName);
+                    } else {
+                        alert('❌ Error: ' + (data.error || 'Failed to add recommended food'));
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error adding MHO recommended food:', error);
+                    alert('❌ Error: ' + error.message);
+                });
+            });
         }
 
 

@@ -97,6 +97,10 @@ try {
             handleGetFlaggedDates($pdo);
             break;
             
+        case 'get_recommended_foods':
+            handleGetRecommendedFoods($pdo);
+            break;
+            
         default:
             throw new Exception('Invalid action specified');
     }
@@ -142,8 +146,8 @@ function handleAddFood($pdo) {
     
     // Insert food entry
     $sql = "INSERT INTO user_food_history 
-            (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $pdo->prepare($sql);
     $result = $stmt->execute([
@@ -156,7 +160,8 @@ function handleAddFood($pdo) {
         $data['protein'] ?? 0,
         $data['carbs'] ?? 0,
         $data['fat'] ?? 0,
-        $data['fiber'] ?? 0
+        $data['fiber'] ?? 0,
+        $data['is_mho_recommended'] ?? 0
     ]);
     
     if ($result) {
@@ -794,6 +799,50 @@ function handleDeleteMealFoods($pdo) {
         } else {
             throw new Exception('Failed to delete meal foods');
         }
+        
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Get MHO recommended foods for a user
+ */
+function handleGetRecommendedFoods($pdo) {
+    try {
+        $userEmail = $_GET['user_email'] ?? '';
+        
+        if (empty($userEmail)) {
+            throw new Exception('User email is required');
+        }
+        
+        // Get all recommended foods for the user
+        $sql = "SELECT * FROM user_food_history 
+                WHERE user_email = ? AND is_mho_recommended = 1 
+                ORDER BY meal_category, food_name";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$userEmail]);
+        $foods = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Group foods by meal category
+        $groupedFoods = [];
+        foreach ($foods as $food) {
+            $mealCategory = $food['meal_category'];
+            if (!isset($groupedFoods[$mealCategory])) {
+                $groupedFoods[$mealCategory] = [];
+            }
+            $groupedFoods[$mealCategory][] = $food;
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Recommended foods retrieved successfully',
+            'data' => $groupedFoods,
+            'count' => count($foods)
+        ]);
         
     } catch (Exception $e) {
         echo json_encode([
