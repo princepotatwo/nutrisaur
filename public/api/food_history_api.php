@@ -57,6 +57,14 @@ try {
             handleDeleteFood($pdo);
             break;
             
+        case 'delete_all_user_foods':
+            handleDeleteAllUserFoods($pdo);
+            break;
+            
+        case 'delete_meal_foods':
+            handleDeleteMealFoods($pdo);
+            break;
+            
         case 'flag_food':
             handleFlagFood($pdo);
             break;
@@ -654,5 +662,78 @@ function handleGetFlaggedDates($pdo) {
         'data' => $results,
         'count' => count($results)
     ]);
+}
+
+/**
+ * Handle deleting all foods for a user on a specific date
+ */
+function handleDeleteAllUserFoods($pdo) {
+    try {
+        $userEmail = $_GET['user_email'] ?? '';
+        $date = $_GET['date'] ?? '';
+        
+        if (empty($userEmail) || empty($date)) {
+            throw new Exception('User email and date are required');
+        }
+        
+        // Delete all foods for the user on the specified date
+        $sql = "DELETE FROM user_food_history WHERE user_email = ? AND date = ?";
+        $stmt = $pdo->prepare($sql);
+        $result = $stmt->execute([$userEmail, $date]);
+        
+        if ($result) {
+            $deletedCount = $stmt->rowCount();
+            echo json_encode([
+                'success' => true,
+                'message' => "Deleted {$deletedCount} food entries",
+                'deleted_count' => $deletedCount
+            ]);
+        } else {
+            throw new Exception('Failed to delete foods');
+        }
+        
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+/**
+ * Handle deleting all foods for a specific meal category
+ */
+function handleDeleteMealFoods($pdo) {
+    try {
+        $userEmail = $_GET['user_email'] ?? '';
+        $date = $_GET['date'] ?? '';
+        $mealCategory = $_GET['meal_category'] ?? '';
+        
+        if (empty($userEmail) || empty($date) || empty($mealCategory)) {
+            throw new Exception('User email, date, and meal category are required');
+        }
+        
+        // Delete all foods for the user on the specified date and meal category
+        $sql = "DELETE FROM user_food_history WHERE user_email = ? AND date = ? AND meal_category = ?";
+        $stmt = $pdo->prepare($sql);
+        $result = $stmt->execute([$userEmail, $date, $mealCategory]);
+        
+        if ($result) {
+            $deletedCount = $stmt->rowCount();
+            echo json_encode([
+                'success' => true,
+                'message' => "Deleted {$deletedCount} food entries from {$mealCategory}",
+                'deleted_count' => $deletedCount
+            ]);
+        } else {
+            throw new Exception('Failed to delete meal foods');
+        }
+        
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
+    }
 }
 ?>
