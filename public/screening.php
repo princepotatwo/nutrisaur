@@ -8942,38 +8942,6 @@ header {
                         ${foodData.length === 0 ? 
                             '<div style="text-align: center; padding: 40px; color: #666;">No food history found for this user.</div>' :
                             `
-                            <!-- Filter Header -->
-                            <div class="filter-header" style="background: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border-color);">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 15px; align-items: center;">
-                                    <div>
-                                        <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Search Food</label>
-                                        <input type="text" id="foodSearch" placeholder="Search food items..." style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary); font-size: 14px;" onkeyup="filterFoodHistory()">
-                                    </div>
-                                    <div>
-                                        <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Filter Date</label>
-                                        <select id="dateFilter" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary); font-size: 14px;" onchange="filterFoodHistory()">
-                                            <option value="">All Dates</option>
-                                            ${[...new Set(foodData.map(food => food.date))].sort().map(date => `
-                                                <option value="${date}">${new Date(date).toLocaleDateString()}</option>
-                                            `).join('')}
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Show Only</label>
-                                        <select id="flagFilter" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary); font-size: 14px;" onchange="filterFoodHistory()">
-                                            <option value="">All Foods</option>
-                                            <option value="flagged">Flagged Only</option>
-                                            <option value="unflagged">Unflagged Only</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <button onclick="clearFilters()" style="background: #666; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; margin-top: 20px;">
-                                            Clear Filters
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            `
                             ${(() => {
                                 // Group food data by date first
                                 const groupedByDate = {};
@@ -9008,12 +8976,9 @@ header {
                                                     
                                                     return `
                                                         <div class="meal-section" style="margin-bottom: 15px;">
-                                                            <div class="meal-header" style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 10px; align-items: center; margin-bottom: 8px; padding: 8px 10px; background: var(--card-bg); border-radius: 4px; font-size: 12px; font-weight: 600;">
-                                                                <div style="color: var(--text-primary);">${meal}</div>
-                                                                <div style="color: var(--text-secondary);">${mealFoods.length} items</div>
-                                                                <div style="color: var(--text-secondary);">${mealFoods.filter(f => f.is_flagged == 1).length} flagged</div>
-                                                                <div style="color: var(--text-secondary);">${mealFoods.reduce((sum, f) => sum + f.calories, 0)} kcal</div>
-                                                                <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 600;">
+                                                            <div class="meal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 8px 10px; background: var(--card-bg); border-radius: 4px;">
+                                                                <h4 style="margin: 0; color: var(--text-primary); font-size: 14px;">${meal} (${mealFoods.length} items)</h4>
+                                                                <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600;">
                                                                     ${isMealFlagged ? '✅ Unflag' : '🚩 Flag'}
                                                                 </button>
                                                             </div>
@@ -9066,83 +9031,6 @@ header {
             `;
             
             document.body.appendChild(modal);
-        }
-
-        // Filter food history function
-        function filterFoodHistory() {
-            const searchTerm = document.getElementById('foodSearch').value.toLowerCase();
-            const dateFilter = document.getElementById('dateFilter').value;
-            const flagFilter = document.getElementById('flagFilter').value;
-            
-            // Get all food rows
-            const allRows = document.querySelectorAll('.food-history-table tbody tr');
-            
-            allRows.forEach(row => {
-                const foodName = row.querySelector('.food-name-cell').textContent.toLowerCase();
-                const dateCell = row.closest('.date-section');
-                const foodDate = dateCell ? dateCell.querySelector('.date-header h3').textContent : '';
-                const isFlagged = row.classList.contains('flagged');
-                
-                let showRow = true;
-                
-                // Search filter
-                if (searchTerm && !foodName.includes(searchTerm)) {
-                    showRow = false;
-                }
-                
-                // Date filter
-                if (dateFilter && foodDate && !foodDate.includes(new Date(dateFilter).toLocaleDateString())) {
-                    showRow = false;
-                }
-                
-                // Flag filter
-                if (flagFilter === 'flagged' && !isFlagged) {
-                    showRow = false;
-                } else if (flagFilter === 'unflagged' && isFlagged) {
-                    showRow = false;
-                }
-                
-                // Show/hide row
-                row.style.display = showRow ? '' : 'none';
-            });
-            
-            // Hide empty meal sections
-            document.querySelectorAll('.meal-section').forEach(mealSection => {
-                const visibleRows = mealSection.querySelectorAll('tbody tr:not([style*="display: none"])');
-                if (visibleRows.length === 0) {
-                    mealSection.style.display = 'none';
-                } else {
-                    mealSection.style.display = '';
-                }
-            });
-            
-            // Hide empty date sections
-            document.querySelectorAll('.date-section').forEach(dateSection => {
-                const visibleMeals = dateSection.querySelectorAll('.meal-section:not([style*="display: none"])');
-                if (visibleMeals.length === 0) {
-                    dateSection.style.display = 'none';
-                } else {
-                    dateSection.style.display = '';
-                }
-            });
-        }
-
-        // Clear all filters
-        function clearFilters() {
-            document.getElementById('foodSearch').value = '';
-            document.getElementById('dateFilter').value = '';
-            document.getElementById('flagFilter').value = '';
-            
-            // Show all rows and sections
-            document.querySelectorAll('.food-history-table tbody tr').forEach(row => {
-                row.style.display = '';
-            });
-            document.querySelectorAll('.meal-section').forEach(section => {
-                section.style.display = '';
-            });
-            document.querySelectorAll('.date-section').forEach(section => {
-                section.style.display = '';
-            });
         }
 
 
