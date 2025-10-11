@@ -8934,9 +8934,17 @@ header {
             modal.style.display = 'block';
             modal.innerHTML = `
                 <div class="modal-content" style="max-width: 95vw; max-height: 90vh; overflow-y: auto;">
-                    <div class="modal-header">
-                        <h3>🍽️ Food History - ${userName}</h3>
-                        <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
+                    <div class="modal-header" style="background: linear-gradient(135deg, var(--color-primary) 0%, #2c5aa0 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                📊
+                            </div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 24px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Food History</h3>
+                                <p style="margin: 5px 0 0 0; font-size: 16px; opacity: 0.9; font-weight: 500;">${userName}</p>
+                            </div>
+                        </div>
+                        <span class="close" onclick="this.closest('.modal').remove()" style="background: rgba(255,255,255,0.2); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">&times;</span>
                     </div>
                     <div class="food-history-content">
                         ${foodData.length === 0 ? 
@@ -8968,15 +8976,12 @@ header {
                                                     
                                                     return `
                                                         <div class="meal-section" style="margin-bottom: 15px;">
-                                                            <div style="margin-bottom: 8px; padding: 8px 10px; background: var(--card-bg); border-radius: 4px;">
-                                                                <h4 style="margin: 0; color: var(--text-primary); font-size: 14px;">${meal} (${mealFoods.length} items)</h4>
-                                                            </div>
                                                             <table class="food-history-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
                                                                 <thead>
                                                                     <tr style="background: var(--color-primary); color: white;">
                                                                         <th colspan="4" style="padding: 10px 8px; text-align: center; font-size: 14px; font-weight: 600; position: relative;">
                                                                             <div style="display: flex; justify-content: center; align-items: center; position: relative;">
-                                                                                <span>🍽️ ${meal} - ${new Date(date).toLocaleDateString()}</span>
+                                                                                <span>${meal} - ${new Date(date).toLocaleDateString()}</span>
                                                                                 <div style="position: absolute; right: 0; display: flex; gap: 8px;">
                                                                                     <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${date}')" style="background: ${isDayFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
                                                                                         ${isDayFlagged ? '✅ Unflag Day' : '🚩 Flag Day'}
