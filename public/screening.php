@@ -8953,10 +8953,9 @@ header {
                                         <label style="display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Filter Date</label>
                                         <select id="dateFilter" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--card-bg); color: var(--text-primary); font-size: 14px;" onchange="filterFoodHistory()">
                                             <option value="">All Dates</option>
-                                            ${[...new Set(foodData.map(food => food.date))].sort().map(date => {
-                                                const dateStr = new Date(date).toLocaleDateString();
-                                                return `<option value="${date}">${dateStr}</option>`;
-                                            }).join('')}
+                                            ${[...new Set(foodData.map(food => food.date))].sort().map(date => `
+                                                <option value="${date}">${new Date(date).toLocaleDateString()}</option>
+                                            `).join('')}
                                         </select>
                                     </div>
                                     <div>
