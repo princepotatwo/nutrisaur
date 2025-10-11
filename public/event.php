@@ -894,6 +894,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 
 
 // 🚨 COMPLETELY REWRITTEN EVENT CREATION LOGIC - NO REDIRECTS
+// Handle notification count check for confirmation modal
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_notification_count'])) {
+    header('Content-Type: application/json');
+    
+    $title = $_POST['eventTitle'] ?? '';
+    $type = $_POST['eventType'] ?? '';
+    $description = $_POST['eventDescription'] ?? '';
+    $date_time = $_POST['eventDate'] ?? '';
+    $location = $_POST['eventLocation'] ?? 'all';
+    $organizer = $_POST['eventOrganizer'] ?? '';
+    
+    // Validate required fields
+    if (empty($title) || empty($type) || empty($description) || empty($date_time) || empty($organizer)) {
+        echo json_encode(['success' => false, 'message' => 'Please fill in all required fields.']);
+        exit;
+    }
+    
+    // Validate date is in the future
+    $eventDateTime = new DateTime($date_time);
+    $now = new DateTime();
+    
+    if ($eventDateTime <= $now) {
+        echo json_encode(['success' => false, 'message' => 'Event date must be in the future. Please select a future date and time.']);
+        exit;
+    }
+    
+    try {
+        // Get user count for confirmation modal
+        $users = getFCMTokensByLocation($location);
+        $userCount = count($users);
+        
+        // Return user count for confirmation modal
+        echo json_encode([
+            'success' => true,
+            'title' => $title,
+            'type' => $type,
+            'description' => $description,
+            'date_time' => $date_time,
+            'location' => $location,
+            'organizer' => $organizer,
+            'user_count' => $userCount,
+            'needs_confirmation' => true
+        ]);
+        exit;
+        
+    } catch (Exception $e) {
+        error_log("❌ Error getting user count: " . $e->getMessage());
+        echo json_encode(['success' => false, 'message' => 'Error checking notification count: ' . $e->getMessage()]);
+        exit;
+    }
+}
+
+// Handle actual event creation after confirmation
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
     error_log("=== NEW EVENT CREATION LOGIC STARTED ===");
     
@@ -5085,6 +5138,72 @@ header:hover {
     }
 }
 
+/* ===== NOTIFICATION CONFIRMATION MODAL STYLES ===== */
+.notification-details {
+    padding: 20px;
+}
+
+.event-info {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.event-info p {
+    margin: 8px 0;
+    color: var(--color-text);
+}
+
+.notification-info {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.notification-count {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.count-number {
+    font-size: 48px;
+    font-weight: bold;
+    color: var(--color-highlight);
+    line-height: 1;
+}
+
+.count-label {
+    font-size: 16px;
+    color: var(--color-text);
+    margin-top: 10px;
+}
+
+.location-info {
+    font-size: 18px;
+    color: var(--color-text);
+    margin: 15px 0;
+}
+
+.confirmation-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.confirmation-actions .btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    min-width: 150px;
+}
+
 /* ===== VIEW EVENT MODAL STYLES ===== */
 .large-modal {
     width: 95%;
@@ -6009,6 +6128,40 @@ header:hover {
         </div>
     </div>
 
+<!-- Notification Confirmation Modal -->
+<div id="notificationConfirmModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📱 Send Push Notifications?</h2>
+            <span class="close" onclick="closeNotificationConfirmModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="notification-details">
+                <h3>Event Details:</h3>
+                <div class="event-info">
+                    <p><strong>Title:</strong> <span id="confirmEventTitle"></span></p>
+                    <p><strong>Location:</strong> <span id="confirmEventLocation"></span></p>
+                    <p><strong>Date & Time:</strong> <span id="confirmEventDateTime"></span></p>
+                </div>
+                
+                <div class="notification-info">
+                    <h3>📊 Notification Summary:</h3>
+                    <div class="notification-count">
+                        <span class="count-number" id="confirmUserCount">0</span>
+                        <span class="count-label">users will receive push notifications</span>
+                    </div>
+                    <p class="location-info">in <strong><span id="confirmLocationName"></span></strong></p>
+                </div>
+                
+                <div class="confirmation-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeNotificationConfirmModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmCreateEvent()">Create Event & Send Notifications</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- View Event Modal -->
 <div id="viewEventModal" class="modal" style="display: none;">
     <div class="modal-content large-modal">
@@ -6728,6 +6881,75 @@ function closeCreateEventModal() {
             }, 3000);
         }
 
+        // Notification confirmation modal functions
+        function showNotificationConfirmModal(eventData) {
+            document.getElementById('confirmEventTitle').textContent = eventData.title;
+            document.getElementById('confirmEventLocation').textContent = eventData.location;
+            document.getElementById('confirmEventDateTime').textContent = new Date(eventData.date_time).toLocaleString();
+            document.getElementById('confirmUserCount').textContent = eventData.user_count;
+            document.getElementById('confirmLocationName').textContent = eventData.location;
+            
+            // Store event data for confirmation
+            window.pendingEventData = eventData;
+            
+            document.getElementById('notificationConfirmModal').style.display = 'block';
+        }
+
+        function closeNotificationConfirmModal() {
+            document.getElementById('notificationConfirmModal').style.display = 'none';
+            window.pendingEventData = null;
+        }
+
+        function confirmCreateEvent() {
+            if (!window.pendingEventData) {
+                console.error('No pending event data');
+                return;
+            }
+
+            const eventData = window.pendingEventData;
+            
+            // Create form data for actual event creation
+            const formData = new FormData();
+            formData.append('create_event', '1');
+            formData.append('eventTitle', eventData.title);
+            formData.append('eventType', eventData.type);
+            formData.append('eventDescription', eventData.description);
+            formData.append('eventDate', eventData.date_time);
+            formData.append('eventLocation', eventData.location);
+            formData.append('eventOrganizer', eventData.organizer);
+
+            // Show loading state
+            const confirmBtn = document.querySelector('#notificationConfirmModal .btn-primary');
+            const originalText = confirmBtn.textContent;
+            confirmBtn.textContent = 'Creating Event...';
+            confirmBtn.disabled = true;
+
+            // Submit the actual event creation
+            fetch('event.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Close confirmation modal
+                closeNotificationConfirmModal();
+                
+                // Show success message
+                showNotification('Event created and notifications sent successfully!', 'success');
+                
+                // Reload the page to show the new event
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            })
+            .catch(error => {
+                console.error('Error creating event:', error);
+                showNotification('Error creating event: ' + error.message, 'error');
+                confirmBtn.textContent = originalText;
+                confirmBtn.disabled = false;
+            });
+        }
+
         // Edit form submission handler
         document.addEventListener('DOMContentLoaded', function() {
             const editEventForm = document.getElementById('editEventForm');
@@ -6877,34 +7099,28 @@ function closeCreateEventModal() {
             }
             
             try {
-                console.log('✅ Validation passed, starting event creation process');
+                console.log('✅ Validation passed, checking notification count...');
             
             // Show loading state
-        const submitBtn = document.querySelector('#newCreateEventForm .btn-primary');
+            const submitBtn = document.querySelector('#newCreateEventForm .btn-primary');
             const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="btn-text">Creating Event...</span>';
+            submitBtn.innerHTML = '<span class="btn-text">Checking...</span>';
             submitBtn.disabled = true;
             
-                console.log('🔄 Calling save_event_only API...');
-                console.log('📤 Sending event data to programs table:', {
-                    title: eventData.title,
-                    description: eventData.description,
-                    date_time: eventData.date_time,
-                    location: eventData.location,
-                    organizer: eventData.organizer
-                });
+                console.log('🔄 Checking notification count...');
                 
-                // 🚨 STEP 1: SAVE EVENT TO DATABASE FIRST (using the working PHP logic)
-                const saveResponse = await fetch('event.php', {
+                // Check notification count first
+                const checkResponse = await fetch('event.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                         'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: new URLSearchParams({
-                        'action': 'save_event_only',
-                        'title': eventData.title,
-                        'description': eventData.description,
+                        'check_notification_count': '1',
+                        'eventTitle': eventData.title,
+                        'eventType': eventData.type || 'Event',
+                        'eventDescription': eventData.description,
                         'date_time': eventData.date_time,
                         'location': eventData.location,
                         'organizer': eventData.organizer,
@@ -6914,48 +7130,29 @@ function closeCreateEventModal() {
                     })
                 });
                 
-                const saveResult = await saveResponse.json();
-                console.log('📊 Save API response:', saveResult);
+                const checkResult = await checkResponse.json();
+                console.log('📊 Notification count response:', checkResult);
                 
-                if (!saveResult.success) {
-                    console.error('❌ Save API failed:', saveResult.message);
-                    throw new Error(`Failed to save event: ${saveResult.message}`);
-                }
-                
-                console.log('✅ Event saved successfully!');
-                
-                // Notifications are now handled automatically in PHP after saving
-                
-                // Fetch and display current programs table
-                console.log('🔍 Fetching current programs table to verify...');
-                try {
-                    const programsResponse = await fetch('/api/DatabaseAPI.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        body: new URLSearchParams({
-                            'action': 'query',
-                            'sql': 'SELECT * FROM programs ORDER BY program_id DESC LIMIT 5'
-                        })
-                    });
-                    const programsResult = await programsResponse.json();
-                    console.log('📊 Current programs table (last 5 events):', programsResult);
-                } catch (error) {
-                    console.error('❌ Error fetching programs table:', error);
-                }
-                
-                    // Reset form
-                    form.reset();
+                if (checkResult.success && checkResult.needs_confirmation) {
+                    console.log('✅ Notification count retrieved, showing confirmation modal');
                     
-                    // Show success message
-                alert(`🎉 Event "${eventData.title}" created successfully!`);
-                
-                // Refresh the page to show the new event
-                setTimeout(() => {
-                    location.reload();
-                }, 2000); // Wait 2 seconds to show the success message
+                    // Restore button state
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    // Close create event modal
+                    closeCreateEventModal();
+                    
+                    // Show confirmation modal
+                    showNotificationConfirmModal(checkResult);
+                } else {
+                    console.error('❌ Failed to get notification count:', checkResult.message);
+                    alert('Error checking notification count: ' + checkResult.message);
+                    
+                    // Restore button state
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
                 
             } catch (error) {
                 console.error('Error creating event:', error);
