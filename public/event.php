@@ -442,14 +442,19 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
         $result = $db->universalQuery($sql, [$eventId]);
         
         if ($result['success']) {
-            // Calculate age for each participant
+            // Calculate age for each participant (years and months)
             $participants = $result['data'];
             foreach ($participants as &$participant) {
                 if ($participant['birthday']) {
                     $birthDate = new DateTime($participant['birthday']);
                     $today = new DateTime();
-                    $age = $today->diff($birthDate)->y;
-                    $participant['age'] = $age;
+                    $ageDiff = $today->diff($birthDate);
+                    
+                    if ($ageDiff->y > 0) {
+                        $participant['age'] = $ageDiff->y . 'y ' . $ageDiff->m . 'm';
+                    } else {
+                        $participant['age'] = $ageDiff->m . 'm';
+                    }
                 } else {
                     $participant['age'] = 'N/A';
                 }
@@ -494,14 +499,19 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
         }
         
         if ($result['success']) {
-            // Calculate age for each user
+            // Calculate age for each user (years and months)
             $users = $result['data'];
             foreach ($users as &$user) {
                 if ($user['birthday']) {
                     $birthDate = new DateTime($user['birthday']);
                     $today = new DateTime();
-                    $age = $today->diff($birthDate)->y;
-                    $user['age'] = $age;
+                    $ageDiff = $today->diff($birthDate);
+                    
+                    if ($ageDiff->y > 0) {
+                        $user['age'] = $ageDiff->y . 'y ' . $ageDiff->m . 'm';
+                    } else {
+                        $user['age'] = $ageDiff->m . 'm';
+                    }
                 } else {
                     $user['age'] = 'N/A';
                 }
