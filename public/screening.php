@@ -8976,17 +8976,24 @@ header {
                                                     
                                                     return `
                                                         <div class="meal-section" style="margin-bottom: 15px;">
-                                                            <div class="meal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 8px 10px; background: var(--card-bg); border-radius: 4px;">
+                                                            <div class="meal-header" style="margin-bottom: 8px; padding: 8px 10px; background: var(--card-bg); border-radius: 4px;">
                                                                 <h4 style="margin: 0; color: var(--text-primary); font-size: 14px;">${meal} (${mealFoods.length} items)</h4>
-                                                                <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: 600;">
-                                                                    ${isMealFlagged ? '✅ Unflag' : '🚩 Flag'}
-                                                                </button>
                                                             </div>
                                                             <table class="food-history-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
                                                                 <thead>
                                                                     <tr style="background: var(--color-primary); color: white;">
-                                                                        <th colspan="4" style="padding: 10px 8px; text-align: center; font-size: 14px; font-weight: 600;">
+                                                                        <th colspan="3" style="padding: 10px 8px; text-align: left; font-size: 14px; font-weight: 600;">
                                                                             🍽️ ${meal} - ${new Date(date).toLocaleDateString()}
+                                                                        </th>
+                                                                        <th style="padding: 10px 8px; text-align: right; font-size: 12px;">
+                                                                            <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                                                                <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${date}')" style="background: ${isDayFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
+                                                                                    ${isDayFlagged ? '✅ Flag Day' : '🚩 Flag Day'}
+                                                                                </button>
+                                                                                <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
+                                                                                    ${isMealFlagged ? '✅ Flag Meal' : '🚩 Flag Meal'}
+                                                                                </button>
+                                                                            </div>
                                                                         </th>
                                                                     </tr>
                                                                     <tr style="background: var(--card-bg);">
