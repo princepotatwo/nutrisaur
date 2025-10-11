@@ -8112,13 +8112,16 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                 break;
             }
             
-            // Simple test first
-            echo json_encode([
-                'success' => true, 
-                'message' => 'API is working',
-                'user_email' => $userEmail,
-                'date' => $date
-            ]);
+            // Add debugging
+            error_log("get_flagging_status called with user_email: " . $userEmail . ", date: " . $date);
+            
+            try {
+                $result = getFlaggingStatus($db, $userEmail, $date);
+                echo json_encode($result);
+            } catch (Exception $e) {
+                error_log("Error in get_flagging_status: " . $e->getMessage());
+                echo json_encode(['success' => false, 'error' => 'Server error: ' . $e->getMessage()]);
+            }
             break;
 
         // ========================================
