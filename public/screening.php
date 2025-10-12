@@ -9237,7 +9237,7 @@ header {
             document.body.appendChild(modal);
             
             // Fetch MHO recommended foods
-            fetch(\`api/food_history_api.php?action=get_recommended_foods&user_email=\${encodeURIComponent(userEmail)}\`)
+            fetch(`api/food_history_api.php?action=get_recommended_foods&user_email=${encodeURIComponent(userEmail)}`)
                 .then(response => response.json())
                 .then(data => {
                     const content = document.getElementById('mhoRecommendedContent');
@@ -9252,16 +9252,16 @@ header {
                         mealCategories.forEach(mealCategory => {
                             if (data.data[mealCategory] && data.data[mealCategory].length > 0) {
                                 hasFoods = true;
-                                html += \`
+                                html += `
                                     <div style="margin-bottom: 25px;">
                                         <h4 style="margin: 0 0 15px 0; color: var(--text-primary); font-size: 18px; font-weight: 600; padding: 10px 15px; background: var(--card-bg); border-radius: 6px; border-left: 4px solid #2196f3;">
                                             \${mealCategory} (\${data.data[mealCategory].length} items)
                                         </h4>
                                         <div style="display: grid; gap: 10px;">
-                                \`;
+                                `;
                                 
                                 data.data[mealCategory].forEach(food => {
-                                    html += \`
+                                    html += `
                                         <div style="padding: 15px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
                                             <div style="flex: 1;">
                                                 <div style="display: flex; align-items: center; gap: 10px;">
@@ -9280,7 +9280,7 @@ header {
                                                 <span>F: \${food.fat}g</span>
                                             </div>
                                         </div>
-                                    \`;
+                                    `;
                                 });
                                 
                                 html += '</div></div>';
@@ -9489,7 +9489,7 @@ header {
                 
                 if (selectedType && selectedCategory) {
                     // Fetch user count for this classification
-                    fetch(\`api/food_history_api.php?action=get_user_count_by_classification&classification_type=\${selectedType}&category=\${selectedCategory}\`)
+                    fetch(`api/food_history_api.php?action=get_user_count_by_classification&classification_type=${selectedType}&category=${selectedCategory}`)
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
@@ -9554,7 +9554,7 @@ header {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert(\`✅ Successfully added recommendation to \${data.affected_users} users!\`);
+                        alert(`✅ Successfully added recommendation to ${data.affected_users} users!`);
                         this.closest('.modal').remove();
                     } else {
                         alert('❌ Error: ' + (data.error || 'Failed to add bulk recommendation'));
