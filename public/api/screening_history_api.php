@@ -81,6 +81,22 @@ try {
             error_log("Screening history API: Found " . count($history) . " records for user: $user_email");
             error_log("Screening history API: Limit value: $limit");
             
+            // Group data by date and filter for BMI-for-age only
+            $groupedData = [];
+            foreach ($history as $record) {
+                $date = $record['screening_date'];
+                
+                // Only keep BMI-for-age records (most important WHO standard)
+                if ($record['classification_type'] === 'bmi-for-age') {
+                    if (!isset($groupedData[$date])) {
+                        $groupedData[$date] = $record;
+                    }
+                }
+            }
+            
+            // Sort by date (oldest first for better timeline visualization)
+            ksort($groupedData);
+            
             // Format data for Chart.js
             $chartData = [
                 'labels' => [],
@@ -90,21 +106,18 @@ try {
                         'data' => [],
                         'borderColor' => '#8CA86E',
                         'backgroundColor' => 'rgba(140, 168, 110, 0.1)',
-                        'yAxisID' => 'y'
-                    ],
-                    [
-                        'label' => 'Height (cm)',
-                        'data' => [],
-                        'borderColor' => '#A1B454',
-                        'backgroundColor' => 'rgba(161, 180, 84, 0.1)',
-                        'yAxisID' => 'y'
+                        'yAxisID' => 'y',
+                        'tension' => 0.3,
+                        'fill' => false
                     ],
                     [
                         'label' => 'BMI',
                         'data' => [],
                         'borderColor' => '#B5C88D',
                         'backgroundColor' => 'rgba(181, 200, 141, 0.1)',
-                        'yAxisID' => 'y1'
+                        'yAxisID' => 'y1',
+                        'tension' => 0.3,
+                        'fill' => false
                     ]
                 ]
             ];
@@ -112,26 +125,21 @@ try {
             $tableData = [];
             $classifications = [];
             
-            foreach ($history as $record) {
+            foreach ($groupedData as $record) {
                 $date = new DateTime($record['screening_date']);
                 $dateLabel = $date->format('M j, Y');
                 
                 // Add to chart data
                 $chartData['labels'][] = $dateLabel;
                 $chartData['datasets'][0]['data'][] = floatval($record['weight']);
-                $chartData['datasets'][1]['data'][] = floatval($record['height']);
-                $chartData['datasets'][2]['data'][] = floatval($record['bmi']);
+                $chartData['datasets'][1]['data'][] = floatval($record['bmi']);
                 
-                // Add to table data
+                // Add to table data (simplified)
                 $tableData[] = [
                     'date' => $dateLabel,
                     'weight' => $record['weight'],
-                    'height' => $record['height'],
                     'bmi' => $record['bmi'],
-                    'classification_type' => $record['classification_type'],
-                    'classification' => $record['classification'],
-                    'z_score' => $record['z_score'],
-                    'nutritional_risk' => $record['nutritional_risk']
+                    'classification' => $record['classification']
                 ];
                 
                 // Track classifications for legend

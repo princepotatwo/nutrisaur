@@ -2923,23 +2923,48 @@ header {
 
         .classification-badge {
             display: inline-block;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 13px;
             font-weight: 600;
-            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
-        .classification-normal { background: #8CA86E; color: white; }
-        .classification-underweight { background: #E0C989; color: #1A211A; }
-        .classification-overweight { background: #E0C989; color: #1A211A; }
-        .classification-obese { background: #CF8686; color: white; }
-        .classification-severely-underweight { background: #CF8686; color: white; }
-        .classification-stunted { background: #E0C989; color: #1A211A; }
-        .classification-severely-stunted { background: #CF8686; color: white; }
-        .classification-wasted { background: #E0C989; color: #1A211A; }
-        .classification-severely-wasted { background: #CF8686; color: white; }
-        .classification-tall { background: #6FA8DC; color: white; }
+        /* WHO Classification Color Coding */
+        .classification-normal { 
+            background: #8CA86E; 
+            color: white;
+            box-shadow: 0 2px 4px rgba(140, 168, 110, 0.3);
+        }
+        
+        .classification-moderate { 
+            background: #E0C989; 
+            color: #1A211A;
+            box-shadow: 0 2px 4px rgba(224, 201, 137, 0.3);
+        }
+        
+        .classification-severe { 
+            background: #CF8686; 
+            color: white;
+            box-shadow: 0 2px 4px rgba(207, 134, 134, 0.3);
+        }
+
+        .latest-entry {
+            background: rgba(161, 180, 84, 0.1) !important;
+            border-left: 3px solid var(--accent-color) !important;
+        }
+
+        .latest-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--accent-color);
+            color: var(--bg-color);
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 8px;
+            text-transform: uppercase;
+        }
             transition: all 0.3s ease;
         }
 
@@ -6754,15 +6779,14 @@ header {
                                             <thead>
                                                 <tr>
                                                     <th>Date</th>
-                                                    <th>Weight (kg)</th>
-                                                    <th>Height (cm)</th>
+                                                    <th>Weight</th>
                                                     <th>BMI</th>
-                                                    <th>Classification</th>
+                                                    <th>BMI-for-Age Classification</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="progressTableBody-${userData.email}">
                                                 <tr>
-                                                    <td colspan="5" class="empty-state">Loading progress data...</td>
+                                                    <td colspan="4" class="empty-state">Loading progress data...</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -6894,11 +6918,18 @@ header {
                             position: 'left',
                             title: {
                                 display: true,
-                                text: 'Weight (kg) / Height (cm)',
-                                color: 'var(--text-color)'
+                                text: 'Weight (kg)',
+                                color: 'var(--text-color)',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
                             },
                             ticks: {
-                                color: 'var(--text-color)'
+                                color: 'var(--text-color)',
+                                callback: function(value) {
+                                    return value + ' kg';
+                                }
                             },
                             grid: {
                                 color: 'var(--border-color)'
@@ -6911,10 +6942,17 @@ header {
                             title: {
                                 display: true,
                                 text: 'BMI',
-                                color: 'var(--text-color)'
+                                color: 'var(--text-color)',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
                             },
                             ticks: {
-                                color: 'var(--text-color)'
+                                color: 'var(--text-color)',
+                                callback: function(value) {
+                                    return value.toFixed(1);
+                                }
                             },
                             grid: {
                                 drawOnChartArea: false,
@@ -6942,16 +6980,33 @@ header {
             
             tableBody.innerHTML = '';
             
-            tableData.forEach(row => {
+            tableData.forEach((row, index) => {
                 const tr = document.createElement('tr');
+                
+                // Determine classification badge class
+                let badgeClass = 'classification-normal';
+                if (row.classification) {
+                    const classLower = row.classification.toLowerCase();
+                    if (classLower.includes('obese') || classLower.includes('severely')) {
+                        badgeClass = 'classification-severe';
+                    } else if (classLower.includes('overweight') || classLower.includes('underweight') || classLower.includes('stunted') || classLower.includes('wasted')) {
+                        badgeClass = 'classification-moderate';
+                    } else if (classLower.includes('normal')) {
+                        badgeClass = 'classification-normal';
+                    }
+                }
+                
+                // Highlight the latest entry
+                const isLatest = index === tableData.length - 1;
+                tr.className = isLatest ? 'latest-entry' : '';
+                
                 tr.innerHTML = `
-                    <td>${row.date}</td>
-                    <td>${row.weight || 'N/A'}</td>
-                    <td>${row.height || 'N/A'}</td>
-                    <td>${row.bmi ? row.bmi.toFixed(1) : 'N/A'}</td>
+                    <td>${row.date}${isLatest ? ' <span class="latest-badge">Latest</span>' : ''}</td>
+                    <td><strong>${row.weight || 'N/A'} kg</strong></td>
+                    <td><strong>${row.bmi ? parseFloat(row.bmi).toFixed(1) : 'N/A'}</strong></td>
                     <td>
                         ${row.classification ? 
-                            `<span class="classification-badge classification-${row.classification.toLowerCase().replace(/\s+/g, '-')}">${row.classification}</span>` : 
+                            `<span class="classification-badge ${badgeClass}">${row.classification}</span>` : 
                             'N/A'
                         }
                     </td>
