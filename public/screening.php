@@ -2444,13 +2444,15 @@ header {
         /* Profile Header Buttons */
         .profile-header-buttons {
             display: flex;
-            gap: 10px;
-            align-items: center;
+            flex-direction: column;
+            gap: 8px;
+            align-items: stretch;
+            min-width: 140px;
             margin-left: auto;
         }
 
         .profile-action-btn {
-            padding: 8px 16px;
+            padding: 10px 16px;
             border: none;
             border-radius: 6px;
             font-size: 12px;
@@ -2458,20 +2460,18 @@ header {
             cursor: pointer;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
+            display: block;
+            width: 100%;
+            min-height: 36px;
+            box-sizing: border-box;
+            text-align: center;
         }
 
         .profile-food-btn {
             background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
-            padding: 12px 20px;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 8px;
             box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         
         .profile-food-btn:hover {
@@ -4618,14 +4618,16 @@ header {
 
             .profile-header-buttons {
                 flex-direction: column;
-                gap: 5px;
+                gap: 6px;
                 top: 10px;
                 right: 10px;
+                min-width: 120px;
             }
 
             .profile-action-btn {
-                padding: 6px 12px;
-                font-size: 10px;
+                padding: 8px 12px;
+                font-size: 11px;
+                min-height: 32px;
             }
 
             .filter-dropdowns {
