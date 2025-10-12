@@ -1066,8 +1066,7 @@ function handleGetUserCountByClassification($pdo) {
                         case 'bmi_adult':
                             // Calculate BMI for adults
                             $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
-                            if ($bmi < 16.0) $classification = 'Severely Underweight';
-                            else if ($bmi < 18.5) $classification = 'Underweight';
+                            if ($bmi < 18.5) $classification = 'Underweight';
                             else if ($bmi < 25) $classification = 'Normal';
                             else if ($bmi < 30) $classification = 'Overweight';
                             else $classification = 'Obese';
@@ -1106,16 +1105,7 @@ function handleGetUserCountByClassification($pdo) {
                     }
                     
                     // Check if classification matches the requested category (case-insensitive)
-                    // For BMI Adult "underweight", also count "Severely Underweight"
-                    $isMatch = false;
                     if ($classification && strtolower($classification) === strtolower($category)) {
-                        $isMatch = true;
-                    } else if ($classificationType === 'bmi_adult' && $category === 'underweight' && 
-                              strtolower($classification) === 'severely underweight') {
-                        $isMatch = true;
-                    }
-                    
-                    if ($isMatch) {
                         $matchingUsers++;
                         if ($debugCount < 3) {
                             error_log("🔍 DEBUG: User $processedUsers - MATCH! Classification: $classification, Category: $category");
@@ -1226,8 +1216,7 @@ function handleAddBulkRecommendation($pdo) {
                         case 'bmi_adult':
                             // Calculate BMI for adults
                             $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
-                            if ($bmi < 16.0) $classification = 'Severely Underweight';
-                            else if ($bmi < 18.5) $classification = 'Underweight';
+                            if ($bmi < 18.5) $classification = 'Underweight';
                             else if ($bmi < 25) $classification = 'Normal';
                             else if ($bmi < 30) $classification = 'Overweight';
                             else $classification = 'Obese';
@@ -1250,16 +1239,7 @@ function handleAddBulkRecommendation($pdo) {
                     }
                     
                     // Check if classification matches the requested category (case-insensitive)
-                    // For BMI Adult "underweight", also count "Severely Underweight"
-                    $isMatch = false;
                     if ($classification && strtolower($classification) === strtolower($data['category'])) {
-                        $isMatch = true;
-                    } else if ($data['classification_type'] === 'bmi_adult' && $data['category'] === 'underweight' && 
-                              strtolower($classification) === 'severely underweight') {
-                        $isMatch = true;
-                    }
-                    
-                    if ($isMatch) {
                         $matchingUsers[] = $user['email'];
                     }
                 }
