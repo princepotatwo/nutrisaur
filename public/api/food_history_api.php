@@ -987,16 +987,16 @@ function handleGetUserCountByClassification($pdo) {
         
         error_log("🔍 DEBUG: Classification query - Type: $classificationType, Category: $category");
         
-        // Get all users from comprehensive_screening table
-        $sql = "SELECT email, weight, height, birthday, sex, screening_date FROM comprehensive_screening WHERE weight IS NOT NULL AND height IS NOT NULL AND birthday IS NOT NULL";
+        // Get all users from community_users table
+        $sql = "SELECT email, weight, height, birthday, sex, screening_date FROM community_users WHERE weight IS NOT NULL AND height IS NOT NULL AND birthday IS NOT NULL";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        error_log("🔍 DEBUG: Found " . count($users) . " users in comprehensive_screening table");
+        error_log("🔍 DEBUG: Found " . count($users) . " users in community_users table");
         
         if (empty($users)) {
-            error_log("🔍 DEBUG: No users found in comprehensive_screening table");
+            error_log("🔍 DEBUG: No users found in community_users table");
             echo json_encode([
                 'success' => true,
                 'count' => 0
@@ -1160,8 +1160,8 @@ function handleAddBulkRecommendation($pdo) {
             }
         }
         
-        // Get all users from comprehensive_screening table
-        $sql = "SELECT email, weight, height, birthday, sex, screening_date FROM comprehensive_screening WHERE weight IS NOT NULL AND height IS NOT NULL AND birthday IS NOT NULL";
+        // Get all users from community_users table
+        $sql = "SELECT email, weight, height, birthday, sex, screening_date FROM community_users WHERE weight IS NOT NULL AND height IS NOT NULL AND birthday IS NOT NULL";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
