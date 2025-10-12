@@ -6846,7 +6846,7 @@ header {
             fetch(`api/screening_history_api.php?action=get_history&user_email=${encodeURIComponent(userEmail)}&limit=20`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success && data.data.total_records > 0) {
+                    if (data.success && data.data.table && data.data.table.length > 0) {
                         // Render chart
                         renderProgressChart(canvasId, data.data.chart);
                         
@@ -6878,13 +6878,7 @@ header {
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                color: 'var(--text-color)',
-                                usePointStyle: true,
-                                padding: 20
-                            }
+                            display: false
                         },
                         tooltip: {
                             mode: 'index',
@@ -6893,7 +6887,17 @@ header {
                             titleColor: 'var(--text-color)',
                             bodyColor: 'var(--text-color)',
                             borderColor: 'var(--border-color)',
-                            borderWidth: 1
+                            borderWidth: 1,
+                            callbacks: {
+                                title: function(context) {
+                                    return context[0].label;
+                                },
+                                label: function(context) {
+                                    const bmi = context.parsed.y;
+                                    const classification = context.raw.classification || 'Unknown';
+                                    return `BMI: ${bmi.toFixed(1)} (${classification})`;
+                                }
+                            }
                         }
                     },
                     scales: {

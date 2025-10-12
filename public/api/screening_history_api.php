@@ -126,7 +126,11 @@ try {
                 
                 // Add to chart data (BMI only)
                 $chartData['labels'][] = $dateLabel;
-                $chartData['datasets'][0]['data'][] = floatval($record['bmi']);
+                $chartData['datasets'][0]['data'][] = [
+                    'x' => $dateLabel,
+                    'y' => floatval($record['bmi']),
+                    'classification' => $record['classification']
+                ];
                 
                 // Add to table data (simplified)
                 $tableData[] = [
