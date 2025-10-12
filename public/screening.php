@@ -9341,7 +9341,6 @@ header {
                                             <option value="">Select classification type</option>
                                             <option value="bmi_adult">BMI for Adults (18+ years)</option>
                                             <option value="bmi_children">BMI for Children (2-17 years)</option>
-                                            <option value="muac">MUAC Classification</option>
                                             <option value="weight_for_age">Weight for Age</option>
                                             <option value="height_for_age">Height for Age</option>
                                         </select>
@@ -9445,12 +9444,6 @@ header {
                     { value: 'normal', label: 'Normal weight' },
                     { value: 'overweight', label: 'Overweight' },
                     { value: 'obese', label: 'Obese' }
-                ],
-                'muac': [
-                    { value: 'severe_malnutrition', label: 'Severe Malnutrition' },
-                    { value: 'moderate_malnutrition', label: 'Moderate Malnutrition' },
-                    { value: 'normal', label: 'Normal' },
-                    { value: 'overweight', label: 'Overweight' }
                 ],
                 'weight_for_age': [
                     { value: 'severely_underweight', label: 'Severely Underweight' },

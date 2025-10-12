@@ -985,36 +985,104 @@ function handleGetUserCountByClassification($pdo) {
             throw new Exception('Classification type and category are required');
         }
         
-        // Build the query based on classification type
-        $sql = "SELECT COUNT(*) as count FROM users WHERE ";
+        // Get all users from comprehensive_screening table
+        $sql = "SELECT email, weight, height, birthday, sex, screening_date FROM comprehensive_screening WHERE weight IS NOT NULL AND height IS NOT NULL AND birthday IS NOT NULL";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        switch ($classificationType) {
-            case 'bmi_adult':
-                $sql .= "bmi_classification = ? AND age >= 18";
-                break;
-            case 'bmi_children':
-                $sql .= "bmi_classification = ? AND age < 18";
-                break;
-            case 'muac':
-                $sql .= "muac_classification = ?";
-                break;
-            case 'weight_for_age':
-                $sql .= "weight_for_age_classification = ?";
-                break;
-            case 'height_for_age':
-                $sql .= "height_for_age_classification = ?";
-                break;
-            default:
-                throw new Exception('Invalid classification type');
+        if (empty($users)) {
+            echo json_encode([
+                'success' => true,
+                'count' => 0
+            ]);
+            return;
         }
         
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$category]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Use WHO Growth Standards to calculate classifications
+        require_once __DIR__ . '/../../who_growth_standards.php';
+        $who = new WHOGrowthStandards();
+        
+        $matchingUsers = 0;
+        
+        foreach ($users as $user) {
+            try {
+                // Calculate age in months
+                $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                
+                // Check if user is eligible for this classification type
+                $isEligible = false;
+                switch ($classificationType) {
+                    case 'bmi_adult':
+                        $isEligible = ($ageInMonths >= 228); // 19+ years
+                        break;
+                    case 'bmi_children':
+                        $isEligible = ($ageInMonths >= 24 && $ageInMonths < 228); // 2-18 years
+                        break;
+                    case 'weight_for_age':
+                        $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 71); // 0-5 years
+                        break;
+                    case 'height_for_age':
+                        $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 71); // 0-5 years
+                        break;
+                }
+                
+                if (!$isEligible) continue;
+                
+                // Get comprehensive assessment
+                $assessment = $who->getComprehensiveAssessment(
+                    floatval($user['weight']),
+                    floatval($user['height']),
+                    $user['birthday'],
+                    $user['sex'],
+                    $user['screening_date'] ?? null
+                );
+                
+                if ($assessment['success'] && isset($assessment['results'])) {
+                    $results = $assessment['results'];
+                    $classification = null;
+                    
+                    switch ($classificationType) {
+                        case 'bmi_adult':
+                            // Calculate BMI for adults
+                            $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
+                            if ($bmi < 16.0) $classification = 'Severely Underweight';
+                            else if ($bmi < 18.5) $classification = 'Underweight';
+                            else if ($bmi < 25) $classification = 'Normal';
+                            else if ($bmi < 30) $classification = 'Overweight';
+                            else $classification = 'Obese';
+                            break;
+                        case 'bmi_children':
+                            if (isset($results['bmi_for_age']['classification'])) {
+                                $classification = $results['bmi_for_age']['classification'];
+                            }
+                            break;
+                        case 'weight_for_age':
+                            if (isset($results['weight_for_age']['classification'])) {
+                                $classification = $results['weight_for_age']['classification'];
+                            }
+                            break;
+                        case 'height_for_age':
+                            if (isset($results['height_for_age']['classification'])) {
+                                $classification = $results['height_for_age']['classification'];
+                            }
+                            break;
+                    }
+                    
+                    // Check if classification matches the requested category
+                    if ($classification && $classification === $category) {
+                        $matchingUsers++;
+                    }
+                }
+            } catch (Exception $e) {
+                // Skip users with processing errors
+                continue;
+            }
+        }
         
         echo json_encode([
             'success' => true,
-            'count' => (int)$result['count']
+            'count' => $matchingUsers
         ]);
         
     } catch (Exception $e) {
@@ -1041,38 +1109,102 @@ function handleAddBulkRecommendation($pdo) {
             }
         }
         
-        // Get users matching the classification
-        $sql = "SELECT email FROM users WHERE ";
-        
-        switch ($data['classification_type']) {
-            case 'bmi_adult':
-                $sql .= "bmi_classification = ? AND age >= 18";
-                break;
-            case 'bmi_children':
-                $sql .= "bmi_classification = ? AND age < 18";
-                break;
-            case 'muac':
-                $sql .= "muac_classification = ?";
-                break;
-            case 'weight_for_age':
-                $sql .= "weight_for_age_classification = ?";
-                break;
-            case 'height_for_age':
-                $sql .= "height_for_age_classification = ?";
-                break;
-            default:
-                throw new Exception('Invalid classification type');
-        }
-        
+        // Get all users from comprehensive_screening table
+        $sql = "SELECT email, weight, height, birthday, sex, screening_date FROM comprehensive_screening WHERE weight IS NOT NULL AND height IS NOT NULL AND birthday IS NOT NULL";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$data['category']]);
+        $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         if (empty($users)) {
+            throw new Exception('No users found in the system');
+        }
+        
+        // Use WHO Growth Standards to calculate classifications
+        require_once __DIR__ . '/../../who_growth_standards.php';
+        $who = new WHOGrowthStandards();
+        
+        $matchingUsers = [];
+        
+        foreach ($users as $user) {
+            try {
+                // Calculate age in months
+                $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                
+                // Check if user is eligible for this classification type
+                $isEligible = false;
+                switch ($data['classification_type']) {
+                    case 'bmi_adult':
+                        $isEligible = ($ageInMonths >= 228); // 19+ years
+                        break;
+                    case 'bmi_children':
+                        $isEligible = ($ageInMonths >= 24 && $ageInMonths < 228); // 2-18 years
+                        break;
+                    case 'weight_for_age':
+                        $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 71); // 0-5 years
+                        break;
+                    case 'height_for_age':
+                        $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 71); // 0-5 years
+                        break;
+                }
+                
+                if (!$isEligible) continue;
+                
+                // Get comprehensive assessment
+                $assessment = $who->getComprehensiveAssessment(
+                    floatval($user['weight']),
+                    floatval($user['height']),
+                    $user['birthday'],
+                    $user['sex'],
+                    $user['screening_date'] ?? null
+                );
+                
+                if ($assessment['success'] && isset($assessment['results'])) {
+                    $results = $assessment['results'];
+                    $classification = null;
+                    
+                    switch ($data['classification_type']) {
+                        case 'bmi_adult':
+                            // Calculate BMI for adults
+                            $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
+                            if ($bmi < 16.0) $classification = 'Severely Underweight';
+                            else if ($bmi < 18.5) $classification = 'Underweight';
+                            else if ($bmi < 25) $classification = 'Normal';
+                            else if ($bmi < 30) $classification = 'Overweight';
+                            else $classification = 'Obese';
+                            break;
+                        case 'bmi_children':
+                            if (isset($results['bmi_for_age']['classification'])) {
+                                $classification = $results['bmi_for_age']['classification'];
+                            }
+                            break;
+                        case 'weight_for_age':
+                            if (isset($results['weight_for_age']['classification'])) {
+                                $classification = $results['weight_for_age']['classification'];
+                            }
+                            break;
+                        case 'height_for_age':
+                            if (isset($results['height_for_age']['classification'])) {
+                                $classification = $results['height_for_age']['classification'];
+                            }
+                            break;
+                    }
+                    
+                    // Check if classification matches the requested category
+                    if ($classification && $classification === $data['category']) {
+                        $matchingUsers[] = $user['email'];
+                    }
+                }
+            } catch (Exception $e) {
+                // Skip users with processing errors
+                continue;
+            }
+        }
+        
+        if (empty($matchingUsers)) {
             throw new Exception('No users found matching the selected classification');
         }
         
-        // Insert recommended food for each user
+        // Insert recommended food for each matching user
         $insertSql = "INSERT INTO user_food_history 
                       (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
                       VALUES (?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
@@ -1080,10 +1212,10 @@ function handleAddBulkRecommendation($pdo) {
         $insertStmt = $pdo->prepare($insertSql);
         $affectedUsers = 0;
         
-        foreach ($users as $user) {
+        foreach ($matchingUsers as $userEmail) {
             try {
                 $result = $insertStmt->execute([
-                    $user['email'],
+                    $userEmail,
                     $data['meal_category'],
                     $data['food_name'],
                     $data['calories'],
@@ -1099,7 +1231,7 @@ function handleAddBulkRecommendation($pdo) {
                 }
             } catch (Exception $e) {
                 // Log error but continue with other users
-                error_log("Failed to add recommendation for user {$user['email']}: " . $e->getMessage());
+                error_log("Failed to add recommendation for user $userEmail: " . $e->getMessage());
             }
         }
         
