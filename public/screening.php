@@ -2813,83 +2813,27 @@ header {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
-        /* Light theme food history table styles */
+        /* Light theme food history table styles - Match main table exactly */
         .light-theme .food-history-table {
-            border: 1px solid #000000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            background: #FFFFFF;
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 20px var(--color-shadow);
         }
 
         .light-theme .food-history-table thead {
-            background-color: #FFFFFF;
-        }
-
-        .light-theme .food-history-table thead th {
-            background: #FFFFFF;
-            color: #000000;
-            border-bottom: 2px solid #000000;
+            background-color: var(--color-card);
         }
 
         .light-theme .food-history-table tbody tr:nth-child(odd) {
-            background-color: #FFFFFF;
-            border-bottom: 1px solid #000000;
+            background-color: rgba(102, 187, 106, 0.1);
         }
 
         .light-theme .food-history-table tbody tr:nth-child(even) {
-            background-color: #F5F5F5;
-            border-bottom: 1px solid #000000;
+            background-color: rgba(102, 187, 106, 0.05);
         }
 
         .light-theme .food-history-table tbody tr:hover {
-            background: rgba(102, 187, 106, 0.1);
+            background: rgba(102, 187, 106, 0.15);
             border-left-color: var(--color-highlight);
-        }
-
-        .light-theme .food-history-table tbody td {
-            color: #000000;
-            border-right: 1px solid #000000;
-        }
-
-        .light-theme .food-history-table tbody td:last-child {
-            border-right: none;
-        }
-
-        .light-theme .food-history-table tbody td.food-name-cell {
-            color: #000000;
-            font-weight: 600;
-        }
-
-        .light-theme .food-history-table tbody td.food-serving-cell {
-            color: #333333;
-        }
-
-        .light-theme .food-history-table tbody td.food-nutrition-cell div:first-child {
-            color: #2E7D32;
-            font-weight: 600;
-        }
-
-        .light-theme .food-history-table tbody td.food-nutrition-cell div:last-child {
-            color: #666666;
-        }
-
-        /* Light theme date section */
-        .light-theme .date-section {
-            border: 1px solid #000000;
-            background: #FFFFFF;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Light theme modal content */
-        .light-theme .food-history-modal .modal-content {
-            background: #FFFFFF;
-            border: 1px solid #000000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Light theme header */
-        .light-theme .food-history-header {
-            background: linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%);
-            color: white;
         }
 
         /* Dark theme food history table styles */
