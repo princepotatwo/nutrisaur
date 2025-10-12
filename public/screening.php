@@ -2306,10 +2306,30 @@ header {
             width: 95%;
             max-width: 1000px;
             max-height: 90vh;
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             transform: scale(0.95);
             transition: all 0.3s ease-out;
+        }
+
+        /* Custom scrollbar for modal */
+        .profile-modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .profile-modal-content::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 10px;
+        }
+
+        .profile-modal-content::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        .profile-modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
         }
 
         .profile-header {
@@ -6770,7 +6790,7 @@ header {
                                 <div class="card-header">
                                     <h3>Progress Tracking</h3>
                                 </div>
-                                <div class="card-content">
+                                <div class="card-content" style="padding-bottom: 20px;">
                                     <div class="chart-container" style="height: 400px;">
                                         <canvas id="progressChart-${userData.email}"></canvas>
                                     </div>
