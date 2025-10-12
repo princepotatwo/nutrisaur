@@ -976,6 +976,9 @@ function handleAddRecommendedToMeal($pdo) {
     }
 }
 
+/**
+ * Get user count by classification
+ */
 function handleGetUserCountByClassification($pdo) {
     try {
         $classificationType = $_GET['classification_type'] ?? '';
@@ -985,31 +988,86 @@ function handleGetUserCountByClassification($pdo) {
             throw new Exception('Classification type and category are required');
         }
         
-        // Build query based on classification type
-        $sql = "SELECT COUNT(DISTINCT user_email) as count FROM user_data WHERE ";
+        // Build the query based on classification type
+        $sql = "SELECT COUNT(*) as count FROM users WHERE ";
         
         switch ($classificationType) {
             case 'bmi_adult':
-                $sql .= "age >= 18 AND bmi_classification = ?";
+                // For adults, we need to calculate BMI and classify
+                $sql .= "age >= 18 AND ";
+                if ($category === 'underweight') {
+                    $sql .= "weight / (height/100) / (height/100) < 18.5";
+                } elseif ($category === 'normal') {
+                    $sql .= "weight / (height/100) / (height/100) >= 18.5 AND weight / (height/100) / (height/100) < 25";
+                } elseif ($category === 'overweight') {
+                    $sql .= "weight / (height/100) / (height/100) >= 25 AND weight / (height/100) / (height/100) < 30";
+                } elseif ($category === 'obese') {
+                    $sql .= "weight / (height/100) / (height/100) >= 30";
+                }
                 break;
+                
             case 'bmi_children':
-                $sql .= "age < 18 AND bmi_classification = ?";
+                // For children, we need to use WHO standards
+                $sql .= "age < 18 AND ";
+                // This is a simplified version - in reality, you'd need to use WHO z-score tables
+                if ($category === 'severely_underweight') {
+                    $sql .= "weight / (height/100) / (height/100) < 16";
+                } elseif ($category === 'underweight') {
+                    $sql .= "weight / (height/100) / (height/100) >= 16 AND weight / (height/100) / (height/100) < 18.5";
+                } elseif ($category === 'normal') {
+                    $sql .= "weight / (height/100) / (height/100) >= 18.5 AND weight / (height/100) / (height/100) < 25";
+                } elseif ($category === 'overweight') {
+                    $sql .= "weight / (height/100) / (height/100) >= 25 AND weight / (height/100) / (height/100) < 30";
+                } elseif ($category === 'obese') {
+                    $sql .= "weight / (height/100) / (height/100) >= 30";
+                }
                 break;
+                
             case 'muac':
-                $sql .= "muac_classification = ?";
+                // MUAC classification
+                if ($category === 'severe_malnutrition') {
+                    $sql .= "muac < 11.5";
+                } elseif ($category === 'moderate_malnutrition') {
+                    $sql .= "muac >= 11.5 AND muac < 12.5";
+                } elseif ($category === 'normal') {
+                    $sql .= "muac >= 12.5 AND muac < 16";
+                } elseif ($category === 'overweight') {
+                    $sql .= "muac >= 16";
+                }
                 break;
+                
             case 'weight_for_age':
-                $sql .= "weight_for_age_classification = ?";
+                // Weight for age classification (simplified)
+                if ($category === 'severely_underweight') {
+                    $sql .= "weight < (SELECT AVG(weight) * 0.7 FROM users WHERE age = users.age)";
+                } elseif ($category === 'underweight') {
+                    $sql .= "weight >= (SELECT AVG(weight) * 0.7 FROM users WHERE age = users.age) AND weight < (SELECT AVG(weight) * 0.8 FROM users WHERE age = users.age)";
+                } elseif ($category === 'normal') {
+                    $sql .= "weight >= (SELECT AVG(weight) * 0.8 FROM users WHERE age = users.age) AND weight < (SELECT AVG(weight) * 1.2 FROM users WHERE age = users.age)";
+                } elseif ($category === 'overweight') {
+                    $sql .= "weight >= (SELECT AVG(weight) * 1.2 FROM users WHERE age = users.age)";
+                }
                 break;
+                
             case 'height_for_age':
-                $sql .= "height_for_age_classification = ?";
+                // Height for age classification (simplified)
+                if ($category === 'severely_stunted') {
+                    $sql .= "height < (SELECT AVG(height) * 0.85 FROM users WHERE age = users.age)";
+                } elseif ($category === 'stunted') {
+                    $sql .= "height >= (SELECT AVG(height) * 0.85 FROM users WHERE age = users.age) AND height < (SELECT AVG(height) * 0.9 FROM users WHERE age = users.age)";
+                } elseif ($category === 'normal') {
+                    $sql .= "height >= (SELECT AVG(height) * 0.9 FROM users WHERE age = users.age) AND height < (SELECT AVG(height) * 1.1 FROM users WHERE age = users.age)";
+                } elseif ($category === 'tall') {
+                    $sql .= "height >= (SELECT AVG(height) * 1.1 FROM users WHERE age = users.age)";
+                }
                 break;
+                
             default:
                 throw new Exception('Invalid classification type');
         }
         
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$category]);
+        $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         
         echo json_encode([
@@ -1025,16 +1083,17 @@ function handleGetUserCountByClassification($pdo) {
     }
 }
 
+/**
+ * Add bulk recommendation to multiple users based on classification
+ */
 function handleAddBulkRecommendation($pdo) {
     try {
-        $input = file_get_contents('php://input');
-        $data = json_decode($input, true);
+        $data = json_decode(file_get_contents('php://input'), true);
         
         if (!$data) {
             throw new Exception('Invalid JSON data');
         }
         
-        // Validate required fields
         $required = ['classification_type', 'category', 'meal_category', 'food_name', 'calories', 'serving_size'];
         foreach ($required as $field) {
             if (!isset($data[$field]) || empty($data[$field])) {
@@ -1042,48 +1101,24 @@ function handleAddBulkRecommendation($pdo) {
             }
         }
         
-        // Get all users matching the classification
-        $sql = "SELECT DISTINCT user_email FROM user_data WHERE ";
-        
-        switch ($data['classification_type']) {
-            case 'bmi_adult':
-                $sql .= "age >= 18 AND bmi_classification = ?";
-                break;
-            case 'bmi_children':
-                $sql .= "age < 18 AND bmi_classification = ?";
-                break;
-            case 'muac':
-                $sql .= "muac_classification = ?";
-                break;
-            case 'weight_for_age':
-                $sql .= "weight_for_age_classification = ?";
-                break;
-            case 'height_for_age':
-                $sql .= "height_for_age_classification = ?";
-                break;
-            default:
-                throw new Exception('Invalid classification type');
-        }
-        
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$data['category']]);
-        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Get users matching the classification
+        $users = getUsersByClassification($pdo, $data['classification_type'], $data['category']);
         
         if (empty($users)) {
             throw new Exception('No users found matching the specified classification');
         }
         
-        // Insert recommended food for each user
-        $insertSql = "INSERT INTO user_food_history 
-                      (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
-                      VALUES (?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
-        
-        $insertStmt = $pdo->prepare($insertSql);
         $affectedUsers = 0;
         
+        // Add recommendation to each user
         foreach ($users as $user) {
-            $result = $insertStmt->execute([
-                $user['user_email'],
+            $sql = "INSERT INTO user_food_history 
+                    (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended, emoji) 
+                    VALUES (?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)";
+            
+            $stmt = $pdo->prepare($sql);
+            $result = $stmt->execute([
+                $user['email'],
                 $data['meal_category'],
                 $data['food_name'],
                 $data['calories'],
@@ -1091,7 +1126,8 @@ function handleAddBulkRecommendation($pdo) {
                 $data['protein'] ?? 0,
                 $data['carbs'] ?? 0,
                 $data['fat'] ?? 0,
-                $data['fiber'] ?? 0
+                $data['fiber'] ?? 0,
+                $data['emoji'] ?? null
             ]);
             
             if ($result) {
@@ -1101,8 +1137,8 @@ function handleAddBulkRecommendation($pdo) {
         
         echo json_encode([
             'success' => true,
-            'message' => "Successfully added recommendation to $affectedUsers users",
-            'affected_users' => $affectedUsers
+            'affected_users' => $affectedUsers,
+            'message' => "Successfully added recommendation to $affectedUsers users"
         ]);
         
     } catch (Exception $e) {
@@ -1111,5 +1147,85 @@ function handleAddBulkRecommendation($pdo) {
             'error' => $e->getMessage()
         ]);
     }
+}
+
+/**
+ * Get users by classification
+ */
+function getUsersByClassification($pdo, $classificationType, $category) {
+    $sql = "SELECT email FROM users WHERE ";
+    
+    switch ($classificationType) {
+        case 'bmi_adult':
+            $sql .= "age >= 18 AND ";
+            if ($category === 'underweight') {
+                $sql .= "weight / (height/100) / (height/100) < 18.5";
+            } elseif ($category === 'normal') {
+                $sql .= "weight / (height/100) / (height/100) >= 18.5 AND weight / (height/100) / (height/100) < 25";
+            } elseif ($category === 'overweight') {
+                $sql .= "weight / (height/100) / (height/100) >= 25 AND weight / (height/100) / (height/100) < 30";
+            } elseif ($category === 'obese') {
+                $sql .= "weight / (height/100) / (height/100) >= 30";
+            }
+            break;
+            
+        case 'bmi_children':
+            $sql .= "age < 18 AND ";
+            if ($category === 'severely_underweight') {
+                $sql .= "weight / (height/100) / (height/100) < 16";
+            } elseif ($category === 'underweight') {
+                $sql .= "weight / (height/100) / (height/100) >= 16 AND weight / (height/100) / (height/100) < 18.5";
+            } elseif ($category === 'normal') {
+                $sql .= "weight / (height/100) / (height/100) >= 18.5 AND weight / (height/100) / (height/100) < 25";
+            } elseif ($category === 'overweight') {
+                $sql .= "weight / (height/100) / (height/100) >= 25 AND weight / (height/100) / (height/100) < 30";
+            } elseif ($category === 'obese') {
+                $sql .= "weight / (height/100) / (height/100) >= 30";
+            }
+            break;
+            
+        case 'muac':
+            if ($category === 'severe_malnutrition') {
+                $sql .= "muac < 11.5";
+            } elseif ($category === 'moderate_malnutrition') {
+                $sql .= "muac >= 11.5 AND muac < 12.5";
+            } elseif ($category === 'normal') {
+                $sql .= "muac >= 12.5 AND muac < 16";
+            } elseif ($category === 'overweight') {
+                $sql .= "muac >= 16";
+            }
+            break;
+            
+        case 'weight_for_age':
+            if ($category === 'severely_underweight') {
+                $sql .= "weight < (SELECT AVG(weight) * 0.7 FROM users WHERE age = users.age)";
+            } elseif ($category === 'underweight') {
+                $sql .= "weight >= (SELECT AVG(weight) * 0.7 FROM users WHERE age = users.age) AND weight < (SELECT AVG(weight) * 0.8 FROM users WHERE age = users.age)";
+            } elseif ($category === 'normal') {
+                $sql .= "weight >= (SELECT AVG(weight) * 0.8 FROM users WHERE age = users.age) AND weight < (SELECT AVG(weight) * 1.2 FROM users WHERE age = users.age)";
+            } elseif ($category === 'overweight') {
+                $sql .= "weight >= (SELECT AVG(weight) * 1.2 FROM users WHERE age = users.age)";
+            }
+            break;
+            
+        case 'height_for_age':
+            if ($category === 'severely_stunted') {
+                $sql .= "height < (SELECT AVG(height) * 0.85 FROM users WHERE age = users.age)";
+            } elseif ($category === 'stunted') {
+                $sql .= "height >= (SELECT AVG(height) * 0.85 FROM users WHERE age = users.age) AND height < (SELECT AVG(height) * 0.9 FROM users WHERE age = users.age)";
+            } elseif ($category === 'normal') {
+                $sql .= "height >= (SELECT AVG(height) * 0.9 FROM users WHERE age = users.age) AND height < (SELECT AVG(height) * 1.1 FROM users WHERE age = users.age)";
+            } elseif ($category === 'tall') {
+                $sql .= "height >= (SELECT AVG(height) * 1.1 FROM users WHERE age = users.age)";
+            }
+            break;
+            
+        default:
+            throw new Exception('Invalid classification type');
+    }
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
