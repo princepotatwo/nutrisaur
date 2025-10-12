@@ -2791,7 +2791,7 @@ header {
         }
 
         .food-history-close {
-            background: rgba(255, 255, 255, 0.2);
+            background: #4caf50;
             color: white;
             border: none;
             width: 40px;
@@ -2804,13 +2804,13 @@ header {
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
         }
 
         .food-history-close:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: #388e3c;
             transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
         }
 
         /* Light theme food history table styles - Match main table exactly */
@@ -2939,6 +2939,22 @@ header {
             background: #FFFFFF;
             border: 1px solid #000000;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Dark theme food history header text */
+        .dark-theme .food-history-header h3,
+        .dark-theme .food-history-header p,
+        .dark-theme .food-history-header div {
+            color: #000000 !important;
+        }
+
+        .dark-theme .food-history-header .food-history-close {
+            background: #4caf50 !important;
+            color: white !important;
+        }
+
+        .dark-theme .food-history-header .food-history-close:hover {
+            background: #388e3c !important;
         }
 
         .food-history-content {
@@ -9725,15 +9741,15 @@ header {
                     <div class="food-history-header">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                             <div style="display: flex; align-items: center; gap: 12px;">
-                                <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #000000;">
                                     Food
                                 </div>
                                 <div>
-                                    <h3>Food History</h3>
-                                    <p>${userName}</p>
+                                    <h3 style="color: #000000;">Food History</h3>
+                                    <p style="color: #000000;">${userName}</p>
                                 </div>
                             </div>
-                            <button class="food-history-close" onclick="this.closest('.modal').remove()">&times;</button>
+                            <button class="food-history-close" onclick="this.closest('.modal').remove()" style="background: #4caf50; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; font-size: 16px;">&times;</button>
                         </div>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                             <button class="food-history-btn info" onclick="viewMHORecommendedFoods('${userEmail}', '${userName}')">
