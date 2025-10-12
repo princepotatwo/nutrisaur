@@ -2518,9 +2518,8 @@ header {
             background: rgba(76, 175, 80, 1);
         }
 
-        /* Food History Modal - Professional Design */
+        /* Food History Modal - Match User Profile Modal Design */
         .food-history-modal {
-            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
             animation: modalFadeIn 0.3s ease-out;
         }
@@ -2533,11 +2532,17 @@ header {
             opacity: 0;
         }
 
-        .food-history-modal .modal-content {
+        .food-history-modal.modal-hide .food-history-modal-content {
+            transform: scale(0.95);
+        }
+
+        .food-history-modal-content {
             background: var(--card-bg);
+            margin: 0;
+            padding: 0;
             border-radius: 20px;
             width: 95%;
-            max-width: 1200px;
+            max-width: 1000px;
             max-height: 90vh;
             overflow-y: auto;
             overflow-x: hidden;
@@ -2547,30 +2552,26 @@ header {
             transition: all 0.3s ease-out;
         }
 
-        .food-history-modal.modal-show .modal-content {
+        .food-history-modal.modal-show .food-history-modal-content {
             transform: scale(1);
         }
 
-        .food-history-modal.modal-hide .modal-content {
-            transform: scale(0.95);
-        }
-
         /* Custom scrollbar for food history modal */
-        .food-history-modal .modal-content::-webkit-scrollbar {
+        .food-history-modal-content::-webkit-scrollbar {
             width: 8px;
         }
 
-        .food-history-modal .modal-content::-webkit-scrollbar-track {
+        .food-history-modal-content::-webkit-scrollbar-track {
             background: transparent;
             border-radius: 10px;
         }
 
-        .food-history-modal .modal-content::-webkit-scrollbar-thumb {
+        .food-history-modal-content::-webkit-scrollbar-thumb {
             background: var(--border-color);
             border-radius: 10px;
         }
 
-        .food-history-modal .modal-content::-webkit-scrollbar-thumb:hover {
+        .food-history-modal-content::-webkit-scrollbar-thumb:hover {
             background: var(--text-secondary);
         }
 
@@ -2580,28 +2581,26 @@ header {
             overflow-y: auto;
         }
 
-        /* Professional Button Styles for Food History */
+        /* Food History Buttons - Match User Profile Modal Buttons */
         .food-history-btn {
             background: var(--accent-color);
             color: var(--bg-color);
             border: none;
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             text-decoration: none;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .food-history-btn:hover {
             background: var(--color-highlight);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
         }
 
         .food-history-btn:active {
@@ -2654,24 +2653,24 @@ header {
             background: #1976d2;
         }
 
-        /* Food History Table Styles */
+        /* Food History Table Styles - Match User Profile Modal */
         .food-history-table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
             background: var(--card-bg);
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
         }
 
         .food-history-table thead th {
             background: var(--color-primary);
             color: white;
-            padding: 15px 12px;
+            padding: 12px 10px;
             text-align: left;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             border: none;
         }
 
@@ -2686,13 +2685,13 @@ header {
 
         .food-history-table tbody tr.flagged {
             background: rgba(76, 175, 80, 0.1);
-            border-left: 4px solid #4caf50;
+            border-left: 3px solid #4caf50;
         }
 
         .food-history-table tbody td {
-            padding: 12px;
+            padding: 10px;
             color: var(--text-color);
-            font-size: 13px;
+            font-size: 12px;
             border: none;
         }
 
@@ -2703,11 +2702,11 @@ header {
 
         .food-history-table tbody td.food-serving-cell {
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .food-history-table tbody td.food-nutrition-cell {
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .food-history-table tbody td.food-nutrition-cell div:first-child {
@@ -2719,23 +2718,22 @@ header {
             color: var(--text-secondary);
         }
 
-        /* Action Buttons in Table */
+        /* Action Buttons in Table - Match User Profile Modal */
         .food-action-btn {
             background: var(--accent-color);
             color: var(--bg-color);
             border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 4px 8px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 500;
             transition: all 0.2s ease;
-            margin: 2px;
+            margin: 1px;
         }
 
         .food-action-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .food-action-btn.food-edit-action {
@@ -2757,39 +2755,38 @@ header {
             color: white;
         }
 
-        /* Date Section Styles */
+        /* Date Section Styles - Match User Profile Modal */
         .date-section {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
             background: var(--card-bg);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .meal-section {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-        /* Modal Header Styles */
+        /* Modal Header Styles - Match User Profile Modal */
         .food-history-header {
             background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-highlight) 100%);
             color: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 20px 20px 0 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .food-history-header h3 {
             margin: 0;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .food-history-header p {
-            margin: 8px 0 0 0;
-            font-size: 16px;
+            margin: 5px 0 0 0;
+            font-size: 14px;
             opacity: 0.9;
             font-weight: 500;
         }
@@ -2798,13 +2795,13 @@ header {
             background: rgba(255, 255, 255, 0.2);
             color: white;
             border: none;
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -9584,16 +9581,16 @@ header {
             const existingModals = document.querySelectorAll('.modal');
             existingModals.forEach(modal => modal.remove());
             
-            // Create modal HTML with professional styling
+            // Create modal HTML with matching user profile modal styling
             const modal = document.createElement('div');
             modal.className = 'modal food-history-modal';
             modal.style.display = 'block';
             modal.innerHTML = `
-                <div class="modal-content">
+                <div class="food-history-modal-content">
                     <div class="food-history-header">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
                                     🍽️
                                 </div>
                                 <div>
@@ -9603,7 +9600,7 @@ header {
                             </div>
                             <button class="food-history-close" onclick="this.closest('.modal').remove()">&times;</button>
                         </div>
-                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                             <button class="food-history-btn info" onclick="viewMHORecommendedFoods('${userEmail}', '${userName}')">
                                 <span>🍽️</span>
                                 View MHO Recommended Foods
@@ -9726,16 +9723,16 @@ header {
             const existingModals = document.querySelectorAll('.modal');
             existingModals.forEach(modal => modal.remove());
             
-            // Create form modal with professional styling
+            // Create form modal with matching user profile modal styling
             const modal = document.createElement('div');
             modal.className = 'modal food-history-modal';
             modal.style.display = 'block';
             modal.innerHTML = `
-                <div class="modal-content" style="max-width: 600px;">
+                <div class="food-history-modal-content" style="max-width: 600px;">
                     <div class="food-history-header" style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
                                     ⭐
                                 </div>
                                 <div>
