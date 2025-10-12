@@ -8945,6 +8945,10 @@ header {
                             </div>
                         </div>
                         <div style="display: flex; align-items: center; gap: 10px;">
+                            <button onclick="viewMHORecommendedFoods('${userEmail}', '${userName}')" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 16px;">🍽️</span>
+                                View MHO Recommended Foods
+                            </button>
                             <button onclick="addMHORecommendedFood('${userEmail}', '${userName}')" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
                                 <span style="font-size: 16px;">⭐</span>
                                 Add MHO Recommended Food
@@ -9179,6 +9183,118 @@ header {
                     alert('❌ Error: ' + error.message);
                 });
             });
+        }
+
+        function viewMHORecommendedFoods(userEmail, userName) {
+            console.log('🍽️ View MHO Recommended Foods function called for:', userEmail, userName);
+            
+            // Remove any existing modals
+            const existingModals = document.querySelectorAll('.modal');
+            existingModals.forEach(modal => modal.remove());
+            
+            // Create loading modal
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+                    <div class="modal-header" style="background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                🍽️
+                            </div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 24px; font-weight: 700;">MHO Recommended Foods</h3>
+                                <p style="margin: 5px 0 0 0; font-size: 16px; opacity: 0.9;">${userName}</p>
+                            </div>
+                        </div>
+                        <span class="close" onclick="this.closest('.modal').remove()" style="background: rgba(255,255,255,0.2); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer;">&times;</span>
+                    </div>
+                    <div style="padding: 20px;">
+                        <div id="mhoRecommendedContent" style="text-align: center; padding: 40px;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;">
+                                <div style="width: 20px; height: 20px; border: 2px solid #2196f3; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                                <span style="color: #666; font-size: 16px;">Loading MHO recommended foods...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                </style>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Fetch MHO recommended foods
+            fetch(\`api/food_history_api.php?action=get_recommended_foods&user_email=\${encodeURIComponent(userEmail)}\`)
+                .then(response => response.json())
+                .then(data => {
+                    const content = document.getElementById('mhoRecommendedContent');
+                    
+                    if (data.success && data.data) {
+                        let html = '<div style="text-align: left;">';
+                        
+                        // Group foods by meal category
+                        const mealCategories = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
+                        let hasFoods = false;
+                        
+                        mealCategories.forEach(mealCategory => {
+                            if (data.data[mealCategory] && data.data[mealCategory].length > 0) {
+                                hasFoods = true;
+                                html += \`
+                                    <div style="margin-bottom: 25px;">
+                                        <h4 style="margin: 0 0 15px 0; color: var(--text-primary); font-size: 18px; font-weight: 600; padding: 10px 15px; background: var(--card-bg); border-radius: 6px; border-left: 4px solid #2196f3;">
+                                            \${mealCategory} (\${data.data[mealCategory].length} items)
+                                        </h4>
+                                        <div style="display: grid; gap: 10px;">
+                                \`;
+                                
+                                data.data[mealCategory].forEach(food => {
+                                    html += \`
+                                        <div style="padding: 15px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                                            <div style="flex: 1;">
+                                                <div style="display: flex; align-items: center; gap: 10px;">
+                                                    <span style="font-size: 20px;">\${food.emoji || '🍽️'}</span>
+                                                    <div>
+                                                        <div style="font-weight: 600; color: var(--text-primary); font-size: 16px;">\${food.food_name}</div>
+                                                        <div style="color: #666; font-size: 14px;">\${food.serving_size} • \${food.calories} cal</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div style="display: flex; gap: 5px; font-size: 12px; color: #666;">
+                                                <span>P: \${food.protein}g</span>
+                                                <span>•</span>
+                                                <span>C: \${food.carbs}g</span>
+                                                <span>•</span>
+                                                <span>F: \${food.fat}g</span>
+                                            </div>
+                                        </div>
+                                    \`;
+                                });
+                                
+                                html += '</div></div>';
+                            }
+                        });
+                        
+                        if (!hasFoods) {
+                            html = '<div style="text-align: center; padding: 40px; color: #666;"><div style="font-size: 48px; margin-bottom: 15px;">🍽️</div><div>No MHO recommended foods available for this user.</div></div>';
+                        }
+                        
+                        html += '</div>';
+                        content.innerHTML = html;
+                    } else {
+                        content.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;"><div style="font-size: 48px; margin-bottom: 15px;">❌</div><div>Failed to load MHO recommended foods: ' + (data.error || 'Unknown error') + '</div></div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error loading MHO recommended foods:', error);
+                    const content = document.getElementById('mhoRecommendedContent');
+                    content.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;"><div style="font-size: 48px; margin-bottom: 15px;">❌</div><div>Error loading MHO recommended foods: ' + error.message + '</div></div>';
+                });
         }
 
 

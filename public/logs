@@ -1,103 +1,626 @@
-ing with 0 added foods for date: 2025-10-12
-2025-10-12 02:57:49.963  9454-9454  CalorieTracker          com.example.nutrisaur11              D    Daily foods: 0
-2025-10-12 02:57:49.963  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Cleared SharedPreferences user profile cache to force fresh database data
-2025-10-12 02:57:49.963  9454-9454  CalorieTracker          com.example.nutrisaur11              W  No user profile found in SharedPreferences - will use database data
-2025-10-12 02:57:49.963  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Using user profile from SharedPreferences
-2025-10-12 02:57:49.963  9454-9454  CalorieTracker          com.example.nutrisaur11              W  No user profile found, using default meal distribution
-2025-10-12 02:57:49.963  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=500, Dinner=600, Snacks=200, Lunch=700}
-2025-10-12 02:57:49.966  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-12. Total meals: 0
-2025-10-12 02:57:49.967  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Creating user profile from community_users table data...
-2025-10-12 02:57:49.967  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              E  Error creating user profile from database data: Attempt to invoke interface method 'java.lang.Object java.util.Map.getOrDefault(java.lang.Object, java.lang.Object)' on a null object reference
-2025-10-12 02:57:49.967  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Updated meal category text: null
-2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Syncing with 0 added foods for date: 2025-10-12
-2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              D    Daily foods: 0
-2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Cleared SharedPreferences user profile cache to force fresh database data
-2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              W  No user profile found in SharedPreferences - will use database data
-2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Using user profile from SharedPreferences
-2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              W  No user profile found, using default meal distribution
-2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=500, Dinner=600, Snacks=200, Lunch=700}
-2025-10-12 02:57:49.970  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-12. Total meals: 0
-2025-10-12 02:57:49.971  9454-9454  CalorieTracker          com.example.nutrisaur11              E  Error setting meal max calories: key == null
-2025-10-12 02:57:49.971  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Loading MHO recommended foods
-2025-10-12 02:57:49.971  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Loaded 1 MHO recommended foods from intent
-2025-10-12 02:57:49.971  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Set current meal category to: Breakfast
-2025-10-12 02:57:49.971  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  FoodLoggingActivity created for Breakfast (max 500 kcal)
-2025-10-12 02:57:49.971  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Initial food items count: 2
-2025-10-12 02:57:49.976  9454-9454  SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760209069976
-2025-10-12 02:57:49.976  9454-9454  SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
-2025-10-12 02:57:49.976  9454-9454  SessionManager          com.example.nutrisaur11              D  Using cached valid session
-2025-10-12 02:57:49.976  9454-9454  CommunityUserManager    com.example.nutrisaur11              D  === CHECKING ARCHIVE STATUS ===
-2025-10-12 02:57:49.976  9454-9454  CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
-2025-10-12 02:57:49.976  9454-9454  CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: kevinpingol123@gmail.com
-2025-10-12 02:57:49.976  9454-9454  CommunityUserManager    com.example.nutrisaur11              D  === CHECKING USER EXISTENCE ===
-2025-10-12 02:57:49.976  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
-2025-10-12 02:57:49.977  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
-2025-10-12 02:57:49.977  9454-9454  CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
-2025-10-12 02:57:49.977  9454-9454  CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: kevinpingol123@gmail.com
-2025-10-12 02:57:49.980  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Syncing with 0 added foods for date: 2025-10-12
-2025-10-12 02:57:49.980  9454-9454  CalorieTracker          com.example.nutrisaur11              D    Daily foods: 0
-2025-10-12 02:57:49.980  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Cleared SharedPreferences user profile cache to force fresh database data
-2025-10-12 02:57:49.980  9454-9454  CalorieTracker          com.example.nutrisaur11              W  No user profile found in SharedPreferences - will use database data
-2025-10-12 02:57:49.980  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Using user profile from SharedPreferences
-2025-10-12 02:57:49.980  9454-9454  CalorieTracker          com.example.nutrisaur11              W  No user profile found, using default meal distribution
-2025-10-12 02:57:49.980  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=500, Dinner=600, Snacks=200, Lunch=700}
-2025-10-12 02:57:49.981  9454-9454  CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-12. Total meals: 0
-2025-10-12 02:57:49.981  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Refreshed food data for tab: recent for date: 2025-10-12
-2025-10-12 02:57:49.982  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
-2025-10-12 02:57:49.982  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
-2025-10-12 02:57:49.995 13453-14496 ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=10966   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.SplashActivity }
-2025-10-12 02:57:50.042  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Loaded 1 recent/recommended foods
-2025-10-12 02:57:50.042  9454-9454  FoodLoggingActivity     com.example.nutrisaur11              D  Loaded 1 recent/recommended foods
-2025-10-12 02:57:50.042  9454-9454  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
-2025-10-12 02:57:50.075  9454-9454  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
-2025-10-12 02:57:50.096  9454-9454  SessionManager          com.example.nutrisaur11              D  User marked as idle
-2025-10-12 02:57:50.289  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
-2025-10-12 02:57:50.289  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  API response message: 
-2025-10-12 02:57:50.291  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Burgos","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGRwC6pXjPQVyYGtkcZ6eafSGk0tUnWsyaKl1pZXOygSPN5hrxQ57-QoEbT0Q4AnrxZle82T4gCM6sx46ruDB-KiAtQGKfYr3uHOkNiwosJ5lmui9A","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
-2025-10-12 02:57:50.292  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
-2025-10-12 02:57:50.292  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Burgos, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
-2025-10-12 02:57:50.292  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  User status: 1
-2025-10-12 02:57:50.292  9454-9681  CommunityUserManager    com.example.nutrisaur11              D  User is active (status = 1)
-2025-10-12 02:57:50.295  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
-2025-10-12 02:57:50.295  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  API response message: 
-2025-10-12 02:57:50.297  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Burgos","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGRwC6pXjPQVyYGtkcZ6eafSGk0tUnWsyaKl1pZXOygSPN5hrxQ57-QoEbT0Q4AnrxZle82T4gCM6sx46ruDB-KiAtQGKfYr3uHOkNiwosJ5lmui9A","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
-2025-10-12 02:57:50.298  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
-2025-10-12 02:57:50.299  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Burgos, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
-2025-10-12 02:57:50.299  9454-9682  CommunityUserManager    com.example.nutrisaur11              D  User exists and has valid data
-2025-10-12 02:57:51.111  9454-9454  SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760209071111
-2025-10-12 02:57:51.174  9454-9454  FoodItemAdapter         com.example.nutrisaur11              D  Plus button clicked for: giniling giling, isCategoryActivity: false
-2025-10-12 02:57:51.175  9454-9454  FoodItemAdapter         com.example.nutrisaur11              D  Adding recommended food to meal plan: giniling giling
-2025-10-12 02:57:51.221  9454-9454  IS_CTS_MODE             com.example.nutrisaur11              D  false
-2025-10-12 02:57:51.221  9454-9454  MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
-2025-10-12 02:57:51.521  9454-9454  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
-2025-10-12 02:57:51.548  9454-9454  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
-2025-10-12 02:57:52.491  9454-9454  FoodItemAdapter         com.example.nutrisaur11              D  Adding recommended food to meal plan: giniling giling for Breakfast
---------- beginning of crash
-2025-10-12 02:57:52.491  9454-9454  AndroidRuntime          com.example.nutrisaur11              D  Shutting down VM
-2025-10-12 02:57:52.506  9454-9454  AndroidRuntime          com.example.nutrisaur11              E  FATAL EXCEPTION: main
-                                                                                                    Process: com.example.nutrisaur11, PID: 9454
-                                                                                                    java.lang.NumberFormatException: s == null
-                                                                                                    	at java.lang.Integer.parseInt(Integer.java:743)
-                                                                                                    	at java.lang.Integer.parseInt(Integer.java:897)
-                                                                                                    	at com.example.nutrisaur11.FoodItemAdapter.lambda$addRecommendedFoodToMealPlan$0(FoodItemAdapter.java:92)
-                                                                                                    	at com.example.nutrisaur11.FoodItemAdapter.$r8$lambda$D6GNWSbkx8ptctqJ1W4iI2NCdXc(Unknown Source:0)
-                                                                                                    	at com.example.nutrisaur11.FoodItemAdapter$$ExternalSyntheticLambda0.onMealTimeSelected(D8$$SyntheticClass:0)
-                                                                                                    	at com.example.nutrisaur11.MealTimeSelectionDialog.lambda$setupMealTimeButton$1(MealTimeSelectionDialog.java:69)
-                                                                                                    	at com.example.nutrisaur11.MealTimeSelectionDialog.$r8$lambda$DWmKezHDOSoD47qHYSBq8sH_kOM(Unknown Source:0)
-                                                                                                    	at com.example.nutrisaur11.MealTimeSelectionDialog$$ExternalSyntheticLambda0.onClick(D8$$SyntheticClass:0)
-                                                                                                    	at android.view.View.performClick(View.java:7750)
-                                                                                                    	at com.google.android.material.button.MaterialButton.performClick(MaterialButton.java:1218)
-                                                                                                    	at android.view.View.performClickInternal(View.java:7727)
-                                                                                                    	at android.view.View.access$3700(View.java:858)
-                                                                                                    	at android.view.View$PerformClick.run(View.java:29115)
-                                                                                                    	at android.os.Handler.handleCallback(Handler.java:938)
-                                                                                                    	at android.os.Handler.dispatchMessage(Handler.java:99)
-                                                                                                    	at android.os.Looper.loopOnce(Looper.java:210)
-                                                                                                    	at android.os.Looper.loop(Looper.java:299)
-                                                                                                    	at android.app.ActivityThread.main(ActivityThread.java:8168)
-                                                                                                    	at java.lang.reflect.Method.invoke(Native Method)
-                                                                                                    	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:556)
-                                                                                                    	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1037)
-2025-10-12 02:57:52.522  9454-9454  OOMEventManagerFK       com.example.nutrisaur11              D  checkEventAndDumpForJE: 0
-2025-10-12 02:57:52.579  9454-9454  Process                 com.example.nutrisaur11              I  Sending signal. PID: 9454 SIG: 9
----------------------------- PROCESS ENDED (9454) for package com.example.nutrisaur11 ----------------------------
+2025-10-12 08:51:19.751  1713-1713  SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
+2025-10-12 08:51:20.086  1713-1713  SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760230280085
+2025-10-12 08:51:20.133  1713-1713  SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760230280133
+2025-10-12 08:51:20.133  1713-1713  SessionManager          com.example.nutrisaur11              D  User is active, validating with database
+2025-10-12 08:51:20.133  1713-1713  SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
+2025-10-12 08:51:20.133  1713-1713  CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
+2025-10-12 08:51:20.134  1713-1713  CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-12 08:51:20.134  1713-1713  CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
+2025-10-12 08:51:20.134  1713-1713  SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
+2025-10-12 08:51:20.134  1713-1713  SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
+2025-10-12 08:51:20.161  1713-1713  SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760230280161
+2025-10-12 08:51:20.162  1713-1713  SessionManager          com.example.nutrisaur11              D  User marked as idle
+2025-10-12 08:51:20.177  1713-1713  SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760230280177
+2025-10-12 08:51:20.177  1713-1713  SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-12 08:51:20.177  1713-1713  SessionManager          com.example.nutrisaur11              D  Using cached valid session
+2025-10-12 08:51:20.178  1713-1713  IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-12 08:51:20.178  1713-1713  MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-12 08:51:20.179  1713-1713  DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
+2025-10-12 08:51:20.273 13453-14496 ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=10982   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.SplashActivity }
+2025-10-12 08:51:20.306  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity onCreate started
+2025-10-12 08:51:20.307  1713-1713  DailyResetManager       com.example.nutrisaur11              D  Same day, no reset needed. Current: 2025-10-12
+2025-10-12 08:51:20.308  1713-1713  FoodActivity            com.example.nutrisaur11              D  Date navigation initialized with date: 2025-10-12
+2025-10-12 08:51:20.309  1713-1713  FoodActivity            com.example.nutrisaur11              D  Date display updated to: 2025-10-12
+2025-10-12 08:51:20.309  1713-1713  FoodActivity            com.example.nutrisaur11              D  Nutrition views initialized
+2025-10-12 08:51:20.309  1713-1713  FoodActivity            com.example.nutrisaur11              D  Views initialized
+2025-10-12 08:51:20.310  1713-1713  FoodActivity            com.example.nutrisaur11              D  Data update receiver registered
+2025-10-12 08:51:20.310  1713-1713  FoodActivity            com.example.nutrisaur11              D  Fetching user screening data from community_users table...
+2025-10-12 08:51:20.311  1713-9388  CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (NON-BLOCKING) ===
+2025-10-12 08:51:20.311  1713-9388  CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
+2025-10-12 08:51:20.311  1713-9388  CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data to prevent ANR
+2025-10-12 08:51:20.311  1713-9388  FoodActivity            com.example.nutrisaur11              D  User screening data fetched from community_users table
+2025-10-12 08:51:20.314  1713-1713  SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760230280314
+2025-10-12 08:51:20.314  1713-1713  SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
+2025-10-12 08:51:20.314  1713-1713  SessionManager          com.example.nutrisaur11              D  Using cached valid session
+2025-10-12 08:51:20.314  1713-1713  CommunityUserManager    com.example.nutrisaur11              D  === CHECKING ARCHIVE STATUS ===
+2025-10-12 08:51:20.314  1713-1713  CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
+2025-10-12 08:51:20.314  1713-1713  CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: kevinpingol123@gmail.com
+2025-10-12 08:51:20.315  1713-1713  CommunityUserManager    com.example.nutrisaur11              D  === CHECKING USER EXISTENCE ===
+2025-10-12 08:51:20.315  1713-9389  CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
+2025-10-12 08:51:20.315  1713-9389  CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
+2025-10-12 08:51:20.315  1713-1713  CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
+2025-10-12 08:51:20.315  1713-1713  CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: kevinpingol123@gmail.com
+2025-10-12 08:51:20.316  1713-1713  CommunityUserManager    com.example.nutrisaur11              D  === CHECKING ARCHIVE STATUS ===
+2025-10-12 08:51:20.316  1713-1713  CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
+2025-10-12 08:51:20.316  1713-1713  CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: kevinpingol123@gmail.com
+2025-10-12 08:51:20.316  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity onResume - refreshing meal progress
+2025-10-12 08:51:20.316  1713-1713  FoodActivity            com.example.nutrisaur11              D  About to call syncFoodHistoryFromDatabase()
+2025-10-12 08:51:20.316  1713-1713  FoodActivity            com.example.nutrisaur11              D  === SYNCING FOOD HISTORY FROM DATABASE ===
+2025-10-12 08:51:20.316  1713-1713  FoodActivity            com.example.nutrisaur11              D  Sync Debug - User email: 'kevinpingol123@gmail.com'
+2025-10-12 08:51:20.316  1713-1713  FoodActivity            com.example.nutrisaur11              D  Sync Debug - Current date: '2025-10-12'
+2025-10-12 08:51:20.316  1713-9390  CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
+2025-10-12 08:51:20.316  1713-1713  FoodActivity            com.example.nutrisaur11              D  Sync Debug - About to create ApiClient and call downloadFoodHistory
+2025-10-12 08:51:20.316  1713-1713  FoodActivity            com.example.nutrisaur11              D  Syncing food history for user: kevinpingol123@gmail.com on date: 2025-10-12
+2025-10-12 08:51:20.316  1713-1713  ApiClient               com.example.nutrisaur11              D  === DOWNLOAD FOOD HISTORY CALLED ===
+2025-10-12 08:51:20.316  1713-1713  ApiClient               com.example.nutrisaur11              D  User: kevinpingol123@gmail.com, Start: 2025-10-12, End: 2025-10-12
+2025-10-12 08:51:20.316  1713-9390  CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
+2025-10-12 08:51:20.316  1713-1713  FoodHistorySyncManager  com.example.nutrisaur11              D  Syncing flag metadata for user: kevinpingol123@gmail.com
+2025-10-12 08:51:20.316  1713-1713  FoodActivity            com.example.nutrisaur11              D  Finished calling syncFoodHistoryFromDatabase()
+2025-10-12 08:51:20.316  1713-1713  FoodActivity            com.example.nutrisaur11              D  Refreshing meal progress on resume
+2025-10-12 08:51:20.316  1713-1713  FoodActivity            com.example.nutrisaur11              D  Syncing CalorieTracker with AddedFoodManager for date: 2025-10-12
+2025-10-12 08:51:20.316  1713-9391  CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
+2025-10-12 08:51:20.317  1713-9391  CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
+2025-10-12 08:51:20.318  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Syncing with 4 added foods for date: 2025-10-12
+2025-10-12 08:51:20.319  1713-1713  CalorieTracker          com.example.nutrisaur11              D    Daily foods: 4
+2025-10-12 08:51:20.319  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.319  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.319  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.319  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Set weight from database: 50
+2025-10-12 08:51:20.319  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.319  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Set height from database: 171
+2025-10-12 08:51:20.319  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.319  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Using user profile from database data
+2025-10-12 08:51:20.319  1713-9392  ApiClient               com.example.nutrisaur11              D  Download URL: https://nutrisaur-production.up.railway.app/api/food_history_api.php?action=get_user_history&user_email=kevinpingol123@gmail.com&start_date=2025-10-12&end_date=2025-10-12
+2025-10-12 08:51:20.319  1713-1713  KcalSuggestionCache     com.example.nutrisaur11              D  User profile changed, cache invalid
+2025-10-12 08:51:20.319  1713-1713  CalorieTracker          com.example.nutrisaur11              D  No valid AI cache found, using fallback calculation...
+2025-10-12 08:51:20.319  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.319  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.319  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.319  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Using fallback calculation (AI will update cache): 2784
+2025-10-12 08:51:20.320  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Using AI-calculated daily calorie target: 2784
+2025-10-12 08:51:20.320  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.320  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.320  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=696, Dinner=835, Snacks=278, Lunch=974}
+2025-10-12 08:51:20.320  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Created Breakfast meal with 696 max calories
+2025-10-12 08:51:20.320  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Added Champorado (450 cal) to Breakfast for date 2025-10-12
+2025-10-12 08:51:20.320  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Added Tapsilog (600 cal) to Breakfast for date 2025-10-12
+2025-10-12 08:51:20.320  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Added Longsilog (550 cal) to Breakfast for date 2025-10-12
+2025-10-12 08:51:20.320  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Created Dinner meal with 835 max calories
+2025-10-12 08:51:20.320  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Added adobong tipaklong (20 cal) to Dinner for date 2025-10-12
+2025-10-12 08:51:20.323  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-12. Total meals: 2
+2025-10-12 08:51:20.323  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Meal Breakfast: 1600/696 kcal
+2025-10-12 08:51:20.323  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Meal Dinner: 20/835 kcal
+2025-10-12 08:51:20.325  1713-9395  NutritionService        com.example.nutrisaur11              D  Starting nutrition recommendations...
+2025-10-12 08:51:20.325  1713-9395  NutritionService        com.example.nutrisaur11              D  Getting user profile from SharedPreferences...
+2025-10-12 08:51:20.326  1713-9395  NutritionService        com.example.nutrisaur11              D  User data: name=, age=25, weight=70.0, height=170.0
+2025-10-12 08:51:20.326  1713-9395  NutritionService        com.example.nutrisaur11              D  User profile loaded: , BMI: 24.221453287197235
+2025-10-12 08:51:20.326  1713-9395  KcalSuggestionCache     com.example.nutrisaur11              D  Cached kcal suggestion is valid
+2025-10-12 08:51:20.326  1713-9395  NutritionService        com.example.nutrisaur11              D  Using cached kcal suggestion - user profile unchanged
+2025-10-12 08:51:20.327  1713-9395  KcalSuggestionCache     com.example.nutrisaur11              D  Successfully loaded cached kcal suggestion
+2025-10-12 08:51:20.327  1713-9395  CalorieTracker          com.example.nutrisaur11              D  Background AI calculation completed: 2545
+2025-10-12 08:51:20.332  1713-1713  FoodActivity            com.example.nutrisaur11              D  Loading nutrition data for selected date: 2025-10-12
+2025-10-12 08:51:20.383  1713-9392  ApiClient               com.example.nutrisaur11              D  Download food history response: {"success":true,"data":[{"id":280,"user_email":"kevinpingol123@gmail.com","date":"2025-10-12","meal_category":"Breakfast","food_name":"Champorado","calories":450,"serving_size":"Generous bowl","protein":"10.00","carbs":"70.00","fat":"15.00","fiber":"0.00","created_at":"2025-10-12 00:41:15","is_flagged":1,"is_day_flagged":0,"mho_comment":"","flagged_by":"admin@nutrisaur.com","flagged_at":"2025-10-12 08:50:10","is_mho_recommended":0,"emoji":"\ud83c\udf5a"},{"id":282,"user_email":"kevinpingol123@gmail.com","date":"2025-10-12","meal_category":"Breakfast","food_name":"Longsilog","calories":550,"serving_size":"Large plate","protein":"30.00","carbs":"45.00","fat":"25.00","fiber":"0.00","created_at":"2025-10-12 00:41:16","is_flagged":0,"is_day_flagged":0,"mho_comment":null,"flagged_by":null,"flagged_at":null,"is_mho_recommended":0,"emoji":"\ud83c\udf56"},{"id":281,"user_email":"kevinpingol123@gmail.com","date":"2025-10-12","meal_category":"Breakfast","food_name":"Tapsilog","calories":600,"serving_size":"Large plate","protein":"35.00","carbs":"40.00","fat":"30.00","fiber":"0.00","created_at":"2025-10-12 00:41:16","is_flagged":0,"is_day_flagged":0,"mho_comment":null,"flagged_by":null,"flagged_at":null,"is_mho_recommended":0,"emoji":"\ud83c\udf73"},{"id":284,"user_email":"kevinpingol123@gmail.com","date":"2025-10-12","meal_category":"Dinner","food_name":"adobong tipaklong","calories":20,"serving_size":"1 cup","protein":"20.00","carbs":"20.00","fat":"20.00","fiber":"20.00","created_at":"2025-10-12 00:49:23","is_flagged":0,"is_day_flagged":0,"mho_comment":null,"flagged_by":null,"flagged_at":null,"is_mho_recommended":0,"emoji":null},{"id":285,"user_email":"kevinpingol123@gmail.com","date":"2025-10-12","meal_category":"Dinner","food_name":"adobong tipaklong","calories":20,"serving_size":"1 cup","protein":"20.00","carbs":"20.00","fat":"20.00","fiber":"20.00","created_at":"2025-10-12 00:49:24","is_flagged":0,"is_day_flagged":0,"mho_comment":null,"flagged_by":null,"flagged_at":null,"is_mho_recommended":0,"emoji":null}],"count":5}
+2025-10-12 08:51:20.414  1713-1713  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
+2025-10-12 08:51:20.417  1713-1713  FoodHistorySyncManager  com.example.nutrisaur11              D  Flag metadata synced successfully
+2025-10-12 08:51:20.417  1713-1713  FoodActivity            com.example.nutrisaur11              D  Download successful, parsing response...
+2025-10-12 08:51:20.417  1713-1713  FoodActivity            com.example.nutrisaur11              D  === PARSING FOOD HISTORY ===
+2025-10-12 08:51:20.417  1713-1713  FoodActivity            com.example.nutrisaur11              D  JSON Response: {"success":true,"data":[{"id":280,"user_email":"kevinpingol123@gmail.com","date":"2025-10-12","meal_category":"Breakfast","food_name":"Champorado","calories":450,"serving_size":"Generous bowl","protein":"10.00","carbs":"70.00","fat":"15.00","fiber":"0.00","created_at":"2025-10-12 00:41:15","is_flagged":1,"is_day_flagged":0,"mho_comment":"","flagged_by":"admin@nutrisaur.com","flagged_at":"2025-10-12 08:50:10","is_mho_recommended":0,"emoji":"\ud83c\udf5a"},{"id":282,"user_email":"kevinpingol123@gmail.com","date":"2025-10-12","meal_category":"Breakfast","food_name":"Longsilog","calories":550,"serving_size":"Large plate","protein":"30.00","carbs":"45.00","fat":"25.00","fiber":"0.00","created_at":"2025-10-12 00:41:16","is_flagged":0,"is_day_flagged":0,"mho_comment":null,"flagged_by":null,"flagged_at":null,"is_mho_recommended":0,"emoji":"\ud83c\udf56"},{"id":281,"user_email":"kevinpingol123@gmail.com","date":"2025-10-12","meal_category":"Breakfast","food_name":"Tapsilog","calories":600,"serving_size":"Large plate","protein":"35.00","carbs":"40.00","fat":"30.00","fiber":"0.00","created_at":"2025-10-12 00:41:16","is_flagged":0,"is_day_flagged":0,"mho_comment":null,"flagged_by":null,"flagged_at":null,"is_mho_recommended":0,"emoji":"\ud83c\udf73"},{"id":284,"user_email":"kevinpingol123@gmail.com","date":"2025-10-12","meal_category":"Dinner","food_name":"adobong tipaklong","calories":20,"serving_size":"1 cup","protein":"20.00","carbs":"20.00","fat":"20.00","fiber":"20.00","created_at":"2025-10-12 00:49:23","is_flagged":0,"is_day_flagged":0,"mho_comment":null,"flagged_by":null,"flagged_at":null,"is_mho_recommended":0,"emoji":null},{"id":285,"user_email":"kevinpingol123@gmail.com","date":"2025-10-12","meal_category":"Dinner","food_name":"adobong tipaklong","calories":20,"serving_size":"1 cup","protein":"20.00","carbs":"20.00","fat":"20.00","fiber":"20.00","created_at":"2025-10-12 00:49:24","is_flagged":0,"is_day_flagged":0,"mho_comment":null,"flagged_by":null,"flagged_at":null,"is_mho_recommended":0,"emoji":null}],"count":5}
+2025-10-12 08:51:20.417  1713-1713  FoodActivity            com.example.nutrisaur11              D  Parsing 5 food items from server
+2025-10-12 08:51:20.417  1713-1713  FoodActivity            com.example.nutrisaur11              D  === STORING FOOD DATA IN LOCAL STORAGE ===
+2025-10-12 08:51:20.418  1713-1713  FoodActivity            com.example.nutrisaur11              D  Storing 1 dates of food data for user: kevinpingol123@gmail.com
+2025-10-12 08:51:20.418  1713-1713  FoodActivity            com.example.nutrisaur11              D  Date 2025-10-12 has 2 meal categories
+2025-10-12 08:51:20.418  1713-1713  FoodActivity            com.example.nutrisaur11              D    Breakfast: 3 foods
+2025-10-12 08:51:20.420  1713-1713  FoodActivity            com.example.nutrisaur11              D  ⏭️ Skipping: Champorado already exists in Breakfast for 2025-10-12
+2025-10-12 08:51:20.421  1713-1713  FoodActivity            com.example.nutrisaur11              D  ⏭️ Skipping: Longsilog already exists in Breakfast for 2025-10-12
+2025-10-12 08:51:20.421  1713-1713  FoodActivity            com.example.nutrisaur11              D  ⏭️ Skipping: Tapsilog already exists in Breakfast for 2025-10-12
+2025-10-12 08:51:20.421  1713-1713  FoodActivity            com.example.nutrisaur11              D    Dinner: 2 foods
+2025-10-12 08:51:20.422  1713-1713  FoodActivity            com.example.nutrisaur11              D  ⏭️ Skipping: adobong tipaklong already exists in Dinner for 2025-10-12
+2025-10-12 08:51:20.422  1713-1713  FoodActivity            com.example.nutrisaur11              D  ⏭️ Skipping: adobong tipaklong already exists in Dinner for 2025-10-12
+2025-10-12 08:51:20.422  1713-1713  FoodActivity            com.example.nutrisaur11              D  ✅ Food history sync completed successfully
+2025-10-12 08:51:20.422  1713-1713  FoodActivity            com.example.nutrisaur11              D  Refreshing UI after sync...
+2025-10-12 08:51:20.422  1713-1713  FoodActivity            com.example.nutrisaur11              D  Refreshing meal progress on resume
+2025-10-12 08:51:20.422  1713-1713  FoodActivity            com.example.nutrisaur11              D  Syncing CalorieTracker with AddedFoodManager for date: 2025-10-12
+2025-10-12 08:51:20.424  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Syncing with 4 added foods for date: 2025-10-12
+2025-10-12 08:51:20.424  1713-1713  CalorieTracker          com.example.nutrisaur11              D    Daily foods: 4
+2025-10-12 08:51:20.424  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.425  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.425  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.425  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Set weight from database: 50
+2025-10-12 08:51:20.425  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.425  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Set height from database: 171
+2025-10-12 08:51:20.425  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.425  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Using user profile from database data
+2025-10-12 08:51:20.425  1713-1713  KcalSuggestionCache     com.example.nutrisaur11              D  User profile changed, cache invalid
+2025-10-12 08:51:20.425  1713-1713  CalorieTracker          com.example.nutrisaur11              D  No valid AI cache found, using fallback calculation...
+2025-10-12 08:51:20.425  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.425  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.425  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.425  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Using fallback calculation (AI will update cache): 2784
+2025-10-12 08:51:20.425  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Using AI-calculated daily calorie target: 2784
+2025-10-12 08:51:20.425  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.425  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.425  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Calculated meal distribution: {Breakfast=696, Dinner=835, Snacks=278, Lunch=974}
+2025-10-12 08:51:20.426  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Created Breakfast meal with 696 max calories
+2025-10-12 08:51:20.426  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Added Champorado (450 cal) to Breakfast for date 2025-10-12
+2025-10-12 08:51:20.426  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Added Tapsilog (600 cal) to Breakfast for date 2025-10-12
+2025-10-12 08:51:20.426  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Added Longsilog (550 cal) to Breakfast for date 2025-10-12
+2025-10-12 08:51:20.426  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Created Dinner meal with 835 max calories
+2025-10-12 08:51:20.426  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Added adobong tipaklong (20 cal) to Dinner for date 2025-10-12
+2025-10-12 08:51:20.430  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Synced CalorieTracker with AddedFoodManager for date 2025-10-12. Total meals: 2
+2025-10-12 08:51:20.430  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Meal Breakfast: 1600/696 kcal
+2025-10-12 08:51:20.430  1713-1713  CalorieTracker          com.example.nutrisaur11              D  Meal Dinner: 20/835 kcal
+2025-10-12 08:51:20.431  1713-9411  NutritionService        com.example.nutrisaur11              D  Starting nutrition recommendations...
+2025-10-12 08:51:20.431  1713-9411  NutritionService        com.example.nutrisaur11              D  Getting user profile from SharedPreferences...
+2025-10-12 08:51:20.431  1713-9411  NutritionService        com.example.nutrisaur11              D  User data: name=, age=25, weight=70.0, height=170.0
+2025-10-12 08:51:20.431  1713-9411  NutritionService        com.example.nutrisaur11              D  User profile loaded: , BMI: 24.221453287197235
+2025-10-12 08:51:20.432  1713-9411  KcalSuggestionCache     com.example.nutrisaur11              D  Cached kcal suggestion is valid
+2025-10-12 08:51:20.432  1713-9411  NutritionService        com.example.nutrisaur11              D  Using cached kcal suggestion - user profile unchanged
+2025-10-12 08:51:20.432  1713-9411  KcalSuggestionCache     com.example.nutrisaur11              D  Successfully loaded cached kcal suggestion
+2025-10-12 08:51:20.433  1713-9411  CalorieTracker          com.example.nutrisaur11              D  Background AI calculation completed: 2545
+2025-10-12 08:51:20.438  1713-1713  FoodActivity            com.example.nutrisaur11              D  Total eaten calories after sync: 1620
+2025-10-12 08:51:20.438  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating eaten calories only (preserving daily target)
+2025-10-12 08:51:20.439  1713-1713  FoodActivity            com.example.nutrisaur11              D  Total eaten calories for update: 1620
+2025-10-12 08:51:20.439  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using existing daily calorie target: 100
+2025-10-12 08:51:20.439  1713-1713  FoodActivity            com.example.nutrisaur11              D  Eaten Calories Only Update:
+2025-10-12 08:51:20.439  1713-1713  FoodActivity            com.example.nutrisaur11              D    Total Daily Calories: 100 (preserved)
+2025-10-12 08:51:20.439  1713-1713  FoodActivity            com.example.nutrisaur11              D    Total Eaten Calories: 1620 (updated)
+2025-10-12 08:51:20.439  1713-1713  FoodActivity            com.example.nutrisaur11              D    Calories Left: 0
+2025-10-12 08:51:20.439  1713-1713  FoodActivity            com.example.nutrisaur11              D    Progress Percent: 1620.0001%
+2025-10-12 08:51:20.440  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating macronutrient data directly
+2025-10-12 08:51:20.442  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.443  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.443  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.443  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.443  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.443  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.443  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.443  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.443  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.443  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.443  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated macro targets - Protein: 153, Carbs: 375, Fat: 74
+2025-10-12 08:51:20.443  1713-1713  FoodActivity            com.example.nutrisaur11              D  Macro Update:
+2025-10-12 08:51:20.443  1713-1713  FoodActivity            com.example.nutrisaur11              D    Protein: 58/153 (eaten: 95)
+2025-10-12 08:51:20.443  1713-1713  FoodActivity            com.example.nutrisaur11              D    Carbs: 200/375 (eaten: 175)
+2025-10-12 08:51:20.443  1713-1713  FoodActivity            com.example.nutrisaur11              D    Fat: 0/74 (eaten: 90)
+2025-10-12 08:51:20.443  1713-1735  OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223273347573ms; Flags=0, FrameTimelineVsyncId=5031401, IntendedVsync=98689281185051, Vsync=98689297851717, InputEventId=0, HandleInputStart=98689309306568, AnimationStart=98689309309172, PerformTraversalsStart=98689309778078, DrawStart=98689309846828, FrameDeadline=98689314518383, FrameInterval=98689309292662, FrameStartTime=16666666, SyncQueued=98689311393651, SyncStart=98689311878964, IssueDrawCommandsStart=98689312133860, SwapBuffers=98689314123131, FrameCompleted=9223372036854775807, DequeueBufferDuration=19427, QueueBufferDuration=1291823, GpuCompleted=9223372036854775807, SwapBuffersCompleted=98689315777662, DisplayPresentTime=0, 
+2025-10-12 08:51:20.444  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating meal progress texts with direct AddedFoodManager data
+2025-10-12 08:51:20.447  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.447  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.447  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.447  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.447  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.447  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.447  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.448  1713-1713  KcalSuggestionCache     com.example.nutrisaur11              D  User profile changed, cache invalid
+2025-10-12 08:51:20.448  1713-1713  FoodActivity            com.example.nutrisaur11              D  No valid AI cache found, using fallback calculation...
+2025-10-12 08:51:20.448  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.448  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.448  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.448  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using fallback calculation (AI will update cache): 2784
+2025-10-12 08:51:20.448  1713-1713  FoodActivity            com.example.nutrisaur11              D  Starting background AI calculation...
+2025-10-12 08:51:20.448  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using AI-calculated total daily calories: 2784
+2025-10-12 08:51:20.448  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.449  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.449  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.449  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.449  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.449  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.449  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.449  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.449  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.449  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Breakfast: 1600 / 696 kcal (from 3 foods)
+2025-10-12 08:51:20.450  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set breakfast progress text to: 1600 / 696 kcal
+2025-10-12 08:51:20.450  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Lunch: 0 / 974 kcal (from 0 foods)
+2025-10-12 08:51:20.450  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set lunch progress text to: 0 / 974 kcal
+2025-10-12 08:51:20.450  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Dinner: 20 / 835 kcal (from 1 foods)
+2025-10-12 08:51:20.450  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set dinner progress text to: 20 / 835 kcal
+2025-10-12 08:51:20.450  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Snacks: 0 / 278 kcal (from 0 foods)
+2025-10-12 08:51:20.451  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set snacks progress text to: 0 / 278 kcal
+2025-10-12 08:51:20.451  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating meal progress texts with direct AddedFoodManager data
+2025-10-12 08:51:20.456  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.457  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.457  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.457  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.457  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.457  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.457  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.457  1713-1713  KcalSuggestionCache     com.example.nutrisaur11              D  User profile changed, cache invalid
+2025-10-12 08:51:20.457  1713-1713  FoodActivity            com.example.nutrisaur11              D  No valid AI cache found, using fallback calculation...
+2025-10-12 08:51:20.457  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.457  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.457  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.457  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using fallback calculation (AI will update cache): 2784
+2025-10-12 08:51:20.458  1713-1713  FoodActivity            com.example.nutrisaur11              D  AI calculation already in progress, skipping...
+2025-10-12 08:51:20.458  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using AI-calculated total daily calories: 2784
+2025-10-12 08:51:20.458  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.458  1713-9413  NutritionService        com.example.nutrisaur11              D  Starting nutrition recommendations...
+2025-10-12 08:51:20.458  1713-9413  NutritionService        com.example.nutrisaur11              D  Getting user profile from SharedPreferences...
+2025-10-12 08:51:20.458  1713-9413  NutritionService        com.example.nutrisaur11              D  User data: name=, age=25, weight=70.0, height=170.0
+2025-10-12 08:51:20.458  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.458  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.458  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.458  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.458  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.458  1713-9413  NutritionService        com.example.nutrisaur11              D  User profile loaded: , BMI: 24.221453287197235
+2025-10-12 08:51:20.458  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.458  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.458  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.458  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Breakfast: 1600 / 696 kcal (from 3 foods)
+2025-10-12 08:51:20.459  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set breakfast progress text to: 1600 / 696 kcal
+2025-10-12 08:51:20.459  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Lunch: 0 / 974 kcal (from 0 foods)
+2025-10-12 08:51:20.459  1713-9413  KcalSuggestionCache     com.example.nutrisaur11              D  Cached kcal suggestion is valid
+2025-10-12 08:51:20.459  1713-9413  NutritionService        com.example.nutrisaur11              D  Using cached kcal suggestion - user profile unchanged
+2025-10-12 08:51:20.459  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set lunch progress text to: 0 / 974 kcal
+2025-10-12 08:51:20.459  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Dinner: 20 / 835 kcal (from 1 foods)
+2025-10-12 08:51:20.459  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set dinner progress text to: 20 / 835 kcal
+2025-10-12 08:51:20.459  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Snacks: 0 / 278 kcal (from 0 foods)
+2025-10-12 08:51:20.459  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set snacks progress text to: 0 / 278 kcal
+2025-10-12 08:51:20.459  1713-1713  FoodActivity            com.example.nutrisaur11              D  Meal progress refreshed successfully
+2025-10-12 08:51:20.460  1713-9413  KcalSuggestionCache     com.example.nutrisaur11              D  Successfully loaded cached kcal suggestion
+2025-10-12 08:51:20.460  1713-9413  FoodActivity            com.example.nutrisaur11              D  Background AI calculation completed: 2545
+2025-10-12 08:51:20.483  1713-1713  SessionManager          com.example.nutrisaur11              D  User marked as idle
+2025-10-12 08:51:20.485  1713-1733  System                  com.example.nutrisaur11              W  A resource failed to call close. 
+2025-10-12 08:51:20.485  1713-1733  System                  com.example.nutrisaur11              W  A resource failed to call close. 
+2025-10-12 08:51:20.485  1713-1713  MainActivity            com.example.nutrisaur11              D  Data update receiver unregistered
+2025-10-12 08:51:20.493  1713-1713  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
+2025-10-12 08:51:20.499  1713-1713  FoodActivity            com.example.nutrisaur11              D  Refreshing nutrition UI with updated AI data...
+2025-10-12 08:51:20.499  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating kcal goal circle directly
+2025-10-12 08:51:20.500  1713-1713  FoodActivity            com.example.nutrisaur11              D  Total eaten calories for circle update: 1620
+2025-10-12 08:51:20.500  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.500  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.500  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.500  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.500  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.500  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.500  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.500  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.500  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.500  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.500  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated daily calorie target: 2784
+2025-10-12 08:51:20.500  1713-1713  FoodActivity            com.example.nutrisaur11              D  Kcal Goal Circle Update:
+2025-10-12 08:51:20.500  1713-1713  FoodActivity            com.example.nutrisaur11              D    Total Daily Calories: 2784
+2025-10-12 08:51:20.500  1713-1713  FoodActivity            com.example.nutrisaur11              D    Total Eaten Calories: 1620
+2025-10-12 08:51:20.500  1713-1713  FoodActivity            com.example.nutrisaur11              D    Calories Left: 1164
+2025-10-12 08:51:20.500  1713-1713  FoodActivity            com.example.nutrisaur11              D    Progress Percent: 58.189655%
+2025-10-12 08:51:20.501  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating macronutrient data directly
+2025-10-12 08:51:20.504  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.504  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.504  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.504  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.504  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.504  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.504  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.504  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.504  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.504  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.504  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated macro targets - Protein: 153, Carbs: 375, Fat: 74
+2025-10-12 08:51:20.504  1713-1713  FoodActivity            com.example.nutrisaur11              D  Macro Update:
+2025-10-12 08:51:20.504  1713-1713  FoodActivity            com.example.nutrisaur11              D    Protein: 58/153 (eaten: 95)
+2025-10-12 08:51:20.505  1713-1713  FoodActivity            com.example.nutrisaur11              D    Carbs: 200/375 (eaten: 175)
+2025-10-12 08:51:20.505  1713-1713  FoodActivity            com.example.nutrisaur11              D    Fat: 0/74 (eaten: 90)
+2025-10-12 08:51:20.505  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating meal progress texts with direct AddedFoodManager data
+2025-10-12 08:51:20.508  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.508  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.508  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.508  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.508  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.508  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.508  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.508  1713-1713  KcalSuggestionCache     com.example.nutrisaur11              D  User profile changed, cache invalid
+2025-10-12 08:51:20.508  1713-1713  FoodActivity            com.example.nutrisaur11              D  No valid AI cache found, using fallback calculation...
+2025-10-12 08:51:20.509  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.509  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.509  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.509  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using fallback calculation (AI will update cache): 2784
+2025-10-12 08:51:20.509  1713-1713  FoodActivity            com.example.nutrisaur11              D  AI calculation already in progress, skipping...
+2025-10-12 08:51:20.509  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using AI-calculated total daily calories: 2784
+2025-10-12 08:51:20.509  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.509  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.509  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.509  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.509  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.509  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.509  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.509  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.509  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.509  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Breakfast: 1600 / 696 kcal (from 3 foods)
+2025-10-12 08:51:20.510  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set breakfast progress text to: 1600 / 696 kcal
+2025-10-12 08:51:20.510  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Lunch: 0 / 974 kcal (from 0 foods)
+2025-10-12 08:51:20.510  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set lunch progress text to: 0 / 974 kcal
+2025-10-12 08:51:20.510  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Dinner: 20 / 835 kcal (from 1 foods)
+2025-10-12 08:51:20.510  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set dinner progress text to: 20 / 835 kcal
+2025-10-12 08:51:20.510  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Snacks: 0 / 278 kcal (from 0 foods)
+2025-10-12 08:51:20.510  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set snacks progress text to: 0 / 278 kcal
+2025-10-12 08:51:20.510  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating meal progress texts with direct AddedFoodManager data
+2025-10-12 08:51:20.513  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.513  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.513  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.513  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.513  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.513  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.513  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.513  1713-1713  KcalSuggestionCache     com.example.nutrisaur11              D  User profile changed, cache invalid
+2025-10-12 08:51:20.513  1713-1713  FoodActivity            com.example.nutrisaur11              D  No valid AI cache found, using fallback calculation...
+2025-10-12 08:51:20.513  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.513  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.513  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.513  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using fallback calculation (AI will update cache): 2784
+2025-10-12 08:51:20.513  1713-1713  FoodActivity            com.example.nutrisaur11              D  AI calculation already in progress, skipping...
+2025-10-12 08:51:20.513  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using AI-calculated total daily calories: 2784
+2025-10-12 08:51:20.513  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.514  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.514  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.514  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.514  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.514  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.514  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.514  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.514  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.514  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Breakfast: 1600 / 696 kcal (from 3 foods)
+2025-10-12 08:51:20.514  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set breakfast progress text to: 1600 / 696 kcal
+2025-10-12 08:51:20.514  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Lunch: 0 / 974 kcal (from 0 foods)
+2025-10-12 08:51:20.514  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set lunch progress text to: 0 / 974 kcal
+2025-10-12 08:51:20.514  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Dinner: 20 / 835 kcal (from 1 foods)
+2025-10-12 08:51:20.515  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set dinner progress text to: 20 / 835 kcal
+2025-10-12 08:51:20.515  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Snacks: 0 / 278 kcal (from 0 foods)
+2025-10-12 08:51:20.515  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set snacks progress text to: 0 / 278 kcal
+2025-10-12 08:51:20.515  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating macronutrient data directly
+2025-10-12 08:51:20.517  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.517  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.517  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.517  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.517  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.517  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.517  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.517  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.517  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.517  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.517  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated macro targets - Protein: 153, Carbs: 375, Fat: 74
+2025-10-12 08:51:20.517  1713-1713  FoodActivity            com.example.nutrisaur11              D  Macro Update:
+2025-10-12 08:51:20.517  1713-1713  FoodActivity            com.example.nutrisaur11              D    Protein: 58/153 (eaten: 95)
+2025-10-12 08:51:20.517  1713-1713  FoodActivity            com.example.nutrisaur11              D    Carbs: 200/375 (eaten: 175)
+2025-10-12 08:51:20.517  1713-1713  FoodActivity            com.example.nutrisaur11              D    Fat: 0/74 (eaten: 90)
+2025-10-12 08:51:20.518  1713-1713  FoodActivity            com.example.nutrisaur11              D  Nutrition UI refreshed with updated AI data
+2025-10-12 08:51:20.547  1713-1713  FoodActivity            com.example.nutrisaur11              D  Total eaten calories after sync: 1620
+2025-10-12 08:51:20.547  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating eaten calories only (preserving daily target)
+2025-10-12 08:51:20.547  1713-1713  FoodActivity            com.example.nutrisaur11              D  Total eaten calories for update: 1620
+2025-10-12 08:51:20.547  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using existing daily calorie target: 2784
+2025-10-12 08:51:20.547  1713-1713  FoodActivity            com.example.nutrisaur11              D  Eaten Calories Only Update:
+2025-10-12 08:51:20.547  1713-1713  FoodActivity            com.example.nutrisaur11              D    Total Daily Calories: 2784 (preserved)
+2025-10-12 08:51:20.547  1713-1713  FoodActivity            com.example.nutrisaur11              D    Total Eaten Calories: 1620 (updated)
+2025-10-12 08:51:20.547  1713-1713  FoodActivity            com.example.nutrisaur11              D    Calories Left: 1164
+2025-10-12 08:51:20.547  1713-1713  FoodActivity            com.example.nutrisaur11              D    Progress Percent: 58.189655%
+2025-10-12 08:51:20.548  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating macronutrient data directly
+2025-10-12 08:51:20.550  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.550  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.550  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.550  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.550  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.550  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.550  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.550  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.551  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.551  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.551  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated macro targets - Protein: 153, Carbs: 375, Fat: 74
+2025-10-12 08:51:20.551  1713-1713  FoodActivity            com.example.nutrisaur11              D  Macro Update:
+2025-10-12 08:51:20.551  1713-1713  FoodActivity            com.example.nutrisaur11              D    Protein: 58/153 (eaten: 95)
+2025-10-12 08:51:20.551  1713-1713  FoodActivity            com.example.nutrisaur11              D    Carbs: 200/375 (eaten: 175)
+2025-10-12 08:51:20.551  1713-1713  FoodActivity            com.example.nutrisaur11              D    Fat: 0/74 (eaten: 90)
+2025-10-12 08:51:20.551  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating meal progress texts with direct AddedFoodManager data
+2025-10-12 08:51:20.554  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.554  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.554  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.554  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.554  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.554  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.554  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.555  1713-1713  KcalSuggestionCache     com.example.nutrisaur11              D  User profile changed, cache invalid
+2025-10-12 08:51:20.555  1713-1713  FoodActivity            com.example.nutrisaur11              D  No valid AI cache found, using fallback calculation...
+2025-10-12 08:51:20.555  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.555  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.555  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.555  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using fallback calculation (AI will update cache): 2784
+2025-10-12 08:51:20.555  1713-1713  FoodActivity            com.example.nutrisaur11              D  Starting background AI calculation...
+2025-10-12 08:51:20.555  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using AI-calculated total daily calories: 2784
+2025-10-12 08:51:20.555  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.555  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.556  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.556  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.556  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.556  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.556  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.556  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.556  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.556  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Breakfast: 1600 / 696 kcal (from 3 foods)
+2025-10-12 08:51:20.556  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set breakfast progress text to: 1600 / 696 kcal
+2025-10-12 08:51:20.556  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Lunch: 0 / 974 kcal (from 0 foods)
+2025-10-12 08:51:20.556  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set lunch progress text to: 0 / 974 kcal
+2025-10-12 08:51:20.556  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Dinner: 20 / 835 kcal (from 1 foods)
+2025-10-12 08:51:20.557  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set dinner progress text to: 20 / 835 kcal
+2025-10-12 08:51:20.557  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Snacks: 0 / 278 kcal (from 0 foods)
+2025-10-12 08:51:20.557  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set snacks progress text to: 0 / 278 kcal
+2025-10-12 08:51:20.557  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating meal progress texts with direct AddedFoodManager data
+2025-10-12 08:51:20.559  1713-9413  NutritionService        com.example.nutrisaur11              D  Starting nutrition recommendations...
+2025-10-12 08:51:20.559  1713-9413  NutritionService        com.example.nutrisaur11              D  Getting user profile from SharedPreferences...
+2025-10-12 08:51:20.559  1713-9413  NutritionService        com.example.nutrisaur11              D  User data: name=, age=25, weight=70.0, height=170.0
+2025-10-12 08:51:20.559  1713-9413  NutritionService        com.example.nutrisaur11              D  User profile loaded: , BMI: 24.221453287197235
+2025-10-12 08:51:20.559  1713-9413  KcalSuggestionCache     com.example.nutrisaur11              D  Cached kcal suggestion is valid
+2025-10-12 08:51:20.559  1713-9413  NutritionService        com.example.nutrisaur11              D  Using cached kcal suggestion - user profile unchanged
+2025-10-12 08:51:20.559  1713-9413  KcalSuggestionCache     com.example.nutrisaur11              D  Successfully loaded cached kcal suggestion
+2025-10-12 08:51:20.559  1713-9413  FoodActivity            com.example.nutrisaur11              D  Background AI calculation completed: 2545
+2025-10-12 08:51:20.559  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.560  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.560  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.560  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.560  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.560  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.560  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.560  1713-1713  KcalSuggestionCache     com.example.nutrisaur11              D  User profile changed, cache invalid
+2025-10-12 08:51:20.560  1713-1713  FoodActivity            com.example.nutrisaur11              D  No valid AI cache found, using fallback calculation...
+2025-10-12 08:51:20.560  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.560  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.560  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.561  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using fallback calculation (AI will update cache): 2784
+2025-10-12 08:51:20.561  1713-1713  FoodActivity            com.example.nutrisaur11              D  AI calculation already in progress, skipping...
+2025-10-12 08:51:20.561  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using AI-calculated total daily calories: 2784
+2025-10-12 08:51:20.561  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.561  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.561  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.561  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.561  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.561  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.561  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.561  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.561  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.561  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Breakfast: 1600 / 696 kcal (from 3 foods)
+2025-10-12 08:51:20.562  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set breakfast progress text to: 1600 / 696 kcal
+2025-10-12 08:51:20.562  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Lunch: 0 / 974 kcal (from 0 foods)
+2025-10-12 08:51:20.562  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set lunch progress text to: 0 / 974 kcal
+2025-10-12 08:51:20.562  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Dinner: 20 / 835 kcal (from 1 foods)
+2025-10-12 08:51:20.562  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set dinner progress text to: 20 / 835 kcal
+2025-10-12 08:51:20.562  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Snacks: 0 / 278 kcal (from 0 foods)
+2025-10-12 08:51:20.562  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set snacks progress text to: 0 / 278 kcal
+2025-10-12 08:51:20.562  1713-1713  FoodActivity            com.example.nutrisaur11              D  Meal progress refreshed successfully
+2025-10-12 08:51:20.569  1713-1713  FoodActivity            com.example.nutrisaur11              D  Refreshing nutrition UI with updated AI data...
+2025-10-12 08:51:20.569  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating kcal goal circle directly
+2025-10-12 08:51:20.569  1713-1713  FoodActivity            com.example.nutrisaur11              D  Total eaten calories for circle update: 1620
+2025-10-12 08:51:20.569  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.570  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.570  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.570  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.570  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.570  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.570  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.570  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.570  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.570  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.570  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated daily calorie target: 2784
+2025-10-12 08:51:20.570  1713-1713  FoodActivity            com.example.nutrisaur11              D  Kcal Goal Circle Update:
+2025-10-12 08:51:20.570  1713-1713  FoodActivity            com.example.nutrisaur11              D    Total Daily Calories: 2784
+2025-10-12 08:51:20.570  1713-1713  FoodActivity            com.example.nutrisaur11              D    Total Eaten Calories: 1620
+2025-10-12 08:51:20.570  1713-1713  FoodActivity            com.example.nutrisaur11              D    Calories Left: 1164
+2025-10-12 08:51:20.570  1713-1713  FoodActivity            com.example.nutrisaur11              D    Progress Percent: 58.189655%
+2025-10-12 08:51:20.570  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating macronutrient data directly
+2025-10-12 08:51:20.572  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.573  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.573  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.573  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.573  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.573  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.573  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.573  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.573  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.573  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.573  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated macro targets - Protein: 153, Carbs: 375, Fat: 74
+2025-10-12 08:51:20.573  1713-1713  FoodActivity            com.example.nutrisaur11              D  Macro Update:
+2025-10-12 08:51:20.573  1713-1713  FoodActivity            com.example.nutrisaur11              D    Protein: 58/153 (eaten: 95)
+2025-10-12 08:51:20.573  1713-1713  FoodActivity            com.example.nutrisaur11              D    Carbs: 200/375 (eaten: 175)
+2025-10-12 08:51:20.573  1713-1713  FoodActivity            com.example.nutrisaur11              D    Fat: 0/74 (eaten: 90)
+2025-10-12 08:51:20.573  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating meal progress texts with direct AddedFoodManager data
+2025-10-12 08:51:20.575  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.576  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.576  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.576  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.576  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.576  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.576  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.576  1713-1713  KcalSuggestionCache     com.example.nutrisaur11              D  User profile changed, cache invalid
+2025-10-12 08:51:20.576  1713-1713  FoodActivity            com.example.nutrisaur11              D  No valid AI cache found, using fallback calculation...
+2025-10-12 08:51:20.576  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.576  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.576  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.576  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using fallback calculation (AI will update cache): 2784
+2025-10-12 08:51:20.576  1713-1713  FoodActivity            com.example.nutrisaur11              D  AI calculation already in progress, skipping...
+2025-10-12 08:51:20.576  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using AI-calculated total daily calories: 2784
+2025-10-12 08:51:20.576  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.577  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.577  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.577  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.577  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.577  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.577  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.577  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.577  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.577  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Breakfast: 1600 / 696 kcal (from 3 foods)
+2025-10-12 08:51:20.577  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set breakfast progress text to: 1600 / 696 kcal
+2025-10-12 08:51:20.577  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Lunch: 0 / 974 kcal (from 0 foods)
+2025-10-12 08:51:20.577  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set lunch progress text to: 0 / 974 kcal
+2025-10-12 08:51:20.577  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Dinner: 20 / 835 kcal (from 1 foods)
+2025-10-12 08:51:20.577  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set dinner progress text to: 20 / 835 kcal
+2025-10-12 08:51:20.577  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Snacks: 0 / 278 kcal (from 0 foods)
+2025-10-12 08:51:20.578  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set snacks progress text to: 0 / 278 kcal
+2025-10-12 08:51:20.578  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating meal progress texts with direct AddedFoodManager data
+2025-10-12 08:51:20.579  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.580  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.580  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.580  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.580  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.580  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.580  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.580  1713-1713  KcalSuggestionCache     com.example.nutrisaur11              D  User profile changed, cache invalid
+2025-10-12 08:51:20.580  1713-1713  FoodActivity            com.example.nutrisaur11              D  No valid AI cache found, using fallback calculation...
+2025-10-12 08:51:20.580  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.580  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.580  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.580  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using fallback calculation (AI will update cache): 2784
+2025-10-12 08:51:20.580  1713-1713  FoodActivity            com.example.nutrisaur11              D  AI calculation already in progress, skipping...
+2025-10-12 08:51:20.580  1713-1713  FoodActivity            com.example.nutrisaur11              D  Using AI-calculated total daily calories: 2784
+2025-10-12 08:51:20.580  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.581  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.581  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.581  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.581  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.581  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.581  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.581  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.581  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated meal distribution: Breakfast=696, Lunch=974, Dinner=835, Snacks=278
+2025-10-12 08:51:20.581  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Breakfast: 1600 / 696 kcal (from 3 foods)
+2025-10-12 08:51:20.581  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set breakfast progress text to: 1600 / 696 kcal
+2025-10-12 08:51:20.581  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Lunch: 0 / 974 kcal (from 0 foods)
+2025-10-12 08:51:20.581  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set lunch progress text to: 0 / 974 kcal
+2025-10-12 08:51:20.581  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Dinner: 20 / 835 kcal (from 1 foods)
+2025-10-12 08:51:20.581  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set dinner progress text to: 20 / 835 kcal
+2025-10-12 08:51:20.581  1713-1713  FoodActivity            com.example.nutrisaur11              D  Direct update Snacks: 0 / 278 kcal (from 0 foods)
+2025-10-12 08:51:20.582  1713-1713  FoodActivity            com.example.nutrisaur11              D  Set snacks progress text to: 0 / 278 kcal
+2025-10-12 08:51:20.582  1713-1713  FoodActivity            com.example.nutrisaur11              D  Updating macronutrient data directly
+2025-10-12 08:51:20.583  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Available database fields: [birthday, is_pregnant, muac_category, notes, weight_kg, nutritional_risk, height_cm, sex, municipality, muac_cm, screening_date, bmi_category, name, barangay, email, age, bmi, status]
+2025-10-12 08:51:20.584  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated age from birthday '2005-10-10': 20
+2025-10-12 08:51:20.584  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Weight field lookup - weight_kg: '50', weight: 'null', final: '50'
+2025-10-12 08:51:20.584  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set weight from database: 50
+2025-10-12 08:51:20.584  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity Height field lookup - height_cm: '171', height: 'null', final: '171'
+2025-10-12 08:51:20.584  1713-1713  FoodActivity            com.example.nutrisaur11              D  FoodActivity: Set height from database: 171
+2025-10-12 08:51:20.584  1713-1713  FoodActivity            com.example.nutrisaur11              D  Created user profile from database data: Pingol , Kevin C. (Age: 20, Weight: 50.0, Height: 171.0, Gender: Male, Activity: Moderate)
+2025-10-12 08:51:20.584  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated BMR: 1473.75 for Pingol , Kevin C.
+2025-10-12 08:51:20.584  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated TDEE: 2284.3125 (BMR: 1473.75 × Activity: 1.55)
+2025-10-12 08:51:20.584  1713-1713  CalorieCal...ionService com.example.nutrisaur11              D  Calculated daily calorie target: 2784 (TDEE: 2284.3125 + Adjustment: 500.0)
+2025-10-12 08:51:20.584  1713-1713  FoodActivity            com.example.nutrisaur11              D  Calculated macro targets - Protein: 153, Carbs: 375, Fat: 74
+2025-10-12 08:51:20.584  1713-1713  FoodActivity            com.example.nutrisaur11              D  Macro Update:
+2025-10-12 08:51:20.584  1713-1713  FoodActivity            com.example.nutrisaur11              D    Protein: 58/153 (eaten: 95)
+2025-10-12 08:51:20.584  1713-1713  FoodActivity            com.example.nutrisaur11              D    Carbs: 200/375 (eaten: 175)
+2025-10-12 08:51:20.584  1713-1713  FoodActivity            com.example.nutrisaur11              D    Fat: 0/74 (eaten: 90)
+2025-10-12 08:51:20.584  1713-1713  FoodActivity            com.example.nutrisaur11              D  Nutrition UI refreshed with updated AI data
+2025-10-12 08:51:20.608  1713-9389  CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
+2025-10-12 08:51:20.608  1713-9389  CommunityUserManager    com.example.nutrisaur11              D  API response message: 
+2025-10-12 08:51:20.609  1713-9389  CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Burgos","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGRwC6pXjPQVyYGtkcZ6eafSGk0tUnWsyaKl1pZXOygSPN5hrxQ57-QoEbT0Q4AnrxZle82T4gCM6sx46ruDB-KiAtQGKfYr3uHOkNiwosJ5lmui9A","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
+2025-10-12 08:51:20.610  1713-9389  CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
+2025-10-12 08:51:20.610  1713-9389  CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Burgos, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
+2025-10-12 08:51:20.610  1713-9389  CommunityUserManager    com.example.nutrisaur11              D  User status: 1
+2025-10-12 08:51:20.610  1713-9389  CommunityUserManager    com.example.nutrisaur11              D  User is active (status = 1)
+2025-10-12 08:51:20.676  1713-9391  CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
+2025-10-12 08:51:20.676  1713-9391  CommunityUserManager    com.example.nutrisaur11              D  API response message: 
+2025-10-12 08:51:20.677  1713-9391  CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Burgos","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGRwC6pXjPQVyYGtkcZ6eafSGk0tUnWsyaKl1pZXOygSPN5hrxQ57-QoEbT0Q4AnrxZle82T4gCM6sx46ruDB-KiAtQGKfYr3uHOkNiwosJ5lmui9A","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
+2025-10-12 08:51:20.678  1713-9391  CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
+2025-10-12 08:51:20.678  1713-9391  CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Burgos, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
+2025-10-12 08:51:20.679  1713-9391  CommunityUserManager    com.example.nutrisaur11              D  User status: 1
+2025-10-12 08:51:20.679  1713-9391  CommunityUserManager    com.example.nutrisaur11              D  User is active (status = 1)
+2025-10-12 08:51:20.686  1713-9390  CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
+2025-10-12 08:51:20.687  1713-9390  CommunityUserManager    com.example.nutrisaur11              D  API response message: 
+2025-10-12 08:51:20.690  1713-9390  CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Burgos","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"50","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGRwC6pXjPQVyYGtkcZ6eafSGk0tUnWsyaKl1pZXOygSPN5hrxQ57-QoEbT0Q4AnrxZle82T4gCM6sx46ruDB-KiAtQGKfYr3uHOkNiwosJ5lmui9A","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
+2025-10-12 08:51:20.691  1713-9390  CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
+2025-10-12 08:51:20.691  1713-9390  CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=50, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Burgos, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
+2025-10-12 08:51:20.691  1713-9390  CommunityUserManager    com.example.nutrisaur11              D  User exists and has valid data
+2025-10-12 08:51:20.695  1713-1713  FoodActivity            com.example.nutrisaur11              D  Flagging Analysis - Level: meal, Day Flagged: false, Flagged Meals: [Breakfast], Flagged Foods: 1
+2025-10-12 08:51:20.724  1713-1713  IS_CTS_MODE             com.example.nutrisaur11              D  false
+2025-10-12 08:51:20.724  1713-1713  MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
+2025-10-12 08:51:20.825  1713-1713  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
+2025-10-12 08:51:20.857  1713-1713  DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
