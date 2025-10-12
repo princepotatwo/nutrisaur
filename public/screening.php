@@ -2923,6 +2923,36 @@ header {
             border-left-color: var(--color-highlight);
         }
 
+        /* Dark theme header text - make white */
+        .dark-theme .food-history-header h3,
+        .dark-theme .food-history-header p {
+            color: #ffffff !important;
+        }
+
+        /* Dark theme flag day/meal button colors */
+        .dark-theme .btn-flag-day,
+        .dark-theme .btn-flag-meal {
+            background: #f44336 !important;
+            color: white !important;
+        }
+
+        .dark-theme .btn-flag-day:hover,
+        .dark-theme .btn-flag-meal:hover {
+            background: #d32f2f !important;
+        }
+
+        /* Dark theme unflag buttons - make green */
+        .dark-theme .btn-flag-day[style*="background: #4caf50"],
+        .dark-theme .btn-flag-meal[style*="background: #4caf50"] {
+            background: #4caf50 !important;
+            color: white !important;
+        }
+
+        .dark-theme .btn-flag-day[style*="background: #4caf50"]:hover,
+        .dark-theme .btn-flag-meal[style*="background: #4caf50"]:hover {
+            background: #388e3c !important;
+        }
+
         .food-history-content {
             padding: 20px;
             max-height: 80vh;
