@@ -45,7 +45,7 @@ try {
     // Get action from request
     $action = $_GET['action'] ?? $_POST['action'] ?? '';
     $user_email = $_GET['user_email'] ?? $_POST['user_email'] ?? '';
-    $limit = intval($_GET['limit'] ?? $_POST['limit'] ?? 10);
+    $limit = max(1, intval($_GET['limit'] ?? $_POST['limit'] ?? 10)); // Ensure minimum 1 and integer
     
     // Validate required parameters
     if (empty($user_email)) {
@@ -79,6 +79,7 @@ try {
             
             // Debug: Log the number of records found
             error_log("Screening history API: Found " . count($history) . " records for user: $user_email");
+            error_log("Screening history API: Limit value: $limit");
             
             // Format data for Chart.js
             $chartData = [
