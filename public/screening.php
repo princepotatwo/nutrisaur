@@ -2626,9 +2626,9 @@ header {
             color: var(--text-secondary);
         }
 
-        /* Food History Buttons - Match screening page button styles */
+        /* Food History Buttons - All green theme */
         .food-history-btn {
-            background: var(--color-highlight);
+            background: #4caf50;
             color: white;
             border: none;
             padding: 6px 12px;
@@ -2641,62 +2641,62 @@ header {
             align-items: center;
             gap: 4px;
             text-decoration: none;
-            box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
         }
 
         .food-history-btn:hover {
-            background: var(--color-primary);
+            background: #388e3c;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
         }
 
         .food-history-btn.secondary {
-            background: var(--color-accent3);
+            background: #66bb6a;
             color: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(102, 187, 106, 0.2);
         }
 
         .food-history-btn.secondary:hover {
-            background: var(--color-accent2);
+            background: #4caf50;
             transform: translateY(-1px);
         }
 
         .food-history-btn.success {
+            background: #2e7d32;
+            color: white;
+            box-shadow: 0 2px 8px rgba(46, 125, 50, 0.2);
+        }
+
+        .food-history-btn.success:hover {
+            background: #1b5e20;
+            transform: translateY(-1px);
+        }
+
+        .food-history-btn.warning {
             background: #4caf50;
             color: white;
             box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
         }
 
-        .food-history-btn.success:hover {
+        .food-history-btn.warning:hover {
             background: #388e3c;
             transform: translateY(-1px);
         }
 
-        .food-history-btn.warning {
-            background: #ff9800;
-            color: white;
-            box-shadow: 0 2px 8px rgba(255, 152, 0, 0.2);
-        }
-
-        .food-history-btn.warning:hover {
-            background: #f57c00;
-            transform: translateY(-1px);
-        }
-
         .food-history-btn.info {
-            background: #2196f3;
+            background: #4caf50;
             color: white;
-            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.2);
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
         }
 
         .food-history-btn.info:hover {
-            background: #1976d2;
+            background: #388e3c;
             transform: translateY(-1px);
         }
 
-        /* Action Buttons in Table - Match screening page button styles */
+        /* Action Buttons in Table - All green theme */
         .food-action-btn {
-            background: var(--color-highlight);
+            background: #4caf50;
             color: white;
             border: none;
             padding: 4px 8px;
@@ -2706,51 +2706,51 @@ header {
             font-weight: 500;
             transition: all 0.2s ease;
             margin: 1px;
-            box-shadow: 0 1px 4px rgba(161, 180, 84, 0.2);
+            box-shadow: 0 1px 4px rgba(76, 175, 80, 0.2);
         }
 
         .food-action-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 2px 6px rgba(161, 180, 84, 0.3);
+            box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
         }
 
         .food-action-btn.food-edit-action {
-            background: #2196f3;
+            background: #66bb6a;
             color: white;
-            box-shadow: 0 1px 4px rgba(33, 150, 243, 0.2);
+            box-shadow: 0 1px 4px rgba(102, 187, 106, 0.2);
         }
 
         .food-action-btn.food-edit-action:hover {
-            background: #1976d2;
+            background: #4caf50;
         }
 
         .food-action-btn.food-flag-action {
-            background: #ff9800;
-            color: white;
-            box-shadow: 0 1px 4px rgba(255, 152, 0, 0.2);
-        }
-
-        .food-action-btn.food-flag-action.unflag {
             background: #4caf50;
+            color: white;
             box-shadow: 0 1px 4px rgba(76, 175, 80, 0.2);
         }
 
-        .food-action-btn.food-flag-action:hover {
-            background: #f57c00;
+        .food-action-btn.food-flag-action.unflag {
+            background: #2e7d32;
+            box-shadow: 0 1px 4px rgba(46, 125, 50, 0.2);
         }
 
-        .food-action-btn.food-flag-action.unflag:hover {
+        .food-action-btn.food-flag-action:hover {
             background: #388e3c;
         }
 
+        .food-action-btn.food-flag-action.unflag:hover {
+            background: #1b5e20;
+        }
+
         .food-action-btn.food-comment-action {
-            background: #9c27b0;
+            background: #66bb6a;
             color: white;
-            box-shadow: 0 1px 4px rgba(156, 39, 176, 0.2);
+            box-shadow: 0 1px 4px rgba(102, 187, 106, 0.2);
         }
 
         .food-action-btn.food-comment-action:hover {
-            background: #7b1fa2;
+            background: #4caf50;
         }
 
         /* Date Section Styles - Match table-responsive styling */
@@ -2881,23 +2881,64 @@ header {
         .dark-theme .food-history-table {
             border: 1px solid var(--color-border);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            background: #FFFFFF;
         }
 
         .dark-theme .food-history-table thead {
-            background-color: var(--color-card);
+            background-color: #FFFFFF;
+        }
+
+        .dark-theme .food-history-table thead th {
+            background: #FFFFFF;
+            color: #000000;
         }
 
         .dark-theme .food-history-table tbody tr:nth-child(odd) {
-            background-color: rgba(161, 180, 84, 0.1);
+            background-color: #FFFFFF;
         }
 
         .dark-theme .food-history-table tbody tr:nth-child(even) {
-            background-color: rgba(161, 180, 84, 0.05);
+            background-color: #F5F5F5;
         }
 
         .dark-theme .food-history-table tbody tr:hover {
-            background: rgba(161, 180, 84, 0.15);
+            background: rgba(161, 180, 84, 0.1);
             border-left-color: var(--color-highlight);
+        }
+
+        .dark-theme .food-history-table tbody td {
+            color: #000000;
+        }
+
+        .dark-theme .food-history-table tbody td.food-name-cell {
+            color: #000000;
+            font-weight: 600;
+        }
+
+        .dark-theme .food-history-table tbody td.food-serving-cell {
+            color: #000000;
+        }
+
+        .dark-theme .food-history-table tbody td.food-nutrition-cell div:first-child {
+            color: #2E7D32;
+            font-weight: 600;
+        }
+
+        .dark-theme .food-history-table tbody td.food-nutrition-cell div:last-child {
+            color: #000000;
+        }
+
+        /* Dark theme modal and sections */
+        .dark-theme .food-history-modal .modal-content {
+            background: #FFFFFF;
+            border: 1px solid #000000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .dark-theme .date-section {
+            background: #FFFFFF;
+            border: 1px solid #000000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         .food-history-content {
@@ -6952,7 +6993,7 @@ header {
                         
                         ${assessment.meal_recall ? `
                         <div class="detail-section">
-                            <h4>🍽️ Meal Assessment</h4>
+                            <h4>Meal Assessment</h4>
                             <div class="detail-item">
                                 <span class="detail-label">24-Hour Recall:</span>
                                 <span class="detail-value">${assessment.meal_recall}</span>
@@ -7085,7 +7126,7 @@ header {
                         </div>
                         <div class="profile-header-buttons">
                             <button class="profile-action-btn profile-food-btn" onclick="viewFoodHistory('${userData.email}', '${userData.name}');" title="View Food History">
-                                🍽️ Food History
+                                Food History
                             </button>
                             ${userData.notes && userData.notes.trim() ? 
                                 `<button class="profile-action-btn profile-note-btn" onclick="closeUserModal(this); addUserNote('${userData.email}', '${userData.name}');" title="View/Edit Note">
@@ -8139,7 +8180,7 @@ header {
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                     <div style="background: rgba(161, 180, 84, 0.1); padding: 15px; border-radius: 12px; border: 1px solid var(--color-border);">
-                        <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">🍽️ Meal Assessment</h3>
+                        <h3 style="color: var(--color-highlight); margin-bottom: 12px; font-size: 16px;">Meal Assessment</h3>
                         <p style="color: var(--color-text); margin-bottom: 6px; font-size: 13px;"><strong>24-Hour Recall:</strong> <span style="color: ${assessment.meal_assessment === 'Balanced' ? '#4CAF50' : '#FF9800'}">${assessment.meal_assessment}</span></p>
                     </div>
                     
@@ -8857,7 +8898,7 @@ header {
             modal.innerHTML = `
                 <div class="modal-content" style="max-width: 95vw; max-height: 90vh; overflow-y: auto;">
                     <div class="modal-header">
-                        <h3>🍽️ Food History - ${userName}</h3>
+                        <h3>Food History - ${userName}</h3>
                         <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
                     </div>
                     <div class="food-history-content">
@@ -8879,7 +8920,7 @@ header {
                                         <div class="day-header">
                                             <div class="day-title">
                                                 <h4>📅 ${new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h4>
-                                                ${isDayFlagged ? '<span class="day-flag-icon" title="Day flagged by MHO">🚩</span>' : ''}
+                                                ${isDayFlagged ? '<span class="day-flag-icon" title="Day flagged by MHO">FLAGGED</span>' : ''}
                                             </div>
                                             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
                                                 <div class="day-totals">
@@ -8888,10 +8929,10 @@ header {
                                                 </div>
                                                 <div class="day-actions">
                                                     <button class="food-flag-btn" onclick="flagEntireDay('${userEmail}', '${date}')" title="Flag entire day">
-                                                        ${isDayFlagged ? '🚩 Unflag Day' : '🚩 Flag Day'}
+                                                        ${isDayFlagged ? 'Unflag Day' : 'Flag Day'}
                                                     </button>
                                                     <button class="food-comment-btn" onclick="addCommentToDay('${userEmail}', '${date}')" title="Add comment to day">
-                                                        💬 Comment
+                                                        Comment
                                                     </button>
                                                 </div>
                                             </div>
@@ -8920,12 +8961,12 @@ header {
                                                                     <div class="food-info">
                                                                         <div class="food-name">
                                                                             <span>${food.food_name}</span>
-                                                                            ${food.is_flagged == 1 ? '<span style="color: #ff9800; font-size: 16px;" title="Flagged by MHO">🚩</span>' : ''}
+                                                                            ${food.is_flagged == 1 ? '<span style="color: #ff9800; font-size: 16px;" title="Flagged by MHO">FLAGGED</span>' : ''}
                                                                         </div>
                                                                         <div class="food-serving">
                                                                             <span>(${food.serving_size})</span>
                                                                             <button class="food-edit-btn" onclick="editServingSize(${food.id}, '${userEmail}', '${date}', '${food.serving_size}')" title="Edit serving size">
-                                                                                ✏️ Edit
+                                                                                Edit
                                                                             </button>
                                                                         </div>
                                                                         ${food.mho_comment ? `
@@ -8943,7 +8984,7 @@ header {
                                                                             ${food.is_flagged == 1 ? 'Unflag' : 'Flag'}
                                                                         </button>
                                                                         <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${date}')" title="Add comment">
-                                                                            💬
+                                                                            Comment
                                                                         </button>
                                                                     </div>
                                                                 </div>
@@ -8996,7 +9037,7 @@ header {
                             modal.remove(); // Remove old modal
                         }
                         // Re-fetch and display updated food history
-                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('Food History - ', ''));
                     } else {
                         alert('Error: ' + data.error);
                     }
@@ -9033,7 +9074,7 @@ header {
                             modal.remove(); // Remove old modal
                         }
                         // Re-fetch and display updated food history
-                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('Food History - ', ''));
                     } else {
                         alert('Error flagging food item: ' + (data.error || 'Unknown error'));
                     }
@@ -9117,7 +9158,7 @@ header {
                     if (data.success) {
                         alert('Serving size updated successfully');
                         // Refresh the food history modal
-                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('Food History - ', ''));
                     } else {
                         alert('Error: ' + data.error);
                     }
@@ -9240,7 +9281,7 @@ header {
                                     if (data.success) {
                                         alert('Comment added successfully');
                                         // Refresh the food history modal
-                                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('🍽️ Food History - ', ''));
+                                        viewFoodHistory(userEmail, document.querySelector('.modal h3').textContent.replace('Food History - ', ''));
                                     } else {
                                         alert('Error: ' + data.error);
                                     }
@@ -9286,7 +9327,7 @@ header {
             modal.innerHTML = `
                 <div class="modal-content" style="max-width: 95vw; max-height: 90vh; overflow-y: auto;">
                     <div class="modal-header">
-                        <h3>🍽️ Food History - ${userName}</h3>
+                        <h3>Food History - ${userName}</h3>
                         <span class="close" onclick="this.closest('.modal').remove()">&times;</span>
                     </div>
                     <div class="food-history-content">
@@ -9308,7 +9349,7 @@ header {
                                         <div class="day-header">
                                             <div class="day-title">
                                                 <h4>📅 ${new Date(date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</h4>
-                                                ${isDayFlagged ? '<span class="day-flag-icon" title="Day flagged by MHO">🚩</span>' : ''}
+                                                ${isDayFlagged ? '<span class="day-flag-icon" title="Day flagged by MHO">FLAGGED</span>' : ''}
                                             </div>
                                             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
                                                 <div class="day-totals">
@@ -9317,10 +9358,10 @@ header {
                                                 </div>
                                                 <div class="day-actions">
                                                     <button class="food-flag-btn" onclick="flagEntireDay('${userEmail}', '${date}')" title="Flag entire day">
-                                                        ${isDayFlagged ? '🚩 Unflag Day' : '🚩 Flag Day'}
+                                                        ${isDayFlagged ? 'Unflag Day' : 'Flag Day'}
                                                     </button>
                                                     <button class="food-comment-btn" onclick="addCommentToDay('${userEmail}', '${date}')" title="Add comment to day">
-                                                        💬 Comment
+                                                        Comment
                                                     </button>
                                                 </div>
                                             </div>
@@ -9349,12 +9390,12 @@ header {
                                                                     <div class="food-info" style="flex: 1;">
                                                                         <div style="display: flex; align-items: center; gap: 8px;">
                                                                             <span style="font-weight: 600;">${food.food_name}</span>
-                                                                            ${food.is_flagged == 1 ? '<span style="color: var(--flagged-border, #f44336); font-size: 16px;" title="Flagged by MHO">🚩</span>' : ''}
+                                                                            ${food.is_flagged == 1 ? '<span style="color: var(--flagged-border, #f44336); font-size: 16px;" title="Flagged by MHO">FLAGGED</span>' : ''}
                                                                         </div>
                                                                         <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
                                                                             <span style="color: #666;">(${food.serving_size})</span>
                                                                             <button onclick="editServingSize(${food.id}, '${userEmail}', '${date}', '${food.serving_size}')" style="padding: 2px 6px; background: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="Edit serving size">
-                                                                                ✏️ Edit
+                                                                                Edit
                                                                             </button>
                                                                         </div>
                                                                         <div style="font-size: 12px; color: #888; margin-top: 2px;">
@@ -9371,7 +9412,7 @@ header {
                                                                             ${food.is_flagged == 1 ? 'Unflag' : 'Flag'}
                                                                         </button>
                                                                         <button onclick="addCommentToFood(${food.id}, '${userEmail}', '${date}')" style="padding: 4px 8px; background: #2196F3; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" title="Add comment to this food">
-                                                                            💬 Comment
+                                                                            Comment
                                                                         </button>
                                                                     </div>
                                                                 </div>
@@ -9685,7 +9726,7 @@ header {
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                             <div style="display: flex; align-items: center; gap: 12px;">
                                 <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                                    🍽️
+                                    Food
                                 </div>
                                 <div>
                                     <h3>Food History</h3>
@@ -9696,15 +9737,15 @@ header {
                         </div>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                             <button class="food-history-btn info" onclick="viewMHORecommendedFoods('${userEmail}', '${userName}')">
-                                <span>🍽️</span>
+                                <span>Food</span>
                                 View MHO Recommended Foods
                             </button>
                             <button class="food-history-btn success" onclick="addMHORecommendedFood('${userEmail}', '${userName}')">
-                                <span>⭐</span>
+                                <span>Add</span>
                                 Add MHO Recommended Food
                             </button>
                             <button class="food-history-btn warning" onclick="bulkMHORecommendations()">
-                                <span>👥</span>
+                                <span>Bulk</span>
                                 Bulk MHO Recommendations
                             </button>
                         </div>
@@ -9747,10 +9788,10 @@ header {
                                                                                 <span>${meal} - ${new Date(date).toLocaleDateString()}</span>
                                                                                 <div style="position: absolute; right: 0; display: flex; gap: 8px;">
                                                                                     <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${date}')" style="background: ${isDayFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
-                                                                                        ${isDayFlagged ? '✅ Unflag Day' : '🚩 Flag Day'}
+                                                                                        ${isDayFlagged ? 'Unflag Day' : 'Flag Day'}
                                                                                     </button>
                                                                                     <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
-                                                                                        ${isMealFlagged ? '✅ Unflag Meal' : '🚩 Flag Meal'}
+                                                                                        ${isMealFlagged ? 'Unflag Meal' : 'Flag Meal'}
                                                                                     </button>
                                                                                 </div>
                                                                             </div>
@@ -9775,13 +9816,13 @@ header {
                                                                             <td class="food-actions-cell" style="padding: 6px;">
                                                                                 <div style="display: flex; gap: 4px; flex-wrap: wrap;">
                                                                                     <button class="food-action-btn food-edit-action" onclick="editServingSize(${food.id}, '${userEmail}', '${food.date}', '${food.serving_size}')" style="background: #2196f3; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
-                                                                                        ✏️ Edit
+                                                                                        Edit
                                                                                     </button>
                                                                                     <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${food.date}', ${food.is_flagged == 1})" style="background: ${food.is_flagged == 1 ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
                                                                                         ${food.is_flagged == 1 ? 'Unflag' : 'Flag'}
                                                                                     </button>
                                                                                     <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${food.date}')" style="background: #9c27b0; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
-                                                                                        💬 Comment
+                                                                                        Comment
                                                                                     </button>
                                                                                 </div>
                                                                             </td>
@@ -9821,7 +9862,7 @@ header {
                     <div class="modal-header" style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0;">
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                                ⭐
+                                Add
                             </div>
                             <div>
                                 <h3 style="margin: 0; font-size: 24px; font-weight: 700;">Add MHO Recommended Food</h3>
@@ -9954,7 +9995,7 @@ header {
                     <div class="modal-header" style="background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0;">
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                                🍽️
+                                Food
                             </div>
                             <div>
                                 <h3 style="margin: 0; font-size: 24px; font-weight: 700;">MHO Recommended Foods</h3>
@@ -10011,7 +10052,7 @@ header {
                                         <div style="padding: 15px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
                                             <div style="flex: 1;">
                                                 <div style="display: flex; align-items: center; gap: 10px;">
-                                                    <span style="font-size: 20px;">\${food.emoji || '🍽️'}</span>
+                                                    <span style="font-size: 20px;">\${food.emoji || 'Food'}</span>
                                                     <div>
                                                         <div style="font-weight: 600; color: var(--text-primary); font-size: 16px;">\${food.food_name}</div>
                                                         <div style="color: #666; font-size: 14px;">\${food.serving_size} • \${food.calories} cal</div>
@@ -10034,7 +10075,7 @@ header {
                         });
                         
                         if (!hasFoods) {
-                            html = '<div style="text-align: center; padding: 40px; color: #666;"><div style="font-size: 48px; margin-bottom: 15px;">🍽️</div><div>No MHO recommended foods available for this user.</div></div>';
+                            html = '<div style="text-align: center; padding: 40px; color: #666;"><div style="font-size: 48px; margin-bottom: 15px;">Food</div><div>No MHO recommended foods available for this user.</div></div>';
                         }
                         
                         html += '</div>';
@@ -10066,7 +10107,7 @@ header {
                     <div class="modal-header" style="background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0;">
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                                👥
+                                Bulk
                             </div>
                             <div>
                                 <h3 style="margin: 0; font-size: 24px; font-weight: 700;">Bulk MHO Recommendations</h3>
