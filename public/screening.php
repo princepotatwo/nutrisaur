@@ -9783,14 +9783,9 @@ header {
                 <div class="modal-content">
                     <div class="food-history-header">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #000000;">
-                                    Food
-                                </div>
-                                <div>
-                                    <h3 style="color: #000000;">Food History</h3>
-                                    <p style="color: #000000;">${userName}</p>
-                                </div>
+                            <div>
+                                <h3 style="color: #000000;">Food History</h3>
+                                <p style="color: #000000;">${userName}</p>
                             </div>
                             <button class="food-history-close" onclick="this.closest('.modal').remove()" style="background: #4caf50; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; font-size: 16px;">&times;</button>
                         </div>
@@ -9871,13 +9866,13 @@ header {
                                                                             </td>
                                                                             <td class="food-actions-cell" style="padding: 6px;">
                                                                                 <div style="display: flex; gap: 4px; flex-wrap: wrap;">
-                                                                                    <button class="food-action-btn food-edit-action" onclick="editServingSize(${food.id}, '${userEmail}', '${food.date}', '${food.serving_size}')" style="background: #2196f3; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
+                                                                                    <button class="food-action-btn food-edit-action" onclick="editServingSize(${food.id}, '${userEmail}', '${food.date}', '${food.serving_size}')" style="background: #4caf50; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
                                                                                         Edit
                                                                                     </button>
-                                                                                    <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${food.date}', ${food.is_flagged == 1})" style="background: ${food.is_flagged == 1 ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
+                                                                                    <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${food.date}', ${food.is_flagged == 1})" style="background: ${food.is_flagged == 1 ? '#4caf50' : '#f44336'}; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
                                                                                         ${food.is_flagged == 1 ? 'Unflag' : 'Flag'}
                                                                                     </button>
-                                                                                    <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${food.date}')" style="background: #9c27b0; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
+                                                                                    <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${food.date}')" style="background: #4caf50; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
                                                                                         Comment
                                                                                     </button>
                                                                                 </div>
