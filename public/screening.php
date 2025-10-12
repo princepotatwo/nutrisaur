@@ -2904,100 +2904,23 @@ header {
         .dark-theme .food-history-table {
             border: 1px solid var(--color-border);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            background: #FFFFFF;
         }
 
         .dark-theme .food-history-table thead {
-            background-color: #FFFFFF;
-        }
-
-        .dark-theme .food-history-table thead th {
-            background: #FFFFFF;
-            color: #000000;
+            background-color: var(--color-card);
         }
 
         .dark-theme .food-history-table tbody tr:nth-child(odd) {
-            background-color: #FFFFFF;
+            background-color: rgba(161, 180, 84, 0.1);
         }
 
         .dark-theme .food-history-table tbody tr:nth-child(even) {
-            background-color: #F5F5F5;
+            background-color: rgba(161, 180, 84, 0.05);
         }
 
         .dark-theme .food-history-table tbody tr:hover {
-            background: rgba(161, 180, 84, 0.1);
+            background: rgba(161, 180, 84, 0.15);
             border-left-color: var(--color-highlight);
-        }
-
-        .dark-theme .food-history-table tbody td {
-            color: #000000;
-        }
-
-        .dark-theme .food-history-table tbody td.food-name-cell {
-            color: #000000;
-            font-weight: 600;
-        }
-
-        .dark-theme .food-history-table tbody td.food-serving-cell {
-            color: #000000;
-        }
-
-        .dark-theme .food-history-table tbody td.food-nutrition-cell div:first-child {
-            color: #2E7D32;
-            font-weight: 600;
-        }
-
-        .dark-theme .food-history-table tbody td.food-nutrition-cell div:last-child {
-            color: #000000;
-        }
-
-        /* Dark theme modal and sections */
-        .dark-theme .food-history-modal .modal-content {
-            background: #FFFFFF;
-            border: 1px solid #000000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .dark-theme .date-section {
-            background: #FFFFFF;
-            border: 1px solid #000000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Dark theme food history header text */
-        .dark-theme .food-history-header h3,
-        .dark-theme .food-history-header p,
-        .dark-theme .food-history-header div {
-            color: #000000 !important;
-        }
-
-        .dark-theme .food-history-header .food-history-close {
-            background: #4caf50 !important;
-            color: white !important;
-        }
-
-        .dark-theme .food-history-header .food-history-close:hover {
-            background: #388e3c !important;
-        }
-
-        /* Dark theme button colors */
-        .dark-theme .food-action-btn.food-edit-action {
-            background: #4caf50;
-            color: white;
-        }
-
-        .dark-theme .food-action-btn.food-flag-action {
-            background: #f44336;
-            color: white;
-        }
-
-        .dark-theme .food-action-btn.food-flag-action.unflag {
-            background: #4caf50;
-        }
-
-        .dark-theme .food-action-btn.food-comment-action {
-            background: #4caf50;
-            color: white;
         }
 
         .food-history-content {
