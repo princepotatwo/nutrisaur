@@ -985,13 +985,18 @@ function handleGetUserCountByClassification($pdo) {
             throw new Exception('Classification type and category are required');
         }
         
+        error_log("🔍 DEBUG: Classification query - Type: $classificationType, Category: $category");
+        
         // Get all users from comprehensive_screening table
         $sql = "SELECT email, weight, height, birthday, sex, screening_date FROM comprehensive_screening WHERE weight IS NOT NULL AND height IS NOT NULL AND birthday IS NOT NULL";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
+        error_log("🔍 DEBUG: Found " . count($users) . " users in comprehensive_screening table");
+        
         if (empty($users)) {
+            error_log("🔍 DEBUG: No users found in comprehensive_screening table");
             echo json_encode([
                 'success' => true,
                 'count' => 0
@@ -1004,11 +1009,21 @@ function handleGetUserCountByClassification($pdo) {
         $who = new WHOGrowthStandards();
         
         $matchingUsers = 0;
+        $processedUsers = 0;
+        $eligibleUsers = 0;
+        $debugCount = 0;
         
         foreach ($users as $user) {
             try {
+                $processedUsers++;
+                
                 // Calculate age in months
                 $ageInMonths = $who->calculateAgeInMonths($user['birthday'], $user['screening_date'] ?? null);
+                
+                // Debug first few users
+                if ($debugCount < 3) {
+                    error_log("🔍 DEBUG: User $processedUsers - Email: {$user['email']}, Age: " . round($ageInMonths/12, 1) . " years ($ageInMonths months), Weight: {$user['weight']}, Height: {$user['height']}");
+                }
                 
                 // Check if user is eligible for this classification type
                 $isEligible = false;
@@ -1027,7 +1042,12 @@ function handleGetUserCountByClassification($pdo) {
                         break;
                 }
                 
+                if ($debugCount < 3) {
+                    error_log("🔍 DEBUG: User $processedUsers - Eligible for $classificationType: " . ($isEligible ? 'YES' : 'NO'));
+                }
+                
                 if (!$isEligible) continue;
+                $eligibleUsers++;
                 
                 // Get comprehensive assessment
                 $assessment = $who->getComprehensiveAssessment(
@@ -1051,20 +1071,36 @@ function handleGetUserCountByClassification($pdo) {
                             else if ($bmi < 25) $classification = 'Normal';
                             else if ($bmi < 30) $classification = 'Overweight';
                             else $classification = 'Obese';
+                            
+                            if ($debugCount < 3) {
+                                error_log("🔍 DEBUG: User $processedUsers - BMI Adult: $bmi, Classification: $classification");
+                            }
                             break;
                         case 'bmi_children':
                             if (isset($results['bmi_for_age']['classification'])) {
                                 $classification = $results['bmi_for_age']['classification'];
+                            }
+                            
+                            if ($debugCount < 3) {
+                                error_log("🔍 DEBUG: User $processedUsers - BMI Children Classification: $classification");
                             }
                             break;
                         case 'weight_for_age':
                             if (isset($results['weight_for_age']['classification'])) {
                                 $classification = $results['weight_for_age']['classification'];
                             }
+                            
+                            if ($debugCount < 3) {
+                                error_log("🔍 DEBUG: User $processedUsers - Weight for Age Classification: $classification");
+                            }
                             break;
                         case 'height_for_age':
                             if (isset($results['height_for_age']['classification'])) {
                                 $classification = $results['height_for_age']['classification'];
+                            }
+                            
+                            if ($debugCount < 3) {
+                                error_log("🔍 DEBUG: User $processedUsers - Height for Age Classification: $classification");
                             }
                             break;
                     }
@@ -1072,13 +1108,28 @@ function handleGetUserCountByClassification($pdo) {
                     // Check if classification matches the requested category
                     if ($classification && $classification === $category) {
                         $matchingUsers++;
+                        if ($debugCount < 3) {
+                            error_log("🔍 DEBUG: User $processedUsers - MATCH! Classification: $classification, Category: $category");
+                        }
+                    } else {
+                        if ($debugCount < 3) {
+                            error_log("🔍 DEBUG: User $processedUsers - NO MATCH. Classification: $classification, Category: $category");
+                        }
+                    }
+                } else {
+                    if ($debugCount < 3) {
+                        error_log("🔍 DEBUG: User $processedUsers - Assessment failed: " . ($assessment['error'] ?? 'Unknown error'));
                     }
                 }
+                
+                $debugCount++;
             } catch (Exception $e) {
                 // Skip users with processing errors
                 continue;
             }
         }
+        
+        error_log("🔍 DEBUG: Final Results - Processed: $processedUsers, Eligible: $eligibleUsers, Matching: $matchingUsers");
         
         echo json_encode([
             'success' => true,
