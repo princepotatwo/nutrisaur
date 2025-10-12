@@ -97,27 +97,22 @@ try {
             // Sort by date (oldest first for better timeline visualization)
             ksort($groupedData);
             
-            // Format data for Chart.js
+            // Format data for Chart.js - BMI only
             $chartData = [
                 'labels' => [],
                 'datasets' => [
                     [
-                        'label' => 'Weight (kg)',
-                        'data' => [],
-                        'borderColor' => '#8CA86E',
-                        'backgroundColor' => 'rgba(140, 168, 110, 0.1)',
-                        'yAxisID' => 'y',
-                        'tension' => 0.3,
-                        'fill' => false
-                    ],
-                    [
                         'label' => 'BMI',
                         'data' => [],
-                        'borderColor' => '#B5C88D',
-                        'backgroundColor' => 'rgba(181, 200, 141, 0.1)',
-                        'yAxisID' => 'y1',
-                        'tension' => 0.3,
-                        'fill' => false
+                        'borderColor' => '#8CA86E',
+                        'backgroundColor' => 'rgba(140, 168, 110, 0.2)',
+                        'tension' => 0.4,
+                        'fill' => true,
+                        'pointBackgroundColor' => '#8CA86E',
+                        'pointBorderColor' => '#6B8E4A',
+                        'pointBorderWidth' => 2,
+                        'pointRadius' => 6,
+                        'pointHoverRadius' => 8
                     ]
                 ]
             ];
@@ -129,10 +124,9 @@ try {
                 $date = new DateTime($record['screening_date']);
                 $dateLabel = $date->format('M j, Y');
                 
-                // Add to chart data
+                // Add to chart data (BMI only)
                 $chartData['labels'][] = $dateLabel;
-                $chartData['datasets'][0]['data'][] = floatval($record['weight']);
-                $chartData['datasets'][1]['data'][] = floatval($record['bmi']);
+                $chartData['datasets'][0]['data'][] = floatval($record['bmi']);
                 
                 // Add to table data (simplified)
                 $tableData[] = [

@@ -6902,7 +6902,11 @@ header {
                             title: {
                                 display: true,
                                 text: 'Screening Date',
-                                color: 'var(--text-color)'
+                                color: 'var(--text-color)',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
                             },
                             ticks: {
                                 color: 'var(--text-color)',
@@ -6915,30 +6919,6 @@ header {
                         y: {
                             type: 'linear',
                             display: true,
-                            position: 'left',
-                            title: {
-                                display: true,
-                                text: 'Weight (kg)',
-                                color: 'var(--text-color)',
-                                font: {
-                                    size: 14,
-                                    weight: 'bold'
-                                }
-                            },
-                            ticks: {
-                                color: 'var(--text-color)',
-                                callback: function(value) {
-                                    return value + ' kg';
-                                }
-                            },
-                            grid: {
-                                color: 'var(--border-color)'
-                            }
-                        },
-                        y1: {
-                            type: 'linear',
-                            display: true,
-                            position: 'right',
                             title: {
                                 display: true,
                                 text: 'BMI',
@@ -6955,8 +6935,9 @@ header {
                                 }
                             },
                             grid: {
-                                drawOnChartArea: false,
-                            }
+                                color: 'var(--border-color)'
+                            },
+                            beginAtZero: false
                         }
                     },
                     interaction: {
