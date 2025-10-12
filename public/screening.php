@@ -2561,7 +2561,8 @@ header {
             text-align: left;
             font-weight: 600;
             font-size: 13px;
-            border: none;
+            border: 1px solid var(--color-border);
+            border-bottom: 2px solid var(--color-border);
             position: sticky;
             top: 0;
             z-index: 10;
@@ -2578,6 +2579,7 @@ header {
         .food-history-table tbody tr {
             transition: all 0.3s ease;
             border-left: 3px solid transparent;
+            border-bottom: 1px solid var(--color-border);
             height: auto;
             min-height: 50px;
             position: relative;
@@ -2600,7 +2602,8 @@ header {
             padding: 10px 8px;
             color: var(--color-text);
             font-size: 12px;
-            border: none;
+            border: 1px solid var(--color-border);
+            border-right: 1px solid var(--color-border);
         }
 
         .food-history-table tbody td.food-name-cell {
@@ -2715,42 +2718,42 @@ header {
         }
 
         .food-action-btn.food-edit-action {
-            background: #66bb6a;
-            color: white;
-            box-shadow: 0 1px 4px rgba(102, 187, 106, 0.2);
-        }
-
-        .food-action-btn.food-edit-action:hover {
-            background: #4caf50;
-        }
-
-        .food-action-btn.food-flag-action {
             background: #4caf50;
             color: white;
             box-shadow: 0 1px 4px rgba(76, 175, 80, 0.2);
         }
 
-        .food-action-btn.food-flag-action.unflag {
-            background: #2e7d32;
-            box-shadow: 0 1px 4px rgba(46, 125, 50, 0.2);
-        }
-
-        .food-action-btn.food-flag-action:hover {
+        .food-action-btn.food-edit-action:hover {
             background: #388e3c;
         }
 
+        .food-action-btn.food-flag-action {
+            background: #f44336;
+            color: white;
+            box-shadow: 0 1px 4px rgba(244, 67, 54, 0.2);
+        }
+
+        .food-action-btn.food-flag-action.unflag {
+            background: #4caf50;
+            box-shadow: 0 1px 4px rgba(76, 175, 80, 0.2);
+        }
+
+        .food-action-btn.food-flag-action:hover {
+            background: #d32f2f;
+        }
+
         .food-action-btn.food-flag-action.unflag:hover {
-            background: #1b5e20;
+            background: #388e3c;
         }
 
         .food-action-btn.food-comment-action {
-            background: #66bb6a;
+            background: #4caf50;
             color: white;
-            box-shadow: 0 1px 4px rgba(102, 187, 106, 0.2);
+            box-shadow: 0 1px 4px rgba(76, 175, 80, 0.2);
         }
 
         .food-action-btn.food-comment-action:hover {
-            background: #4caf50;
+            background: #388e3c;
         }
 
         /* Date Section Styles - Match table-responsive styling */
@@ -2864,6 +2867,26 @@ header {
             color: var(--color-text);
         }
 
+        /* Light theme button colors */
+        .light-theme .food-action-btn.food-edit-action {
+            background: #4caf50;
+            color: white;
+        }
+
+        .light-theme .food-action-btn.food-flag-action {
+            background: #f44336;
+            color: white;
+        }
+
+        .light-theme .food-action-btn.food-flag-action.unflag {
+            background: #4caf50;
+        }
+
+        .light-theme .food-action-btn.food-comment-action {
+            background: #4caf50;
+            color: white;
+        }
+
         /* Light theme date section and modal */
         .light-theme .date-section {
             border: 1px solid var(--color-border);
@@ -2955,6 +2978,26 @@ header {
 
         .dark-theme .food-history-header .food-history-close:hover {
             background: #388e3c !important;
+        }
+
+        /* Dark theme button colors */
+        .dark-theme .food-action-btn.food-edit-action {
+            background: #4caf50;
+            color: white;
+        }
+
+        .dark-theme .food-action-btn.food-flag-action {
+            background: #f44336;
+            color: white;
+        }
+
+        .dark-theme .food-action-btn.food-flag-action.unflag {
+            background: #4caf50;
+        }
+
+        .dark-theme .food-action-btn.food-comment-action {
+            background: #4caf50;
+            color: white;
         }
 
         .food-history-content {
@@ -9753,15 +9796,12 @@ header {
                         </div>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                             <button class="food-history-btn info" onclick="viewMHORecommendedFoods('${userEmail}', '${userName}')">
-                                <span>Food</span>
                                 View MHO Recommended Foods
                             </button>
                             <button class="food-history-btn success" onclick="addMHORecommendedFood('${userEmail}', '${userName}')">
-                                <span>Add</span>
                                 Add MHO Recommended Food
                             </button>
                             <button class="food-history-btn warning" onclick="bulkMHORecommendations()">
-                                <span>Bulk</span>
                                 Bulk MHO Recommendations
                             </button>
                         </div>
