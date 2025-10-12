@@ -2518,16 +2518,301 @@ header {
             background: rgba(76, 175, 80, 1);
         }
 
-        /* Food History Modal - Table Design */
+        /* Food History Modal - Professional Design */
         .food-history-modal {
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(10px);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        .food-history-modal.modal-show {
+            opacity: 1;
+        }
+
+        .food-history-modal.modal-hide {
+            opacity: 0;
+        }
+
+        .food-history-modal .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            width: 95%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            transform: scale(0.95);
+            transition: all 0.3s ease-out;
+        }
+
+        .food-history-modal.modal-show .modal-content {
+            transform: scale(1);
+        }
+
+        .food-history-modal.modal-hide .modal-content {
+            transform: scale(0.95);
+        }
+
+        /* Custom scrollbar for food history modal */
+        .food-history-modal .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .food-history-modal .modal-content::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 10px;
+        }
+
+        .food-history-modal .modal-content::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        .food-history-modal .modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
         }
 
         .food-history-content {
             padding: 20px;
             max-height: 80vh;
             overflow-y: auto;
+        }
+
+        /* Professional Button Styles for Food History */
+        .food-history-btn {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .food-history-btn:hover {
+            background: var(--color-highlight);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .food-history-btn:active {
+            transform: translateY(0);
+        }
+
+        .food-history-btn.secondary {
+            background: var(--border-color);
+            color: var(--text-color);
+        }
+
+        .food-history-btn.secondary:hover {
+            background: var(--text-secondary);
+            color: var(--bg-color);
+        }
+
+        .food-history-btn.danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .food-history-btn.danger:hover {
+            background: #d32f2f;
+        }
+
+        .food-history-btn.success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .food-history-btn.success:hover {
+            background: #388e3c;
+        }
+
+        .food-history-btn.warning {
+            background: #ff9800;
+            color: white;
+        }
+
+        .food-history-btn.warning:hover {
+            background: #f57c00;
+        }
+
+        .food-history-btn.info {
+            background: #2196f3;
+            color: white;
+        }
+
+        .food-history-btn.info:hover {
+            background: #1976d2;
+        }
+
+        /* Food History Table Styles */
+        .food-history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .food-history-table thead th {
+            background: var(--color-primary);
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+        }
+
+        .food-history-table tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s ease;
+        }
+
+        .food-history-table tbody tr:hover {
+            background: var(--hover-bg);
+        }
+
+        .food-history-table tbody tr.flagged {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4caf50;
+        }
+
+        .food-history-table tbody td {
+            padding: 12px;
+            color: var(--text-color);
+            font-size: 13px;
+            border: none;
+        }
+
+        .food-history-table tbody td.food-name-cell {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .food-history-table tbody td.food-serving-cell {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .food-history-table tbody td.food-nutrition-cell {
+            font-size: 12px;
+        }
+
+        .food-history-table tbody td.food-nutrition-cell div:first-child {
+            font-weight: 600;
+            color: #4caf50;
+        }
+
+        .food-history-table tbody td.food-nutrition-cell div:last-child {
+            color: var(--text-secondary);
+        }
+
+        /* Action Buttons in Table */
+        .food-action-btn {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin: 2px;
+        }
+
+        .food-action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .food-action-btn.food-edit-action {
+            background: #2196f3;
+            color: white;
+        }
+
+        .food-action-btn.food-flag-action {
+            background: #ff9800;
+            color: white;
+        }
+
+        .food-action-btn.food-flag-action.unflag {
+            background: #4caf50;
+        }
+
+        .food-action-btn.food-comment-action {
+            background: #9c27b0;
+            color: white;
+        }
+
+        /* Date Section Styles */
+        .date-section {
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--card-bg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .meal-section {
+            margin-bottom: 20px;
+        }
+
+        /* Modal Header Styles */
+        .food-history-header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-highlight) 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .food-history-header h3 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .food-history-header p {
+            margin: 8px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .food-history-close {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .food-history-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
         }
 
         .meal-section {
@@ -9299,36 +9584,38 @@ header {
             const existingModals = document.querySelectorAll('.modal');
             existingModals.forEach(modal => modal.remove());
             
-            // Create modal HTML with table structure
+            // Create modal HTML with professional styling
             const modal = document.createElement('div');
-            modal.className = 'modal';
+            modal.className = 'modal food-history-modal';
             modal.style.display = 'block';
             modal.innerHTML = `
-                <div class="modal-content" style="max-width: 95vw; max-height: 90vh; overflow-y: auto;">
-                    <div class="modal-header" style="background: linear-gradient(135deg, var(--color-primary) 0%, #2c5aa0 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                                📊
+                <div class="modal-content">
+                    <div class="food-history-header">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px;">
+                                    🍽️
+                                </div>
+                                <div>
+                                    <h3>Food History</h3>
+                                    <p>${userName}</p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 style="margin: 0; font-size: 24px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Food History</h3>
-                                <p style="margin: 5px 0 0 0; font-size: 16px; opacity: 0.9; font-weight: 500;">${userName}</p>
-                            </div>
+                            <button class="food-history-close" onclick="this.closest('.modal').remove()">&times;</button>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <button onclick="viewMHORecommendedFoods('${userEmail}', '${userName}')" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 16px;">🍽️</span>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <button class="food-history-btn info" onclick="viewMHORecommendedFoods('${userEmail}', '${userName}')">
+                                <span>🍽️</span>
                                 View MHO Recommended Foods
                             </button>
-                            <button onclick="addMHORecommendedFood('${userEmail}', '${userName}')" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 16px;">⭐</span>
+                            <button class="food-history-btn success" onclick="addMHORecommendedFood('${userEmail}', '${userName}')">
+                                <span>⭐</span>
                                 Add MHO Recommended Food
                             </button>
-                            <button onclick="bulkMHORecommendations()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
-                                <span style="font-size: 16px;">👥</span>
+                            <button class="food-history-btn warning" onclick="bulkMHORecommendations()">
+                                <span>👥</span>
                                 Bulk MHO Recommendations
                             </button>
-                            <span class="close" onclick="this.closest('.modal').remove()" style="background: rgba(255,255,255,0.2); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">&times;</span>
                         </div>
                     </div>
                     <div class="food-history-content">
@@ -9351,8 +9638,8 @@ header {
                                     const isDayFlagged = dateFoods.some(food => food.is_day_flagged == 1);
                                     
                                     return `
-                                        <div class="date-section" style="margin-bottom: 25px; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
-                                            <div style="padding: 10px;">
+                                        <div class="date-section">
+                                            <div style="padding: 20px;">
                                                 ${['Breakfast', 'Lunch', 'Dinner', 'Snacks'].map(meal => {
                                                     const mealFoods = dateFoods.filter(food => food.meal_category === meal);
                                                     if (mealFoods.length === 0) return '';
@@ -9360,49 +9647,49 @@ header {
                                                     const isMealFlagged = mealFoods.some(food => food.is_flagged == 1);
                                                     
                                                     return `
-                                                        <div class="meal-section" style="margin-bottom: 15px;">
-                                                            <table class="food-history-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                                                        <div class="meal-section">
+                                                            <table class="food-history-table">
                                                                 <thead>
-                                                                    <tr style="background: var(--color-primary); color: white;">
-                                                                        <th colspan="4" style="padding: 10px 8px; text-align: center; font-size: 14px; font-weight: 600; position: relative;">
+                                                                    <tr>
+                                                                        <th colspan="4" style="position: relative;">
                                                                             <div style="display: flex; justify-content: center; align-items: center; position: relative;">
                                                                                 <span>${meal} - ${new Date(date).toLocaleDateString()}</span>
                                                                                 <div style="position: absolute; right: 0; display: flex; gap: 8px;">
-                                                                                    <button class="btn-flag-day" onclick="flagEntireDay('${userEmail}', '${date}')" style="background: ${isDayFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
+                                                                                    <button class="food-history-btn ${isDayFlagged ? 'success' : 'warning'}" onclick="flagEntireDay('${userEmail}', '${date}')" style="padding: 6px 12px; font-size: 11px;">
                                                                                         ${isDayFlagged ? '✅ Unflag Day' : '🚩 Flag Day'}
                                                                                     </button>
-                                                                                    <button class="btn-flag-meal" onclick="flagMealCategory('${userEmail}', '${date}', '${meal}')" style="background: ${isMealFlagged ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600;">
+                                                                                    <button class="food-history-btn ${isMealFlagged ? 'success' : 'warning'}" onclick="flagMealCategory('${userEmail}', '${date}', '${meal}')" style="padding: 6px 12px; font-size: 11px;">
                                                                                         ${isMealFlagged ? '✅ Unflag Meal' : '🚩 Flag Meal'}
                                                                                     </button>
                                                                                 </div>
                                                                             </div>
                                                                         </th>
                                                                     </tr>
-                                                                    <tr style="background: var(--card-bg);">
-                                                                        <th style="padding: 8px 6px; text-align: left; font-size: 12px; color: var(--text-primary);">Food Item</th>
-                                                                        <th style="padding: 8px 6px; text-align: left; font-size: 12px; color: var(--text-primary);">Serving</th>
-                                                                        <th style="padding: 8px 6px; text-align: left; font-size: 12px; color: var(--text-primary);">Nutrition</th>
-                                                                        <th style="padding: 8px 6px; text-align: left; font-size: 12px; color: var(--text-primary);">Actions</th>
+                                                                    <tr>
+                                                                        <th>Food Item</th>
+                                                                        <th>Serving</th>
+                                                                        <th>Nutrition</th>
+                                                                        <th>Actions</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
                                                                     ${mealFoods.map(food => `
-                                                                        <tr class="${food.is_flagged == 1 ? 'flagged' : ''}" style="border-bottom: 1px solid var(--border-color);">
-                                                                            <td class="food-name-cell" style="padding: 6px; font-weight: 500; color: var(--text-primary);">${food.food_name}</td>
-                                                                            <td class="food-serving-cell" style="padding: 6px; color: var(--text-secondary); font-size: 12px;">${food.serving_size || 'N/A'}</td>
-                                                                            <td class="food-nutrition-cell" style="padding: 6px;">
-                                                                                <div style="font-weight: 600; color: #4caf50; font-size: 12px;">${food.calories} kcal</div>
-                                                                                <div style="color: var(--text-secondary); font-size: 11px;">P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
+                                                                        <tr class="${food.is_flagged == 1 ? 'flagged' : ''}">
+                                                                            <td class="food-name-cell">${food.food_name}</td>
+                                                                            <td class="food-serving-cell">${food.serving_size || 'N/A'}</td>
+                                                                            <td class="food-nutrition-cell">
+                                                                                <div>${food.calories} kcal</div>
+                                                                                <div>P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
                                                                             </td>
-                                                                            <td class="food-actions-cell" style="padding: 6px;">
+                                                                            <td class="food-actions-cell">
                                                                                 <div style="display: flex; gap: 4px; flex-wrap: wrap;">
-                                                                                    <button class="food-action-btn food-edit-action" onclick="editServingSize(${food.id}, '${userEmail}', '${food.date}', '${food.serving_size}')" style="background: #2196f3; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
+                                                                                    <button class="food-action-btn food-edit-action" onclick="editServingSize(${food.id}, '${userEmail}', '${food.date}', '${food.serving_size}')">
                                                                                         ✏️ Edit
                                                                                     </button>
-                                                                                    <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${food.date}', ${food.is_flagged == 1})" style="background: ${food.is_flagged == 1 ? '#4caf50' : '#ff9800'}; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
+                                                                                    <button class="food-action-btn food-flag-action ${food.is_flagged == 1 ? 'unflag' : ''}" onclick="toggleFoodItemFlag(${food.id}, '${userEmail}', '${food.date}', ${food.is_flagged == 1})">
                                                                                         ${food.is_flagged == 1 ? 'Unflag' : 'Flag'}
                                                                                     </button>
-                                                                                    <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${food.date}')" style="background: #9c27b0; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
+                                                                                    <button class="food-action-btn food-comment-action" onclick="addCommentToFood(${food.id}, '${userEmail}', '${food.date}')">
                                                                                         💬 Comment
                                                                                     </button>
                                                                                 </div>
@@ -9425,6 +9712,11 @@ header {
             `;
             
             document.body.appendChild(modal);
+            
+            // Add animation classes
+            setTimeout(() => {
+                modal.classList.add('modal-show');
+            }, 10);
         }
 
         function addMHORecommendedFood(userEmail, userName) {
@@ -9434,30 +9726,32 @@ header {
             const existingModals = document.querySelectorAll('.modal');
             existingModals.forEach(modal => modal.remove());
             
-            // Create form modal
+            // Create form modal with professional styling
             const modal = document.createElement('div');
-            modal.className = 'modal';
+            modal.className = 'modal food-history-modal';
             modal.style.display = 'block';
             modal.innerHTML = `
-                <div class="modal-content" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
-                    <div class="modal-header" style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
-                                ⭐
-                            </div>
-                            <div>
-                                <h3 style="margin: 0; font-size: 24px; font-weight: 700;">Add MHO Recommended Food</h3>
-                                <p style="margin: 5px 0 0 0; font-size: 16px; opacity: 0.9;">${userName}</p>
-                            </div>
-                        </div>
-                        <span class="close" onclick="this.closest('.modal').remove()" style="background: rgba(255,255,255,0.2); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer;">&times;</span>
-                    </div>
-                    <div style="padding: 20px;">
-                        <form id="mhoRecommendedForm" style="display: flex; flex-direction: column; gap: 15px;">
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="food-history-header" style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px;">
+                                    ⭐
+                                </div>
                                 <div>
-                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Meal Category *</label>
-                                    <select name="meal_category" required style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);">
+                                    <h3>Add MHO Recommended Food</h3>
+                                    <p>${userName}</p>
+                                </div>
+                            </div>
+                            <button class="food-history-close" onclick="this.closest('.modal').remove()">&times;</button>
+                        </div>
+                    </div>
+                    <div class="food-history-content">
+                        <form id="mhoRecommendedForm" style="display: flex; flex-direction: column; gap: 20px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                <div>
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-color);">Meal Category *</label>
+                                    <select name="meal_category" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 14px;">
                                         <option value="">Select meal category</option>
                                         <option value="Breakfast">Breakfast</option>
                                         <option value="Lunch">Lunch</option>
@@ -9466,45 +9760,45 @@ header {
                                     </select>
                                 </div>
                                 <div>
-                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Food Name *</label>
-                                    <input type="text" name="food_name" required style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);" placeholder="Enter food name">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-color);">Food Name *</label>
+                                    <input type="text" name="food_name" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 14px;" placeholder="Enter food name">
                                 </div>
                             </div>
                             
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                                 <div>
-                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Serving Size *</label>
-                                    <input type="text" name="serving_size" required style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);" placeholder="e.g., 1 cup, 2 pieces">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-color);">Serving Size *</label>
+                                    <input type="text" name="serving_size" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 14px;" placeholder="e.g., 1 cup, 2 pieces">
                                 </div>
                                 <div>
-                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Calories *</label>
-                                    <input type="number" name="calories" required min="0" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);" placeholder="Enter calories">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-color);">Calories *</label>
+                                    <input type="number" name="calories" required min="0" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 14px;" placeholder="Enter calories">
                                 </div>
                             </div>
                             
-                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
                                 <div>
-                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Protein (g)</label>
-                                    <input type="number" name="protein" min="0" step="0.1" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);" placeholder="0.0">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-color);">Protein (g)</label>
+                                    <input type="number" name="protein" min="0" step="0.1" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 14px;" placeholder="0.0">
                                 </div>
                                 <div>
-                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Carbs (g)</label>
-                                    <input type="number" name="carbs" min="0" step="0.1" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);" placeholder="0.0">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-color);">Carbs (g)</label>
+                                    <input type="number" name="carbs" min="0" step="0.1" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 14px;" placeholder="0.0">
                                 </div>
                                 <div>
-                                    <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Fat (g)</label>
-                                    <input type="number" name="fat" min="0" step="0.1" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);" placeholder="0.0">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-color);">Fat (g)</label>
+                                    <input type="number" name="fat" min="0" step="0.1" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 14px;" placeholder="0.0">
                                 </div>
                             </div>
                             
                             <div>
-                                <label style="display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-primary);">Fiber (g)</label>
-                                <input type="number" name="fiber" min="0" step="0.1" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary);" placeholder="0.0">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-color);">Fiber (g)</label>
+                                <input type="number" name="fiber" min="0" step="0.1" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--card-bg); color: var(--text-color); font-size: 14px;" placeholder="0.0">
                             </div>
                             
-                            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-                                <button type="button" onclick="this.closest('.modal').remove()" style="padding: 10px 20px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); border-radius: 6px; cursor: pointer; font-weight: 600;">Cancel</button>
-                                <button type="submit" style="padding: 10px 20px; background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Add Recommended Food</button>
+                            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
+                                <button type="button" class="food-history-btn secondary" onclick="this.closest('.modal').remove()">Cancel</button>
+                                <button type="submit" class="food-history-btn success">Add Recommended Food</button>
                             </div>
                         </form>
                     </div>
@@ -9512,6 +9806,11 @@ header {
             `;
             
             document.body.appendChild(modal);
+            
+            // Add animation classes
+            setTimeout(() => {
+                modal.classList.add('modal-show');
+            }, 10);
             
             // Add form submission handler
             document.getElementById('mhoRecommendedForm').addEventListener('submit', function(e) {
