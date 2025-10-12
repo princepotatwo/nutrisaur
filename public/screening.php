@@ -8947,7 +8947,7 @@ header {
                                 <p style="margin: 5px 0 0 0; font-size: 16px; opacity: 0.9; font-weight: 500;">${userName}</p>
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
                             <button onclick="viewMHORecommendedFoods('${userEmail}', '${userName}')" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
                                 <span style="font-size: 16px;">🍽️</span>
                                 View MHO Recommended Foods

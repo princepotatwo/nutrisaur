@@ -985,15 +985,15 @@ function handleGetUserCountByClassification($pdo) {
             throw new Exception('Classification type and category are required');
         }
         
-        // Build query based on classification type
-        $sql = "SELECT COUNT(DISTINCT user_email) as count FROM user_data WHERE ";
+        // Build the query based on classification type
+        $sql = "SELECT COUNT(*) as count FROM users WHERE ";
         
         switch ($classificationType) {
             case 'bmi_adult':
-                $sql .= "age >= 18 AND bmi_classification = ?";
+                $sql .= "bmi_classification = ? AND age >= 18";
                 break;
             case 'bmi_children':
-                $sql .= "age < 18 AND bmi_classification = ?";
+                $sql .= "bmi_classification = ? AND age < 18";
                 break;
             case 'muac':
                 $sql .= "muac_classification = ?";
@@ -1027,8 +1027,7 @@ function handleGetUserCountByClassification($pdo) {
 
 function handleAddBulkRecommendation($pdo) {
     try {
-        $input = file_get_contents('php://input');
-        $data = json_decode($input, true);
+        $data = json_decode(file_get_contents('php://input'), true);
         
         if (!$data) {
             throw new Exception('Invalid JSON data');
@@ -1042,15 +1041,15 @@ function handleAddBulkRecommendation($pdo) {
             }
         }
         
-        // Get all users matching the classification
-        $sql = "SELECT DISTINCT user_email FROM user_data WHERE ";
+        // Get users matching the classification
+        $sql = "SELECT email FROM users WHERE ";
         
         switch ($data['classification_type']) {
             case 'bmi_adult':
-                $sql .= "age >= 18 AND bmi_classification = ?";
+                $sql .= "bmi_classification = ? AND age >= 18";
                 break;
             case 'bmi_children':
-                $sql .= "age < 18 AND bmi_classification = ?";
+                $sql .= "bmi_classification = ? AND age < 18";
                 break;
             case 'muac':
                 $sql .= "muac_classification = ?";
@@ -1070,7 +1069,7 @@ function handleAddBulkRecommendation($pdo) {
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         if (empty($users)) {
-            throw new Exception('No users found matching the specified classification');
+            throw new Exception('No users found matching the selected classification');
         }
         
         // Insert recommended food for each user
@@ -1082,20 +1081,25 @@ function handleAddBulkRecommendation($pdo) {
         $affectedUsers = 0;
         
         foreach ($users as $user) {
-            $result = $insertStmt->execute([
-                $user['user_email'],
-                $data['meal_category'],
-                $data['food_name'],
-                $data['calories'],
-                $data['serving_size'],
-                $data['protein'] ?? 0,
-                $data['carbs'] ?? 0,
-                $data['fat'] ?? 0,
-                $data['fiber'] ?? 0
-            ]);
-            
-            if ($result) {
-                $affectedUsers++;
+            try {
+                $result = $insertStmt->execute([
+                    $user['email'],
+                    $data['meal_category'],
+                    $data['food_name'],
+                    $data['calories'],
+                    $data['serving_size'],
+                    $data['protein'] ?? 0,
+                    $data['carbs'] ?? 0,
+                    $data['fat'] ?? 0,
+                    $data['fiber'] ?? 0
+                ]);
+                
+                if ($result) {
+                    $affectedUsers++;
+                }
+            } catch (Exception $e) {
+                // Log error but continue with other users
+                error_log("Failed to add recommendation for user {$user['email']}: " . $e->getMessage());
             }
         }
         
