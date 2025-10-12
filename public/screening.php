@@ -5749,9 +5749,6 @@ header {
     </div>
 
     <script>
-        // ===== ADMIN EMAIL FOR FLAGGING =====
-        const adminEmail = '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>';
-        
         // ===== MODERN 2025 NAVIGATION SYSTEM =====
         // Navigation state management
         let navState = {
@@ -8687,7 +8684,7 @@ header {
                     body: JSON.stringify({ 
                         id: foodId, 
                         mho_comment: '',
-                        flagged_by: '${adminEmail}'
+                        flagged_by: '<?php echo $_SESSION["admin_email"] ?? "MHO Official"; ?>'
                     })
                 })
                 .then(response => response.json())
