@@ -161,8 +161,8 @@ function handleAddFood($pdo) {
         if (isset($data['is_mho_recommended']) && $data['is_mho_recommended'] == 1) {
             // For MHO recommended foods, store with NULL date and mark as recommended
             $sql = "INSERT INTO user_food_history 
-                    (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
-                    VALUES (?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
+                    (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended, emoji) 
+                    VALUES (?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)";
             
             $stmt = $pdo->prepare($sql);
             $result = $stmt->execute([
@@ -174,13 +174,14 @@ function handleAddFood($pdo) {
                 $data['protein'] ?? 0,
                 $data['carbs'] ?? 0,
                 $data['fat'] ?? 0,
-                $data['fiber'] ?? 0
+                $data['fiber'] ?? 0,
+                $data['emoji'] ?? null
             ]);
         } else {
         // Regular food history entry
         $sql = "INSERT INTO user_food_history 
-                (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
+                (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended, emoji) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)";
         
         $stmt = $pdo->prepare($sql);
         $result = $stmt->execute([
@@ -193,7 +194,8 @@ function handleAddFood($pdo) {
             $data['protein'] ?? 0,
             $data['carbs'] ?? 0,
             $data['fat'] ?? 0,
-            $data['fiber'] ?? 0
+            $data['fiber'] ?? 0,
+            $data['emoji'] ?? null
         ]);
     }
     
@@ -253,7 +255,7 @@ function handleBulkSync($pdo) {
             if ($checkStmt->fetch()) {
                 // Update existing entry
                 $updateSql = "UPDATE user_food_history SET 
-                             calories = ?, serving_size = ?, protein = ?, carbs = ?, fat = ?, fiber = ?
+                             calories = ?, serving_size = ?, protein = ?, carbs = ?, fat = ?, fiber = ?, emoji = ?
                              WHERE user_email = ? AND date = ? AND meal_category = ? AND food_name = ?";
                 $updateStmt = $pdo->prepare($updateSql);
                 $updateStmt->execute([
@@ -263,6 +265,7 @@ function handleBulkSync($pdo) {
                     $food['carbs'] ?? 0,
                     $food['fat'] ?? 0,
                     $food['fiber'] ?? 0,
+                    $food['emoji'] ?? null,
                     $userEmail,
                     $food['date'],
                     $food['meal_category'],
@@ -272,8 +275,8 @@ function handleBulkSync($pdo) {
             } else {
                 // Insert new entry
                 $insertSql = "INSERT INTO user_food_history 
-                             (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber) 
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                             (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, emoji) 
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $insertStmt = $pdo->prepare($insertSql);
                 $insertStmt->execute([
                     $userEmail,
@@ -285,7 +288,8 @@ function handleBulkSync($pdo) {
                     $food['protein'] ?? 0,
                     $food['carbs'] ?? 0,
                     $food['fat'] ?? 0,
-                    $food['fiber'] ?? 0
+                    $food['fiber'] ?? 0,
+                    $food['emoji'] ?? null
                 ]);
                 $inserted++;
             }
