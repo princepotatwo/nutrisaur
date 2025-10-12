@@ -4,6 +4,11 @@
  * Provides endpoints for fetching screening history data for progress tracking
  */
 
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // Don't display errors in output
+ini_set('log_errors', 1);
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
@@ -15,7 +20,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-require_once __DIR__ . '/../config.php';
+try {
+    require_once __DIR__ . '/../../config.php';
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Config file not found: ' . $e->getMessage()
+    ]);
+    exit();
+}
 
 try {
     // Get database connection
@@ -59,6 +73,9 @@ try {
             
             $stmt->execute([$user_email, $limit]);
             $history = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Debug: Log the number of records found
+            error_log("Screening history API: Found " . count($history) . " records for user: $user_email");
             
             // Format data for Chart.js
             $chartData = [
