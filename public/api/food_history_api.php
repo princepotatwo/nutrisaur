@@ -1106,7 +1106,16 @@ function handleGetUserCountByClassification($pdo) {
                     }
                     
                     // Check if classification matches the requested category (case-insensitive)
+                    // For BMI Adult "underweight", also count "Severely Underweight"
+                    $isMatch = false;
                     if ($classification && strtolower($classification) === strtolower($category)) {
+                        $isMatch = true;
+                    } else if ($classificationType === 'bmi_adult' && $category === 'underweight' && 
+                              strtolower($classification) === 'severely underweight') {
+                        $isMatch = true;
+                    }
+                    
+                    if ($isMatch) {
                         $matchingUsers++;
                         if ($debugCount < 3) {
                             error_log("🔍 DEBUG: User $processedUsers - MATCH! Classification: $classification, Category: $category");
@@ -1241,7 +1250,16 @@ function handleAddBulkRecommendation($pdo) {
                     }
                     
                     // Check if classification matches the requested category (case-insensitive)
+                    // For BMI Adult "underweight", also count "Severely Underweight"
+                    $isMatch = false;
                     if ($classification && strtolower($classification) === strtolower($data['category'])) {
+                        $isMatch = true;
+                    } else if ($data['classification_type'] === 'bmi_adult' && $data['category'] === 'underweight' && 
+                              strtolower($classification) === 'severely underweight') {
+                        $isMatch = true;
+                    }
+                    
+                    if ($isMatch) {
                         $matchingUsers[] = $user['email'];
                     }
                 }
