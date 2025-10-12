@@ -71,10 +71,10 @@ try {
                 FROM screening_history 
                 WHERE user_email = ? 
                 ORDER BY screening_date DESC 
-                LIMIT ?
-            ");
+                LIMIT " . intval($limit)
+            );
             
-            $stmt->execute([$user_email, $limit]);
+            $stmt->execute([$user_email]);
             $history = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             // Debug: Log the number of records found
