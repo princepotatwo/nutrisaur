@@ -1032,7 +1032,7 @@ function handleGetUserCountByClassification($pdo) {
                         $isEligible = ($ageInMonths >= 228); // 19+ years
                         break;
                     case 'bmi_children':
-                        $isEligible = ($ageInMonths >= 24 && $ageInMonths < 228); // 2-18 years
+                        $isEligible = ($ageInMonths >= 60 && $ageInMonths < 228); // 5-18 years
                         break;
                     case 'weight_for_age':
                         $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 71); // 0-5 years
@@ -1188,7 +1188,7 @@ function handleAddBulkRecommendation($pdo) {
                         $isEligible = ($ageInMonths >= 228); // 19+ years
                         break;
                     case 'bmi_children':
-                        $isEligible = ($ageInMonths >= 24 && $ageInMonths < 228); // 2-18 years
+                        $isEligible = ($ageInMonths >= 60 && $ageInMonths < 228); // 5-18 years
                         break;
                     case 'weight_for_age':
                         $isEligible = ($ageInMonths >= 0 && $ageInMonths <= 71); // 0-5 years
