@@ -6771,25 +6771,8 @@ header {
                                     <h3>Progress Tracking</h3>
                                 </div>
                                 <div class="card-content">
-                                    <div class="chart-container" style="height: 300px; margin-bottom: 20px;">
+                                    <div class="chart-container" style="height: 400px;">
                                         <canvas id="progressChart-${userData.email}"></canvas>
-                                    </div>
-                                    <div class="progress-table-container">
-                                        <table class="progress-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Date</th>
-                                                    <th>Weight</th>
-                                                    <th>BMI</th>
-                                                    <th>BMI-for-Age Classification</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="progressTableBody-${userData.email}">
-                                                <tr>
-                                                    <td colspan="4" class="empty-state">Loading progress data...</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -6840,32 +6823,20 @@ header {
         // Load progress chart for a user
         function loadUserProgressChart(userEmail) {
             const canvasId = `progressChart-${userEmail}`;
-            const tableBodyId = `progressTableBody-${userEmail}`;
             
             // Fetch progress data
             fetch(`api/screening_history_api.php?action=get_history&user_email=${encodeURIComponent(userEmail)}&limit=20`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Progress data received:', data);
-                    console.log('Table data:', data.data?.table);
-                    console.log('Table length:', data.data?.table?.length);
-                    
-                    if (data.success && data.data.table && data.data.table.length > 0) {
-                        console.log('Rendering chart and table');
+                    if (data.success && data.data.chart) {
                         // Render chart
                         renderProgressChart(canvasId, data.data.chart);
-                        
-                        // Render table
-                        renderProgressTable(tableBodyId, data.data.table);
                     } else {
-                        console.log('Showing empty state');
-                        // Show empty state
-                        showEmptyProgressState(tableBodyId);
+                        console.log('No chart data available');
                     }
                 })
                 .catch(error => {
                     console.error('Error loading progress data:', error);
-                    showEmptyProgressState(tableBodyId);
                 });
         }
 
@@ -6959,64 +6930,6 @@ header {
             });
         }
 
-        // Render the progress table
-        function renderProgressTable(tableBodyId, tableData) {
-            const tableBody = document.getElementById(tableBodyId);
-            if (!tableBody) return;
-            
-            if (tableData.length === 0) {
-                showEmptyProgressState(tableBodyId);
-                return;
-            }
-            
-            tableBody.innerHTML = '';
-            
-            tableData.forEach((row, index) => {
-                const tr = document.createElement('tr');
-                
-                // Determine classification badge class
-                let badgeClass = 'classification-normal';
-                if (row.classification) {
-                    const classLower = row.classification.toLowerCase();
-                    if (classLower.includes('obese') || classLower.includes('severely')) {
-                        badgeClass = 'classification-severe';
-                    } else if (classLower.includes('overweight') || classLower.includes('underweight') || classLower.includes('stunted') || classLower.includes('wasted')) {
-                        badgeClass = 'classification-moderate';
-                    } else if (classLower.includes('normal')) {
-                        badgeClass = 'classification-normal';
-                    }
-                }
-                
-                // Highlight the latest entry
-                const isLatest = index === tableData.length - 1;
-                tr.className = isLatest ? 'latest-entry' : '';
-                
-                tr.innerHTML = `
-                    <td>${row.date}${isLatest ? ' <span class="latest-badge">Latest</span>' : ''}</td>
-                    <td><strong>${row.weight || 'N/A'} kg</strong></td>
-                    <td><strong>${row.bmi ? parseFloat(row.bmi).toFixed(1) : 'N/A'}</strong></td>
-                    <td>
-                        ${row.classification ? 
-                            `<span class="classification-badge ${badgeClass}">${row.classification}</span>` : 
-                            'N/A'
-                        }
-                    </td>
-                `;
-                tableBody.appendChild(tr);
-            });
-        }
-
-        // Show empty state for progress data
-        function showEmptyProgressState(tableBodyId) {
-            const tableBody = document.getElementById(tableBodyId);
-            if (!tableBody) return;
-            
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="5" class="empty-state">No screening history available for this user</td>
-                </tr>
-            `;
-        }
 
         // BMI calculations are now handled by WHO Growth Standards PHP backend
         // This function is kept for compatibility but should not be used
