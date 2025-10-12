@@ -928,6 +928,9 @@ function handleAddRecommendedToMeal($pdo) {
             throw new Exception('Recommended food not found');
         }
         
+        // Allow duplicate MHO recommended foods - users can add the same food multiple times
+        // Commented out duplicate check to allow multiple entries of the same MHO recommended food
+        /*
         // Check if already added to this date
         $sql = "SELECT COUNT(*) FROM user_food_history 
                 WHERE user_email = ? AND date = ? AND meal_category = ? AND food_name = ? AND is_mho_recommended = 0";
@@ -938,6 +941,7 @@ function handleAddRecommendedToMeal($pdo) {
         if ($count > 0) {
             throw new Exception('This food is already added to your meal plan for this date');
         }
+        */
         
         // Create a copy of the recommended food with real date and is_mho_recommended = 0
         $sql = "INSERT INTO user_food_history 
