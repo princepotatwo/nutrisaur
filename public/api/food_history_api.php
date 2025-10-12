@@ -1105,8 +1105,8 @@ function handleGetUserCountByClassification($pdo) {
                             break;
                     }
                     
-                    // Check if classification matches the requested category
-                    if ($classification && $classification === $category) {
+                    // Check if classification matches the requested category (case-insensitive)
+                    if ($classification && strtolower($classification) === strtolower($category)) {
                         $matchingUsers++;
                         if ($debugCount < 3) {
                             error_log("🔍 DEBUG: User $processedUsers - MATCH! Classification: $classification, Category: $category");
@@ -1240,8 +1240,8 @@ function handleAddBulkRecommendation($pdo) {
                             break;
                     }
                     
-                    // Check if classification matches the requested category
-                    if ($classification && $classification === $data['category']) {
+                    // Check if classification matches the requested category (case-insensitive)
+                    if ($classification && strtolower($classification) === strtolower($data['category'])) {
                         $matchingUsers[] = $user['email'];
                     }
                 }
