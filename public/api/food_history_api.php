@@ -105,6 +105,14 @@ try {
             handleAddRecommendedToMeal($pdo);
             break;
             
+        case 'get_user_count_by_classification':
+            handleGetUserCountByClassification($pdo);
+            break;
+            
+        case 'add_bulk_recommendation':
+            handleAddBulkRecommendation($pdo);
+            break;
+            
         default:
             throw new Exception('Invalid action specified');
     }
@@ -959,6 +967,143 @@ function handleAddRecommendedToMeal($pdo) {
         } else {
             throw new Exception('Failed to add recommended food to meal plan');
         }
+        
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+function handleGetUserCountByClassification($pdo) {
+    try {
+        $classificationType = $_GET['classification_type'] ?? '';
+        $category = $_GET['category'] ?? '';
+        
+        if (empty($classificationType) || empty($category)) {
+            throw new Exception('Classification type and category are required');
+        }
+        
+        // Build query based on classification type
+        $sql = "SELECT COUNT(DISTINCT user_email) as count FROM user_data WHERE ";
+        
+        switch ($classificationType) {
+            case 'bmi_adult':
+                $sql .= "age >= 18 AND bmi_classification = ?";
+                break;
+            case 'bmi_children':
+                $sql .= "age < 18 AND bmi_classification = ?";
+                break;
+            case 'muac':
+                $sql .= "muac_classification = ?";
+                break;
+            case 'weight_for_age':
+                $sql .= "weight_for_age_classification = ?";
+                break;
+            case 'height_for_age':
+                $sql .= "height_for_age_classification = ?";
+                break;
+            default:
+                throw new Exception('Invalid classification type');
+        }
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$category]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        echo json_encode([
+            'success' => true,
+            'count' => (int)$result['count']
+        ]);
+        
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
+    }
+}
+
+function handleAddBulkRecommendation($pdo) {
+    try {
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
+        
+        if (!$data) {
+            throw new Exception('Invalid JSON data');
+        }
+        
+        // Validate required fields
+        $required = ['classification_type', 'category', 'meal_category', 'food_name', 'calories', 'serving_size'];
+        foreach ($required as $field) {
+            if (!isset($data[$field]) || empty($data[$field])) {
+                throw new Exception("Missing required field: $field");
+            }
+        }
+        
+        // Get all users matching the classification
+        $sql = "SELECT DISTINCT user_email FROM user_data WHERE ";
+        
+        switch ($data['classification_type']) {
+            case 'bmi_adult':
+                $sql .= "age >= 18 AND bmi_classification = ?";
+                break;
+            case 'bmi_children':
+                $sql .= "age < 18 AND bmi_classification = ?";
+                break;
+            case 'muac':
+                $sql .= "muac_classification = ?";
+                break;
+            case 'weight_for_age':
+                $sql .= "weight_for_age_classification = ?";
+                break;
+            case 'height_for_age':
+                $sql .= "height_for_age_classification = ?";
+                break;
+            default:
+                throw new Exception('Invalid classification type');
+        }
+        
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$data['category']]);
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if (empty($users)) {
+            throw new Exception('No users found matching the specified classification');
+        }
+        
+        // Insert recommended food for each user
+        $insertSql = "INSERT INTO user_food_history 
+                      (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
+                      VALUES (?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, 1)";
+        
+        $insertStmt = $pdo->prepare($insertSql);
+        $affectedUsers = 0;
+        
+        foreach ($users as $user) {
+            $result = $insertStmt->execute([
+                $user['user_email'],
+                $data['meal_category'],
+                $data['food_name'],
+                $data['calories'],
+                $data['serving_size'],
+                $data['protein'] ?? 0,
+                $data['carbs'] ?? 0,
+                $data['fat'] ?? 0,
+                $data['fiber'] ?? 0
+            ]);
+            
+            if ($result) {
+                $affectedUsers++;
+            }
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'message' => "Successfully added recommendation to $affectedUsers users",
+            'affected_users' => $affectedUsers
+        ]);
         
     } catch (Exception $e) {
         echo json_encode([

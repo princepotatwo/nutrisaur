@@ -8944,7 +8944,7 @@ header {
                                 <p style="margin: 5px 0 0 0; font-size: 16px; opacity: 0.9; font-weight: 500;">${userName}</p>
                             </div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                             <button onclick="viewMHORecommendedFoods('${userEmail}', '${userName}')" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
                                 <span style="font-size: 16px;">🍽️</span>
                                 View MHO Recommended Foods
@@ -8952,6 +8952,10 @@ header {
                             <button onclick="addMHORecommendedFood('${userEmail}', '${userName}')" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
                                 <span style="font-size: 16px;">⭐</span>
                                 Add MHO Recommended Food
+                            </button>
+                            <button onclick="bulkMHORecommendations()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 16px;">👥</span>
+                                Bulk MHO Recommendations
                             </button>
                             <span class="close" onclick="this.closest('.modal').remove()" style="background: rgba(255,255,255,0.2); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">&times;</span>
                         </div>
@@ -9295,6 +9299,273 @@ header {
                     const content = document.getElementById('mhoRecommendedContent');
                     content.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;"><div style="font-size: 48px; margin-bottom: 15px;">❌</div><div>Error loading MHO recommended foods: ' + error.message + '</div></div>';
                 });
+        }
+
+        function bulkMHORecommendations() {
+            console.log('👥 Bulk MHO Recommendations function called');
+            
+            // Remove any existing modals
+            const existingModals = document.querySelectorAll('.modal');
+            existingModals.forEach(modal => modal.remove());
+            
+            // Create bulk recommendation modal
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+                    <div class="modal-header" style="background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                                👥
+                            </div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 24px; font-weight: 700;">Bulk MHO Recommendations</h3>
+                                <p style="margin: 5px 0 0 0; font-size: 16px; opacity: 0.9;">Recommend foods to multiple users by classification</p>
+                            </div>
+                        </div>
+                        <span class="close" onclick="this.closest('.modal').remove()" style="background: rgba(255,255,255,0.2); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; cursor: pointer;">&times;</span>
+                    </div>
+                    <div style="padding: 20px;">
+                        <form id="bulkRecommendationForm" style="display: flex; flex-direction: column; gap: 20px;">
+                            <!-- Classification Selection -->
+                            <div style="background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <h4 style="margin: 0 0 15px 0; color: var(--text-primary); font-size: 18px; font-weight: 600;">Step 1: Select Classification</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                    <div>
+                                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary);">Classification Type *</label>
+                                        <select id="classificationType" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary); font-size: 16px;">
+                                            <option value="">Select classification type</option>
+                                            <option value="bmi_adult">BMI for Adults (18+ years)</option>
+                                            <option value="bmi_children">BMI for Children (2-17 years)</option>
+                                            <option value="muac">MUAC Classification</option>
+                                            <option value="weight_for_age">Weight for Age</option>
+                                            <option value="height_for_age">Height for Age</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary);">Category *</label>
+                                        <select id="category" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary); font-size: 16px;">
+                                            <option value="">Select category</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div id="userCount" style="margin-top: 15px; padding: 10px; background: rgba(33, 150, 243, 0.1); border-radius: 6px; border-left: 4px solid #2196f3; display: none;">
+                                    <span style="color: #1976d2; font-weight: 600;">📊 Users matching this classification: <span id="userCountNumber">0</span></span>
+                                </div>
+                            </div>
+                            
+                            <!-- Food Information -->
+                            <div style="background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
+                                <h4 style="margin: 0 0 15px 0; color: var(--text-primary); font-size: 18px; font-weight: 600;">Step 2: Add Recommended Food</h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                    <div>
+                                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary);">Meal Category *</label>
+                                        <select name="meal_category" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary); font-size: 16px;">
+                                            <option value="">Select meal category</option>
+                                            <option value="Breakfast">Breakfast</option>
+                                            <option value="Lunch">Lunch</option>
+                                            <option value="Dinner">Dinner</option>
+                                            <option value="Snacks">Snacks</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary);">Food Name *</label>
+                                        <input type="text" name="food_name" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary); font-size: 16px;" placeholder="Enter food name">
+                                    </div>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                                    <div>
+                                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary);">Serving Size *</label>
+                                        <input type="text" name="serving_size" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary); font-size: 16px;" placeholder="e.g., 1 cup, 2 pieces">
+                                    </div>
+                                    <div>
+                                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary);">Calories *</label>
+                                        <input type="number" name="calories" required min="0" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary); font-size: 16px;" placeholder="Enter calories">
+                                    </div>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 15px;">
+                                    <div>
+                                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary);">Protein (g)</label>
+                                        <input type="number" name="protein" min="0" step="0.1" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary); font-size: 16px;" placeholder="0.0">
+                                    </div>
+                                    <div>
+                                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary);">Carbs (g)</label>
+                                        <input type="number" name="carbs" min="0" step="0.1" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary); font-size: 16px;" placeholder="0.0">
+                                    </div>
+                                    <div>
+                                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary);">Fat (g)</label>
+                                        <input type="number" name="fat" min="0" step="0.1" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary); font-size: 16px;" placeholder="0.0">
+                                    </div>
+                                </div>
+                                
+                                <div style="margin-top: 15px;">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary);">Fiber (g)</label>
+                                    <input type="number" name="fiber" min="0" step="0.1" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-primary); font-size: 16px;" placeholder="0.0">
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 20px;">
+                                <button type="button" onclick="this.closest('.modal').remove()" style="padding: 12px 24px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 16px;">Cancel</button>
+                                <button type="submit" style="padding: 12px 24px; background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 16px;">Add Bulk Recommendation</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Add event listeners
+            setupBulkRecommendationForm();
+        }
+
+        function setupBulkRecommendationForm() {
+            const classificationType = document.getElementById('classificationType');
+            const category = document.getElementById('category');
+            const userCount = document.getElementById('userCount');
+            const userCountNumber = document.getElementById('userCountNumber');
+            
+            // Classification type options
+            const classificationOptions = {
+                'bmi_adult': [
+                    { value: 'underweight', label: 'Underweight (BMI < 18.5)' },
+                    { value: 'normal', label: 'Normal weight (BMI 18.5-24.9)' },
+                    { value: 'overweight', label: 'Overweight (BMI 25-29.9)' },
+                    { value: 'obese', label: 'Obese (BMI ≥ 30)' }
+                ],
+                'bmi_children': [
+                    { value: 'severely_underweight', label: 'Severely Underweight' },
+                    { value: 'underweight', label: 'Underweight' },
+                    { value: 'normal', label: 'Normal weight' },
+                    { value: 'overweight', label: 'Overweight' },
+                    { value: 'obese', label: 'Obese' }
+                ],
+                'muac': [
+                    { value: 'severe_malnutrition', label: 'Severe Malnutrition' },
+                    { value: 'moderate_malnutrition', label: 'Moderate Malnutrition' },
+                    { value: 'normal', label: 'Normal' },
+                    { value: 'overweight', label: 'Overweight' }
+                ],
+                'weight_for_age': [
+                    { value: 'severely_underweight', label: 'Severely Underweight' },
+                    { value: 'underweight', label: 'Underweight' },
+                    { value: 'normal', label: 'Normal' },
+                    { value: 'overweight', label: 'Overweight' }
+                ],
+                'height_for_age': [
+                    { value: 'severely_stunted', label: 'Severely Stunted' },
+                    { value: 'stunted', label: 'Stunted' },
+                    { value: 'normal', label: 'Normal' },
+                    { value: 'tall', label: 'Tall' }
+                ]
+            };
+            
+            // Update category options when classification type changes
+            classificationType.addEventListener('change', function() {
+                const selectedType = this.value;
+                category.innerHTML = '<option value="">Select category</option>';
+                userCount.style.display = 'none';
+                
+                if (selectedType && classificationOptions[selectedType]) {
+                    classificationOptions[selectedType].forEach(option => {
+                        const optionElement = document.createElement('option');
+                        optionElement.value = option.value;
+                        optionElement.textContent = option.label;
+                        category.appendChild(optionElement);
+                    });
+                }
+            });
+            
+            // Update user count when category changes
+            category.addEventListener('change', function() {
+                const selectedType = classificationType.value;
+                const selectedCategory = this.value;
+                
+                if (selectedType && selectedCategory) {
+                    // Fetch user count for this classification
+                    fetch(\`api/food_history_api.php?action=get_user_count_by_classification&classification_type=\${selectedType}&category=\${selectedCategory}\`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                userCountNumber.textContent = data.count;
+                                userCount.style.display = 'block';
+                            } else {
+                                userCountNumber.textContent = '0';
+                                userCount.style.display = 'block';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching user count:', error);
+                            userCountNumber.textContent = '0';
+                            userCount.style.display = 'block';
+                        });
+                } else {
+                    userCount.style.display = 'none';
+                }
+            });
+            
+            // Form submission
+            document.getElementById('bulkRecommendationForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const selectedType = classificationType.value;
+                const selectedCategory = category.value;
+                
+                if (!selectedType || !selectedCategory) {
+                    alert('Please select both classification type and category');
+                    return;
+                }
+                
+                const foodData = {
+                    classification_type: selectedType,
+                    category: selectedCategory,
+                    meal_category: formData.get('meal_category'),
+                    food_name: formData.get('food_name'),
+                    calories: parseInt(formData.get('calories')),
+                    serving_size: formData.get('serving_size'),
+                    protein: parseFloat(formData.get('protein')) || 0,
+                    carbs: parseFloat(formData.get('carbs')) || 0,
+                    fat: parseFloat(formData.get('fat')) || 0,
+                    fiber: parseFloat(formData.get('fiber')) || 0
+                };
+                
+                console.log('📤 Submitting bulk recommendation:', foodData);
+                
+                // Show loading state
+                const submitButton = this.querySelector('button[type="submit"]');
+                const originalText = submitButton.textContent;
+                submitButton.textContent = 'Adding...';
+                submitButton.disabled = true;
+                
+                fetch('api/food_history_api.php?action=add_bulk_recommendation', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(foodData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(\`✅ Successfully added recommendation to \${data.affected_users} users!\`);
+                        this.closest('.modal').remove();
+                    } else {
+                        alert('❌ Error: ' + (data.error || 'Failed to add bulk recommendation'));
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error adding bulk recommendation:', error);
+                    alert('❌ Error: ' + error.message);
+                })
+                .finally(() => {
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+                });
+            });
         }
 
 
