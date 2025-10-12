@@ -2550,9 +2550,13 @@ header {
             background: var(--color-card);
         }
 
+        .food-history-table thead { 
+            background-color: var(--color-card);
+        }
+
         .food-history-table thead th {
-            background: var(--color-primary);
-            color: white;
+            background: var(--color-card);
+            color: var(--color-text);
             padding: 12px 8px;
             text-align: left;
             font-weight: 600;
@@ -2563,13 +2567,28 @@ header {
             z-index: 10;
         }
 
+        .food-history-table tbody tr:nth-child(odd) {
+            background-color: rgba(84, 96, 72, 0.3);
+        }
+
+        .food-history-table tbody tr:nth-child(even) {
+            background-color: rgba(84, 96, 72, 0.1);
+        }
+
         .food-history-table tbody tr {
-            border-bottom: 1px solid var(--color-border);
-            transition: background-color 0.2s ease;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            height: auto;
+            min-height: 50px;
+            position: relative;
+            overflow: visible;
         }
 
         .food-history-table tbody tr:hover {
+            border-left-color: var(--color-highlight);
             background: rgba(161, 180, 84, 0.1);
+            transform: translateX(2px);
+            box-shadow: 0 4px 15px rgba(161, 180, 84, 0.2);
         }
 
         .food-history-table tbody tr.flagged {
@@ -2579,7 +2598,7 @@ header {
 
         .food-history-table tbody td {
             padding: 10px 8px;
-            color: var(--text-color);
+            color: var(--color-text);
             font-size: 12px;
             border: none;
         }
@@ -2741,7 +2760,7 @@ header {
             border-radius: 15px;
             overflow: hidden;
             background: var(--color-card);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
         .meal-section {
@@ -2792,6 +2811,52 @@ header {
             background: rgba(255, 255, 255, 0.3);
             transform: scale(1.1);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Light theme food history table styles */
+        .light-theme .food-history-table {
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 20px var(--color-shadow);
+        }
+
+        .light-theme .food-history-table thead {
+            background-color: var(--color-card);
+        }
+
+        .light-theme .food-history-table tbody tr:nth-child(odd) {
+            background-color: rgba(102, 187, 106, 0.1);
+        }
+
+        .light-theme .food-history-table tbody tr:nth-child(even) {
+            background-color: rgba(102, 187, 106, 0.05);
+        }
+
+        .light-theme .food-history-table tbody tr:hover {
+            background: rgba(102, 187, 106, 0.15);
+            border-left-color: var(--color-highlight);
+        }
+
+        /* Dark theme food history table styles */
+        .dark-theme .food-history-table {
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .dark-theme .food-history-table thead {
+            background-color: var(--color-card);
+        }
+
+        .dark-theme .food-history-table tbody tr:nth-child(odd) {
+            background-color: rgba(161, 180, 84, 0.1);
+        }
+
+        .dark-theme .food-history-table tbody tr:nth-child(even) {
+            background-color: rgba(161, 180, 84, 0.05);
+        }
+
+        .dark-theme .food-history-table tbody tr:hover {
+            background: rgba(161, 180, 84, 0.15);
+            border-left-color: var(--color-highlight);
         }
 
         .food-history-content {
