@@ -988,7 +988,7 @@ function handleGetUserCountByClassification($pdo) {
         error_log("🔍 DEBUG: Classification query - Type: $classificationType, Category: $category");
         
         // Get all users from community_users table
-        $sql = "SELECT email, weight, height, birthday, sex, screening_date FROM community_users WHERE weight IS NOT NULL AND height IS NOT NULL AND birthday IS NOT NULL";
+        $sql = "SELECT email, weight, height, birthday, sex, screening_date FROM community_users WHERE weight IS NOT NULL AND height IS NOT NULL AND birthday IS NOT NULL ORDER BY screening_date DESC LIMIT 100";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -1161,7 +1161,7 @@ function handleAddBulkRecommendation($pdo) {
         }
         
         // Get all users from community_users table
-        $sql = "SELECT email, weight, height, birthday, sex, screening_date FROM community_users WHERE weight IS NOT NULL AND height IS NOT NULL AND birthday IS NOT NULL";
+        $sql = "SELECT email, weight, height, birthday, sex, screening_date FROM community_users WHERE weight IS NOT NULL AND height IS NOT NULL AND birthday IS NOT NULL ORDER BY screening_date DESC LIMIT 100";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
