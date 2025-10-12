@@ -6,7 +6,7 @@
 
 // Enable error reporting for debugging
 error_reporting(E_ALL);
-ini_set('display_errors', 0); // Don't display errors in output
+ini_set('display_errors', 1); // Show errors for debugging
 ini_set('log_errors', 1);
 
 header('Content-Type: application/json');
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 try {
-    require_once __DIR__ . '/../config.php';
+    require_once __DIR__ . '/../../config.php';
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([
@@ -38,6 +38,9 @@ try {
     if (!$pdo) {
         throw new Exception('Database connection failed');
     }
+    
+    // Debug: Log that we got here
+    error_log("Screening history API: Database connection successful");
     
     // Get action from request
     $action = $_GET['action'] ?? $_POST['action'] ?? '';
