@@ -126,6 +126,123 @@ function getStandardDeviationRange($zScore) {
     }
 }
 
+// Function to save screening history for progress tracking
+function saveScreeningHistory($user_data, $assessment) {
+    try {
+        require_once __DIR__ . "/../config.php";
+        $pdo = getDatabaseConnection();
+        
+        if (!$pdo) {
+            error_log("Database connection failed in saveScreeningHistory");
+            return false;
+        }
+        
+        // Calculate age in months
+        $birthDate = new DateTime($user_data['birthday']);
+        $screeningDate = new DateTime($user_data['screening_date'] ?? date('Y-m-d H:i:s'));
+        $age = $birthDate->diff($screeningDate);
+        $ageInMonths = ($age->y * 12) + $age->m;
+        
+        // Prepare base history data
+        $historyData = [
+            'user_email' => $user_data['email'],
+            'screening_date' => $user_data['screening_date'],
+            'weight' => $user_data['weight'],
+            'height' => $user_data['height'],
+            'bmi' => $assessment['bmi'] ?? null,
+            'age_months' => $ageInMonths,
+            'sex' => $user_data['sex'],
+            'nutritional_risk' => $assessment['nutritional_risk'] ?? 'Low'
+        ];
+        
+        // Save multiple classification types if available
+        if ($assessment['success'] && isset($assessment['growth_standards'])) {
+            $growthStandards = $assessment['growth_standards'];
+            
+            // BMI for age
+            if (isset($growthStandards['bmi_for_age'])) {
+                $bmiData = $growthStandards['bmi_for_age'];
+                $stmt = $pdo->prepare("INSERT INTO screening_history (user_email, screening_date, weight, height, bmi, age_months, sex, classification_type, classification, z_score, nutritional_risk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([
+                    $historyData['user_email'],
+                    $historyData['screening_date'],
+                    $historyData['weight'],
+                    $historyData['height'],
+                    $historyData['bmi'],
+                    $historyData['age_months'],
+                    $historyData['sex'],
+                    'bmi-for-age',
+                    $bmiData['classification'] ?? null,
+                    $bmiData['z_score'] ?? null,
+                    $historyData['nutritional_risk']
+                ]);
+            }
+            
+            // Weight for age
+            if (isset($growthStandards['weight_for_age'])) {
+                $weightAgeData = $growthStandards['weight_for_age'];
+                $stmt = $pdo->prepare("INSERT INTO screening_history (user_email, screening_date, weight, height, bmi, age_months, sex, classification_type, classification, z_score, nutritional_risk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([
+                    $historyData['user_email'],
+                    $historyData['screening_date'],
+                    $historyData['weight'],
+                    $historyData['height'],
+                    $historyData['bmi'],
+                    $historyData['age_months'],
+                    $historyData['sex'],
+                    'weight-for-age',
+                    $weightAgeData['classification'] ?? null,
+                    $weightAgeData['z_score'] ?? null,
+                    $historyData['nutritional_risk']
+                ]);
+            }
+            
+            // Height for age
+            if (isset($growthStandards['height_for_age'])) {
+                $heightAgeData = $growthStandards['height_for_age'];
+                $stmt = $pdo->prepare("INSERT INTO screening_history (user_email, screening_date, weight, height, bmi, age_months, sex, classification_type, classification, z_score, nutritional_risk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([
+                    $historyData['user_email'],
+                    $historyData['screening_date'],
+                    $historyData['weight'],
+                    $historyData['height'],
+                    $historyData['bmi'],
+                    $historyData['age_months'],
+                    $historyData['sex'],
+                    'height-for-age',
+                    $heightAgeData['classification'] ?? null,
+                    $heightAgeData['z_score'] ?? null,
+                    $historyData['nutritional_risk']
+                ]);
+            }
+            
+            // Weight for height
+            if (isset($growthStandards['weight_for_height'])) {
+                $weightHeightData = $growthStandards['weight_for_height'];
+                $stmt = $pdo->prepare("INSERT INTO screening_history (user_email, screening_date, weight, height, bmi, age_months, sex, classification_type, classification, z_score, nutritional_risk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([
+                    $historyData['user_email'],
+                    $historyData['screening_date'],
+                    $historyData['weight'],
+                    $historyData['height'],
+                    $historyData['bmi'],
+                    $historyData['age_months'],
+                    $historyData['sex'],
+                    'weight-for-height',
+                    $weightHeightData['classification'] ?? null,
+                    $weightHeightData['z_score'] ?? null,
+                    $historyData['nutritional_risk']
+                ]);
+            }
+        }
+        
+        return true;
+    } catch (Exception $e) {
+        error_log("Error saving screening history: " . $e->getMessage());
+        return false;
+    }
+}
+
 // Wrapper function to use WHO Growth Standards
 function getNutritionalAssessment($user) {
     try {
@@ -265,6 +382,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $db->insert('community_users', $insertData);
         
         if ($result['success']) {
+            // Save to screening history for progress tracking
+            saveScreeningHistory($user_data, $assessment);
             $success_message = "Screening assessment saved successfully with WHO Growth Standards analysis!";
         } else {
             $error_message = "Error saving screening assessment: " . ($result['error'] ?? 'Unknown error');
@@ -300,6 +419,8 @@ if ($db->isAvailable()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MHO Nutritional Assessment Module - NutriSaur</title>
+    <!-- Chart.js for progress tracking -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <style>
 /* Dark Theme - Default */
@@ -2743,6 +2864,82 @@ header {
             border-radius: 15px;
             border: 1px solid rgba(161, 180, 84, 0.1);
             overflow: hidden;
+        }
+
+        /* Progress Chart Styles */
+        .progress-chart-card {
+            margin-top: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .progress-table-container {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .progress-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .progress-table th {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .progress-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .progress-table tbody tr:hover {
+            background: var(--hover-color);
+        }
+
+        .progress-table tbody tr:nth-child(even) {
+            background: rgba(161, 180, 84, 0.05);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-secondary);
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .classification-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .classification-normal { background: #8CA86E; color: white; }
+        .classification-underweight { background: #E0C989; color: #1A211A; }
+        .classification-overweight { background: #E0C989; color: #1A211A; }
+        .classification-obese { background: #CF8686; color: white; }
+        .classification-severely-underweight { background: #CF8686; color: white; }
+        .classification-stunted { background: #E0C989; color: #1A211A; }
+        .classification-severely-stunted { background: #CF8686; color: white; }
+        .classification-wasted { background: #E0C989; color: #1A211A; }
+        .classification-severely-wasted { background: #CF8686; color: white; }
+        .classification-tall { background: #6FA8DC; color: white; }
             transition: all 0.3s ease;
         }
 
@@ -6543,6 +6740,36 @@ header {
                                 </div>
                             </div>
 
+                            <!-- Progress Tracking Card -->
+                            <div class="profile-card progress-chart-card" style="grid-column: 1 / -1;">
+                                <div class="card-header">
+                                    <h3>Progress Tracking</h3>
+                                </div>
+                                <div class="card-content">
+                                    <div class="chart-container" style="height: 300px; margin-bottom: 20px;">
+                                        <canvas id="progressChart-${userData.email}"></canvas>
+                                    </div>
+                                    <div class="progress-table-container">
+                                        <table class="progress-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Weight (kg)</th>
+                                                    <th>Height (cm)</th>
+                                                    <th>BMI</th>
+                                                    <th>Classification</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="progressTableBody-${userData.email}">
+                                                <tr>
+                                                    <td colspan="5" class="empty-state">Loading progress data...</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -6571,6 +6798,9 @@ header {
                 }
             };
             document.addEventListener('keydown', handleEscape);
+            
+            // Load progress chart for this user
+            loadUserProgressChart(userData.email);
         }
 
         function closeUserModal(button) {
@@ -6581,6 +6811,165 @@ header {
                     modal.remove();
                 }, 300);
             }
+        }
+
+        // Load progress chart for a user
+        function loadUserProgressChart(userEmail) {
+            const canvasId = `progressChart-${userEmail}`;
+            const tableBodyId = `progressTableBody-${userEmail}`;
+            
+            // Fetch progress data
+            fetch(`api/screening_history_api.php?action=get_history&user_email=${encodeURIComponent(userEmail)}&limit=20`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data.total_records > 0) {
+                        // Render chart
+                        renderProgressChart(canvasId, data.data.chart);
+                        
+                        // Render table
+                        renderProgressTable(tableBodyId, data.data.table);
+                    } else {
+                        // Show empty state
+                        showEmptyProgressState(tableBodyId);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading progress data:', error);
+                    showEmptyProgressState(tableBodyId);
+                });
+        }
+
+        // Render the progress chart
+        function renderProgressChart(canvasId, chartData) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: 'var(--text-color)',
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'var(--card-bg)',
+                            titleColor: 'var(--text-color)',
+                            bodyColor: 'var(--text-color)',
+                            borderColor: 'var(--border-color)',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Screening Date',
+                                color: 'var(--text-color)'
+                            },
+                            ticks: {
+                                color: 'var(--text-color)',
+                                maxRotation: 45
+                            },
+                            grid: {
+                                color: 'var(--border-color)'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Weight (kg) / Height (cm)',
+                                color: 'var(--text-color)'
+                            },
+                            ticks: {
+                                color: 'var(--text-color)'
+                            },
+                            grid: {
+                                color: 'var(--border-color)'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'BMI',
+                                color: 'var(--text-color)'
+                            },
+                            ticks: {
+                                color: 'var(--text-color)'
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+        }
+
+        // Render the progress table
+        function renderProgressTable(tableBodyId, tableData) {
+            const tableBody = document.getElementById(tableBodyId);
+            if (!tableBody) return;
+            
+            if (tableData.length === 0) {
+                showEmptyProgressState(tableBodyId);
+                return;
+            }
+            
+            tableBody.innerHTML = '';
+            
+            tableData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.date}</td>
+                    <td>${row.weight || 'N/A'}</td>
+                    <td>${row.height || 'N/A'}</td>
+                    <td>${row.bmi ? row.bmi.toFixed(1) : 'N/A'}</td>
+                    <td>
+                        ${row.classification ? 
+                            `<span class="classification-badge classification-${row.classification.toLowerCase().replace(/\s+/g, '-')}">${row.classification}</span>` : 
+                            'N/A'
+                        }
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // Show empty state for progress data
+        function showEmptyProgressState(tableBodyId) {
+            const tableBody = document.getElementById(tableBodyId);
+            if (!tableBody) return;
+            
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="empty-state">No screening history available for this user</td>
+                </tr>
+            `;
         }
 
         // BMI calculations are now handled by WHO Growth Standards PHP backend
