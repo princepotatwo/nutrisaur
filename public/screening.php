@@ -6846,13 +6846,19 @@ header {
             fetch(`api/screening_history_api.php?action=get_history&user_email=${encodeURIComponent(userEmail)}&limit=20`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Progress data received:', data);
+                    console.log('Table data:', data.data?.table);
+                    console.log('Table length:', data.data?.table?.length);
+                    
                     if (data.success && data.data.table && data.data.table.length > 0) {
+                        console.log('Rendering chart and table');
                         // Render chart
                         renderProgressChart(canvasId, data.data.chart);
                         
                         // Render table
                         renderProgressTable(tableBodyId, data.data.table);
                     } else {
+                        console.log('Showing empty state');
                         // Show empty state
                         showEmptyProgressState(tableBodyId);
                     }
