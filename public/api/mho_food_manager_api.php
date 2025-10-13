@@ -51,17 +51,14 @@ function getTemplateFoods($pdo) {
         return;
     }
     
-    // Query user_food_history table with special template markers
-    // Use a system template approach - templates are stored with special system email
-    $sql = "SELECT id, user_email, date, meal_category, food_name, calories, serving_size, 
-                   protein, carbs, fat, fiber, emoji, classification, plan_duration,
-                   DATEDIFF(date, '1970-01-01') as day_number
-            FROM user_food_history 
-            WHERE user_email = 'system@templates.local' 
-            AND classification = ? 
+    // Query mho_food_templates table - clean and simple
+    $sql = "SELECT id, classification, plan_duration, day_number, meal_category, 
+                   food_name, calories, serving_size, protein, carbs, fat, fiber, emoji,
+                   created_at, updated_at
+            FROM mho_food_templates 
+            WHERE classification = ? 
             AND plan_duration = ?
-            AND is_mho_recommended = 1
-            ORDER BY date, meal_category";
+            ORDER BY day_number, meal_category";
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$classification, $duration]);
@@ -81,11 +78,11 @@ function getFoodDetails($pdo) {
         return;
     }
     
-    $sql = "SELECT id, user_email, date, meal_category, food_name, calories, serving_size, 
-                   protein, carbs, fat, fiber, emoji, classification, plan_duration,
-                   DATEDIFF(date, '1970-01-01') as day_number
-            FROM user_food_history 
-            WHERE id = ? AND user_email = 'system@templates.local'";
+    $sql = "SELECT id, classification, plan_duration, day_number, meal_category, 
+                   food_name, calories, serving_size, protein, carbs, fat, fiber, emoji,
+                   created_at, updated_at
+            FROM mho_food_templates 
+            WHERE id = ?";
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$id]);
@@ -115,10 +112,7 @@ function updateTemplateFood($pdo, $data) {
         return;
     }
     
-    // Calculate date from day_number (days since epoch 1970-01-01)
-    $date = date('Y-m-d', strtotime('1970-01-01 +' . ($day_number - 1) . ' days'));
-    
-    $sql = "UPDATE user_food_history 
+    $sql = "UPDATE mho_food_templates 
             SET food_name = ?, 
                 serving_size = ?, 
                 calories = ?, 
@@ -127,8 +121,8 @@ function updateTemplateFood($pdo, $data) {
                 fat = ?, 
                 fiber = ?,
                 meal_category = ?,
-                date = ?
-            WHERE id = ? AND user_email = 'system@templates.local'";
+                day_number = ?
+            WHERE id = ?";
     
     $stmt = $pdo->prepare($sql);
     $result = $stmt->execute([
@@ -140,7 +134,7 @@ function updateTemplateFood($pdo, $data) {
         $fat, 
         $fiber,
         $meal_category,
-        $date,
+        $day_number,
         $id
     ]);
     
@@ -159,8 +153,7 @@ function deleteTemplateFood($pdo, $data) {
         return;
     }
     
-    $sql = "DELETE FROM user_food_history 
-            WHERE id = ? AND user_email = 'system@templates.local'";
+    $sql = "DELETE FROM mho_food_templates WHERE id = ?";
     
     $stmt = $pdo->prepare($sql);
     $result = $stmt->execute([$id]);
@@ -191,17 +184,16 @@ function addTemplateFood($pdo, $data) {
         return;
     }
     
-    // Calculate date from day_number (days since epoch 1970-01-01)
-    $date = date('Y-m-d', strtotime('1970-01-01 +' . ($day_number - 1) . ' days'));
-    
-    $sql = "INSERT INTO user_food_history 
-            (user_email, date, meal_category, food_name, calories, serving_size, 
-             protein, carbs, fat, fiber, emoji, is_mho_recommended, classification, plan_duration) 
-            VALUES ('system@templates.local', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)";
+    $sql = "INSERT INTO mho_food_templates 
+            (classification, plan_duration, day_number, meal_category, food_name, 
+             calories, serving_size, protein, carbs, fat, fiber, emoji) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $pdo->prepare($sql);
     $result = $stmt->execute([
-        $date,
+        $classification,
+        $plan_duration,
+        $day_number,
         $meal_category,
         $food_name,
         $calories,
@@ -210,9 +202,7 @@ function addTemplateFood($pdo, $data) {
         $carbs,
         $fat,
         $fiber,
-        $emoji,
-        $classification,
-        $plan_duration
+        $emoji
     ]);
     
     if ($result) {

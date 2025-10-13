@@ -868,12 +868,41 @@ function handleGetRecommendedFoods($pdo) {
             throw new Exception('User email is required');
         }
         
-        // Get all recommended foods for the user (only those with date IS NULL)
-        $sql = "SELECT * FROM user_food_history 
-                WHERE user_email = ? AND is_mho_recommended = 1 AND date IS NULL
-                ORDER BY meal_category, food_name";
+        // First, get the user's classification from community_users
+        $userSql = "SELECT * FROM community_users WHERE email = ?";
+        $userStmt = $pdo->prepare($userSql);
+        $userStmt->execute([$userEmail]);
+        $user = $userStmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$user) {
+            throw new Exception('User not found');
+        }
+        
+        // Determine user's classification from their BMI or WHO standards
+        $classification = determineUserClassification($user);
+        
+        if (empty($classification)) {
+            // If no classification determined, return empty result
+            echo json_encode([
+                'success' => true,
+                'message' => 'No recommendations available - user classification not determined',
+                'data' => [],
+                'count' => 0
+            ]);
+            return;
+        }
+        
+        // Get recommended foods from mho_food_templates table based on user's classification
+        // Default to 7-day plan
+        $planDuration = 7;
+        
+        $sql = "SELECT id, day_number, meal_category, food_name, calories, serving_size,
+                       protein, carbs, fat, fiber, emoji, classification, plan_duration
+                FROM mho_food_templates 
+                WHERE classification = ? AND plan_duration = ?
+                ORDER BY day_number, meal_category, food_name";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$userEmail]);
+        $stmt->execute([$classification, $planDuration]);
         $foods = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         // Group foods by meal category
@@ -890,7 +919,8 @@ function handleGetRecommendedFoods($pdo) {
             'success' => true,
             'message' => 'Recommended foods retrieved successfully',
             'data' => $groupedFoods,
-            'count' => count($foods)
+            'count' => count($foods),
+            'user_classification' => $classification
         ]);
         
     } catch (Exception $e) {
@@ -899,6 +929,73 @@ function handleGetRecommendedFoods($pdo) {
             'error' => $e->getMessage()
         ]);
     }
+}
+
+/**
+ * Determine user's classification based on their screening data
+ */
+function determineUserClassification($user) {
+    // Check if user has WHO standard classifications
+    $whoClassifications = [
+        'bmi-for-age' => $user['bmi-for-age'] ?? '',
+        'weight-for-age' => $user['weight-for-age'] ?? '',
+        'height-for-age' => $user['height-for-age'] ?? '',
+        'weight-for-height' => $user['weight-for-height'] ?? ''
+    ];
+    
+    // Priority: BMI-for-age > Weight-for-height > Weight-for-age
+    if (!empty($whoClassifications['bmi-for-age'])) {
+        return normalizeClassification($whoClassifications['bmi-for-age']);
+    }
+    
+    if (!empty($whoClassifications['weight-for-height'])) {
+        return normalizeClassification($whoClassifications['weight-for-height']);
+    }
+    
+    if (!empty($whoClassifications['weight-for-age'])) {
+        return normalizeClassification($whoClassifications['weight-for-age']);
+    }
+    
+    // Fallback: Calculate BMI classification for adults
+    $weight = floatval($user['weight'] ?? 0);
+    $height = floatval($user['height'] ?? 0);
+    
+    if ($weight > 0 && $height > 0) {
+        $heightInMeters = $height / 100;
+        $bmi = $weight / ($heightInMeters * $heightInMeters);
+        
+        if ($bmi < 18.5) return 'underweight';
+        if ($bmi < 25) return 'normal';
+        if ($bmi < 30) return 'overweight';
+        if ($bmi < 40) return 'obese';
+        return 'severely_obese';
+    }
+    
+    return ''; // No classification determined
+}
+
+/**
+ * Normalize classification names to match template categories
+ */
+function normalizeClassification($classification) {
+    $classification = strtolower(trim($classification));
+    
+    // Map WHO classifications to template categories
+    $mapping = [
+        'normal' => 'normal',
+        'underweight' => 'underweight',
+        'severely underweight' => 'underweight',
+        'overweight' => 'overweight',
+        'obese' => 'obese',
+        'severely obese' => 'severely_obese',
+        'obesity' => 'obese',
+        'wasted' => 'underweight',
+        'severely wasted' => 'underweight',
+        'stunted' => 'underweight',
+        'severely stunted' => 'underweight'
+    ];
+    
+    return $mapping[$classification] ?? $classification;
 }
 
 function handleAddRecommendedToMeal($pdo) {
