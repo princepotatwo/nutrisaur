@@ -879,9 +879,9 @@ function handleGetRecommendedFoods($pdo) {
         }
         
         // Determine user's classification from their BMI or WHO standards
-        $classification = determineUserClassification($user);
+        $userClassification = determineUserClassification($user);
         
-        if (empty($classification)) {
+        if (empty($userClassification)) {
             // If no classification determined, return empty result
             echo json_encode([
                 'success' => true,
@@ -891,6 +891,17 @@ function handleGetRecommendedFoods($pdo) {
             ]);
             return;
         }
+        
+        // Determine which WHO standard to use based on user's data
+        $whoStandard = determineWHOStandard($user);
+        
+        if (empty($whoStandard)) {
+            // Fallback to BMI-for-age
+            $whoStandard = 'bmi-for-age';
+        }
+        
+        // Create combined classification key
+        $combinedClassification = $whoStandard . '-' . $userClassification;
         
         // Get recommended foods from mho_food_templates table based on user's classification
         // Default to 7-day plan
@@ -902,7 +913,7 @@ function handleGetRecommendedFoods($pdo) {
                 WHERE classification = ? AND plan_duration = ?
                 ORDER BY day_number, meal_category, food_name";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$classification, $planDuration]);
+        $stmt->execute([$combinedClassification, $planDuration]);
         $foods = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         // Group foods by meal category
@@ -975,6 +986,57 @@ function determineUserClassification($user) {
 }
 
 /**
+ * Determine which WHO standard to use based on user's data
+ */
+function determineWHOStandard($user) {
+    // Check if user has WHO standard classifications
+    $whoClassifications = [
+        'bmi-for-age' => $user['bmi-for-age'] ?? '',
+        'weight-for-age' => $user['weight-for-age'] ?? '',
+        'height-for-age' => $user['height-for-age'] ?? '',
+        'weight-for-height' => $user['weight-for-height'] ?? ''
+    ];
+    
+    // Priority order for WHO standards
+    $priority = ['bmi-for-age', 'weight-for-height', 'weight-for-age', 'height-for-age'];
+    
+    foreach ($priority as $standard) {
+        if (!empty($whoClassifications[$standard])) {
+            return $standard;
+        }
+    }
+    
+    // Fallback: determine by age
+    $ageInMonths = calculateAgeInMonths($user['birthday'] ?? '1970-01-01');
+    
+    if ($ageInMonths < 24) {
+        // Under 2 years: use weight-for-height
+        return 'weight-for-height';
+    } elseif ($ageInMonths < 60) {
+        // 2-5 years: use weight-for-height or BMI-for-age
+        return 'bmi-for-age';
+    } else {
+        // 5+ years: use BMI-for-age
+        return 'bmi-for-age';
+    }
+}
+
+/**
+ * Calculate age in months
+ */
+function calculateAgeInMonths($birthDate, $screeningDate = null) {
+    if (!$screeningDate) {
+        $screeningDate = date('Y-m-d');
+    }
+    
+    $birth = new DateTime($birthDate);
+    $screen = new DateTime($screeningDate);
+    $diff = $birth->diff($screen);
+    
+    return ($diff->y * 12) + $diff->m;
+}
+
+/**
  * Normalize classification names to match template categories
  */
 function normalizeClassification($classification) {
@@ -984,15 +1046,16 @@ function normalizeClassification($classification) {
     $mapping = [
         'normal' => 'normal',
         'underweight' => 'underweight',
-        'severely underweight' => 'underweight',
+        'severely underweight' => 'severely_underweight',
         'overweight' => 'overweight',
         'obese' => 'obese',
         'severely obese' => 'severely_obese',
         'obesity' => 'obese',
-        'wasted' => 'underweight',
-        'severely wasted' => 'underweight',
-        'stunted' => 'underweight',
-        'severely stunted' => 'underweight'
+        'wasted' => 'wasted',
+        'severely wasted' => 'severely_wasted',
+        'stunted' => 'stunted',
+        'severely stunted' => 'severely_stunted',
+        'tall' => 'tall'
     ];
     
     return $mapping[$classification] ?? $classification;

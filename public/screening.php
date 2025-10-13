@@ -10379,15 +10379,16 @@ header {
                         
                         <!-- Filters -->
                         <div style="display: flex; gap: 12px; margin-bottom: 15px; flex-wrap: wrap;">
-                            <select id="manager-classification" class="filter-select" onchange="loadManagerFoods()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
-                                <option value="">Select Classification</option>
-                                <option value="underweight">Underweight</option>
-                                <option value="normal">Normal</option>
-                                <option value="overweight">Overweight</option>
-                                <option value="obese">Obese</option>
-                                <option value="severely_obese">Severely Obese</option>
+                            <select id="manager-who-standard" class="filter-select" onchange="updateClassificationOptions()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                                <option value="">Select WHO Standard</option>
+                                <option value="weight-for-age">Weight-for-Age</option>
+                                <option value="height-for-age">Height-for-Age</option>
+                                <option value="weight-for-height">Weight-for-Height</option>
+                                <option value="bmi-for-age">BMI-for-Age</option>
                             </select>
-                            
+                            <select id="manager-classification" class="filter-select" onchange="loadManagerFoods()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);" disabled>
+                                <option value="">Select Classification</option>
+                            </select>
                             <select id="manager-duration" class="filter-select" onchange="loadManagerFoods()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
                                 <option value="">Select Duration</option>
                                 <option value="7">7-Day Plan</option>
@@ -10418,23 +10419,78 @@ header {
             document.body.appendChild(modal);
         }
 
+        function updateClassificationOptions() {
+            const whoStandard = document.getElementById('manager-who-standard').value;
+            const classificationSelect = document.getElementById('manager-classification');
+            
+            // Clear existing options
+            classificationSelect.innerHTML = '<option value="">Select Classification</option>';
+            
+            if (!whoStandard) {
+                classificationSelect.disabled = true;
+                return;
+            }
+            
+            // Enable the select and populate based on WHO standard
+            classificationSelect.disabled = false;
+            
+            const classifications = {
+                'weight-for-age': [
+                    { value: 'severely_underweight', label: 'Severely Underweight' },
+                    { value: 'underweight', label: 'Underweight' },
+                    { value: 'normal', label: 'Normal' },
+                    { value: 'overweight', label: 'Overweight' }
+                ],
+                'height-for-age': [
+                    { value: 'severely_stunted', label: 'Severely Stunted' },
+                    { value: 'stunted', label: 'Stunted' },
+                    { value: 'normal', label: 'Normal' },
+                    { value: 'tall', label: 'Tall' }
+                ],
+                'weight-for-height': [
+                    { value: 'severely_wasted', label: 'Severely Wasted' },
+                    { value: 'wasted', label: 'Wasted' },
+                    { value: 'normal', label: 'Normal' },
+                    { value: 'overweight', label: 'Overweight' }
+                ],
+                'bmi-for-age': [
+                    { value: 'underweight', label: 'Underweight' },
+                    { value: 'normal', label: 'Normal' },
+                    { value: 'overweight', label: 'Overweight' },
+                    { value: 'obese', label: 'Obese' }
+                ]
+            };
+            
+            const options = classifications[whoStandard] || [];
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option.value;
+                optionElement.textContent = option.label;
+                classificationSelect.appendChild(optionElement);
+            });
+        }
+
         function loadManagerFoods() {
+            const whoStandard = document.getElementById('manager-who-standard').value;
             const classification = document.getElementById('manager-classification').value;
             const duration = document.getElementById('manager-duration').value;
             const content = document.getElementById('manager-content');
             
-            if (!classification || !duration) {
-                content.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">Please select both classification and duration</div>';
+            if (!whoStandard || !classification || !duration) {
+                content.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">Please select WHO standard, classification, and duration</div>';
                 return;
             }
             
             content.innerHTML = '<div style="text-align: center; padding: 40px;">Loading...</div>';
             
-            fetch(`api/mho_food_manager_api.php?action=get_template_foods&classification=${classification}&duration=${duration}`)
+            // Create combined classification key: who_standard-classification
+            const combinedClassification = `${whoStandard}-${classification}`;
+            
+            fetch(`api/mho_food_manager_api.php?action=get_template_foods&classification=${combinedClassification}&duration=${duration}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        renderManagerTable(data.data, classification, duration);
+                        renderManagerTable(data.data, combinedClassification, duration);
                     } else {
                         content.innerHTML = `<div style="text-align: center; padding: 40px; color: #f44336;">${data.error}</div>`;
                     }
@@ -10659,11 +10715,12 @@ header {
         }
 
         function addMHOTemplateFood() {
+            const whoStandard = document.getElementById('manager-who-standard').value;
             const classification = document.getElementById('manager-classification').value;
             const duration = document.getElementById('manager-duration').value;
             
-            if (!classification || !duration) {
-                alert('Please select classification and duration first');
+            if (!whoStandard || !classification || !duration) {
+                alert('Please select WHO standard, classification, and duration first');
                 return;
             }
             
@@ -10720,7 +10777,7 @@ header {
                 e.preventDefault();
                 
                 const newFood = {
-                    classification: classification,
+                    classification: `${whoStandard}-${classification}`,
                     plan_duration: parseInt(duration),
                     food_name: document.getElementById('new-food-name').value,
                     serving_size: document.getElementById('new-serving-size').value,
