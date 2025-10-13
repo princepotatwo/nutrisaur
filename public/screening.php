@@ -5875,8 +5875,6 @@ header {
                 <li><a href="dash"><span class="navbar-icon"></span><span>Dashboard</span></a></li>
                 <li><a href="screening"><span class="navbar-icon"></span><span>MHO Assessment</span></a></li>
                 <li><a href="event"><span class="navbar-icon"></span><span>Nutrition Event Notifications</span></a></li>
-                
-                <li><a href="ai"><span class="navbar-icon"></span><span>Chatbot & AI Logs</span></a></li>
                 <li><a href="settings"><span class="navbar-icon"></span><span>Settings & Admin</span></a></li>
                 <li><a href="logout" style="color: #ff5252;"><span class="navbar-icon"></span><span>Logout</span></a></li>
             </ul>
@@ -5908,11 +5906,6 @@ header {
                 <a href="event" class="mobile-nav-icon" title="Events">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/>
-                    </svg>
-                </a>
-                <a href="ai" class="mobile-nav-icon" title="AI Chatbot">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
                     </svg>
                 </a>
                 <a href="settings" class="mobile-nav-icon" title="Settings">

@@ -1250,7 +1250,6 @@ h1 {
                 <li><a href="community_hub.php"><span class="navbar-icon">🏘️</span><span>Community Nutrition Hub</span></a></li>
                 <li><a href="event.php"><span class="navbar-icon">⚠️</span><span>Nutrition Event Notifications</span></a></li>
                 <li><a href="USM.php"><span class="navbar-icon">👥</span><span>User Management</span></a></li>
-                <li><a href="AI.php"><span class="navbar-icon">🤖</span><span>Chatbot & AI Logs</span></a></li>
                 <li><a href="settings.php" class="active"><span class="navbar-icon">⚙️</span><span>Settings & Admin</span></a></li>
                 <li><a href="logout.php" style="color: #ff5252;"><span class="navbar-icon">🚪</span><span>Logout</span></a></li>
             </ul>
