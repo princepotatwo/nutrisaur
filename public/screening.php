@@ -10378,6 +10378,7 @@ header {
                                 <option value="height-for-age">Height-for-Age</option>
                                 <option value="weight-for-height">Weight-for-Height</option>
                                 <option value="bmi-for-age">BMI-for-Age</option>
+                                <option value="bmi-adult">BMI Adult</option>
                             </select>
                             <select id="manager-classification" class="filter-select" onchange="loadManagerFoods()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);" disabled>
                                 <option value="">Select Classification</option>
@@ -10447,6 +10448,12 @@ header {
                     { value: 'overweight', label: 'Overweight' }
                 ],
                 'bmi-for-age': [
+                    { value: 'underweight', label: 'Underweight' },
+                    { value: 'normal', label: 'Normal' },
+                    { value: 'overweight', label: 'Overweight' },
+                    { value: 'obese', label: 'Obese' }
+                ],
+                'bmi-adult': [
                     { value: 'underweight', label: 'Underweight' },
                     { value: 'normal', label: 'Normal' },
                     { value: 'overweight', label: 'Overweight' },

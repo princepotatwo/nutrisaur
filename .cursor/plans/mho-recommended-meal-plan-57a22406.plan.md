@@ -145,14 +145,14 @@ public void getMHORecommendedFoods(String userEmail, Callback callback) {
 
 ### To-dos
 
-- [ ] Add is_mho_recommended column to user_food_history table
-- [ ] Add 'Add MHO Recommended Food' button in screening.php food history modal
-- [ ] Create form modal for adding recommended foods in screening.php
-- [ ] Modify food_history_api.php to handle is_mho_recommended parameter
-- [ ] Add get_recommended_foods action to food_history_api.php
-- [ ] Add MHO Recommended button card in activity_food.xml
-- [ ] Add view reference, initialization, and click listener in FoodActivity.java
-- [ ] Create showMHORecommendedFoods() method in FoodActivity.java
-- [ ] Add getMHORecommendedFoods() method in ApiClient.java
-- [ ] Update FoodLoggingActivity.java to handle MHO Recommended category
-- [ ] Test end-to-end functionality: web adding and Android viewing/adding
+- [x] Add is_mho_recommended column to user_food_history table
+- [x] Add 'Add MHO Recommended Food' button in screening.php food history modal
+- [x] Create form modal for adding recommended foods in screening.php
+- [x] Modify food_history_api.php to handle is_mho_recommended parameter
+- [x] Add get_recommended_foods action to food_history_api.php
+- [x] Add MHO Recommended button card in activity_food.xml
+- [x] Add view reference, initialization, and click listener in FoodActivity.java
+- [x] Create showMHORecommendedFoods() method in FoodActivity.java
+- [x] Add getMHORecommendedFoods() method in ApiClient.java
+- [x] Update FoodLoggingActivity.java to handle MHO Recommended category
+- [x] Test end-to-end functionality: web adding and Android viewing/adding
