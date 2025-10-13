@@ -7478,8 +7478,11 @@ body {
     padding: 20px 0;
     background: linear-gradient(135deg, rgba(161, 180, 84, 0.1) 0%, rgba(161, 180, 84, 0.05) 100%);
     border-right: 1px solid rgba(161, 180, 84, 0.2);
-    z-index: 10;
+    z-index: 1001;
     transition: all 0.3s ease;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
 }
 
 .minimized-icon {
