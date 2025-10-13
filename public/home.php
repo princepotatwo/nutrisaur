@@ -112,6 +112,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
         $familyName = $_POST['family_name'] ?? '';
         $emailVerified = $_POST['email_verified'] === '1';
         
+        // Check if this is the super admin email
+        if ($email === 'noreply.nutrisaur@gmail.com' && $emailVerified) {
+            $_SESSION['admin_id'] = 'super_admin';
+            $_SESSION['username'] = 'Super Admin';
+            $_SESSION['email'] = 'noreply.nutrisaur@gmail.com';
+            $_SESSION['is_admin'] = true;
+            $_SESSION['is_super_admin'] = true;
+            
+            echo json_encode(['success' => true, 'message' => 'Super admin Google login successful', 'user_type' => 'super_admin']);
+            exit;
+        }
+        
         if (empty($googleId) || empty($email) || empty($name)) {
             echo json_encode(['success' => false, 'message' => 'Missing required Google OAuth data']);
             exit;
@@ -230,6 +242,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
         $givenName = $userInfo['given_name'] ?? '';
         $familyName = $userInfo['family_name'] ?? '';
         $emailVerified = $userInfo['verified_email'] ?? false;
+        
+        // Check if this is the super admin email
+        if ($email === 'noreply.nutrisaur@gmail.com' && $emailVerified) {
+            $_SESSION['admin_id'] = 'super_admin';
+            $_SESSION['username'] = 'Super Admin';
+            $_SESSION['email'] = 'noreply.nutrisaur@gmail.com';
+            $_SESSION['is_admin'] = true;
+            $_SESSION['is_super_admin'] = true;
+            
+            echo json_encode(['success' => true, 'message' => 'Super admin Google login successful', 'user_type' => 'super_admin']);
+            exit;
+        }
         
         if ($pdo === null) {
             echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
