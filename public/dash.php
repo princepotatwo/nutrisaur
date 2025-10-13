@@ -7523,8 +7523,13 @@ body {
     border-color: rgba(142, 185, 110, 0.2);
 }
 
-/* Position lock button in right margin when navbar is minimized */
+/* Hide original lock button when navbar is minimized */
 .navbar:not(:hover):not(.locked) .navbar-lock-btn {
+    display: none;
+}
+
+/* Position minimized lock button in right margin area */
+.navbar-minimized-lock-btn {
     position: fixed;
     right: 2px;
     top: 10%;
@@ -7535,16 +7540,23 @@ body {
     border-radius: 8px;
     padding: 4px;
     z-index: 1003;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
-    pointer-events: auto;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/* Prevent lock button from triggering navbar hover */
-.navbar:not(:hover):not(.locked) .navbar-lock-btn:hover {
-    pointer-events: auto;
+/* Show minimized lock button when navbar is minimized */
+.navbar:not(:hover):not(.locked) .navbar-minimized-lock-btn {
+    display: flex;
+}
+
+/* Hide minimized lock button when navbar is expanded or locked */
+.navbar:hover .navbar-minimized-lock-btn,
+.navbar.locked .navbar-minimized-lock-btn {
+    display: none;
 }
 
 .navbar:not(:hover):not(.locked) .navbar-lock-btn svg {
@@ -7552,8 +7564,8 @@ body {
     height: 20px;
 }
 
-/* Light theme for lock button in minimized state */
-.light-theme .navbar:not(:hover):not(.locked) .navbar-lock-btn {
+/* Light theme for minimized lock button */
+.light-theme .navbar-minimized-lock-btn {
     background: rgba(142, 185, 110, 0.15);
     border-color: rgba(142, 185, 110, 0.3);
 }
@@ -8376,6 +8388,18 @@ body {
 
     <!-- Desktop Sidebar Navigation (unchanged) -->
     <div class="navbar" id="navbar">
+        <!-- Minimized Lock Button - appears in right margin when navbar is minimized -->
+        <button class="navbar-minimized-lock-btn" id="navbar-minimized-lock-btn" title="Lock Navbar">
+            <svg class="lock-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <svg class="unlock-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+            </svg>
+        </button>
+        
         <div class="navbar-header">
             <div class="navbar-logo">
                 <div class="navbar-logo-icon">
@@ -13540,6 +13564,7 @@ body {
             
             const navbar = document.getElementById('navbar');
             const lockBtn = document.getElementById('navbar-lock-btn');
+            const minimizedLockBtn = document.getElementById('navbar-minimized-lock-btn');
             
             // Check if elements exist
             console.log('📱 Desktop navbar exists:', !!navbar);
@@ -13558,6 +13583,34 @@ body {
                     updateLockButton();
                     
                     console.log('🔒 Lock button clicked, new state:', isNavbarLocked);
+                    
+                    if (isNavbarLocked) {
+                        // Lock: Force navbar to stay expanded
+                        if (navbar) {
+                            navbar.classList.add('locked');
+                            console.log('🔒 Added locked class to navbar');
+                        }
+                        expandNavbar();
+                        console.log('🔒 Navbar locked - staying expanded, body padding:', document.body.style.paddingLeft);
+                    } else {
+                        // Unlock: Allow normal hover behavior
+                        if (navbar) {
+                            navbar.classList.remove('locked');
+                            console.log('🔓 Removed locked class from navbar');
+                        }
+                        minimizeNavbar();
+                        console.log('🔓 Navbar unlocked - normal hover behavior, body padding:', document.body.style.paddingLeft);
+                    }
+                });
+            }
+            
+            // Minimized lock button functionality
+            if (minimizedLockBtn) {
+                minimizedLockBtn.addEventListener('click', function() {
+                    isNavbarLocked = !isNavbarLocked;
+                    updateLockButton();
+                    
+                    console.log('🔒 Minimized lock button clicked, new state:', isNavbarLocked);
                     
                     if (isNavbarLocked) {
                         // Lock: Force navbar to stay expanded
@@ -13630,6 +13683,7 @@ body {
             
             // Update lock button appearance
             function updateLockButton() {
+                // Update original lock button
                 if (lockBtn) {
                     const lockIcon = lockBtn.querySelector('.lock-icon');
                     const unlockIcon = lockBtn.querySelector('.unlock-icon');
@@ -13642,6 +13696,24 @@ body {
                     } else {
                         lockBtn.classList.remove('locked');
                         lockBtn.title = 'Lock Navbar';
+                        if (lockIcon) lockIcon.style.display = 'block';
+                        if (unlockIcon) unlockIcon.style.display = 'none';
+                    }
+                }
+                
+                // Update minimized lock button
+                if (minimizedLockBtn) {
+                    const lockIcon = minimizedLockBtn.querySelector('.lock-icon');
+                    const unlockIcon = minimizedLockBtn.querySelector('.unlock-icon');
+                    
+                    if (isNavbarLocked) {
+                        minimizedLockBtn.classList.add('locked');
+                        minimizedLockBtn.title = 'Unlock Navbar';
+                        if (lockIcon) lockIcon.style.display = 'none';
+                        if (unlockIcon) unlockIcon.style.display = 'block';
+                    } else {
+                        minimizedLockBtn.classList.remove('locked');
+                        minimizedLockBtn.title = 'Lock Navbar';
                         if (lockIcon) lockIcon.style.display = 'block';
                         if (unlockIcon) unlockIcon.style.display = 'none';
                     }
