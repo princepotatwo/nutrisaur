@@ -7474,7 +7474,7 @@ body {
     transition: all 0.3s ease;
 }
 
-/* When navbar is minimized, position icons on far right */
+/* When navbar is minimized, position icons on far right of navbar */
 .navbar:not(:hover):not(.locked) .navbar-icon {
     position: absolute;
     right: 8px;
@@ -7488,6 +7488,27 @@ body {
     border-radius: 6px;
     padding: 4px;
     z-index: 10;
+}
+
+/* Position each icon at different vertical positions */
+.navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(1) .navbar-icon {
+    top: 20%;
+}
+
+.navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(2) .navbar-icon {
+    top: 35%;
+}
+
+.navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(3) .navbar-icon {
+    top: 50%;
+}
+
+.navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(4) .navbar-icon {
+    top: 65%;
+}
+
+.navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(5) .navbar-icon {
+    top: 80%;
 }
 
 .navbar:not(:hover):not(.locked) .navbar-icon svg {
