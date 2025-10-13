@@ -910,6 +910,7 @@ if (isset($_GET['logout'])) {
     background-color: var(--color-card);
     box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
     padding: 0;
+    padding-right: 20px;
     box-sizing: border-box;
     overflow-y: auto;
     z-index: 1000;
@@ -7480,13 +7481,13 @@ body {
 /* When navbar is minimized, position icons in the right margin area */
 .navbar:not(:hover):not(.locked) .navbar-icon {
     position: fixed;
-    right: 8px;
-    width: 24px;
-    height: 24px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
     background: rgba(161, 180, 84, 0.15);
     border: 1px solid rgba(161, 180, 84, 0.3);
     border-radius: 8px;
-    padding: 6px;
+    padding: 8px;
     z-index: 1002;
     display: flex;
     align-items: center;
@@ -7516,8 +7517,8 @@ body {
 }
 
 .navbar:not(:hover):not(.locked) .navbar-icon svg {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
 }
 
 /* Light theme for navbar icons */
