@@ -8684,9 +8684,15 @@ body {
                     navbar.classList.add('collapsed');
                 }
                 if (isLocked) {
+                    navbar.classList.add('locked');
+                    document.body.classList.add('navbar-locked');
                     lockToggle.classList.add('locked');
                     lockToggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
                 }
+            } else {
+                // Default state: start collapsed
+                isCollapsed = true;
+                navbar.classList.add('collapsed');
             }
             
             // Toggle collapse/expand
@@ -8745,20 +8751,6 @@ body {
                 }
             });
             
-            // Prevent main content from affecting locked navbar
-            document.addEventListener('mouseenter', function(e) {
-                if (isLocked && !navbar.contains(e.target)) {
-                    // When locked, ignore all mouse events outside navbar
-                    return;
-                }
-            });
-            
-            document.addEventListener('mouseleave', function(e) {
-                if (isLocked && !navbar.contains(e.target)) {
-                    // When locked, ignore all mouse events outside navbar
-                    return;
-                }
-            });
             
             // Hover to expand when collapsed (only if not locked)
             navbar.addEventListener('mouseenter', function() {
