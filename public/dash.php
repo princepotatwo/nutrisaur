@@ -951,6 +951,7 @@ body {
     padding: 35px 25px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     border-bottom: 2px solid rgba(164, 188, 46, 0.15);
     background: linear-gradient(135deg, rgba(161, 180, 84, 0.05) 0%, transparent 100%);
     position: relative;
@@ -1387,6 +1388,72 @@ header {
 
 .light-theme .navbar-header::after {
     background: linear-gradient(90deg, transparent, rgba(142, 185, 110, 0.3), transparent);
+}
+
+/* Navbar Lock Button Styles */
+.navbar-lock-btn {
+    background: rgba(161, 180, 84, 0.1);
+    border: 1px solid rgba(161, 180, 84, 0.2);
+    border-radius: 8px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    opacity: 0.7;
+    min-width: 36px;
+    height: 36px;
+}
+
+.navbar-lock-btn:hover {
+    background: rgba(161, 180, 84, 0.15);
+    border-color: rgba(161, 180, 84, 0.3);
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
+}
+
+.navbar-lock-btn.locked {
+    background: rgba(161, 180, 84, 0.2);
+    border-color: rgba(161, 180, 84, 0.4);
+    opacity: 1;
+    color: var(--color-highlight);
+}
+
+.navbar-lock-btn.locked:hover {
+    background: rgba(161, 180, 84, 0.25);
+    border-color: rgba(161, 180, 84, 0.5);
+    box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
+}
+
+.navbar-lock-btn svg {
+    transition: all 0.3s ease;
+}
+
+.light-theme .navbar-lock-btn {
+    background: rgba(142, 185, 110, 0.1);
+    border-color: rgba(142, 185, 110, 0.2);
+    color: var(--color-text);
+}
+
+.light-theme .navbar-lock-btn:hover {
+    background: rgba(142, 185, 110, 0.15);
+    border-color: rgba(142, 185, 110, 0.3);
+    box-shadow: 0 2px 8px rgba(142, 185, 110, 0.2);
+}
+
+.light-theme .navbar-lock-btn.locked {
+    background: rgba(142, 185, 110, 0.2);
+    border-color: rgba(142, 185, 110, 0.4);
+    color: var(--color-accent3);
+}
+
+.light-theme .navbar-lock-btn.locked:hover {
+    background: rgba(142, 185, 110, 0.25);
+    border-color: rgba(142, 185, 110, 0.5);
+    box-shadow: 0 4px 12px rgba(142, 185, 110, 0.3);
 }
 
 .navbar-logo {
@@ -8177,14 +8244,22 @@ body {
     <!-- Desktop Sidebar Navigation (unchanged) -->
     <div class="navbar" id="navbar">
         <div class="navbar-header">
-            
-            
             <div class="navbar-logo">
                 <div class="navbar-logo-icon">
                     <img src="/logo.png" alt="Logo" style="width: 40px; height: 40px;">
                 </div>
                 <div class="navbar-logo-text">NutriSaur</div>
             </div>
+            <button class="navbar-lock-btn" id="navbar-lock-btn" title="Lock/Unlock Navbar">
+                <svg class="lock-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <svg class="unlock-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+                </svg>
+            </button>
         </div>
         <div class="navbar-menu">
             <ul>
@@ -13331,21 +13406,48 @@ body {
             console.log('🚀 Initializing modern mobile top navigation...');
             
             const navbar = document.getElementById('navbar');
+            const lockBtn = document.getElementById('navbar-lock-btn');
             
             // Check if elements exist
             console.log('📱 Desktop navbar exists:', !!navbar);
+            console.log('🔒 Lock button exists:', !!lockBtn);
             
             // Initialize mobile dropdown functionality
             initMobileDropdowns();
             
-            // Desktop hover navigation (unchanged)
+            // Lock state management
+            let isNavbarLocked = false;
+            
+            // Lock button functionality
+            if (lockBtn) {
+                lockBtn.addEventListener('click', function() {
+                    isNavbarLocked = !isNavbarLocked;
+                    updateLockButton();
+                    
+                    if (isNavbarLocked) {
+                        // Lock: Force navbar to stay expanded
+                        expandNavbar();
+                        console.log('🔒 Navbar locked - staying expanded');
+                    } else {
+                        // Unlock: Allow normal hover behavior
+                        minimizeNavbar();
+                        console.log('🔓 Navbar unlocked - normal hover behavior');
+                    }
+                });
+            }
+            
+            // Desktop hover navigation (modified to respect lock state)
             if (navbar && window.innerWidth >= 769) {
                 navbar.addEventListener('mouseenter', function() {
-                    expandNavbar();
+                    if (!isNavbarLocked) {
+                        expandNavbar();
+                    }
                 });
                 
                 navbar.addEventListener('mouseleave', function() {
-                    minimizeNavbar();
+                    if (!isNavbarLocked) {
+                        minimizeNavbar();
+                    }
                 });
             }
             
@@ -13365,7 +13467,14 @@ body {
                 } else {
                     // Desktop: show desktop navbar, hide mobile top nav
                     if (navbar) navbar.style.display = 'flex';
-                    document.body.style.paddingLeft = '40px';
+                    
+                    // Respect lock state when switching to desktop
+                    if (isNavbarLocked) {
+                        document.body.style.paddingLeft = '320px';
+                    } else {
+                        document.body.style.paddingLeft = '40px';
+                    }
+                    
                     document.body.style.paddingTop = '0';
                     document.body.style.width = '';
                     document.body.style.maxWidth = '';
@@ -13373,7 +13482,27 @@ body {
                 }
             });
             
-            // Desktop navigation functions (unchanged)
+            // Update lock button appearance
+            function updateLockButton() {
+                if (lockBtn) {
+                    const lockIcon = lockBtn.querySelector('.lock-icon');
+                    const unlockIcon = lockBtn.querySelector('.unlock-icon');
+                    
+                    if (isNavbarLocked) {
+                        lockBtn.classList.add('locked');
+                        lockBtn.title = 'Unlock Navbar';
+                        if (lockIcon) lockIcon.style.display = 'none';
+                        if (unlockIcon) unlockIcon.style.display = 'block';
+                    } else {
+                        lockBtn.classList.remove('locked');
+                        lockBtn.title = 'Lock Navbar';
+                        if (lockIcon) lockIcon.style.display = 'block';
+                        if (unlockIcon) unlockIcon.style.display = 'none';
+                    }
+                }
+            }
+            
+            // Desktop navigation functions (modified to work with lock state)
             function expandNavbar() {
                 if (window.innerWidth >= 769) {
                     document.body.style.paddingLeft = '320px';
@@ -13404,6 +13533,9 @@ body {
                 document.body.style.maxWidth = '';
                 document.body.style.overflowX = '';
             }
+            
+            // Initialize lock button state
+            updateLockButton();
             
             console.log('✅ Modern mobile top navigation system initialized successfully');
         }
