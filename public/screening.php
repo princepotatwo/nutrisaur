@@ -526,6 +526,20 @@ body {
     transform: translateX(0) !important;
 }
 
+/* When locked, disable ALL hover effects */
+.navbar.locked:hover {
+    width: 320px !important;
+    transform: translateX(0) !important;
+}
+
+.navbar.locked * {
+    pointer-events: none !important;
+}
+
+.navbar.locked .navbar-lock-toggle {
+    pointer-events: auto !important;
+}
+
 .navbar.collapsed .navbar-logo {
     justify-content: center;
 }
@@ -6652,7 +6666,7 @@ header {
             
             navbar.addEventListener('mouseleave', function() {
                 if (isLocked) {
-                    // When locked, do nothing - stay in permanent hover state
+                    // When locked, do absolutely nothing - navbar stays exactly as it is
                     return;
                 }
                 if (!isLocked && isCollapsed) {
