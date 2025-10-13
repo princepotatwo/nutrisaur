@@ -7523,6 +7523,35 @@ body {
     border-color: rgba(142, 185, 110, 0.2);
 }
 
+/* Position lock button in right margin when navbar is minimized */
+.navbar:not(:hover):not(.locked) .navbar-lock-btn {
+    position: fixed;
+    right: 2px;
+    top: 10%;
+    width: 32px;
+    height: 32px;
+    background: rgba(161, 180, 84, 0.15);
+    border: 1px solid rgba(161, 180, 84, 0.3);
+    border-radius: 8px;
+    padding: 4px;
+    z-index: 1002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
+}
+
+.navbar:not(:hover):not(.locked) .navbar-lock-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Light theme for lock button in minimized state */
+.light-theme .navbar:not(:hover):not(.locked) .navbar-lock-btn {
+    background: rgba(142, 185, 110, 0.15);
+    border-color: rgba(142, 185, 110, 0.3);
+}
+
 /* Ensure navbar menu items have relative positioning for icon positioning */
 .navbar li a {
     position: relative;
