@@ -7528,7 +7528,7 @@ body {
     display: none;
 }
 
-/* Position minimized lock button in right margin area - same as other icons */
+/* Position minimized lock button in right margin area - exact same as other icons */
 .navbar-minimized-lock-btn {
     position: fixed;
     right: 2px;
@@ -7539,7 +7539,7 @@ body {
     border: 1px solid rgba(161, 180, 84, 0.3);
     border-radius: 8px;
     padding: 4px;
-    z-index: 1003;
+    z-index: 1002;
     display: none;
     align-items: center;
     justify-content: center;
@@ -7571,10 +7571,10 @@ body {
     height: 20px;
 }
 
-/* Light theme for minimized lock button */
+/* Light theme for minimized lock button - same as other icons */
 .light-theme .navbar-minimized-lock-btn {
-    background: rgba(142, 185, 110, 0.15);
-    border-color: rgba(142, 185, 110, 0.3);
+    background: rgba(142, 185, 110, 0.1);
+    border-color: rgba(142, 185, 110, 0.2);
 }
 
 /* Prevent right margin area from triggering navbar hover when minimized */
