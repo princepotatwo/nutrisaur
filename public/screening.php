@@ -493,11 +493,18 @@ body {
 }
 
 .navbar.collapsed .navbar-logo-text,
-.navbar.collapsed .navbar-menu span,
+.navbar.collapsed .navbar-menu span:not(.navbar-icon),
 .navbar.collapsed .navbar-footer {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+/* Keep icons visible when collapsed */
+.navbar.collapsed .navbar-menu .navbar-icon {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-block !important;
 }
 
 .navbar.collapsed .navbar-logo {
@@ -6577,6 +6584,10 @@ header {
             });
             
             navbar.addEventListener('mouseleave', function() {
+                if (isLocked) {
+                    // Do nothing when locked - stay in current state
+                    return;
+                }
                 if (!isLocked && isCollapsed) {
                     navbar.classList.add('collapsed');
                 }
