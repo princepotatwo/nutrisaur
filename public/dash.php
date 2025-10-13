@@ -7534,11 +7534,17 @@ body {
     border: 1px solid rgba(161, 180, 84, 0.3);
     border-radius: 8px;
     padding: 4px;
-    z-index: 1002;
+    z-index: 1003;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
+    pointer-events: auto;
+}
+
+/* Prevent lock button from triggering navbar hover */
+.navbar:not(:hover):not(.locked) .navbar-lock-btn:hover {
+    pointer-events: auto;
 }
 
 .navbar:not(:hover):not(.locked) .navbar-lock-btn svg {
@@ -7550,6 +7556,18 @@ body {
 .light-theme .navbar:not(:hover):not(.locked) .navbar-lock-btn {
     background: rgba(142, 185, 110, 0.15);
     border-color: rgba(142, 185, 110, 0.3);
+}
+
+/* Prevent right margin area from triggering navbar hover when minimized */
+.navbar:not(:hover):not(.locked)::after {
+    content: '';
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 100vh;
+    z-index: 1001;
+    pointer-events: none;
 }
 
 /* Ensure navbar menu items have relative positioning for icon positioning */

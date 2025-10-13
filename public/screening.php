@@ -4110,7 +4110,7 @@ header {
             gap: 12px;
             flex: 1;
             justify-content: flex-end;
-            max-width: 50%;
+            max-width: 35%;
             box-sizing: border-box;
             overflow: hidden;
             position: static;
@@ -5944,6 +5944,10 @@ header {
                             <button class="btn-add" onclick="downloadCSVTemplate()">
                                 <span class="btn-icon">📥</span>
                                 <span class="btn-text">Download Template</span>
+                            </button>
+                            <button class="btn-add" onclick="openMHOFoodManager()">
+                                <span class="btn-icon">🍎</span>
+                                <span class="btn-text">MHO Food Manager</span>
                             </button>
                             <button class="btn-secondary" onclick="showCSVImportModal()">
                                 <span class="btn-icon">📁</span>
