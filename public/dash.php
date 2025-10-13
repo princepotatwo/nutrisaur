@@ -941,7 +941,7 @@ if (isset($_GET['logout'])) {
     font-size: 18px;
 }
 
-/* When locked, prevent any collapse behavior */
+/* When locked, simulate permanent hover state */
 .navbar.locked {
     width: 320px !important;
 }
@@ -951,6 +951,12 @@ if (isset($_GET['logout'])) {
 .navbar.locked .navbar-footer {
     opacity: 1 !important;
     visibility: visible !important;
+}
+
+/* Locked navbar should behave exactly like hovered navbar */
+.navbar.locked {
+    width: 320px !important;
+    transform: translateX(0) !important;
 }
 
 .navbar.collapsed .navbar-logo {
@@ -8675,7 +8681,7 @@ body {
                 lockToggle.classList.toggle('locked', isLocked);
                 
                 if (isLocked) {
-                    // When locking, ensure navbar is expanded and add locked class
+                    // When locking, simulate permanent hover state
                     navbar.classList.remove('collapsed');
                     navbar.classList.add('locked');
                     isCollapsed = false;
@@ -8684,7 +8690,7 @@ body {
                 } else {
                     // When unlocking, remove locked class and return to normal behavior
                     navbar.classList.remove('locked');
-                    // Don't change isCollapsed here - let it return to normal hover behavior
+                    // Let it return to natural hover behavior
                     lockToggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
                     lockToggle.title = 'Lock sidebar';
                 }
@@ -8723,7 +8729,7 @@ body {
             
             navbar.addEventListener('mouseleave', function() {
                 if (isLocked) {
-                    // When locked, do nothing - stay expanded
+                    // When locked, do nothing - stay in permanent hover state
                     return;
                 }
                 if (!isLocked && isCollapsed) {
