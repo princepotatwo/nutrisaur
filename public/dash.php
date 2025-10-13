@@ -7474,41 +7474,42 @@ body {
     transition: all 0.3s ease;
 }
 
-/* When navbar is minimized, position icons on far right of navbar */
+/* When navbar is minimized, position icons in the right margin area */
 .navbar:not(:hover):not(.locked) .navbar-icon {
-    position: absolute;
+    position: fixed;
     right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-right: 0;
-    width: 20px;
-    height: 20px;
-    background: rgba(161, 180, 84, 0.1);
-    border: 1px solid rgba(161, 180, 84, 0.2);
-    border-radius: 6px;
-    padding: 4px;
-    z-index: 10;
+    width: 24px;
+    height: 24px;
+    background: rgba(161, 180, 84, 0.15);
+    border: 1px solid rgba(161, 180, 84, 0.3);
+    border-radius: 8px;
+    padding: 6px;
+    z-index: 1002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
 }
 
-/* Position each icon at different vertical positions */
+/* Position each icon at different vertical positions in the right margin */
 .navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(1) .navbar-icon {
-    top: 20%;
+    top: 25%;
 }
 
 .navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(2) .navbar-icon {
-    top: 35%;
+    top: 40%;
 }
 
 .navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(3) .navbar-icon {
-    top: 50%;
+    top: 55%;
 }
 
 .navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(4) .navbar-icon {
-    top: 65%;
+    top: 70%;
 }
 
 .navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(5) .navbar-icon {
-    top: 80%;
+    top: 85%;
 }
 
 .navbar:not(:hover):not(.locked) .navbar-icon svg {
