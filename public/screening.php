@@ -483,135 +483,8 @@ body {
     display: flex;
     flex-direction: column;
     backdrop-filter: blur(10px);
-    transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
-    transform: translateX(0); /* Show full navbar by default */
-}
-
-/* Gmail-style collapsible navbar states */
-.navbar.collapsed {
-    width: 60px;
-}
-
-.navbar.collapsed .navbar-logo-text,
-.navbar.collapsed .navbar-menu span:not(.navbar-icon),
-.navbar.collapsed .navbar-footer {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.2s ease, visibility 0.2s ease;
-}
-
-/* Keep icons visible when collapsed */
-.navbar.collapsed .navbar-menu .navbar-icon {
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: inline-block !important;
-    font-size: 18px;
-}
-
-/* When locked, simulate permanent hover state */
-.navbar.locked {
-    width: 320px !important;
-}
-
-.navbar.locked .navbar-logo-text,
-.navbar.locked .navbar-menu span,
-.navbar.locked .navbar-footer {
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-/* Locked navbar should behave exactly like hovered navbar */
-.navbar.locked {
-    width: 320px !important;
-    transform: translateX(0) !important;
-}
-
-/* When locked, disable ALL hover effects */
-.navbar.locked:hover {
-    width: 320px !important;
-    transform: translateX(0) !important;
-}
-
-.navbar.locked * {
-    pointer-events: none !important;
-}
-
-.navbar.locked .navbar-lock-toggle {
-    pointer-events: auto !important;
-}
-
-/* When navbar is locked, prevent main content from affecting it */
-body.navbar-locked {
-    pointer-events: auto;
-}
-
-body.navbar-locked * {
-    pointer-events: auto;
-}
-
-.navbar.collapsed .navbar-logo {
-    justify-content: center;
-}
-
-.navbar.collapsed .navbar-menu ul {
-    align-items: center;
-}
-
-.navbar.collapsed .navbar-menu li {
-    justify-content: center;
-    padding: 0;
-}
-
-.navbar.collapsed .navbar-menu a {
-    justify-content: center;
-    padding: 15px;
-}
-
-/* Lock button styles */
-.navbar-lock-toggle {
-    position: absolute;
-    top: 20px;
-    right: 15px;
-    background: none;
-    border: none;
-    color: var(--color-text);
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    opacity: 0.7;
-}
-
-.navbar-lock-toggle:hover {
-    opacity: 1;
-    background-color: rgba(161, 180, 84, 0.1);
-}
-
-.navbar-lock-toggle.locked {
-    color: var(--color-highlight);
-    opacity: 1;
-}
-
-/* Collapsed navbar tooltips */
-.navbar.collapsed .navbar-menu a {
-    position: relative;
-}
-
-.navbar.collapsed .navbar-menu a:hover::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    left: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: var(--color-card);
-    color: var(--color-text);
-    padding: 8px 12px;
-    border-radius: 6px;
-    white-space: nowrap;
-    z-index: 1001;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    margin-left: 10px;
-    font-size: 14px;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-280px); /* Show only 40px */
 }
 
 /* Base body styles */
@@ -1140,48 +1013,7 @@ body {
 }
 
 /* Mobile styles */
-/* Tablet Styles - Show navbar but make it collapsible */
-@media (max-width: 768px) and (min-width: 481px) {
-    .navbar {
-        width: 60px; /* Start collapsed on tablets */
-        transform: translateX(0);
-    }
-    
-    .navbar .navbar-logo-text,
-    .navbar .navbar-menu span:not(.navbar-icon),
-    .navbar .navbar-footer {
-        opacity: 0;
-        visibility: hidden;
-    }
-    
-    .navbar .navbar-menu .navbar-icon {
-        opacity: 1 !important;
-        visibility: visible !important;
-        display: inline-block !important;
-        font-size: 18px;
-    }
-    
-    .navbar .navbar-logo {
-        justify-content: center;
-    }
-    
-    .navbar .navbar-menu ul {
-        align-items: center;
-    }
-    
-    .navbar .navbar-menu li {
-        justify-content: center;
-        padding: 0;
-    }
-    
-    .navbar .navbar-menu a {
-        justify-content: center;
-        padding: 15px;
-    }
-}
-
-/* Mobile Styles */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     /* Hide desktop navbar on mobile */
     .navbar {
         display: none !important;
@@ -6029,7 +5861,7 @@ header {
     </style>
 </head>
 <body class="light-theme">
-    <div class="navbar" id="navbar">
+    <div class="navbar">
         <div class="navbar-header">
             <div class="navbar-logo">
                 <div class="navbar-logo-icon">
@@ -6037,20 +5869,14 @@ header {
                 </div>
                 <div class="navbar-logo-text">NutriSaur</div>
             </div>
-            <button class="navbar-lock-toggle" id="navbar-lock-toggle" title="Lock sidebar">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-            </button>
         </div>
         <div class="navbar-menu">
             <ul>
-                <li><a href="dash" data-tooltip="Dashboard"><span class="navbar-icon">📊</span><span>Dashboard</span></a></li>
-                <li><a href="screening" data-tooltip="MHO Assessment"><span class="navbar-icon">📋</span><span>MHO Assessment</span></a></li>
-                <li><a href="event" data-tooltip="Nutrition Event Notifications"><span class="navbar-icon">📅</span><span>Nutrition Event Notifications</span></a></li>
-                <li><a href="settings" data-tooltip="Settings & Admin"><span class="navbar-icon">⚙️</span><span>Settings & Admin</span></a></li>
-                <li><a href="logout" data-tooltip="Logout" style="color: #ff5252;"><span class="navbar-icon">🚪</span><span>Logout</span></a></li>
+                <li><a href="dash"><span class="navbar-icon"></span><span>Dashboard</span></a></li>
+                <li><a href="screening"><span class="navbar-icon"></span><span>MHO Assessment</span></a></li>
+                <li><a href="event"><span class="navbar-icon"></span><span>Nutrition Event Notifications</span></a></li>
+                <li><a href="settings"><span class="navbar-icon"></span><span>Settings & Admin</span></a></li>
+                <li><a href="logout" style="color: #ff5252;"><span class="navbar-icon"></span><span>Logout</span></a></li>
             </ul>
         </div>
         <div class="navbar-footer">
@@ -6589,110 +6415,6 @@ header {
     </div>
 
     <script>
-        // Gmail-style collapsible navbar functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const navbar = document.getElementById('navbar');
-            const lockToggle = document.getElementById('navbar-lock-toggle');
-            let isLocked = false;
-            let isCollapsed = false;
-            
-            // Load saved state from localStorage
-            const savedState = localStorage.getItem('navbarState');
-            if (savedState) {
-                const state = JSON.parse(savedState);
-                isLocked = state.locked || false;
-                isCollapsed = state.collapsed || false;
-                
-                if (isCollapsed) {
-                    navbar.classList.add('collapsed');
-                }
-                if (isLocked) {
-                    navbar.classList.add('locked');
-                    document.body.classList.add('navbar-locked');
-                    lockToggle.classList.add('locked');
-                    lockToggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
-                }
-            } else {
-                // Default state: start collapsed
-                isCollapsed = true;
-                navbar.classList.add('collapsed');
-            }
-            
-            // Toggle collapse/expand
-            function toggleNavbar() {
-                if (!isLocked) {
-                    isCollapsed = !isCollapsed;
-                    navbar.classList.toggle('collapsed', isCollapsed);
-                    saveState();
-                }
-            }
-            
-            // Toggle lock
-            function toggleLock() {
-                isLocked = !isLocked;
-                lockToggle.classList.toggle('locked', isLocked);
-                
-                if (isLocked) {
-                    // When locking, simulate permanent hover state
-                    navbar.classList.remove('collapsed');
-                    navbar.classList.add('locked');
-                    document.body.classList.add('navbar-locked');
-                    isCollapsed = false;
-                    lockToggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
-                    lockToggle.title = 'Unlock sidebar';
-                } else {
-                    // When unlocking, remove locked class and return to normal behavior
-                    navbar.classList.remove('locked');
-                    document.body.classList.remove('navbar-locked');
-                    // Let it return to natural hover behavior
-                    lockToggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
-                    lockToggle.title = 'Lock sidebar';
-                }
-                
-                saveState();
-            }
-            
-            // Save state to localStorage
-            function saveState() {
-                localStorage.setItem('navbarState', JSON.stringify({
-                    locked: isLocked,
-                    collapsed: isCollapsed
-                }));
-            }
-            
-            // Event listeners
-            lockToggle.addEventListener('click', toggleLock);
-            
-            // Click outside to collapse (only if not locked)
-            document.addEventListener('click', function(e) {
-                if (!isLocked && !navbar.contains(e.target) && !e.target.closest('.mobile-top-nav')) {
-                    if (!isCollapsed) {
-                        isCollapsed = true;
-                        navbar.classList.add('collapsed');
-                        saveState();
-                    }
-                }
-            });
-            
-            
-            // Hover to expand when collapsed (only if not locked)
-            navbar.addEventListener('mouseenter', function() {
-                if (!isLocked && isCollapsed) {
-                    navbar.classList.remove('collapsed');
-                }
-            });
-            
-            navbar.addEventListener('mouseleave', function() {
-                if (isLocked) {
-                    // When locked, do absolutely nothing - navbar stays exactly as it is
-                    return;
-                }
-                if (!isLocked && isCollapsed) {
-                    navbar.classList.add('collapsed');
-                }
-            });
-        });
-        
         // ===== ADMIN EMAIL FOR FLAGGING =====
         const adminEmail = '<?php echo addslashes($_SESSION["admin_email"] ?? "MHO Official"); ?>';
         
