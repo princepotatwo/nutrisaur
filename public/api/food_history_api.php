@@ -863,6 +863,9 @@ function handleDeleteMealFoods($pdo) {
 function handleGetRecommendedFoods($pdo) {
     try {
         $userEmail = $_GET['user_email'] ?? '';
+        $date = $_GET['date'] ?? date('Y-m-d'); // Default to today
+        $planDuration = $_GET['plan_duration'] ?? 7; // Default to 7-day plan
+        $dayNumber = $_GET['day_number'] ?? null; // Optional day filter
         
         if (empty($userEmail)) {
             throw new Exception('User email is required');
@@ -904,25 +907,60 @@ function handleGetRecommendedFoods($pdo) {
         $combinedClassification = $whoStandard . '-' . $userClassification;
         
         // Get recommended foods from mho_food_templates table based on user's classification
-        // Default to 7-day plan
-        $planDuration = 7;
-        
         $sql = "SELECT id, day_number, meal_category, food_name, calories, serving_size,
                        protein, carbs, fat, fiber, emoji, classification, plan_duration
                 FROM mho_food_templates 
-                WHERE classification = ? AND plan_duration = ?
-                ORDER BY day_number, meal_category, food_name";
+                WHERE classification = ? AND plan_duration = ?";
+        
+        $params = [$combinedClassification, $planDuration];
+        
+        // Add day number filter if specified
+        if ($dayNumber !== null) {
+            $sql .= " AND day_number = ?";
+            $params[] = $dayNumber;
+        }
+        
+        $sql .= " ORDER BY day_number, meal_category, food_name";
+        
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$combinedClassification, $planDuration]);
+        $stmt->execute($params);
         $foods = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        // Group foods by meal category
+        // Check which foods are already added to user's food history for this date
+        $addedFoodIds = [];
+        if (!empty($foods)) {
+            $foodIds = array_column($foods, 'id');
+            $placeholders = str_repeat('?,', count($foodIds) - 1) . '?';
+            $checkSql = "SELECT DISTINCT food_name, meal_category FROM user_food_history 
+                        WHERE user_email = ? AND date = ? AND food_name IN (
+                            SELECT food_name FROM mho_food_templates WHERE id IN ($placeholders)
+                        )";
+            $checkParams = array_merge([$userEmail, $date], $foodIds);
+            $checkStmt = $pdo->prepare($checkSql);
+            $checkStmt->execute($checkParams);
+            $addedFoods = $checkStmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Create a lookup array for quick checking
+            foreach ($addedFoods as $addedFood) {
+                $addedFoodIds[$addedFood['food_name'] . '_' . $addedFood['meal_category']] = true;
+            }
+        }
+        
+        // Group foods by meal category and add status information
         $groupedFoods = [];
         foreach ($foods as $food) {
             $mealCategory = $food['meal_category'];
             if (!isset($groupedFoods[$mealCategory])) {
                 $groupedFoods[$mealCategory] = [];
             }
+            
+            // Add status information (is_added)
+            $foodKey = $food['food_name'] . '_' . $mealCategory;
+            $food['is_added'] = isset($addedFoodIds[$foodKey]);
+            $food['date'] = $date;
+            $food['plan_duration'] = $planDuration;
+            $food['day_number'] = $food['day_number'];
+            
             $groupedFoods[$mealCategory][] = $food;
         }
         
