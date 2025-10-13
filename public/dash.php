@@ -7477,13 +7477,13 @@ body {
 /* When navbar is minimized, position icons in the right margin area */
 .navbar:not(:hover):not(.locked) .navbar-icon {
     position: fixed;
-    right: 8px;
-    width: 24px;
-    height: 24px;
+    right: 2px;
+    width: 32px;
+    height: 32px;
     background: rgba(161, 180, 84, 0.15);
     border: 1px solid rgba(161, 180, 84, 0.3);
     border-radius: 8px;
-    padding: 6px;
+    padding: 4px;
     z-index: 1002;
     display: flex;
     align-items: center;
@@ -7513,8 +7513,8 @@ body {
 }
 
 .navbar:not(:hover):not(.locked) .navbar-icon svg {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
 }
 
 /* Light theme for navbar icons */
