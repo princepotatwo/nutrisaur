@@ -10379,7 +10379,7 @@ header {
                         
                         <!-- Filters -->
                         <div style="display: flex; gap: 12px; margin-bottom: 15px; flex-wrap: wrap;">
-                            <select id="manager-who-standard" class="filter-select" onchange="updateClassificationOptions()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                            <select id="manager-who-standard" class="filter-select" onchange="updateManagerClassificationOptions()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
                                 <option value="">Select WHO Standard</option>
                                 <option value="weight-for-age">Weight-for-Age</option>
                                 <option value="height-for-age">Height-for-Age</option>
@@ -10419,7 +10419,7 @@ header {
             document.body.appendChild(modal);
         }
 
-        function updateClassificationOptions() {
+        function updateManagerClassificationOptions() {
             const whoStandard = document.getElementById('manager-who-standard').value;
             const classificationSelect = document.getElementById('manager-classification');
             
