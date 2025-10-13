@@ -8682,8 +8682,9 @@ body {
                     lockToggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
                     lockToggle.title = 'Unlock sidebar';
                 } else {
-                    // When unlocking, remove locked class
+                    // When unlocking, remove locked class and return to normal behavior
                     navbar.classList.remove('locked');
+                    // Don't change isCollapsed here - let it return to normal hover behavior
                     lockToggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
                     lockToggle.title = 'Lock sidebar';
                 }
@@ -8722,7 +8723,7 @@ body {
             
             navbar.addEventListener('mouseleave', function() {
                 if (isLocked) {
-                    // Do nothing when locked - stay expanded
+                    // When locked, do nothing - stay expanded
                     return;
                 }
                 if (!isLocked && isCollapsed) {
