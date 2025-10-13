@@ -7449,6 +7449,18 @@ body {
     transform: translateX(0) !important; /* Force navbar to stay expanded */
     box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(15px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    padding-top: 0;
+}
+
+/* Locked state - show all navbar content */
+.navbar.locked .navbar-logo-text,
+.navbar.locked span:not(.navbar-icon),
+.navbar.locked .navbar-footer {
+    opacity: 1 !important;
 }
 
 /* Body padding will be handled by base styles */
@@ -13438,6 +13450,7 @@ body {
                         if (navbar) {
                             navbar.classList.add('locked');
                             console.log('🔒 Added locked class to navbar');
+                            console.log('🔒 Navbar classes:', navbar.className);
                         }
                         expandNavbar();
                         console.log('🔒 Navbar locked - staying expanded, body padding:', document.body.style.paddingLeft);
@@ -13446,6 +13459,7 @@ body {
                         if (navbar) {
                             navbar.classList.remove('locked');
                             console.log('🔓 Removed locked class from navbar');
+                            console.log('🔓 Navbar classes:', navbar.className);
                         }
                         minimizeNavbar();
                         console.log('🔓 Navbar unlocked - normal hover behavior, body padding:', document.body.style.paddingLeft);
