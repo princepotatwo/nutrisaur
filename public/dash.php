@@ -917,7 +917,7 @@ if (isset($_GET['logout'])) {
     flex-direction: column;
     backdrop-filter: blur(10px);
     transition: transform 0.3s ease-in-out;
-    transform: translateX(-280px); /* Show only 40px */
+    transform: translateX(-260px); /* Show more space for icons */
 }
 
 /* Base body styles */
@@ -933,7 +933,7 @@ body {
     background-color: var(--color-bg);
     color: var(--color-text);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding-left: 40px;
+    padding-left: 60px;
     line-height: 1.6;
     letter-spacing: 0.2px;
 }
@@ -13570,7 +13570,7 @@ body {
                         document.body.style.paddingLeft = '320px';
                     } else {
                         if (navbar) navbar.classList.remove('locked');
-                        document.body.style.paddingLeft = '40px';
+                        document.body.style.paddingLeft = '60px';
                     }
                     
                     document.body.style.paddingTop = '0';
@@ -13610,7 +13610,7 @@ body {
             
             function minimizeNavbar() {
                 if (window.innerWidth >= 769) {
-                    document.body.style.paddingLeft = '40px';
+                    document.body.style.paddingLeft = '60px';
                 }
             }
             
@@ -13626,7 +13626,7 @@ body {
                 document.body.style.minHeight = '100vh';
             } else {
                 if (navbar) navbar.style.display = 'flex';
-                document.body.style.paddingLeft = '40px';
+                document.body.style.paddingLeft = '60px';
                 document.body.style.paddingTop = '0';
                 document.body.style.width = '';
                 document.body.style.maxWidth = '';
