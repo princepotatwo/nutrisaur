@@ -1078,11 +1078,19 @@ function handleAddRecommendedToMeal($pdo) {
             throw new Exception('Missing required fields');
         }
         
-        // Get the recommended food details (only those with date IS NULL)
-        $sql = "SELECT * FROM user_food_history WHERE id = ? AND user_email = ? AND is_mho_recommended = 1 AND date IS NULL";
+        // First, try to get the recommended food from mho_food_templates table
+        $sql = "SELECT * FROM mho_food_templates WHERE id = ?";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$recommendedFoodId, $userEmail]);
+        $stmt->execute([$recommendedFoodId]);
         $recommendedFood = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // If not found in templates, try the old method (for backward compatibility)
+        if (!$recommendedFood) {
+            $sql = "SELECT * FROM user_food_history WHERE id = ? AND user_email = ? AND is_mho_recommended = 1 AND date IS NULL";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([$recommendedFoodId, $userEmail]);
+            $recommendedFood = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
         
         if (!$recommendedFood) {
             throw new Exception('Recommended food not found');
@@ -1105,8 +1113,8 @@ function handleAddRecommendedToMeal($pdo) {
         
         // Create a copy of the recommended food with real date and is_mho_recommended = 0
         $sql = "INSERT INTO user_food_history 
-                (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
+                (user_email, date, meal_category, food_name, calories, serving_size, protein, carbs, fat, fiber, is_mho_recommended, emoji) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)";
         
         $stmt = $pdo->prepare($sql);
         $result = $stmt->execute([
@@ -1115,11 +1123,12 @@ function handleAddRecommendedToMeal($pdo) {
             $recommendedFood['meal_category'],
             $recommendedFood['food_name'],
             $recommendedFood['calories'],
-            $recommendedFood['serving_size'],
-            $recommendedFood['protein'],
-            $recommendedFood['carbs'],
-            $recommendedFood['fat'],
-            $recommendedFood['fiber']
+            $recommendedFood['serving_size'] ?? '',
+            $recommendedFood['protein'] ?? 0,
+            $recommendedFood['carbs'] ?? 0,
+            $recommendedFood['fat'] ?? 0,
+            $recommendedFood['fiber'] ?? 0,
+            $recommendedFood['emoji'] ?? '🍽️'
         ]);
         
         if ($result) {
