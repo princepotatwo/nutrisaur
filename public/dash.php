@@ -7528,7 +7528,7 @@ body {
     display: none;
 }
 
-/* Position minimized lock button in right margin area */
+/* Position minimized lock button in right margin area - same as other icons */
 .navbar-minimized-lock-btn {
     position: fixed;
     right: 2px;
@@ -7546,6 +7546,7 @@ body {
     box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
     cursor: pointer;
     transition: all 0.3s ease;
+    pointer-events: auto;
 }
 
 /* Show minimized lock button when navbar is minimized */
@@ -7557,6 +7558,12 @@ body {
 .navbar:hover .navbar-minimized-lock-btn,
 .navbar.locked .navbar-minimized-lock-btn {
     display: none;
+}
+
+/* Lock button SVG size - same as other icons */
+.navbar-minimized-lock-btn svg {
+    width: 20px;
+    height: 20px;
 }
 
 .navbar:not(:hover):not(.locked) .navbar-lock-btn svg {
@@ -7580,6 +7587,15 @@ body {
     height: 100vh;
     z-index: 1001;
     pointer-events: none;
+}
+
+/* Make navbar header area exception to hover events when minimized */
+.navbar:not(:hover):not(.locked) .navbar-header {
+    pointer-events: none;
+}
+
+.navbar:not(:hover):not(.locked) .navbar-header .navbar-lock-btn {
+    pointer-events: auto;
 }
 
 /* Ensure navbar menu items have relative positioning for icon positioning */
