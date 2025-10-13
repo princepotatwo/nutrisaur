@@ -7528,15 +7528,15 @@ body {
     display: none;
 }
 
-/* Position minimized lock button in right margin area - exact same as other icons */
+/* Position minimized lock button in same column as original lock button */
 .navbar-minimized-lock-btn {
     position: fixed;
-    right: 2px;
-    top: 10%;
-    width: 32px;
-    height: 32px;
-    background: rgba(161, 180, 84, 0.15);
-    border: 1px solid rgba(161, 180, 84, 0.3);
+    right: 25px;
+    top: 35px;
+    width: 36px;
+    height: 36px;
+    background: rgba(161, 180, 84, 0.1);
+    border: 1px solid rgba(161, 180, 84, 0.2);
     border-radius: 8px;
     padding: 4px;
     z-index: 1002;
@@ -7552,6 +7552,28 @@ body {
 /* Show minimized lock button when navbar is minimized */
 .navbar:not(:hover):not(.locked) .navbar-minimized-lock-btn {
     display: flex;
+}
+
+/* Hover and locked states for minimized lock button - same as original */
+.navbar-minimized-lock-btn:hover {
+    background: rgba(161, 180, 84, 0.15);
+    border-color: rgba(161, 180, 84, 0.3);
+    opacity: 1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
+}
+
+.navbar-minimized-lock-btn.locked {
+    background: rgba(161, 180, 84, 0.2);
+    border-color: rgba(161, 180, 84, 0.4);
+    opacity: 1;
+    color: var(--color-highlight);
+}
+
+.navbar-minimized-lock-btn.locked:hover {
+    background: rgba(161, 180, 84, 0.25);
+    border-color: rgba(161, 180, 84, 0.5);
+    box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
 }
 
 /* Hide minimized lock button when navbar is expanded or locked */
@@ -7571,10 +7593,28 @@ body {
     height: 20px;
 }
 
-/* Light theme for minimized lock button - same as other icons */
+/* Light theme for minimized lock button - same as original lock button */
 .light-theme .navbar-minimized-lock-btn {
     background: rgba(142, 185, 110, 0.1);
     border-color: rgba(142, 185, 110, 0.2);
+}
+
+.light-theme .navbar-minimized-lock-btn:hover {
+    background: rgba(142, 185, 110, 0.15);
+    border-color: rgba(142, 185, 110, 0.3);
+    box-shadow: 0 2px 8px rgba(142, 185, 110, 0.2);
+}
+
+.light-theme .navbar-minimized-lock-btn.locked {
+    background: rgba(142, 185, 110, 0.2);
+    border-color: rgba(142, 185, 110, 0.4);
+    color: var(--color-accent3);
+}
+
+.light-theme .navbar-minimized-lock-btn.locked:hover {
+    background: rgba(142, 185, 110, 0.25);
+    border-color: rgba(142, 185, 110, 0.5);
+    box-shadow: 0 4px 12px rgba(142, 185, 110, 0.3);
 }
 
 /* Prevent right margin area from triggering navbar hover when minimized */
