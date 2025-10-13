@@ -484,7 +484,7 @@ body {
     flex-direction: column;
     backdrop-filter: blur(10px);
     transition: width 0.3s ease-in-out, transform 0.3s ease-in-out;
-    transform: translateX(-280px); /* Show only 40px */
+    transform: translateX(0); /* Show full navbar by default */
 }
 
 /* Gmail-style collapsible navbar states */
@@ -1111,7 +1111,48 @@ body {
 }
 
 /* Mobile styles */
-@media (max-width: 768px) {
+/* Tablet Styles - Show navbar but make it collapsible */
+@media (max-width: 768px) and (min-width: 481px) {
+    .navbar {
+        width: 60px; /* Start collapsed on tablets */
+        transform: translateX(0);
+    }
+    
+    .navbar .navbar-logo-text,
+    .navbar .navbar-menu span:not(.navbar-icon),
+    .navbar .navbar-footer {
+        opacity: 0;
+        visibility: hidden;
+    }
+    
+    .navbar .navbar-menu .navbar-icon {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: inline-block !important;
+        font-size: 18px;
+    }
+    
+    .navbar .navbar-logo {
+        justify-content: center;
+    }
+    
+    .navbar .navbar-menu ul {
+        align-items: center;
+    }
+    
+    .navbar .navbar-menu li {
+        justify-content: center;
+        padding: 0;
+    }
+    
+    .navbar .navbar-menu a {
+        justify-content: center;
+        padding: 15px;
+    }
+}
+
+/* Mobile Styles */
+@media (max-width: 480px) {
     /* Hide desktop navbar on mobile */
     .navbar {
         display: none !important;
