@@ -505,6 +505,19 @@ body {
     opacity: 1 !important;
     visibility: visible !important;
     display: inline-block !important;
+    font-size: 18px;
+}
+
+/* When locked, prevent any collapse behavior */
+.navbar.locked {
+    width: 320px !important;
+}
+
+.navbar.locked .navbar-logo-text,
+.navbar.locked .navbar-menu span,
+.navbar.locked .navbar-footer {
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .navbar.collapsed .navbar-logo {
@@ -6544,9 +6557,15 @@ header {
                 lockToggle.classList.toggle('locked', isLocked);
                 
                 if (isLocked) {
+                    // When locking, ensure navbar is expanded and add locked class
+                    navbar.classList.remove('collapsed');
+                    navbar.classList.add('locked');
+                    isCollapsed = false;
                     lockToggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
                     lockToggle.title = 'Unlock sidebar';
                 } else {
+                    // When unlocking, remove locked class
+                    navbar.classList.remove('locked');
                     lockToggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
                     lockToggle.title = 'Lock sidebar';
                 }
@@ -6585,7 +6604,7 @@ header {
             
             navbar.addEventListener('mouseleave', function() {
                 if (isLocked) {
-                    // Do nothing when locked - stay in current state
+                    // Do nothing when locked - stay expanded
                     return;
                 }
                 if (!isLocked && isCollapsed) {
