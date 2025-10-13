@@ -7480,9 +7480,9 @@ body {
     border-right: 1px solid rgba(161, 180, 84, 0.2);
     z-index: 1001;
     transition: all 0.3s ease;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(-10px);
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
 }
 
 .minimized-icon {
@@ -7516,14 +7516,7 @@ body {
     transform: scale(1.1);
 }
 
-/* Show minimized icons when navbar is in minimized state */
-.navbar.minimized .navbar-minimized-icons {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateX(0);
-}
-
-/* Hide minimized icons when navbar is expanded or locked */
+/* Hide minimized icons when navbar is hovered (expanded) or locked */
 .navbar:hover .navbar-minimized-icons,
 .navbar.locked .navbar-minimized-icons {
     opacity: 0;
@@ -13573,22 +13566,17 @@ body {
                         // Lock: Force navbar to stay expanded
                         if (navbar) {
                             navbar.classList.add('locked');
-                            navbar.classList.remove('minimized');
                             console.log('🔒 Added locked class to navbar');
-                            console.log('🔒 Navbar classes:', navbar.className);
                         }
                         expandNavbar();
-                        updateNavbarState('locked');
                         console.log('🔒 Navbar locked - staying expanded, body padding:', document.body.style.paddingLeft);
                     } else {
                         // Unlock: Allow normal hover behavior
                         if (navbar) {
                             navbar.classList.remove('locked');
                             console.log('🔓 Removed locked class from navbar');
-                            console.log('🔓 Navbar classes:', navbar.className);
                         }
                         minimizeNavbar();
-                        updateNavbarState('minimized');
                         console.log('🔓 Navbar unlocked - normal hover behavior, body padding:', document.body.style.paddingLeft);
                     }
                 });
@@ -13599,14 +13587,12 @@ body {
                 navbar.addEventListener('mouseenter', function() {
                     if (!isNavbarLocked) {
                         expandNavbar();
-                        updateNavbarState('expanded');
                     }
                 });
                 
                 navbar.addEventListener('mouseleave', function() {
                     if (!isNavbarLocked) {
                         minimizeNavbar();
-                        updateNavbarState('minimized');
                     }
                 });
             }
@@ -13644,25 +13630,6 @@ body {
                 }
             });
             
-            // Update navbar state and show/hide minimized icons
-            function updateNavbarState(state) {
-                if (navbar) {
-                    // Remove all state classes
-                    navbar.classList.remove('minimized', 'expanded', 'locked');
-                    
-                    // Add the appropriate state class
-                    if (state === 'minimized') {
-                        navbar.classList.add('minimized');
-                        console.log('🔍 Navbar state: minimized - showing icons');
-                    } else if (state === 'expanded') {
-                        navbar.classList.add('expanded');
-                        console.log('🔍 Navbar state: expanded - hiding icons');
-                    } else if (state === 'locked') {
-                        navbar.classList.add('locked');
-                        console.log('🔍 Navbar state: locked - hiding icons');
-                    }
-                }
-            }
             
             // Update lock button appearance
             function updateLockButton() {
@@ -13722,16 +13689,12 @@ body {
             // Initialize lock button state
             updateLockButton();
             
-            // Set initial navbar state (minimized by default)
-            updateNavbarState('minimized');
-            
             // Debug: Log initial state
             console.log('🔍 Initial navbar state:', {
                 isNavbarLocked: isNavbarLocked,
                 navbarElement: !!navbar,
                 lockButton: !!lockBtn,
-                bodyPadding: document.body.style.paddingLeft,
-                navbarClasses: navbar ? navbar.className : 'none'
+                bodyPadding: document.body.style.paddingLeft
             });
             
             console.log('✅ Modern mobile top navigation system initialized successfully');
