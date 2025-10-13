@@ -942,8 +942,9 @@ body {
 .dashboard {
     max-width: calc(100% - 60px);
     width: 100%;
-    margin: 0 auto;
-    padding: 20px;
+    margin: 0;
+    margin-left: 0;
+    padding: 5px;
 }
 
 /* Navbar header styles */
@@ -1652,7 +1653,9 @@ header {
 .dashboard {
     max-width: calc(100% - 60px);
     width: 100%;
-    margin: 0 auto;
+    margin: 0;
+    margin-left: 0;
+    padding: 5px;
 }
 
 header {
