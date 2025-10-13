@@ -52,11 +52,12 @@ function getTemplateFoods($pdo) {
     }
     
     // Query user_food_history table with special template markers
+    // Use a system template approach - templates are stored with NULL user_email
     $sql = "SELECT id, user_email, date, meal_category, food_name, calories, serving_size, 
                    protein, carbs, fat, fiber, emoji, classification, plan_duration,
                    DATEDIFF(date, '1970-01-01') as day_number
             FROM user_food_history 
-            WHERE user_email = 'template@system.local' 
+            WHERE user_email IS NULL 
             AND classification = ? 
             AND plan_duration = ?
             AND is_mho_recommended = 1
@@ -84,7 +85,7 @@ function getFoodDetails($pdo) {
                    protein, carbs, fat, fiber, emoji, classification, plan_duration,
                    DATEDIFF(date, '1970-01-01') as day_number
             FROM user_food_history 
-            WHERE id = ? AND user_email = 'template@system.local'";
+            WHERE id = ? AND user_email IS NULL";
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$id]);
@@ -127,7 +128,7 @@ function updateTemplateFood($pdo, $data) {
                 fiber = ?,
                 meal_category = ?,
                 date = ?
-            WHERE id = ? AND user_email = 'template@system.local'";
+            WHERE id = ? AND user_email IS NULL";
     
     $stmt = $pdo->prepare($sql);
     $result = $stmt->execute([
@@ -159,7 +160,7 @@ function deleteTemplateFood($pdo, $data) {
     }
     
     $sql = "DELETE FROM user_food_history 
-            WHERE id = ? AND user_email = 'template@system.local'";
+            WHERE id = ? AND user_email IS NULL";
     
     $stmt = $pdo->prepare($sql);
     $result = $stmt->execute([$id]);
@@ -196,7 +197,7 @@ function addTemplateFood($pdo, $data) {
     $sql = "INSERT INTO user_food_history 
             (user_email, date, meal_category, food_name, calories, serving_size, 
              protein, carbs, fat, fiber, emoji, is_mho_recommended, classification, plan_duration) 
-            VALUES ('template@system.local', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)";
+            VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)";
     
     $stmt = $pdo->prepare($sql);
     $result = $stmt->execute([
