@@ -6838,7 +6838,21 @@ header {
             initializeTableFunctionality();
             updateTableHeaders(); // Initialize table headers on page load
             updateClassificationOptions(); // Initialize classification dropdown based on default standard
-            filterByStandard(); // Initialize with default WHO standard (weight-for-age)
+            // Initialize with default WHO standard (weight-for-age)
+            filterByStandard();
+            
+            // Ensure only weight-for-age rows are visible on page load
+            setTimeout(() => {
+                const tableRows = document.querySelectorAll('.user-table tbody tr');
+                tableRows.forEach(row => {
+                    const rowStandard = row.dataset.standard;
+                    if (rowStandard === 'weight-for-age') {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }, 100);
             
             // Auto-set municipality for non-super admins
             <?php if (!isset($_SESSION['admin_id']) || $_SESSION['admin_id'] !== 'super_admin'): ?>
