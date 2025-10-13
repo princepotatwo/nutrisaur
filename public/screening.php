@@ -9754,6 +9754,9 @@ header {
                             <button class="food-history-btn warning" onclick="bulkMHORecommendations()">
                                 Bulk MHO Recommendations
                             </button>
+                            <button class="food-history-btn info" onclick="openMHOFoodManager()">
+                                MHO Food Manager
+                            </button>
                         </div>
                     </div>
                     <div class="food-history-content">
@@ -10357,6 +10360,417 @@ header {
             });
         }
 
+        // ==================== MHO FOOD MANAGER ====================
+        
+        function openMHOFoodManager() {
+            const modal = document.createElement('div');
+            modal.className = 'modal food-history-modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content food-history-modal" style="max-width: 95vw; max-height: 90vh; overflow-y: auto;">
+                    <div class="food-history-header">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <div>
+                                <h3 style="color: #000000;">MHO Recommended Foods Manager</h3>
+                                <p style="color: #000000;">Manage meal plan templates by classification</p>
+                            </div>
+                            <button class="food-history-close" onclick="this.closest('.modal').remove()" style="background: #4caf50; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; font-size: 16px;">&times;</button>
+                        </div>
+                        
+                        <!-- Filters -->
+                        <div style="display: flex; gap: 12px; margin-bottom: 15px; flex-wrap: wrap;">
+                            <select id="manager-classification" class="filter-select" onchange="loadManagerFoods()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                                <option value="">Select Classification</option>
+                                <option value="underweight">Underweight</option>
+                                <option value="normal">Normal</option>
+                                <option value="overweight">Overweight</option>
+                                <option value="obese">Obese</option>
+                                <option value="severely_obese">Severely Obese</option>
+                            </select>
+                            
+                            <select id="manager-duration" class="filter-select" onchange="loadManagerFoods()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                                <option value="">Select Duration</option>
+                                <option value="7">7-Day Plan</option>
+                                <option value="14">14-Day Plan</option>
+                                <option value="30">30-Day Plan</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button class="food-history-btn success" onclick="addMHOTemplateFood()">
+                                Add Food to Template
+                            </button>
+                            <button class="food-history-btn warning" onclick="bulkAddToTemplate()">
+                                Bulk Add Foods
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="manager-content" class="food-history-content">
+                        <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                            Please select a classification and duration to view meal plan templates
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function loadManagerFoods() {
+            const classification = document.getElementById('manager-classification').value;
+            const duration = document.getElementById('manager-duration').value;
+            const content = document.getElementById('manager-content');
+            
+            if (!classification || !duration) {
+                content.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">Please select both classification and duration</div>';
+                return;
+            }
+            
+            content.innerHTML = '<div style="text-align: center; padding: 40px;">Loading...</div>';
+            
+            fetch(`api/mho_food_manager_api.php?action=get_template_foods&classification=${classification}&duration=${duration}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        renderManagerTable(data.data, classification, duration);
+                    } else {
+                        content.innerHTML = `<div style="text-align: center; padding: 40px; color: #f44336;">${data.error}</div>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading manager foods:', error);
+                    content.innerHTML = '<div style="text-align: center; padding: 40px; color: #f44336;">Error loading foods</div>';
+                });
+        }
+
+        function renderManagerTable(foodData, classification, duration) {
+            const content = document.getElementById('manager-content');
+            
+            if (!foodData || foodData.length === 0) {
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                        No foods found for ${classification} ${duration}-day plan
+                    </div>
+                `;
+                return;
+            }
+            
+            // Group by date (day number)
+            const groupedByDate = {};
+            foodData.forEach(food => {
+                const dayNum = parseInt(food.day_number) || 1;
+                if (!groupedByDate[dayNum]) {
+                    groupedByDate[dayNum] = [];
+                }
+                groupedByDate[dayNum].push(food);
+            });
+            
+            let html = '';
+            Object.keys(groupedByDate).sort((a, b) => a - b).forEach(day => {
+                const dayFoods = groupedByDate[day];
+                
+                html += `
+                    <div class="date-section" style="margin-bottom: 25px;">
+                        <h4 style="color: var(--color-highlight); margin-bottom: 10px;">Day ${day}</h4>
+                        ${['Breakfast', 'Lunch', 'Dinner', 'Snacks'].map(meal => {
+                            const mealFoods = dayFoods.filter(f => f.meal_category === meal);
+                            if (mealFoods.length === 0) return '';
+                            
+                            return `
+                                <div class="meal-section" style="margin-bottom: 15px;">
+                                    <table class="food-history-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="border: 1px solid var(--color-border); border-bottom: 2px solid var(--color-border);">${meal}</th>
+                                                <th style="border: 1px solid var(--color-border); border-bottom: 2px solid var(--color-border);">Serving</th>
+                                                <th style="border: 1px solid var(--color-border); border-bottom: 2px solid var(--color-border);">Nutrition</th>
+                                                <th style="width: 120px; border: 1px solid var(--color-border); border-bottom: 2px solid var(--color-border);">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${mealFoods.map(food => `
+                                                <tr>
+                                                    <td class="food-name-cell" style="border: 1px solid var(--color-border);">${food.food_name}</td>
+                                                    <td class="food-serving-cell" style="border: 1px solid var(--color-border);">${food.serving_size || 'N/A'}</td>
+                                                    <td class="food-nutrition-cell" style="border: 1px solid var(--color-border);">
+                                                        <div>${food.calories} kcal</div>
+                                                        <div style="font-size: 11px;">P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
+                                                    </td>
+                                                    <td style="border: 1px solid var(--color-border);">
+                                                        <div style="display: flex; gap: 4px;">
+                                                            <button class="food-action-btn food-edit-action" onclick="editTemplateFood(${food.id}, '${classification}', ${duration})" style="background: #4caf50; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
+                                                                Edit
+                                                            </button>
+                                                            <button class="food-action-btn food-flag-action" onclick="deleteTemplateFood(${food.id}, '${classification}', ${duration})" style="background: #f44336; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 10px; font-weight: 500;">
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            });
+            
+            content.innerHTML = html;
+        }
+
+        function editTemplateFood(foodId, classification, duration) {
+            // Fetch food details
+            fetch(`api/mho_food_manager_api.php?action=get_food_details&id=${foodId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showEditFoodModal(data.food, classification, duration);
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching food details:', error);
+                    alert('Error loading food details');
+                });
+        }
+
+        function showEditFoodModal(food, classification, duration) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px; background: var(--color-card); padding: 20px; border-radius: 8px;">
+                    <h3 style="color: var(--text-primary); margin-bottom: 20px;">Edit Food</h3>
+                    <form id="edit-food-form" style="display: flex; flex-direction: column; gap: 12px;">
+                        <input type="hidden" id="edit-food-id" value="${food.id}">
+                        
+                        <label style="color: var(--text-primary);">Food Name:</label>
+                        <input type="text" id="edit-food-name" value="${food.food_name}" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Serving Size:</label>
+                        <input type="text" id="edit-serving-size" value="${food.serving_size || ''}" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Calories:</label>
+                        <input type="number" id="edit-calories" value="${food.calories}" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Protein (g):</label>
+                        <input type="number" id="edit-protein" value="${food.protein || 0}" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Carbs (g):</label>
+                        <input type="number" id="edit-carbs" value="${food.carbs || 0}" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Fat (g):</label>
+                        <input type="number" id="edit-fat" value="${food.fat || 0}" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Fiber (g):</label>
+                        <input type="number" id="edit-fiber" value="${food.fiber || 0}" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Day Number:</label>
+                        <input type="number" id="edit-day-number" value="${food.day_number}" required min="1" max="${duration}" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Meal Category:</label>
+                        <select id="edit-meal-category" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                            <option value="Breakfast" ${food.meal_category === 'Breakfast' ? 'selected' : ''}>Breakfast</option>
+                            <option value="Lunch" ${food.meal_category === 'Lunch' ? 'selected' : ''}>Lunch</option>
+                            <option value="Dinner" ${food.meal_category === 'Dinner' ? 'selected' : ''}>Dinner</option>
+                            <option value="Snacks" ${food.meal_category === 'Snacks' ? 'selected' : ''}>Snacks</option>
+                        </select>
+                        
+                        <div style="display: flex; gap: 8px; margin-top: 12px;">
+                            <button type="submit" class="food-history-btn success">Save Changes</button>
+                            <button type="button" class="food-history-btn" onclick="this.closest('.modal').remove()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Handle form submission
+            document.getElementById('edit-food-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const updatedFood = {
+                    id: document.getElementById('edit-food-id').value,
+                    food_name: document.getElementById('edit-food-name').value,
+                    serving_size: document.getElementById('edit-serving-size').value,
+                    calories: parseInt(document.getElementById('edit-calories').value),
+                    protein: parseFloat(document.getElementById('edit-protein').value) || 0,
+                    carbs: parseFloat(document.getElementById('edit-carbs').value) || 0,
+                    fat: parseFloat(document.getElementById('edit-fat').value) || 0,
+                    fiber: parseFloat(document.getElementById('edit-fiber').value) || 0,
+                    day_number: parseInt(document.getElementById('edit-day-number').value),
+                    meal_category: document.getElementById('edit-meal-category').value
+                };
+                
+                fetch('api/mho_food_manager_api.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        action: 'update_template_food',
+                        ...updatedFood
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Food updated successfully');
+                        modal.remove();
+                        loadManagerFoods();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating food:', error);
+                    alert('Error updating food');
+                });
+            });
+        }
+
+        function deleteTemplateFood(foodId, classification, duration) {
+            if (!confirm('Are you sure you want to delete this food from the template?')) return;
+            
+            fetch('api/mho_food_manager_api.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    action: 'delete_template_food',
+                    id: foodId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Food deleted successfully');
+                    loadManagerFoods();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting food:', error);
+                alert('Error deleting food');
+            });
+        }
+
+        function addMHOTemplateFood() {
+            const classification = document.getElementById('manager-classification').value;
+            const duration = document.getElementById('manager-duration').value;
+            
+            if (!classification || !duration) {
+                alert('Please select classification and duration first');
+                return;
+            }
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 500px; background: var(--color-card); padding: 20px; border-radius: 8px;">
+                    <h3 style="color: var(--text-primary); margin-bottom: 20px;">Add Food to Template</h3>
+                    <form id="add-template-food-form" style="display: flex; flex-direction: column; gap: 12px;">
+                        <label style="color: var(--text-primary);">Food Name:</label>
+                        <input type="text" id="new-food-name" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Serving Size:</label>
+                        <input type="text" id="new-serving-size" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Calories:</label>
+                        <input type="number" id="new-calories" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Protein (g):</label>
+                        <input type="number" id="new-protein" value="0" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Carbs (g):</label>
+                        <input type="number" id="new-carbs" value="0" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Fat (g):</label>
+                        <input type="number" id="new-fat" value="0" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Fiber (g):</label>
+                        <input type="number" id="new-fiber" value="0" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Day Number (1-${duration}):</label>
+                        <input type="number" id="new-day-number" required min="1" max="${duration}" value="1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        
+                        <label style="color: var(--text-primary);">Meal Category:</label>
+                        <select id="new-meal-category" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                            <option value="Breakfast">Breakfast</option>
+                            <option value="Lunch">Lunch</option>
+                            <option value="Dinner">Dinner</option>
+                            <option value="Snacks">Snacks</option>
+                        </select>
+                        
+                        <div style="display: flex; gap: 8px; margin-top: 12px;">
+                            <button type="submit" class="food-history-btn success">Add Food</button>
+                            <button type="button" class="food-history-btn" onclick="this.closest('.modal').remove()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Handle form submission
+            document.getElementById('add-template-food-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const newFood = {
+                    classification: classification,
+                    plan_duration: parseInt(duration),
+                    food_name: document.getElementById('new-food-name').value,
+                    serving_size: document.getElementById('new-serving-size').value,
+                    calories: parseInt(document.getElementById('new-calories').value),
+                    protein: parseFloat(document.getElementById('new-protein').value) || 0,
+                    carbs: parseFloat(document.getElementById('new-carbs').value) || 0,
+                    fat: parseFloat(document.getElementById('new-fat').value) || 0,
+                    fiber: parseFloat(document.getElementById('new-fiber').value) || 0,
+                    day_number: parseInt(document.getElementById('new-day-number').value),
+                    meal_category: document.getElementById('new-meal-category').value
+                };
+                
+                fetch('api/mho_food_manager_api.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        action: 'add_template_food',
+                        ...newFood
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Food added successfully');
+                        modal.remove();
+                        loadManagerFoods();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error adding food:', error);
+                    alert('Error adding food');
+                });
+            });
+        }
+
+        function bulkAddToTemplate() {
+            const classification = document.getElementById('manager-classification').value;
+            const duration = document.getElementById('manager-duration').value;
+            
+            if (!classification || !duration) {
+                alert('Please select classification and duration first');
+                return;
+            }
+            
+            alert('Bulk add feature coming soon! For now, use the "Add Food to Template" button to add individual foods.');
+        }
+
+        // ==================== END MHO FOOD MANAGER ====================
 
 
     </script>
