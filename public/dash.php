@@ -7444,6 +7444,13 @@ body {
     backdrop-filter: blur(15px);
 }
 
+/* Locked state - navbar always expanded */
+.navbar.locked {
+    transform: translateX(0) !important; /* Force navbar to stay expanded */
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
+}
+
 /* Body padding will be handled by base styles */
 
 /* Content area animation - removed since we're using transform now */
@@ -13424,14 +13431,24 @@ body {
                     isNavbarLocked = !isNavbarLocked;
                     updateLockButton();
                     
+                    console.log('🔒 Lock button clicked, new state:', isNavbarLocked);
+                    
                     if (isNavbarLocked) {
                         // Lock: Force navbar to stay expanded
+                        if (navbar) {
+                            navbar.classList.add('locked');
+                            console.log('🔒 Added locked class to navbar');
+                        }
                         expandNavbar();
-                        console.log('🔒 Navbar locked - staying expanded');
+                        console.log('🔒 Navbar locked - staying expanded, body padding:', document.body.style.paddingLeft);
                     } else {
                         // Unlock: Allow normal hover behavior
+                        if (navbar) {
+                            navbar.classList.remove('locked');
+                            console.log('🔓 Removed locked class from navbar');
+                        }
                         minimizeNavbar();
-                        console.log('🔓 Navbar unlocked - normal hover behavior');
+                        console.log('🔓 Navbar unlocked - normal hover behavior, body padding:', document.body.style.paddingLeft);
                     }
                 });
             }
@@ -13470,8 +13487,10 @@ body {
                     
                     // Respect lock state when switching to desktop
                     if (isNavbarLocked) {
+                        if (navbar) navbar.classList.add('locked');
                         document.body.style.paddingLeft = '320px';
                     } else {
+                        if (navbar) navbar.classList.remove('locked');
                         document.body.style.paddingLeft = '40px';
                     }
                     
@@ -13536,6 +13555,14 @@ body {
             
             // Initialize lock button state
             updateLockButton();
+            
+            // Debug: Log initial state
+            console.log('🔍 Initial navbar state:', {
+                isNavbarLocked: isNavbarLocked,
+                navbarElement: !!navbar,
+                lockButton: !!lockBtn,
+                bodyPadding: document.body.style.paddingLeft
+            });
             
             console.log('✅ Modern mobile top navigation system initialized successfully');
         }
