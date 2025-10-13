@@ -7478,6 +7478,8 @@ body {
 .navbar:not(:hover):not(.locked) .navbar-icon {
     position: absolute;
     right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
     margin-right: 0;
     width: 20px;
     height: 20px;
@@ -7497,6 +7499,13 @@ body {
 .light-theme .navbar:not(:hover):not(.locked) .navbar-icon {
     background: rgba(142, 185, 110, 0.1);
     border-color: rgba(142, 185, 110, 0.2);
+}
+
+/* Ensure navbar menu items have relative positioning for icon positioning */
+.navbar li a {
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
 /* Body padding will be handled by base styles */
