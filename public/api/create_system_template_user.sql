@@ -3,6 +3,7 @@
 
 INSERT INTO community_users (
     email, 
+    password,
     name, 
     municipality, 
     barangay, 
@@ -17,6 +18,7 @@ INSERT INTO community_users (
     status
 ) VALUES (
     'system@templates.local',
+    'system_template_password_2024',
     'System Templates',
     'SYSTEM',
     'TEMPLATES',
