@@ -540,6 +540,15 @@ body {
     pointer-events: auto !important;
 }
 
+/* When navbar is locked, prevent main content from affecting it */
+body.navbar-locked {
+    pointer-events: auto;
+}
+
+body.navbar-locked * {
+    pointer-events: auto;
+}
+
 .navbar.collapsed .navbar-logo {
     justify-content: center;
 }
@@ -6621,12 +6630,14 @@ header {
                     // When locking, simulate permanent hover state
                     navbar.classList.remove('collapsed');
                     navbar.classList.add('locked');
+                    document.body.classList.add('navbar-locked');
                     isCollapsed = false;
                     lockToggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
                     lockToggle.title = 'Unlock sidebar';
                 } else {
                     // When unlocking, remove locked class and return to normal behavior
                     navbar.classList.remove('locked');
+                    document.body.classList.remove('navbar-locked');
                     // Let it return to natural hover behavior
                     lockToggle.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
                     lockToggle.title = 'Lock sidebar';
@@ -6654,6 +6665,21 @@ header {
                         navbar.classList.add('collapsed');
                         saveState();
                     }
+                }
+            });
+            
+            // Prevent main content from affecting locked navbar
+            document.addEventListener('mouseenter', function(e) {
+                if (isLocked && !navbar.contains(e.target)) {
+                    // When locked, ignore all mouse events outside navbar
+                    return;
+                }
+            });
+            
+            document.addEventListener('mouseleave', function(e) {
+                if (isLocked && !navbar.contains(e.target)) {
+                    // When locked, ignore all mouse events outside navbar
+                    return;
                 }
             });
             
