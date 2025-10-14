@@ -7543,10 +7543,15 @@ body.navbar-locked {
     background: transparent;
     z-index: 1002; /* above navbar, below floating icons */
     pointer-events: auto;
+    transition: width 0.3s ease;
 }
 
-/* Hide hover zone when expanded or locked (handled by JS too) */
-.navbar.expanded ~ .navbar-hover-zone,
+/* Expanded hover zone - wider when navbar is expanded */
+.navbar.expanded ~ .navbar-hover-zone {
+    width: 320px; /* match expanded navbar width */
+}
+
+/* Hide hover zone only when locked */
 .navbar.locked ~ .navbar-hover-zone {
     pointer-events: none;
     display: none;
@@ -13815,7 +13820,7 @@ body.navbar-locked {
                     document.body.style.paddingLeft = '320px';
                     document.body.classList.add('navbar-locked');
                     
-                    // Hide hover zone when locked
+                    // Hide hover zone only when locked
                     const hoverZone = document.getElementById('navbarHoverZone');
                     if (hoverZone) {
                         hoverZone.style.display = 'none';
@@ -13831,7 +13836,7 @@ body.navbar-locked {
                     document.body.style.paddingLeft = '90px';
                     document.body.classList.remove('navbar-locked');
                     
-                    // Show hover zone when unlocked
+                    // Show hover zone when unlocked (CSS handles width)
                     const hoverZone = document.getElementById('navbarHoverZone');
                     if (hoverZone) {
                         hoverZone.style.display = 'block';
@@ -13873,7 +13878,7 @@ body.navbar-locked {
                         document.body.style.paddingLeft = '320px';
                         document.body.classList.add('navbar-locked');
                         
-                        // Hide hover zone when locked
+                        // Hide hover zone only when locked
                         if (hoverZone) {
                             hoverZone.style.display = 'none';
                         }
@@ -13885,7 +13890,7 @@ body.navbar-locked {
                         document.body.style.paddingLeft = '90px';
                         document.body.classList.remove('navbar-locked');
                         
-                        // Show hover zone when unlocked
+                        // Show hover zone when unlocked (CSS handles width)
                         if (hoverZone) {
                             hoverZone.style.display = 'block';
                         }
@@ -13991,11 +13996,8 @@ body.navbar-locked {
                 navbar.style.transform = 'translateX(0)';
                 document.body.style.paddingLeft = '320px';
                 
-                // Hide hover zone when expanded
-                const hoverZone = document.getElementById('navbarHoverZone');
-                if (hoverZone) {
-                    hoverZone.style.display = 'none';
-                }
+                // Keep hover zone active but wider (CSS handles the width change)
+                // No need to hide/show - CSS transition handles the width change
             }
 
             function minimizeNavbar() {
@@ -14005,11 +14007,8 @@ body.navbar-locked {
                 navbar.style.transform = 'translateX(-230px)';
                 document.body.style.paddingLeft = '90px';
                 
-                // Show hover zone when minimized
-                const hoverZone = document.getElementById('navbarHoverZone');
-                if (hoverZone) {
-                    hoverZone.style.display = 'block';
-                }
+                // Hover zone stays active but narrower (CSS handles the width change)
+                // No need to hide/show - CSS transition handles the width change
             }
 
             function scheduleMinimize() {
