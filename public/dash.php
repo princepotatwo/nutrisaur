@@ -7371,7 +7371,7 @@ body {
 /* Desktop Navbar Toggle Button - Removed duplicate */
 
 /* Hover state - navbar expanded (shows full width) */
-.navbar:hover {
+.navbar:hover, .navbar.expanded {
     transform: translateX(0); /* Show full navbar */
     box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(15px);
@@ -7533,6 +7533,43 @@ body.navbar-locked {
     padding-left: 320px !important;
 }
 
+/* Navbar contents should stay visible when locked */
+.navbar.locked .navbar-header,
+.navbar.locked .navbar-menu,
+.navbar.locked .navbar-footer,
+.navbar.locked .navbar-logo,
+.navbar.locked .navbar-logo-text,
+.navbar.locked .navbar-logo-icon,
+.navbar.locked ul,
+.navbar.locked li,
+.navbar.locked a {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+/* Ensure navbar menu items are fully visible when locked */
+.navbar.locked .navbar-menu ul {
+    display: block !important;
+}
+
+.navbar.locked .navbar-menu li {
+    display: block !important;
+    opacity: 1 !important;
+}
+
+.navbar.locked .navbar-menu a {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Override any minimized styles when locked */
+.navbar.locked * {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
     .floating-nav-icons {
@@ -7567,13 +7604,13 @@ body.navbar-locked {
     transition: transform 0.2s ease, color 0.2s ease;
 }
 
-.navbar:hover .navbar-icon {
+.navbar:hover .navbar-icon, .navbar.expanded .navbar-icon {
     transform: scale(1.05);
     color: var(--color-primary);
 }
 
 /* Expanded navbar state - show everything */
-.navbar:hover {
+.navbar:hover, .navbar.expanded {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -7582,8 +7619,11 @@ body.navbar-locked {
 }
 
 .navbar:hover .navbar-logo-text,
+.navbar.expanded .navbar-logo-text,
 .navbar:hover span:not(.navbar-icon),
-.navbar:hover .navbar-footer {
+.navbar.expanded span:not(.navbar-icon),
+.navbar:hover .navbar-footer,
+.navbar.expanded .navbar-footer {
     opacity: 1;
 }
 
@@ -8267,7 +8307,7 @@ body.navbar-locked {
         display: none !important;
     }
     
-    .navbar:hover {
+    .navbar:hover, .navbar.expanded {
         width: 320px !important; /* Hover: expanded */
     }
     
@@ -13775,14 +13815,25 @@ body.navbar-locked {
                 if (isNavbarLocked) {
                     // Lock: Force navbar to stay expanded (like Gmail)
                     navbar.classList.add('locked');
+                    navbar.classList.add('expanded');
                     navbar.classList.remove('minimized');
                     navbar.style.transform = 'translateX(0)';
                     document.body.style.paddingLeft = '320px';
                     document.body.classList.add('navbar-locked');
+                    
+                    // Ensure all navbar contents are visible
+                    const navbarContents = navbar.querySelectorAll('.navbar-header, .navbar-menu, .navbar-footer, .navbar-logo, .navbar-logo-text, .navbar-logo-icon, ul, li, a');
+                    navbarContents.forEach(element => {
+                        element.style.opacity = '1';
+                        element.style.visibility = 'visible';
+                        element.style.display = element.tagName === 'A' ? 'flex' : 'block';
+                    });
+                    
                     console.log('🍔 Navbar locked - staying expanded like Gmail');
                 } else {
                     // Unlock: Allow normal hover behavior (like Gmail)
                     navbar.classList.remove('locked');
+                    navbar.classList.remove('expanded');
                     navbar.classList.add('minimized');
                     navbar.style.transform = 'translateX(-230px)';
                     document.body.style.paddingLeft = '90px';
@@ -13816,12 +13867,22 @@ body.navbar-locked {
                     // Respect lock state when switching to desktop
                     if (isNavbarLocked) {
                         navbar.classList.add('locked');
+                        navbar.classList.add('expanded');
                         navbar.classList.remove('minimized');
                         navbar.style.transform = 'translateX(0)';
                         document.body.style.paddingLeft = '320px';
                         document.body.classList.add('navbar-locked');
+                        
+                        // Ensure all navbar contents are visible
+                        const navbarContents = navbar.querySelectorAll('.navbar-header, .navbar-menu, .navbar-footer, .navbar-logo, .navbar-logo-text, .navbar-logo-icon, ul, li, a');
+                        navbarContents.forEach(element => {
+                            element.style.opacity = '1';
+                            element.style.visibility = 'visible';
+                            element.style.display = element.tagName === 'A' ? 'flex' : 'block';
+                        });
                     } else {
                         navbar.classList.remove('locked');
+                        navbar.classList.remove('expanded');
                         navbar.classList.add('minimized');
                         navbar.style.transform = 'translateX(-230px)';
                         document.body.style.paddingLeft = '90px';
@@ -13835,6 +13896,7 @@ body.navbar-locked {
                 navbar.addEventListener('mouseenter', function() {
                     if (isNavbarLocked) return; // ignore hover when locked
                     navbar.classList.remove('minimized');
+                    navbar.classList.add('expanded');
                     navbar.style.transform = 'translateX(0)';
                     document.body.style.paddingLeft = '320px';
                     document.body.classList.remove('navbar-locked');
@@ -13934,6 +13996,7 @@ body.navbar-locked {
                     
                     // Force navbar to expand by removing minimized class and transform
                     navbar.classList.remove('minimized');
+                    navbar.classList.add('expanded');
                     navbar.style.transform = 'translateX(0)';
                     document.body.style.paddingLeft = '320px';
                     document.body.classList.remove('navbar-locked');
