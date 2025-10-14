@@ -7533,22 +7533,7 @@ body.navbar-locked {
     padding-left: 320px !important;
 }
 
-/* Simple hover zone for navbar expansion */
-.navbar-hover-zone {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 20px; /* thin strip on left edge */
-    height: 100vh;
-    background: transparent;
-    z-index: 1001; /* above navbar, below floating icons */
-    pointer-events: auto;
-}
-
-/* Hide hover zone when locked */
-.navbar.locked ~ .navbar-hover-zone {
-    display: none;
-}
+/* No separate hover zone needed - navbar handles its own hover */
 
 /* Navbar contents should stay visible when locked/expanded (no layout overrides) */
 .navbar.locked *,
@@ -8398,9 +8383,6 @@ body.navbar-locked {
             <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></div>
         </div>
     </div>
-    
-    <!-- Simple hover zone for navbar expansion -->
-    <div class="navbar-hover-zone" id="navbarHoverZone"></div>
     
     <!-- Floating Navigation Icons - Always visible like Gmail -->
     <div class="floating-nav-icons">
@@ -14012,22 +13994,7 @@ body.navbar-locked {
                 });
             });
             
-            // Simple hover zone for navbar expansion
-            const hoverZone = document.getElementById('navbarHoverZone');
-            if (hoverZone) {
-                hoverZone.addEventListener('mouseenter', () => {
-                    if (navbar.classList.contains('locked')) return;
-                    hoverArea = 'navbar';
-                    expandNavbar();
-                    console.log('🎯 Hover zone enter detected');
-                });
-                hoverZone.addEventListener('mouseleave', () => {
-                    if (navbar.classList.contains('locked')) return;
-                    hoverArea = null;
-                    scheduleMinimize();
-                    console.log('🎯 Hover zone leave detected');
-                });
-            }
+            // No separate hover zone - navbar handles its own hover via :hover CSS and mouseenter/mouseleave
             
             // Initial positioning
             positionFloatingIcons();
