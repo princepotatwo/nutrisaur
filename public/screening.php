@@ -751,69 +751,27 @@ body {
     color: var(--color-highlight);
 }
 
-/* Navbar Toggle Button Styles */
-.navbar-toggle-btn {
-    background: rgba(161, 180, 84, 0.1);
-    border: 1px solid rgba(161, 180, 84, 0.2);
-    border-radius: 8px;
-    padding: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text);
-    opacity: 0.7;
-    min-width: 36px;
-    height: 36px;
-}
-
-.navbar-toggle-btn:hover {
-    background: rgba(161, 180, 84, 0.15);
-    border-color: rgba(161, 180, 84, 0.3);
-    opacity: 1;
-    transform: scale(1.05);
-    box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
-}
-
-.navbar-toggle-btn.expanded {
-    background: rgba(161, 180, 84, 0.2);
-    border-color: rgba(161, 180, 84, 0.4);
-    opacity: 1;
-    color: var(--color-highlight);
-}
-
-.navbar-toggle-btn.expanded:hover {
-    background: rgba(161, 180, 84, 0.25);
-    border-color: rgba(161, 180, 84, 0.5);
-    box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
-}
-
-.navbar-toggle-btn svg {
-    transition: all 0.3s ease;
-}
-
-/* Expanded state - navbar expanded (shows full width) */
-.navbar:not(.minimized) {
+/* Hover state - navbar expanded (shows full width) */
+.navbar:hover {
     transform: translateX(0); /* Show full navbar */
     box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(15px);
 }
 
 /* Hide text content when navbar is minimized */
-.navbar.minimized .navbar-logo-text,
-.navbar.minimized span:not(.navbar-icon),
-.navbar.minimized .navbar-footer {
+.navbar-logo-text,
+.navbar span:not(.navbar-icon),
+.navbar-footer {
     opacity: 0;
     transition: opacity 0.3s ease, transform 0.3s ease;
     transform: translateX(-10px);
     white-space: nowrap;
 }
 
-/* Show text content when navbar is expanded */
-.navbar:not(.minimized) .navbar-logo-text,
-.navbar:not(.minimized) span:not(.navbar-icon),
-.navbar:not(.minimized) .navbar-footer {
+/* Show text content when navbar is hovered */
+.navbar:hover .navbar-logo-text,
+.navbar:hover span:not(.navbar-icon),
+.navbar:hover .navbar-footer {
     opacity: 1;
     transform: translateX(0);
 }
@@ -825,45 +783,19 @@ body {
     justify-content: flex-start;
     align-items: center;
     padding-top: 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 320px;
+    z-index: 1000;
     transform: translateX(-280px); /* Start minimized */
     transition: transform 0.3s ease;
 }
 
-/* Toggle button positioning - like hamburger menu */
-.navbar-toggle-btn {
-    position: fixed;
-    right: 25px;
-    top: 35px;
-    width: 36px;
-    height: 36px;
-    z-index: 1002;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    pointer-events: auto;
-}
-
-/* Show toggle button when navbar is minimized */
-.navbar.minimized .navbar-toggle-btn {
-    display: flex;
-}
-
-/* Hide toggle button when navbar is expanded */
-.navbar:not(.minimized) .navbar-toggle-btn {
-    display: none;
-}
-
-/* Minimized state */
-.navbar.minimized {
-    transform: translateX(-280px);
-}
-
-/* Expanded state */
-.navbar:not(.minimized) {
-    transform: translateX(0);
+/* Lock navbar in place - no teleporting */
+.navbar:hover {
+    transform: translateX(0); /* Expand on hover */
 }
 
 /* Navbar icon hover effect when minimized */
@@ -5942,20 +5874,7 @@ header {
     </style>
 </head>
 <body class="light-theme">
-    <div class="navbar" id="navbar">
-        <!-- Toggle Button -->
-        <button class="navbar-toggle-btn" id="navbar-toggle-btn" title="Toggle Navbar">
-            <svg class="hamburger-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-            <svg class="close-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-        </button>
-        
+    <div class="navbar">
         <div class="navbar-header">
             <div class="navbar-logo">
                 <div class="navbar-logo-icon">
@@ -6699,63 +6618,15 @@ header {
             }
         });
 
-        // Navbar Toggle Functionality
-        function initNavbarToggle() {
-            const navbar = document.getElementById('navbar');
-            const toggleBtn = document.getElementById('navbar-toggle-btn');
-            
-            if (!navbar || !toggleBtn) return;
-            
-            // Start with navbar minimized
-            navbar.classList.add('minimized');
-            
-            // Toggle functionality
-            toggleBtn.addEventListener('click', function() {
-                const isMinimized = navbar.classList.contains('minimized');
-                
-                if (isMinimized) {
-                    // Expand navbar
-                    navbar.classList.remove('minimized');
-                    toggleBtn.classList.add('expanded');
-                    toggleBtn.title = 'Minimize Navbar';
-                    
-                    // Update icons
-                    const hamburgerIcon = toggleBtn.querySelector('.hamburger-icon');
-                    const closeIcon = toggleBtn.querySelector('.close-icon');
-                    if (hamburgerIcon) hamburgerIcon.style.display = 'none';
-                    if (closeIcon) closeIcon.style.display = 'block';
-                    
-                    // Hide toggle button when expanded (like hamburger menu)
-                    toggleBtn.style.display = 'none';
-                } else {
-                    // Minimize navbar
-                    navbar.classList.add('minimized');
-                    toggleBtn.classList.remove('expanded');
-                    toggleBtn.title = 'Expand Navbar';
-                    
-                    // Update icons
-                    const hamburgerIcon = toggleBtn.querySelector('.hamburger-icon');
-                    const closeIcon = toggleBtn.querySelector('.close-icon');
-                    if (hamburgerIcon) hamburgerIcon.style.display = 'block';
-                    if (closeIcon) closeIcon.style.display = 'none';
-                    
-                    // Show toggle button when minimized
-                    toggleBtn.style.display = 'flex';
-                }
-            });
-        }
-
         // Initialize when DOM is ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
                 initNavigation();
                 updateWHOButtonsResponsiveness();
-                initNavbarToggle();
             });
         } else {
             initNavigation();
             updateWHOButtonsResponsiveness();
-            initNavbarToggle();
         }
 
         // Municipalities and Barangays data
