@@ -5968,11 +5968,11 @@ header {
         </div>
         <div class="navbar-menu">
             <ul>
-                <li><a href="dash"><span class="navbar-icon">📊</span><span>Dashboard</span></a></li>
-                <li><a href="screening"><span class="navbar-icon">📋</span><span>MHO Assessment</span></a></li>
-                <li><a href="event"><span class="navbar-icon">🔔</span><span>Nutrition Event Notifications</span></a></li>
-                <li><a href="settings"><span class="navbar-icon">⚙️</span><span>Settings & Admin</span></a></li>
-                <li><a href="logout" style="color: #ff5252;"><span class="navbar-icon">🚪</span><span>Logout</span></a></li>
+                <li><a href="dash"><span class="navbar-icon"></span><span>Dashboard</span></a></li>
+                <li><a href="screening"><span class="navbar-icon"></span><span>MHO Assessment</span></a></li>
+                <li><a href="event"><span class="navbar-icon"></span><span>Nutrition Event Notifications</span></a></li>
+                <li><a href="settings"><span class="navbar-icon"></span><span>Settings & Admin</span></a></li>
+                <li><a href="logout" style="color: #ff5252;"><span class="navbar-icon"></span><span>Logout</span></a></li>
             </ul>
         </div>
         <div class="navbar-footer">
@@ -6012,7 +6012,7 @@ header {
                 <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
         </a>
-        <a href="settings" class="floating-nav-icon" id="floating-settings" title="Settings & Admin">
+        <a href="settings" class="floating-nav-icon" id="floating-settings" title="Settings">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -11046,6 +11046,191 @@ header {
 
         // ==================== END MHO FOOD MANAGER ====================
 
+        // Navbar Hamburger Button Implementation - Gmail Style
+        let isNavbarLocked = false;
+        
+        function initNavbarHamburgerButton() {
+            console.log('🍔 Initializing navbar hamburger button...');
+            
+            const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
+            const navbar = document.querySelector('.navbar');
+            
+            if (!hamburgerBtn || !navbar) {
+                console.error('❌ Navbar hamburger button or navbar not found');
+                return;
+            }
+            
+            // Add click event listener to hamburger button - simple toggle
+            hamburgerBtn.addEventListener('click', function() {
+                const isExpanded = navbar.classList.contains('expanded');
+                
+                if (isExpanded) {
+                    // Minimize navbar
+                    navbar.classList.remove('expanded');
+                    navbar.classList.add('minimized');
+                    navbar.style.transform = 'translateX(-230px)';
+                    document.body.style.paddingLeft = '90px';
+                    
+                    // Position hamburger button at floating icons position when minimized
+                    hamburgerBtn.style.left = '25px';
+                    hamburgerBtn.style.top = '50px'; // Reset to original position
+                    console.log('🍔 Navbar minimized');
+                } else {
+                    // Expand navbar
+                    navbar.classList.remove('minimized');
+                    navbar.classList.add('expanded');
+                    navbar.style.transform = 'translateX(0)';
+                    document.body.style.paddingLeft = '320px';
+                    
+                    // Position hamburger button anchored to navbar when expanded
+                    hamburgerBtn.style.left = '250px';
+                    hamburgerBtn.style.top = '43px';
+                    console.log('🍔 Navbar expanded');
+                }
+            });
+            
+            // Hamburger button appearance handled by CSS
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile) {
+                    // Mobile: hide hamburger button
+                    hamburgerBtn.style.display = 'none';
+        } else {
+                    // Desktop: show hamburger button
+                    hamburgerBtn.style.display = 'flex';
+                    
+                    // Respect lock state when switching to desktop
+                    if (isNavbarLocked) {
+                        navbar.classList.add('locked');
+                        navbar.classList.add('expanded');
+                        navbar.classList.remove('minimized');
+                        navbar.style.transform = 'translateX(0)';
+                        document.body.style.paddingLeft = '320px';
+                        document.body.classList.add('navbar-locked');
+                    } else {
+                        navbar.classList.remove('locked');
+                        navbar.classList.remove('expanded');
+                        navbar.classList.add('minimized');
+                        navbar.style.transform = 'translateX(-230px)';
+                        document.body.style.paddingLeft = '90px';
+                        document.body.classList.remove('navbar-locked');
+                    }
+                }
+            });
+            
+            // No hover navigation - hamburger button only
+            
+            // Set initial state
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                hamburgerBtn.style.display = 'none';
+            } else {
+                hamburgerBtn.style.display = 'flex';
+                // Start with navbar minimized (like Gmail)
+                navbar.classList.add('minimized');
+                document.body.style.paddingLeft = '90px';
+                // Set initial hamburger position for minimized state
+                hamburgerBtn.style.left = '25px';
+            }
+            
+            console.log('✅ Navbar hamburger button initialized successfully');
+        }
+        
+        // Initialize navbar hamburger button when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initNavbarHamburgerButton);
+        } else {
+            initNavbarHamburgerButton();
+        }
+
+        // Floating Navigation Icons - Always visible like Gmail
+        function initFloatingIcons() {
+            console.log('🎯 Initializing floating navigation icons...');
+            
+            const floatingIcons = document.querySelectorAll('.floating-nav-icon');
+            const navbar = document.getElementById('navbar');
+            
+            if (!navbar || floatingIcons.length === 0) {
+                console.log('⚠️ Navbar or floating icons not found');
+                return;
+            }
+            
+            // Position floating icons beside navbar menu items
+            function positionFloatingIcons() {
+                const navbarMenu = navbar.querySelector('.navbar-menu ul');
+                if (!navbarMenu) return;
+                
+                const menuItems = navbarMenu.querySelectorAll('li');
+                
+                floatingIcons.forEach((icon, index) => {
+                    if (menuItems[index]) {
+                        const menuItem = menuItems[index];
+                        const rect = menuItem.getBoundingClientRect();
+                        
+                        // Position icon beside the menu item
+                        icon.style.position = 'fixed';
+                        icon.style.left = '20px';
+                        icon.style.top = (rect.top + rect.height / 2 - 28) + 'px';
+                        icon.style.zIndex = '1001';
+                    }
+                });
+            }
+            
+            // No hover functionality - hamburger button only
+
+            // No hover functionality on floating icons
+            
+            // No hover trigger needed
+            
+            // Initial positioning
+            positionFloatingIcons();
+            
+            // Update positioning on scroll and resize
+            window.addEventListener('scroll', positionFloatingIcons);
+            window.addEventListener('resize', positionFloatingIcons);
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile) {
+                    // Mobile: hide floating icons
+                    floatingIcons.forEach(icon => {
+                        icon.style.display = 'none';
+                    });
+                } else {
+                    // Desktop: show floating icons
+                    floatingIcons.forEach(icon => {
+                        icon.style.display = 'flex';
+                    });
+                    positionFloatingIcons();
+                }
+            });
+            
+            // Set initial state
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                floatingIcons.forEach(icon => {
+                    icon.style.display = 'none';
+                });
+            } else {
+                floatingIcons.forEach(icon => {
+                    icon.style.display = 'flex';
+                });
+            }
+            
+            console.log('✅ Floating navigation icons initialized successfully');
+        }
+        
+        // Initialize floating icons when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initFloatingIcons);
+        } else {
+            initFloatingIcons();
+        }
 
     </script>
 </body>
