@@ -7383,7 +7383,7 @@ body {
 .navbar-hamburger-btn {
     position: absolute;
     top: 28px; /* moved a bit down */
-    right: 28px; /* moved a bit right */
+    right: 20px;
     width: 40px;
     height: 40px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -7533,22 +7533,7 @@ body.navbar-locked {
     padding-left: 320px !important;
 }
 
-/* Navbar hover trigger - covers the visible minimized area */
-.navbar-hover-trigger {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 90px; /* match visible minimized width */
-    height: 100vh;
-    background: transparent;
-    z-index: 999; /* below navbar (1000) */
-    pointer-events: auto;
-}
-
-.navbar.locked ~ .navbar-hover-trigger,
-.navbar.expanded ~ .navbar-hover-trigger {
-    pointer-events: none; /* disable when expanded or locked */
-}
+/* Removed hover trigger - using hamburger button only */
 
 /* Navbar contents should stay visible when locked/expanded (no layout overrides) */
 .navbar.locked *,
@@ -8399,8 +8384,6 @@ body.navbar-locked {
         </div>
     </div>
     
-    <!-- Navbar hover trigger - catches hover over visible minimized area -->
-    <div class="navbar-hover-trigger" id="navbarHoverTrigger"></div>
     
     <!-- Floating Navigation Icons - Always visible like Gmail -->
     <div class="floating-nav-icons">
@@ -13578,16 +13561,7 @@ body.navbar-locked {
             // Initialize mobile dropdown functionality
             initMobileDropdowns();
             
-            // Desktop hover navigation (unchanged)
-            if (navbar && window.innerWidth >= 769) {
-                navbar.addEventListener('mouseenter', function() {
-                        expandNavbar();
-                });
-                
-                navbar.addEventListener('mouseleave', function() {
-                        minimizeNavbar();
-                });
-            }
+            // No hover navigation - hamburger button only
             
             // Handle window resize
             window.addEventListener('resize', function() {
@@ -13798,50 +13772,28 @@ body.navbar-locked {
                 return;
             }
             
-            // Add click event listener to hamburger button
+            // Add click event listener to hamburger button - simple toggle
             hamburgerBtn.addEventListener('click', function() {
-                isNavbarLocked = !isNavbarLocked;
-                updateHamburgerButton();
+                const isExpanded = navbar.classList.contains('expanded');
                 
-                console.log('🍔 Navbar hamburger button clicked, new state:', isNavbarLocked);
-                
-                if (isNavbarLocked) {
-                    // Lock: Force navbar to stay expanded (like Gmail)
-                    navbar.classList.add('locked');
-                    navbar.classList.remove('minimized');
-                    navbar.classList.add('expanded');
-                    navbar.style.transform = 'translateX(0)';
-                    document.body.style.paddingLeft = '320px';
-                    document.body.classList.add('navbar-locked');
-                    
-                    // Hover zone now handled by CSS pseudo-element
-                    
-                    console.log('🍔 Navbar locked - staying expanded like Gmail');
-                } else {
-                    // Unlock: Allow normal hover behavior (like Gmail)
-                    navbar.classList.remove('locked');
+                if (isExpanded) {
+                    // Minimize navbar
                     navbar.classList.remove('expanded');
                     navbar.classList.add('minimized');
                     navbar.style.transform = 'translateX(-230px)';
                     document.body.style.paddingLeft = '90px';
-                    document.body.classList.remove('navbar-locked');
-                    
-                    // Hover zone now handled by CSS pseudo-element
-                    
-                    console.log('🍔 Navbar unlocked - normal hover behavior like Gmail');
+                    console.log('🍔 Navbar minimized');
+                } else {
+                    // Expand navbar
+                    navbar.classList.remove('minimized');
+                    navbar.classList.add('expanded');
+                    navbar.style.transform = 'translateX(0)';
+                    document.body.style.paddingLeft = '320px';
+                    console.log('🍔 Navbar expanded');
                 }
             });
             
-            // Update hamburger button appearance
-            function updateHamburgerButton() {
-                if (isNavbarLocked) {
-                    hamburgerBtn.classList.add('locked');
-                    hamburgerBtn.title = 'Unpin Sidebar';
-        } else {
-                    hamburgerBtn.classList.remove('locked');
-                    hamburgerBtn.title = 'Pin Sidebar';
-                }
-            }
+            // Hamburger button appearance handled by CSS
             
             // Handle window resize
             window.addEventListener('resize', function() {
@@ -13878,22 +13830,7 @@ body.navbar-locked {
                 }
             });
             
-            // Desktop hover navigation (modified to respect lock state)
-            if (window.innerWidth >= 769) {
-                navbar.addEventListener('mouseenter', function() {
-                    if (isNavbarLocked) return; // ignore hover when locked
-                    hoverArea = 'navbar';
-                    expandNavbar();
-                    console.log('🎯 Navbar hover detected');
-                });
-                
-                navbar.addEventListener('mouseleave', function() {
-                    if (isNavbarLocked) return; // ignore hover when locked
-                    hoverArea = null;
-                    scheduleMinimize();
-                    console.log('🎯 Navbar leave detected');
-                });
-            }
+            // No hover navigation - hamburger button only
             
             // Set initial state
             const isMobile = window.innerWidth <= 768;
@@ -13953,75 +13890,17 @@ body.navbar-locked {
                         // Position icon beside the menu item
                         icon.style.position = 'fixed';
                         icon.style.left = '20px';
-                        icon.style.top = (rect.top + rect.height / 2 - 48) + 'px';
+                        icon.style.top = (rect.top + rect.height / 2 - 20) + 'px';
                         icon.style.zIndex = '1001';
                     }
                 });
             }
             
-            // Simplified hover state management
-            let hoverArea = null; // 'navbar' | 'icons' | null
-            let minimizeTimer = null;
+            // No hover functionality - hamburger button only
 
-            function clearMinimizeTimer() {
-                if (minimizeTimer) {
-                    clearTimeout(minimizeTimer);
-                    minimizeTimer = null;
-                }
-            }
-
-            function expandNavbar() {
-                if (navbar.classList.contains('locked')) return;
-                clearMinimizeTimer();
-                navbar.classList.remove('minimized');
-                navbar.classList.add('expanded');
-                navbar.style.transform = 'translateX(0)';
-                document.body.style.paddingLeft = '320px';
-                
-                // Hover zone stays active (thin strip doesn't interfere)
-            }
-
-            function minimizeNavbar() {
-                if (navbar.classList.contains('locked')) return;
-                navbar.classList.remove('expanded');
-                navbar.classList.add('minimized');
-                navbar.style.transform = 'translateX(-230px)';
-                document.body.style.paddingLeft = '90px';
-                
-                // Hover zone stays active (thin strip doesn't interfere)
-            }
-
-            function scheduleMinimize() {
-                clearMinimizeTimer();
-                minimizeTimer = setTimeout(() => {
-                    if (!hoverArea) {
-                        minimizeNavbar();
-                    }
-                }, 200);
-            }
-
-            // Floating icons
-            floatingIcons.forEach(icon => {
-                icon.addEventListener('mouseenter', () => {
-                    hoverArea = 'icons';
-                    expandNavbar();
-                });
-                icon.addEventListener('mouseleave', () => {
-                    hoverArea = null;
-                    scheduleMinimize();
-                });
-            });
+            // No hover functionality on floating icons
             
-            // Navbar hover trigger for minimized state
-            const hoverTrigger = document.getElementById('navbarHoverTrigger');
-            if (hoverTrigger) {
-                hoverTrigger.addEventListener('mouseenter', () => {
-                    if (navbar.classList.contains('locked')) return;
-                    hoverArea = 'navbar';
-                    expandNavbar();
-                    console.log('🎯 Hover trigger activated - expanding navbar');
-                });
-            }
+            // No hover trigger needed
             
             // Initial positioning
             positionFloatingIcons();
