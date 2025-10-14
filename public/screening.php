@@ -783,19 +783,6 @@ body {
     justify-content: flex-start;
     align-items: center;
     padding-top: 20px;
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100vh;
-    width: 320px;
-    z-index: 1000;
-    transform: translateX(-280px); /* Start minimized */
-    transition: transform 0.3s ease;
-}
-
-/* Lock navbar in place - no teleporting */
-.navbar:hover {
-    transform: translateX(0); /* Expand on hover */
 }
 
 /* Navbar icon hover effect when minimized */
