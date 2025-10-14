@@ -9217,8 +9217,12 @@ header {
                     console.log('📋 Updated food history data received:', data);
                     
                     if (data.success && data.data) {
+                        // Get userName from the existing modal
+                        const userNameElement = existingModal.querySelector('h3');
+                        const userName = userNameElement ? userNameElement.textContent.replace('Food History', '').trim() : 'User';
+                        
                         // Update the modal content with new data
-                        showFoodHistoryTableModal(userEmail, data.data);
+                        showFoodHistoryTableModal(userName, userEmail, data.data);
                     } else {
                         console.error('❌ API Error:', data.message);
                         modalContent.innerHTML = '<p>Error loading updated food history: ' + (data.message || 'Unknown error') + '</p>';
