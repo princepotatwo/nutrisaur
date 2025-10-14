@@ -845,12 +845,7 @@ body {
     color: var(--color-highlight);
 }
 
-/* Hover state - navbar expanded (shows full width) */
-.navbar:hover {
-    transform: translateX(0); /* Show full navbar */
-    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(15px);
-}
+/* Hover state removed - using hamburger button only */
 
 /* Hide text content when navbar is minimized */
 .navbar-logo-text,
@@ -862,13 +857,7 @@ body {
     white-space: nowrap;
 }
 
-/* Show text content when navbar is hovered */
-.navbar:hover .navbar-logo-text,
-.navbar:hover span:not(.navbar-icon),
-.navbar:hover .navbar-footer {
-    opacity: 1;
-    transform: translateX(0);
-}
+/* Hover text content removed - using hamburger button only */
 
 /* Minimized navbar - center the logo icon */
 .navbar {
@@ -884,18 +873,9 @@ body {
     transition: transform 0.2s ease, color 0.2s ease;
 }
 
-.navbar:hover .navbar-icon {
-    transform: scale(1.05);
-    color: var(--color-primary);
-}
+/* Navbar icon hover removed - using hamburger button only */
 
-/* Expanded navbar state - show everything */
-.navbar:hover {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: stretch;
-    padding-top: 0;
+/* Expanded navbar state removed - using hamburger button only */
 }
 
 /* ===== MOBILE TOP NAVIGATION STYLES ===== */
@@ -1099,9 +1079,7 @@ body {
         display: none !important;
     }
     
-    .navbar:hover {
-        width: 320px !important; /* Hover: expanded */
-    }
+    /* Navbar hover removed - using hamburger button only */
     
     /* Body padding will be handled by JavaScript */
 }
