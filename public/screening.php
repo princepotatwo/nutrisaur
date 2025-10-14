@@ -32,7 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['auto_screening']) && 
         
         // Use existing saveScreeningHistory function
         if ($assessment['success']) {
+            error_log("Auto-screening: Assessment successful, attempting to save...");
+            error_log("Auto-screening: Assessment data: " . json_encode($assessment));
             $saved = saveScreeningHistory($user_data, $assessment);
+            error_log("Auto-screening: Save result: " . ($saved ? 'true' : 'false'));
             if ($saved) {
                 echo json_encode([
                     'success' => true, 
@@ -45,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['auto_screening']) && 
                 ]);
             }
         } else {
+            error_log("Auto-screening: Assessment failed: " . json_encode($assessment));
             echo json_encode([
                 'success' => false, 
                 'message' => 'Auto-screening failed: ' . ($assessment['error'] ?? 'Unknown error')
@@ -298,11 +302,13 @@ function saveScreeningHistory($user_data, $assessment) {
         
         // Save Adult BMI classification if user is an adult (≥19 years or 228 months)
         if ($ageInMonths >= 228) {
+            error_log("Auto-screening: User is adult (age: $ageInMonths months), saving Adult BMI classification");
             $bmi = $historyData['bmi'];
             if ($bmi !== null) {
                 $adultClassification = getAdultBMIClassification($bmi);
+                error_log("Auto-screening: Adult BMI classification: " . json_encode($adultClassification));
                 $stmt = $pdo->prepare("INSERT INTO screening_history (user_email, screening_date, weight, height, bmi, age_months, sex, classification_type, classification, z_score, nutritional_risk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([
+                $result = $stmt->execute([
                     $historyData['user_email'],
                     $historyData['screening_date'],
                     $historyData['weight'],
@@ -315,7 +321,12 @@ function saveScreeningHistory($user_data, $assessment) {
                     $adultClassification['z_score'],
                     $historyData['nutritional_risk']
                 ]);
+                error_log("Auto-screening: Adult BMI insert result: " . ($result ? 'success' : 'failed'));
+            } else {
+                error_log("Auto-screening: BMI is null, cannot save Adult BMI classification");
             }
+        } else {
+            error_log("Auto-screening: User is not adult (age: $ageInMonths months), checking WHO standards");
         }
         
         return true;
