@@ -7462,6 +7462,7 @@ body {
     padding-top: 20px;
     gap: 8px;
     pointer-events: none;
+    overflow: hidden;
 }
 
 .floating-nav-icon {
@@ -7479,6 +7480,8 @@ body {
     opacity: 0.8;
     pointer-events: auto;
     margin: 4px 0;
+    max-height: 40px;
+    min-height: 40px;
 }
 
 .floating-nav-icon:hover {
@@ -13860,10 +13863,12 @@ body {
                         const menuItem = menuItems[index];
                         const rect = menuItem.getBoundingClientRect();
                         
-                        // Position icon beside the menu item
+                        // Position icon beside the menu item, constrained to navbar area
                         icon.style.position = 'fixed';
                         icon.style.left = '20px';
-                        icon.style.top = (rect.top + rect.height / 2 - 30) + 'px';
+                        // Ensure icons stay within the navbar bounds (top: 80px to bottom: 100vh)
+                        const topPosition = Math.max(80, Math.min(rect.top + rect.height / 2 - 40, window.innerHeight - 100));
+                        icon.style.top = topPosition + 'px';
                         icon.style.zIndex = '1001';
                     }
                 });
