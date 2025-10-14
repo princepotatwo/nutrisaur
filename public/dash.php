@@ -13788,6 +13788,7 @@ body.navbar-locked {
                     
                     // Position hamburger button at floating icons position when minimized
                     hamburgerBtn.style.left = '25px';
+                    hamburgerBtn.style.top = '50px'; // Reset to original position
                     console.log('🍔 Navbar minimized');
                 } else {
                     // Expand navbar
@@ -13797,7 +13798,8 @@ body.navbar-locked {
                     document.body.style.paddingLeft = '320px';
                     
                     // Position hamburger button anchored to navbar when expanded
-                    hamburgerBtn.style.left = '280px'; // Better position within expanded navbar
+                    hamburgerBtn.style.left = '270px'; // 280px - 10px left
+                    hamburgerBtn.style.top = '47px'; // 50px - 3px up
                     console.log('🍔 Navbar expanded');
                 }
             });
