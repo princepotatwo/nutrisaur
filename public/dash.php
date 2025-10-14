@@ -7491,12 +7491,12 @@ body {
 .navbar-minimized-icon {
     position: fixed;
     right: 2px;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     background: rgba(161, 180, 84, 0.15);
     border: 1px solid rgba(161, 180, 84, 0.3);
     border-radius: 8px;
-    padding: 6px;
+    padding: 4px;
     z-index: 1002;
     display: flex; /* Show by default - will be controlled by navbar state */
     align-items: center;
@@ -7687,11 +7687,6 @@ body {
     justify-content: flex-start;
     align-items: center;
     padding-top: 20px;
-}
-
-/* Hide regular navbar icons when minimized */
-.navbar.minimized .navbar-icon {
-    display: none !important;
 }
 
 /* Navbar icon hover effect when minimized */
@@ -8496,7 +8491,7 @@ body {
         
         <!-- Minimized state icons - independent elements like hamburger button -->
         <a href="dash" class="navbar-minimized-icon" style="top: 25%;" title="Dashboard">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="3" width="7" height="7"></rect>
                 <rect x="14" y="3" width="7" height="7"></rect>
                 <rect x="14" y="14" width="7" height="7"></rect>
@@ -8504,26 +8499,26 @@ body {
             </svg>
         </a>
         <a href="screening" class="navbar-minimized-icon" style="top: 40%;" title="MHO Assessment">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"></path>
                 <polyline points="9,11 9,7 15,7 15,11"></polyline>
                 <path d="M9 7V3a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"></path>
             </svg>
         </a>
         <a href="event" class="navbar-minimized-icon" style="top: 55%;" title="Event Notifications">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12,6 12,12 16,14"></polyline>
             </svg>
         </a>
         <a href="settings" class="navbar-minimized-icon" style="top: 70%;" title="Settings">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
         </a>
         <a href="logout" class="navbar-minimized-icon" style="top: 85%;" title="Logout">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                 <polyline points="16,17 21,12 16,7"></polyline>
                 <line x1="21" y1="12" x2="9" y2="12"></line>
