@@ -13822,7 +13822,9 @@ body {
                         // Only minimize if not hovering over icons
                         if (!navbar.classList.contains('hovering-icons')) {
                             navbar.classList.add('minimized');
+                            navbar.style.transform = 'translateX(-230px)';
                             document.body.style.paddingLeft = '90px';
+                            console.log('🎯 Navbar minimized after navbar leave');
                         }
                     }, 100);
                 });
@@ -13901,12 +13903,17 @@ body {
                     const isLocked = hamburgerBtn ? hamburgerBtn.classList.contains('locked') : false;
                     if (isLocked) return; // ignore hover when locked
                     
-                    // Expand navbar and keep it expanded
+                    console.log('🎯 Floating icon hover - expanding navbar');
+                    
+                    // Force navbar to expand by removing minimized class and transform
                     navbar.classList.remove('minimized');
+                    navbar.style.transform = 'translateX(0)';
                     document.body.style.paddingLeft = '320px';
                     
                     // Add a class to indicate we're hovering over floating icons
                     navbar.classList.add('hovering-icons');
+                    
+                    console.log('🎯 Navbar expanded by floating icon hover');
                 });
                 
                 icon.addEventListener('mouseleave', function() {
@@ -13923,7 +13930,9 @@ body {
                         // Only minimize if not hovering over navbar or icons
                         if (!navbar.matches(':hover') && !navbar.classList.contains('hovering-icons')) {
                             navbar.classList.add('minimized');
+                            navbar.style.transform = 'translateX(-230px)';
                             document.body.style.paddingLeft = '90px';
+                            console.log('🎯 Navbar minimized after floating icon leave');
                         }
                     }, 100);
                 });
