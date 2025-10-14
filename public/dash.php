@@ -13816,8 +13816,15 @@ body {
                 
                 navbar.addEventListener('mouseleave', function() {
                     if (isNavbarLocked) return; // ignore hover when locked
-                    navbar.classList.add('minimized');
-                    document.body.style.paddingLeft = '90px';
+                    
+                    // Use a small delay to allow moving between navbar and icons
+                    setTimeout(() => {
+                        // Only minimize if not hovering over icons
+                        if (!navbar.classList.contains('hovering-icons')) {
+                            navbar.classList.add('minimized');
+                            document.body.style.paddingLeft = '90px';
+                        }
+                    }, 100);
                 });
             }
             
@@ -13886,14 +13893,20 @@ body {
             }
             
             // Add hover functionality to floating icons to expand navbar
+            // Icons should act like part of navbar - keep navbar expanded when hovering over them
             floatingIcons.forEach(icon => {
                 icon.addEventListener('mouseenter', function() {
                     // Check lock state dynamically
                     const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
                     const isLocked = hamburgerBtn ? hamburgerBtn.classList.contains('locked') : false;
                     if (isLocked) return; // ignore hover when locked
+                    
+                    // Expand navbar and keep it expanded
                     navbar.classList.remove('minimized');
                     document.body.style.paddingLeft = '320px';
+                    
+                    // Add a class to indicate we're hovering over floating icons
+                    navbar.classList.add('hovering-icons');
                 });
                 
                 icon.addEventListener('mouseleave', function() {
@@ -13901,8 +13914,18 @@ body {
                     const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
                     const isLocked = hamburgerBtn ? hamburgerBtn.classList.contains('locked') : false;
                     if (isLocked) return; // ignore hover when locked
-                    navbar.classList.add('minimized');
-                    document.body.style.paddingLeft = '90px';
+                    
+                    // Remove the hovering-icons class but don't minimize immediately
+                    navbar.classList.remove('hovering-icons');
+                    
+                    // Use a small delay to allow moving between icon and navbar
+                    setTimeout(() => {
+                        // Only minimize if not hovering over navbar or icons
+                        if (!navbar.matches(':hover') && !navbar.classList.contains('hovering-icons')) {
+                            navbar.classList.add('minimized');
+                            document.body.style.paddingLeft = '90px';
+                        }
+                    }, 100);
                 });
             });
             
