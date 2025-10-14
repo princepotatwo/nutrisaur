@@ -829,12 +829,31 @@ body {
     transition: transform 0.3s ease;
 }
 
-/* Toggle button positioning */
+/* Toggle button positioning - like hamburger menu */
 .navbar-toggle-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 1001;
+    position: fixed;
+    right: 25px;
+    top: 35px;
+    width: 36px;
+    height: 36px;
+    z-index: 1002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+}
+
+/* Show toggle button when navbar is minimized */
+.navbar.minimized .navbar-toggle-btn {
+    display: flex;
+}
+
+/* Hide toggle button when navbar is expanded */
+.navbar:not(.minimized) .navbar-toggle-btn {
+    display: none;
 }
 
 /* Minimized state */
@@ -6705,6 +6724,9 @@ header {
                     const closeIcon = toggleBtn.querySelector('.close-icon');
                     if (hamburgerIcon) hamburgerIcon.style.display = 'none';
                     if (closeIcon) closeIcon.style.display = 'block';
+                    
+                    // Hide toggle button when expanded (like hamburger menu)
+                    toggleBtn.style.display = 'none';
                 } else {
                     // Minimize navbar
                     navbar.classList.add('minimized');
@@ -6716,6 +6738,9 @@ header {
                     const closeIcon = toggleBtn.querySelector('.close-icon');
                     if (hamburgerIcon) hamburgerIcon.style.display = 'block';
                     if (closeIcon) closeIcon.style.display = 'none';
+                    
+                    // Show toggle button when minimized
+                    toggleBtn.style.display = 'flex';
                 }
             });
         }
