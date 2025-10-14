@@ -6106,24 +6106,7 @@ header {
             transition: transform 0.2s ease, color 0.2s ease;
         }
 
-        .navbar:hover .navbar-icon, .navbar.expanded .navbar-icon {
-            transform: scale(1.05);
-            color: var(--color-primary);
-        }
-
-        /* Expanded navbar state - show everything */
-        .navbar:hover, .navbar.expanded {
-            padding-top: 0;
-        }
-
-        .navbar:hover .navbar-logo-text,
-        .navbar.expanded .navbar-logo-text,
-        .navbar:hover span:not(.navbar-icon),
-        .navbar.expanded span:not(.navbar-icon),
-        .navbar:hover .navbar-footer,
-        .navbar.expanded .navbar-footer {
-            opacity: 1;
-        }
+        /* Navbar hover effects removed - using hamburger button only */
 
         /* Minimized state - hide text elements */
         .navbar.minimized .navbar-logo-text,
@@ -6778,14 +6761,14 @@ header {
                 navbar.addEventListener('mouseenter', () => {
                     if (!navState.isMobile) {
                         navState.isHovered = true;
-                        updateBodyPadding();
+                        // Body padding handled by hamburger button
                     }
                 });
 
                 navbar.addEventListener('mouseleave', () => {
                     if (!navState.isMobile) {
                         navState.isHovered = false;
-                        updateBodyPadding();
+                        // Body padding handled by hamburger button
                     }
                 });
             }
@@ -6807,18 +6790,11 @@ header {
                 if (navbar) navbar.style.display = 'flex';
                 if (mobileTopNav) mobileTopNav.style.display = 'none';
                 body.style.paddingTop = '0';
-                updateBodyPadding();
+                // Body padding handled by hamburger button
             }
         }
 
-        // Update body padding for desktop hover effect
-        function updateBodyPadding() {
-            if (!navState.isMobile) {
-                if (navState.isHovered) {
-                    body.style.paddingLeft = '320px'; // Expanded navbar width
-                } else {
-                    body.style.paddingLeft = '40px'; // Minimized navbar width
-                }
+        // Body padding now handled by hamburger button only
                 
                 // Update WHO standard buttons responsiveness based on available space
                 updateWHOButtonsResponsiveness();
