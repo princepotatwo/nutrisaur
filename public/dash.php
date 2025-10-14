@@ -7453,13 +7453,13 @@ body {
     position: fixed;
     left: 0;
     top: 0;
-    width: 60px;
+    width: 30px;
     height: 100vh;
     z-index: 1000;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 20px;
+    padding-top: 100px;
     gap: 8px;
     pointer-events: none;
     overflow: hidden;
@@ -13548,7 +13548,7 @@ body {
                 } else {
                     // Desktop: show desktop navbar, hide mobile top nav
                     if (navbar) navbar.style.display = 'flex';
-                    document.body.style.paddingLeft = '40px';
+                    document.body.style.paddingLeft = '15px';
                     document.body.style.paddingTop = '0';
                     document.body.style.width = '';
                     document.body.style.maxWidth = '';
@@ -13565,7 +13565,7 @@ body {
             
             function minimizeNavbar() {
                 if (window.innerWidth >= 769) {
-                    document.body.style.paddingLeft = '60px';
+                    document.body.style.paddingLeft = '15px';
                 }
             }
             
@@ -13758,7 +13758,7 @@ body {
                     // Unlock: Allow normal hover behavior (like Gmail)
                     navbar.classList.remove('locked');
                     navbar.classList.add('minimized');
-                    document.body.style.paddingLeft = '60px';
+                    document.body.style.paddingLeft = '15px';
                     console.log('🍔 Navbar unlocked - normal hover behavior like Gmail');
                 }
             });
@@ -13793,7 +13793,7 @@ body {
                     } else {
                         navbar.classList.remove('locked');
                         navbar.classList.add('minimized');
-                        document.body.style.paddingLeft = '60px';
+                        document.body.style.paddingLeft = '15px';
                     }
                 }
             });
@@ -13810,7 +13810,7 @@ body {
                 navbar.addEventListener('mouseleave', function() {
                     if (!isNavbarLocked) {
                         navbar.classList.add('minimized');
-                        document.body.style.paddingLeft = '60px';
+                        document.body.style.paddingLeft = '15px';
                     }
                 });
             }
@@ -13823,7 +13823,7 @@ body {
                 hamburgerBtn.style.display = 'flex';
                 // Start with navbar minimized (like Gmail)
                 navbar.classList.add('minimized');
-                document.body.style.paddingLeft = '60px';
+                document.body.style.paddingLeft = '15px';
             }
             
             // Initialize hamburger button state
@@ -13865,11 +13865,19 @@ body {
                         
                         // Position icon beside the menu item, constrained to navbar area
                         icon.style.position = 'fixed';
-                        icon.style.left = '20px';
-                        // Ensure icons stay within the navbar bounds (top: 80px to bottom: 100vh)
-                        const topPosition = Math.max(80, Math.min(rect.top + rect.height / 2 - 40, window.innerHeight - 100));
+                        icon.style.left = '10px';
+                        // Ensure icons stay within the navbar bounds (top: 120px to bottom: 100vh)
+                        const topPosition = Math.max(120, Math.min(rect.top + rect.height / 2 - 60, window.innerHeight - 150));
                         icon.style.top = topPosition + 'px';
                         icon.style.zIndex = '1001';
+                        
+                        // Additional constraint: ensure icon doesn't go outside navbar
+                        const navbarRect = navbar.getBoundingClientRect();
+                        if (topPosition < navbarRect.top + 20 || topPosition > navbarRect.bottom - 60) {
+                            icon.style.display = 'none';
+                        } else {
+                            icon.style.display = 'flex';
+                        }
                     }
                 });
             }
