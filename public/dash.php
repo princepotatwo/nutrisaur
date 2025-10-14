@@ -8356,13 +8356,6 @@ body.navbar-locked {
     <!-- Desktop Sidebar Navigation (unchanged) -->
     <div class="navbar" id="navbar">
         <div class="navbar-header">
-            <button class="navbar-hamburger-btn" id="navbarHamburgerBtn" title="Pin Sidebar">
-                <div class="hamburger-icon">
-                    <div class="hamburger-line"></div>
-                    <div class="hamburger-line"></div>
-                    <div class="hamburger-line"></div>
-                </div>
-        </button>
         
             <div class="navbar-logo">
                 <div class="navbar-logo-icon">
@@ -8386,6 +8379,14 @@ body.navbar-locked {
         </div>
     </div>
     
+    <!-- Hamburger Button - Outside navbar to avoid transform issues -->
+    <button class="navbar-hamburger-btn" id="navbarHamburgerBtn" title="Toggle Sidebar">
+        <div class="hamburger-icon">
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+        </div>
+    </button>
     
     <!-- Floating Navigation Icons - Always visible like Gmail -->
     <div class="floating-nav-icons">
