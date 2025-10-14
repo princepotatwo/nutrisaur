@@ -9872,15 +9872,6 @@ header {
                             <button class="food-history-close" onclick="this.closest('.modal').remove()" style="background: #4caf50; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; font-size: 16px;">&times;</button>
                         </div>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <button class="food-history-btn info" onclick="viewMHORecommendedFoods('${userEmail}', '${userName}')">
-                                View MHO Recommended Foods
-                            </button>
-                            <button class="food-history-btn success" onclick="addMHORecommendedFood('${userEmail}', '${userName}')">
-                                Add MHO Recommended Food
-                            </button>
-                            <button class="food-history-btn warning" onclick="bulkMHORecommendations()">
-                                Bulk MHO Recommendations
-                            </button>
                             <button class="food-history-btn info" onclick="openMHOFoodManager()">
                                 MHO Food Manager
                             </button>
@@ -9982,7 +9973,7 @@ header {
             document.body.appendChild(modal);
         }
 
-        function addMHORecommendedFood(userEmail, userName) {
+        /* removed: addMHORecommendedFood(userEmail, userName) */
             console.log('⭐ Add MHO Recommended Food function called for:', userEmail, userName);
             
             // Remove any existing modals
@@ -10115,7 +10106,7 @@ header {
             });
         }
 
-        function viewMHORecommendedFoods(userEmail, userName) {
+        /* removed: viewMHORecommendedFoods(userEmail, userName) */
             console.log('🍽️ View MHO Recommended Foods function called for:', userEmail, userName);
             
             // Remove any existing modals
@@ -10227,7 +10218,7 @@ header {
                 });
         }
 
-        function bulkMHORecommendations() {
+        /* removed: bulkMHORecommendations() */
             console.log('👥 Bulk MHO Recommendations function called');
             
             // Remove any existing modals
@@ -10347,7 +10338,7 @@ header {
             setupBulkRecommendationForm();
         }
 
-        function setupBulkRecommendationForm() {
+        /* removed: setupBulkRecommendationForm() */
             const classificationType = document.getElementById('classificationType');
             const category = document.getElementById('category');
             const userCount = document.getElementById('userCount');
