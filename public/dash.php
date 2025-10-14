@@ -7383,7 +7383,7 @@ body {
 .navbar-hamburger-btn {
     position: fixed;
     top: 50px; /* positioned to align with floating icons */
-    left: 25px; /* slightly right of floating icons to avoid overlap */
+    /* left position controlled by JavaScript */
     width: 40px;
     height: 40px;
     background: rgba(255, 255, 255, 0.9);
@@ -13785,6 +13785,9 @@ body.navbar-locked {
                     navbar.classList.add('minimized');
                     navbar.style.transform = 'translateX(-230px)';
                     document.body.style.paddingLeft = '90px';
+                    
+                    // Position hamburger button at floating icons position when minimized
+                    hamburgerBtn.style.left = '25px';
                     console.log('🍔 Navbar minimized');
                 } else {
                     // Expand navbar
@@ -13792,6 +13795,9 @@ body.navbar-locked {
                     navbar.classList.add('expanded');
                     navbar.style.transform = 'translateX(0)';
                     document.body.style.paddingLeft = '320px';
+                    
+                    // Position hamburger button anchored to navbar when expanded
+                    hamburgerBtn.style.left = '280px'; // Better position within expanded navbar
                     console.log('🍔 Navbar expanded');
                 }
             });
@@ -13844,6 +13850,8 @@ body.navbar-locked {
                 // Start with navbar minimized (like Gmail)
                 navbar.classList.add('minimized');
                 document.body.style.paddingLeft = '90px';
+                // Set initial hamburger position for minimized state
+                hamburgerBtn.style.left = '25px';
             }
             
             // Initialize hamburger button state
