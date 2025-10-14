@@ -1143,10 +1143,7 @@ header {
     transition: all 0.3s ease;
 }
 
-.dashboard-header:hover {
-    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.12);
-    transform: translateY(-1px);
-}
+/* Dashboard header hover removed - may interfere with navbar */
 
 .dashboard-title h1 {
     margin: 0;
@@ -6106,7 +6103,24 @@ header {
             transition: transform 0.2s ease, color 0.2s ease;
         }
 
-        /* Navbar hover effects removed - using hamburger button only */
+        .navbar:hover .navbar-icon, .navbar.expanded .navbar-icon {
+            transform: scale(1.05);
+            color: var(--color-primary);
+        }
+
+        /* Expanded navbar state - show everything */
+        .navbar:hover, .navbar.expanded {
+            padding-top: 0;
+        }
+
+        .navbar:hover .navbar-logo-text,
+        .navbar.expanded .navbar-logo-text,
+        .navbar:hover span:not(.navbar-icon),
+        .navbar.expanded span:not(.navbar-icon),
+        .navbar:hover .navbar-footer,
+        .navbar.expanded .navbar-footer {
+            opacity: 1;
+        }
 
         /* Minimized state - hide text elements */
         .navbar.minimized .navbar-logo-text,
@@ -6114,6 +6128,20 @@ header {
         .navbar.minimized .navbar-footer {
             opacity: 0;
             pointer-events: none;
+        }
+
+        /* DISABLE ALL HOVER EFFECTS ON DASHBOARD DIV TO PREVENT NAVBAR INTERFERENCE */
+        .dashboard:hover,
+        .dashboard *:hover {
+            transform: none !important;
+            box-shadow: none !important;
+            background: none !important;
+        }
+
+        /* Ensure dashboard div doesn't affect navbar positioning */
+        .dashboard {
+            position: relative;
+            z-index: 1;
         }
 
     </style>
@@ -6761,14 +6789,14 @@ header {
                 navbar.addEventListener('mouseenter', () => {
                     if (!navState.isMobile) {
                         navState.isHovered = true;
-                        // Body padding handled by hamburger button
+                        updateBodyPadding();
                     }
                 });
 
                 navbar.addEventListener('mouseleave', () => {
                     if (!navState.isMobile) {
                         navState.isHovered = false;
-                        // Body padding handled by hamburger button
+                        updateBodyPadding();
                     }
                 });
             }
@@ -6790,11 +6818,18 @@ header {
                 if (navbar) navbar.style.display = 'flex';
                 if (mobileTopNav) mobileTopNav.style.display = 'none';
                 body.style.paddingTop = '0';
-                // Body padding handled by hamburger button
+                updateBodyPadding();
             }
         }
 
-        // Body padding now handled by hamburger button only
+        // Update body padding for desktop hover effect
+        function updateBodyPadding() {
+            if (!navState.isMobile) {
+                if (navState.isHovered) {
+                    body.style.paddingLeft = '320px'; // Expanded navbar width
+                } else {
+                    body.style.paddingLeft = '40px'; // Minimized navbar width
+                }
                 
                 // Update WHO standard buttons responsiveness based on available space
                 updateWHOButtonsResponsiveness();
