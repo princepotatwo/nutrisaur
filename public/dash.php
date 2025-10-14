@@ -7533,6 +7533,24 @@ body.navbar-locked {
     padding-left: 320px !important;
 }
 
+/* Invisible hover zone to expand navbar when minimized */
+.navbar-hover-zone {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 90px; /* match minimized visible width */
+    height: 100vh;
+    background: transparent;
+    z-index: 1002; /* above navbar, below floating icons */
+    pointer-events: auto;
+}
+
+/* Hide hover zone when expanded or locked (handled by JS too) */
+.navbar.expanded ~ .navbar-hover-zone,
+.navbar.locked ~ .navbar-hover-zone {
+    pointer-events: none;
+}
+
 /* Navbar contents should stay visible when locked/expanded (no layout overrides) */
 .navbar.locked *,
 .navbar.expanded * {
@@ -7544,6 +7562,9 @@ body.navbar-locked {
 @media (max-width: 768px) {
     .floating-nav-icons {
         display: none; /* Hide on mobile */
+    }
+    .navbar-hover-zone {
+        display: none; /* Hide hover zone on mobile */
     }
 }
 
@@ -8378,6 +8399,8 @@ body.navbar-locked {
             <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></div>
         </div>
     </div>
+    <!-- Invisible hover zone to expand navbar when minimized -->
+    <div class="navbar-hover-zone" id="navbarHoverZone" aria-hidden="true"></div>
     
     <!-- Floating Navigation Icons - Always visible like Gmail -->
     <div class="floating-nav-icons">
@@ -13977,6 +14000,21 @@ body.navbar-locked {
                     scheduleMinimize();
                 });
             });
+            
+            // Invisible hover zone to expand navbar when minimized
+            const hoverZone = document.getElementById('navbarHoverZone');
+            if (hoverZone) {
+                hoverZone.addEventListener('mouseenter', () => {
+                    if (navbar.classList.contains('locked')) return;
+                    hoverArea = 'navbar';
+                    expandNavbar();
+                });
+                hoverZone.addEventListener('mouseleave', () => {
+                    if (navbar.classList.contains('locked')) return;
+                    hoverArea = null;
+                    scheduleMinimize();
+                });
+            }
             
             // Initial positioning
             positionFloatingIcons();
