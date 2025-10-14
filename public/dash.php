@@ -7549,6 +7549,7 @@ body.navbar-locked {
 .navbar.expanded ~ .navbar-hover-zone,
 .navbar.locked ~ .navbar-hover-zone {
     pointer-events: none;
+    display: none;
 }
 
 /* Navbar contents should stay visible when locked/expanded (no layout overrides) */
@@ -13814,8 +13815,12 @@ body.navbar-locked {
                     document.body.style.paddingLeft = '320px';
                     document.body.classList.add('navbar-locked');
                     
-                    // Disable all hover listeners when locked
-                    navbar.style.pointerEvents = 'auto'; // Keep navbar clickable
+                    // Hide hover zone when locked
+                    const hoverZone = document.getElementById('navbarHoverZone');
+                    if (hoverZone) {
+                        hoverZone.style.display = 'none';
+                    }
+                    
                     console.log('🍔 Navbar locked - staying expanded like Gmail');
                 } else {
                     // Unlock: Allow normal hover behavior (like Gmail)
@@ -13826,8 +13831,12 @@ body.navbar-locked {
                     document.body.style.paddingLeft = '90px';
                     document.body.classList.remove('navbar-locked');
                     
-                    // Re-enable hover
-                    navbar.style.pointerEvents = 'auto';
+                    // Show hover zone when unlocked
+                    const hoverZone = document.getElementById('navbarHoverZone');
+                    if (hoverZone) {
+                        hoverZone.style.display = 'block';
+                    }
+                    
                     console.log('🍔 Navbar unlocked - normal hover behavior like Gmail');
                 }
             });
@@ -13855,6 +13864,7 @@ body.navbar-locked {
                     hamburgerBtn.style.display = 'flex';
                     
                     // Respect lock state when switching to desktop
+                    const hoverZone = document.getElementById('navbarHoverZone');
                     if (isNavbarLocked) {
                         navbar.classList.add('locked');
                         navbar.classList.add('expanded');
@@ -13862,6 +13872,11 @@ body.navbar-locked {
                         navbar.style.transform = 'translateX(0)';
                         document.body.style.paddingLeft = '320px';
                         document.body.classList.add('navbar-locked');
+                        
+                        // Hide hover zone when locked
+                        if (hoverZone) {
+                            hoverZone.style.display = 'none';
+                        }
                     } else {
                         navbar.classList.remove('locked');
                         navbar.classList.remove('expanded');
@@ -13869,6 +13884,11 @@ body.navbar-locked {
                         navbar.style.transform = 'translateX(-230px)';
                         document.body.style.paddingLeft = '90px';
                         document.body.classList.remove('navbar-locked');
+                        
+                        // Show hover zone when unlocked
+                        if (hoverZone) {
+                            hoverZone.style.display = 'block';
+                        }
                     }
                 }
             });
@@ -13970,6 +13990,12 @@ body.navbar-locked {
                 navbar.classList.add('expanded');
                 navbar.style.transform = 'translateX(0)';
                 document.body.style.paddingLeft = '320px';
+                
+                // Hide hover zone when expanded
+                const hoverZone = document.getElementById('navbarHoverZone');
+                if (hoverZone) {
+                    hoverZone.style.display = 'none';
+                }
             }
 
             function minimizeNavbar() {
@@ -13978,6 +14004,12 @@ body.navbar-locked {
                 navbar.classList.add('minimized');
                 navbar.style.transform = 'translateX(-230px)';
                 document.body.style.paddingLeft = '90px';
+                
+                // Show hover zone when minimized
+                const hoverZone = document.getElementById('navbarHoverZone');
+                if (hoverZone) {
+                    hoverZone.style.display = 'block';
+                }
             }
 
             function scheduleMinimize() {
