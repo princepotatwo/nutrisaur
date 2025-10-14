@@ -647,9 +647,7 @@ body {
     transition: transform 0.3s ease;
 }
 
-.navbar-logo:hover {
-    transform: scale(1.05);
-}
+/* Navbar logo hover removed - using hamburger button only */
 
 .navbar-logo-icon {
     width: 48px;
@@ -668,11 +666,7 @@ body {
     box-shadow: 0 2px 8px rgba(161, 180, 84, 0.1);
 }
 
-.navbar-logo:hover .navbar-logo-icon {
-    background: linear-gradient(135deg, rgba(161, 180, 84, 0.15), rgba(161, 180, 84, 0.08));
-    border-color: rgba(161, 180, 84, 0.3);
-    box-shadow: 0 4px 15px rgba(161, 180, 84, 0.2);
-}
+/* Navbar logo icon hover removed - using hamburger button only */
 
 .light-theme .navbar-logo-icon {
     background: linear-gradient(135deg, rgba(102, 187, 106, 0.1), rgba(102, 187, 106, 0.05));
@@ -680,11 +674,7 @@ body {
     box-shadow: 0 2px 8px var(--color-shadow);
 }
 
-.light-theme .navbar-logo:hover .navbar-logo-icon {
-    background: linear-gradient(135deg, rgba(102, 187, 106, 0.15), rgba(102, 187, 106, 0.08));
-    border-color: var(--color-border);
-    box-shadow: 0 4px 15px var(--color-shadow);
-}
+/* Light theme navbar logo hover removed - using hamburger button only */
 
 .navbar-logo-text {
     font-size: 24px;
@@ -709,9 +699,7 @@ body {
     transition: all 0.3s ease;
 }
 
-.navbar li:hover {
-    transform: translateX(5px);
-}
+/* Navbar li hover removed - using hamburger button only */
 
 .navbar li:not(:last-child) {
     border-bottom: 1px solid rgba(161, 180, 84, 0.08);
@@ -753,16 +741,10 @@ body {
 }
 
 .navbar a:hover {
-    background: linear-gradient(90deg, rgba(161, 180, 84, 0.08) 0%, rgba(161, 180, 84, 0.04) 100%);
-    color: var(--color-highlight);
-    opacity: 1;
-    transform: translateX(3px);
-    box-shadow: 0 4px 15px rgba(161, 180, 84, 0.15);
+    /* Navbar a hover removed - using hamburger button only */
 }
 
-.navbar a:hover::before {
-    left: 100%;
-}
+/* Navbar a hover before removed - using hamburger button only */
 
 .navbar a.active {
     background: linear-gradient(90deg, rgba(161, 180, 84, 0.15) 0%, rgba(161, 180, 84, 0.08) 100%);
@@ -774,11 +756,7 @@ body {
     transform: translateX(2px);
 }
 
-.light-theme .navbar a:hover {
-    background: linear-gradient(90deg, var(--color-hover) 0%, rgba(102, 187, 106, 0.04) 100%);
-    color: #1B3A1B;
-    box-shadow: 0 4px 15px var(--color-shadow);
-}
+/* Light theme navbar a hover removed - using hamburger button only */
 
 .light-theme .navbar a.active {
     background: linear-gradient(90deg, var(--color-active) 0%, rgba(102, 187, 106, 0.08) 100%);
@@ -6149,6 +6127,30 @@ header {
         .navbar.locked .navbar-footer {
             opacity: 1 !important;
             pointer-events: auto !important;
+        }
+
+        /* COMPLETELY DISABLE ALL NAVBAR HOVER EFFECTS */
+        .navbar:hover,
+        .navbar *:hover {
+            transform: none !important;
+            background: none !important;
+            box-shadow: none !important;
+            color: inherit !important;
+            opacity: inherit !important;
+        }
+
+        /* Force navbar to only respond to hamburger button */
+        .navbar {
+            pointer-events: none;
+        }
+
+        .navbar * {
+            pointer-events: none;
+        }
+
+        /* Allow clicks on navbar links only */
+        .navbar a {
+            pointer-events: auto;
         }
 
     </style>
