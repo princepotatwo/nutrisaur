@@ -7533,21 +7533,20 @@ body.navbar-locked {
     padding-left: 320px !important;
 }
 
-/* Extend navbar hover area with pseudo-element */
-.navbar::before {
-    content: '';
-    position: absolute;
+/* Simple hover zone for navbar expansion */
+.navbar-hover-zone {
+    position: fixed;
     top: 0;
-    left: -20px; /* extend 20px to the left */
-    width: 20px;
-    height: 100%;
+    left: 0;
+    width: 20px; /* thin strip on left edge */
+    height: 100vh;
     background: transparent;
+    z-index: 1001; /* above navbar, below floating icons */
     pointer-events: auto;
-    z-index: -1;
 }
 
-/* Hide pseudo-element when locked */
-.navbar.locked::before {
+/* Hide hover zone when locked */
+.navbar.locked ~ .navbar-hover-zone {
     display: none;
 }
 
@@ -8399,6 +8398,9 @@ body.navbar-locked {
             <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></div>
         </div>
     </div>
+    
+    <!-- Simple hover zone for navbar expansion -->
+    <div class="navbar-hover-zone" id="navbarHoverZone"></div>
     
     <!-- Floating Navigation Icons - Always visible like Gmail -->
     <div class="floating-nav-icons">
@@ -13882,12 +13884,14 @@ body.navbar-locked {
                     if (isNavbarLocked) return; // ignore hover when locked
                     hoverArea = 'navbar';
                     expandNavbar();
+                    console.log('🎯 Navbar hover detected');
                 });
                 
                 navbar.addEventListener('mouseleave', function() {
                     if (isNavbarLocked) return; // ignore hover when locked
                     hoverArea = null;
                     scheduleMinimize();
+                    console.log('🎯 Navbar leave detected');
                 });
             }
             
@@ -14008,7 +14012,22 @@ body.navbar-locked {
                 });
             });
             
-            // Hover zone now handled by CSS pseudo-element ::before
+            // Simple hover zone for navbar expansion
+            const hoverZone = document.getElementById('navbarHoverZone');
+            if (hoverZone) {
+                hoverZone.addEventListener('mouseenter', () => {
+                    if (navbar.classList.contains('locked')) return;
+                    hoverArea = 'navbar';
+                    expandNavbar();
+                    console.log('🎯 Hover zone enter detected');
+                });
+                hoverZone.addEventListener('mouseleave', () => {
+                    if (navbar.classList.contains('locked')) return;
+                    hoverArea = null;
+                    scheduleMinimize();
+                    console.log('🎯 Hover zone leave detected');
+                });
+            }
             
             // Initial positioning
             positionFloatingIcons();
