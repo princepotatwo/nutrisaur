@@ -13548,7 +13548,7 @@ body {
                 } else {
                     // Desktop: show desktop navbar, hide mobile top nav
                     if (navbar) navbar.style.display = 'flex';
-                    document.body.style.paddingLeft = '15px';
+                    document.body.style.paddingLeft = '5px';
                     document.body.style.paddingTop = '0';
                     document.body.style.width = '';
                     document.body.style.maxWidth = '';
@@ -13560,14 +13560,14 @@ body {
             function expandNavbar() {
                 if (window.innerWidth >= 769) {
                     document.body.style.paddingLeft = '320px';
-                    document.body.style.paddingRight = '15px';
+                    document.body.style.paddingRight = '5px';
                 }
             }
             
             function minimizeNavbar() {
                 if (window.innerWidth >= 769) {
-                    document.body.style.paddingLeft = '15px';
-                    document.body.style.paddingRight = '15px';
+                    document.body.style.paddingLeft = '5px';
+                    document.body.style.paddingRight = '5px';
                 }
             }
             
@@ -13755,14 +13755,14 @@ body {
                     navbar.classList.add('locked');
                     navbar.classList.remove('minimized');
                     document.body.style.paddingLeft = '320px';
-                    document.body.style.paddingRight = '15px';
+                    document.body.style.paddingRight = '5px';
                     console.log('🍔 Navbar locked - staying expanded like Gmail');
                 } else {
                     // Unlock: Allow normal hover behavior (like Gmail)
                     navbar.classList.remove('locked');
                     navbar.classList.add('minimized');
-                    document.body.style.paddingLeft = '15px';
-                    document.body.style.paddingRight = '15px';
+                    document.body.style.paddingLeft = '5px';
+                    document.body.style.paddingRight = '5px';
                     console.log('🍔 Navbar unlocked - normal hover behavior like Gmail');
                 }
             });
@@ -13794,12 +13794,12 @@ body {
                         navbar.classList.add('locked');
                         navbar.classList.remove('minimized');
                         document.body.style.paddingLeft = '320px';
-                        document.body.style.paddingRight = '15px';
+                        document.body.style.paddingRight = '5px';
                     } else {
                         navbar.classList.remove('locked');
                         navbar.classList.add('minimized');
-                        document.body.style.paddingLeft = '15px';
-                        document.body.style.paddingRight = '15px';
+                        document.body.style.paddingLeft = '5px';
+                        document.body.style.paddingRight = '5px';
                     }
                 }
             });
@@ -13810,15 +13810,15 @@ body {
                     if (!isNavbarLocked) {
                         navbar.classList.remove('minimized');
                         document.body.style.paddingLeft = '320px';
-                        document.body.style.paddingRight = '15px';
+                        document.body.style.paddingRight = '5px';
                     }
                 });
                 
                 navbar.addEventListener('mouseleave', function() {
                     if (!isNavbarLocked) {
                         navbar.classList.add('minimized');
-                        document.body.style.paddingLeft = '15px';
-                        document.body.style.paddingRight = '15px';
+                        document.body.style.paddingLeft = '5px';
+                        document.body.style.paddingRight = '5px';
                     }
                 });
             }
@@ -13831,8 +13831,8 @@ body {
                 hamburgerBtn.style.display = 'flex';
                 // Start with navbar minimized (like Gmail)
                 navbar.classList.add('minimized');
-                document.body.style.paddingLeft = '15px';
-                document.body.style.paddingRight = '15px';
+                document.body.style.paddingLeft = '5px';
+                document.body.style.paddingRight = '5px';
             }
             
             // Initialize hamburger button state
@@ -13877,7 +13877,7 @@ body {
                         
                         // Position icon beside the menu item, constrained to navbar area
                         icon.style.position = 'fixed';
-                        icon.style.left = '10px';
+                        icon.style.left = '25px'; // Moved more to the right to be inside navbar
                         // Ensure icons stay within the navbar bounds (top: 120px to bottom: 100vh)
                         const topPosition = Math.max(120, Math.min(rect.top + rect.height / 2 - 60, window.innerHeight - 150));
                         icon.style.top = topPosition + 'px';
@@ -13907,7 +13907,7 @@ body {
                     if (!isLocked && window.innerWidth >= 769) {
                         navbar.classList.remove('minimized');
                         document.body.style.paddingLeft = '320px';
-                        document.body.style.paddingRight = '15px';
+                        document.body.style.paddingRight = '5px';
                     }
                 });
                 
@@ -13918,8 +13918,8 @@ body {
                     
                     if (!isLocked && window.innerWidth >= 769) {
                         navbar.classList.add('minimized');
-                        document.body.style.paddingLeft = '15px';
-                        document.body.style.paddingRight = '15px';
+                        document.body.style.paddingLeft = '5px';
+                        document.body.style.paddingRight = '5px';
                     }
                 });
             });
