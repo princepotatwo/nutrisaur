@@ -6066,6 +6066,22 @@ header {
             visibility: visible !important;
         }
 
+        /* Navbar content visibility when minimized */
+        .navbar.minimized .navbar-logo-text,
+        .navbar.minimized span:not(.navbar-icon),
+        .navbar.minimized .navbar-footer {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Navbar content visibility when expanded */
+        .navbar.expanded .navbar-logo-text,
+        .navbar.expanded span:not(.navbar-icon),
+        .navbar.expanded .navbar-footer {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         @media (max-width: 768px) {
             .navbar-hamburger-btn {
                 display: none;
