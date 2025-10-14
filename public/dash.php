@@ -7383,7 +7383,7 @@ body {
 .navbar-hamburger-btn {
     position: fixed;
     top: 50px; /* positioned to align with floating icons */
-    left: 20px; /* same left position as floating icons */
+    left: 25px; /* slightly right of floating icons to avoid overlap */
     width: 40px;
     height: 40px;
     background: rgba(255, 255, 255, 0.9);
@@ -7395,7 +7395,7 @@ body {
     justify-content: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    z-index: 1001;
+    z-index: 1002;
     backdrop-filter: blur(10px);
 }
 
