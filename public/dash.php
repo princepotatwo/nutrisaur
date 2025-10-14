@@ -7485,7 +7485,7 @@ body {
     border-radius: 8px;
     padding: 4px;
     z-index: 1002;
-    display: none;
+    display: flex; /* Show by default - will be controlled by navbar state */
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
@@ -7498,12 +7498,12 @@ body {
 
 /* Show minimized icons when navbar is minimized */
 .navbar.minimized .navbar-minimized-icon {
-    display: flex;
+    display: flex !important;
 }
 
 /* Hide minimized icons when navbar is expanded */
 .navbar:not(.minimized) .navbar-minimized-icon {
-    display: none;
+    display: none !important;
 }
 
 /* Hover effects for minimized icons */
