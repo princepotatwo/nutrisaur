@@ -7474,8 +7474,8 @@ body {
     transition: all 0.3s ease;
 }
 
-/* When navbar is minimized, position icons independently like hamburger button */
-.navbar.minimized .navbar-icon {
+/* Independent minimized icons - like hamburger button */
+.navbar-minimized-icon {
     position: fixed;
     right: 2px;
     width: 32px;
@@ -7485,57 +7485,42 @@ body {
     border-radius: 8px;
     padding: 4px;
     z-index: 1002;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
     cursor: pointer;
     transition: all 0.3s ease;
     pointer-events: auto;
+    text-decoration: none;
+    color: var(--color-text);
 }
 
-/* Position each icon at different vertical positions independently */
-.navbar.minimized .navbar-menu li:nth-child(1) .navbar-icon {
-    top: 25%;
+/* Show minimized icons when navbar is minimized */
+.navbar.minimized .navbar-minimized-icon {
+    display: flex;
 }
 
-.navbar.minimized .navbar-menu li:nth-child(2) .navbar-icon {
-    top: 40%;
+/* Hide minimized icons when navbar is expanded */
+.navbar:not(.minimized) .navbar-minimized-icon {
+    display: none;
 }
 
-.navbar.minimized .navbar-menu li:nth-child(3) .navbar-icon {
-    top: 55%;
-}
-
-.navbar.minimized .navbar-menu li:nth-child(4) .navbar-icon {
-    top: 70%;
-}
-
-.navbar.minimized .navbar-menu li:nth-child(5) .navbar-icon {
-    top: 85%;
-}
-
-.navbar.minimized .navbar-icon svg {
-    width: 20px;
-    height: 20px;
-}
-
-/* Light theme for navbar icons */
-.light-theme .navbar.minimized .navbar-icon {
-    background: rgba(142, 185, 110, 0.1);
-    border-color: rgba(142, 185, 110, 0.2);
-}
-
-/* Hover effects for minimized navbar icons */
-.navbar.minimized .navbar-icon:hover {
+/* Hover effects for minimized icons */
+.navbar-minimized-icon:hover {
     background: rgba(161, 180, 84, 0.25);
     border-color: rgba(161, 180, 84, 0.4);
     transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
-    transition: all 0.2s ease;
 }
 
-.light-theme .navbar.minimized .navbar-icon:hover {
+/* Light theme for minimized icons */
+.light-theme .navbar-minimized-icon {
+    background: rgba(142, 185, 110, 0.1);
+    border-color: rgba(142, 185, 110, 0.2);
+}
+
+.light-theme .navbar-minimized-icon:hover {
     background: rgba(142, 185, 110, 0.25);
     border-color: rgba(142, 185, 110, 0.4);
     box-shadow: 0 4px 12px rgba(142, 185, 110, 0.3);
@@ -7695,14 +7680,14 @@ body {
     color: var(--color-primary);
 }
 
-/* Hover effects for navbar icons to make them look clickable */
-.navbar-icon:hover {
+/* Hover effects for expanded navbar icons only */
+.navbar:not(.minimized) .navbar-icon:hover {
     transform: scale(1.1);
     color: var(--color-highlight);
     transition: all 0.2s ease;
 }
 
-.navbar-icon:hover svg {
+.navbar:not(.minimized) .navbar-icon:hover svg {
     filter: drop-shadow(0 2px 4px rgba(161, 180, 84, 0.3));
 }
 
@@ -8484,6 +8469,42 @@ body {
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
         </button>
+        
+        <!-- Minimized state icons - independent elements like hamburger button -->
+        <a href="dash" class="navbar-minimized-icon" style="top: 25%;" title="Dashboard">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+        </a>
+        <a href="screening" class="navbar-minimized-icon" style="top: 40%;" title="MHO Assessment">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"></path>
+                <polyline points="9,11 9,7 15,7 15,11"></polyline>
+                <path d="M9 7V3a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"></path>
+            </svg>
+        </a>
+        <a href="event" class="navbar-minimized-icon" style="top: 55%;" title="Event Notifications">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12,6 12,12 16,14"></polyline>
+            </svg>
+        </a>
+        <a href="settings" class="navbar-minimized-icon" style="top: 70%;" title="Settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </a>
+        <a href="logout" class="navbar-minimized-icon" style="top: 85%;" title="Logout">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16,17 21,12 16,7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+        </a>
         
         <div class="navbar-header">
             <div class="navbar-logo">
