@@ -9973,7 +9973,7 @@ header {
             document.body.appendChild(modal);
         }
 
-        /* removed: addMHORecommendedFood(userEmail, userName) */
+        function addMHORecommendedFood(userEmail, userName) {
             console.log('⭐ Add MHO Recommended Food function called for:', userEmail, userName);
             
             // Remove any existing modals
@@ -10106,7 +10106,7 @@ header {
             });
         }
 
-        /* removed: viewMHORecommendedFoods(userEmail, userName) */
+        function viewMHORecommendedFoods(userEmail, userName) {
             console.log('🍽️ View MHO Recommended Foods function called for:', userEmail, userName);
             
             // Remove any existing modals
@@ -10218,7 +10218,7 @@ header {
                 });
         }
 
-        /* removed: bulkMHORecommendations() */
+        function bulkMHORecommendations() {
             console.log('👥 Bulk MHO Recommendations function called');
             
             // Remove any existing modals
@@ -10338,7 +10338,7 @@ header {
             setupBulkRecommendationForm();
         }
 
-        /* removed: setupBulkRecommendationForm() */
+        function setupBulkRecommendationForm() {
             const classificationType = document.getElementById('classificationType');
             const category = document.getElementById('category');
             const userCount = document.getElementById('userCount');
