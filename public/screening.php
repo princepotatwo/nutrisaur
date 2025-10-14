@@ -5952,11 +5952,136 @@ header {
             color: var(--color-highlight);
         }
 
+        /* Navbar Hamburger Button */
+        .navbar-hamburger-btn {
+            position: fixed;
+            top: 50px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 1002;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-hamburger-btn:hover {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .navbar-hamburger-btn .hamburger-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .navbar-hamburger-btn .hamburger-line {
+            width: 18px;
+            height: 2px;
+            background: #4CAF50;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+
+        /* Floating Navigation Icons */
+        .floating-nav-icons {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 60px;
+            height: 100vh;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .floating-nav-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(161, 180, 84, 0.1);
+            border: 1px solid rgba(161, 180, 84, 0.2);
+            border-radius: 8px;
+            color: var(--color-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+            pointer-events: auto;
+            margin: 4px 0;
+        }
+
+        .floating-nav-icon:hover {
+            background: rgba(161, 180, 84, 0.2);
+            border-color: rgba(161, 180, 84, 0.4);
+            opacity: 1;
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
+        }
+
+        .floating-nav-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .light-theme .floating-nav-icon {
+            background: rgba(142, 185, 110, 0.1);
+            border-color: rgba(142, 185, 110, 0.2);
+        }
+
+        .light-theme .floating-nav-icon:hover {
+            background: rgba(142, 185, 110, 0.2);
+            border-color: rgba(142, 185, 110, 0.4);
+            box-shadow: 0 2px 8px rgba(142, 185, 110, 0.2);
+        }
+
+        /* Navbar states */
+        .navbar.minimized {
+            transform: translateX(-230px) !important;
+        }
+
+        .navbar.expanded {
+            transform: translateX(0) !important;
+            width: 320px !important;
+        }
+
+        .navbar.expanded * {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-hamburger-btn {
+                display: none;
+            }
+            .floating-nav-icons {
+                display: none;
+            }
+        }
+
     </style>
 </head>
 <body class="light-theme">
-    <div class="navbar">
+    <!-- Desktop Sidebar Navigation -->
+    <div class="navbar" id="navbar">
         <div class="navbar-header">
+        
             <div class="navbar-logo">
                 <div class="navbar-logo-icon">
                     <img src="/logo.png" alt="Logo" style="width: 40px; height: 40px;">
@@ -5977,6 +6102,52 @@ header {
             <div>NutriSaur v2.0 • © 2025</div>
             <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></div>
         </div>
+    </div>
+    
+    <!-- Hamburger Button - Outside navbar to avoid transform issues -->
+    <button class="navbar-hamburger-btn" id="navbarHamburgerBtn" title="Toggle Sidebar">
+        <div class="hamburger-icon">
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+        </div>
+    </button>
+    
+    <!-- Floating Navigation Icons - Always visible like Gmail -->
+    <div class="floating-nav-icons">
+        <a href="dash" class="floating-nav-icon" id="floating-dash" title="Dashboard">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+        </a>
+        <a href="screening" class="floating-nav-icon" id="floating-screening" title="MHO Assessment">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+        </a>
+        <a href="event" class="floating-nav-icon" id="floating-event" title="Event Notifications">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+        </a>
+        <a href="settings" class="floating-nav-icon" id="floating-settings" title="Settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </a>
+        <a href="logout" class="floating-nav-icon" id="floating-logout" title="Logout" style="color: #ff5252;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16,17 21,12 16,7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+        </a>
     </div>
 
     <!-- Mobile Top Navigation -->
@@ -6516,109 +6687,163 @@ header {
         // ===== ADMIN EMAIL FOR FLAGGING =====
         const adminEmail = '<?php echo addslashes($_SESSION["admin_email"] ?? "MHO Official"); ?>';
         
-        // ===== MODERN 2025 NAVIGATION SYSTEM =====
-        // Navigation state management
-        let navState = {
-            isMobile: window.innerWidth <= 768,
-            isHovered: false
-        };
-
-        // DOM elements
-        const navbar = document.querySelector('.navbar');
-        const mobileTopNav = document.querySelector('.mobile-top-nav');
-        const body = document.body;
-
-        // Initialize navigation
-        function initNavigation() {
-            console.log('🚀 Initializing Navigation System...');
+        // ===== HAMBURGER BUTTON + FLOATING ICONS NAVIGATION SYSTEM =====
+        // Hamburger Button Navigation
+        function initNavbarHamburgerButton() {
+            console.log('🍔 Initializing navbar hamburger button...');
             
-            // Check initial screen size
-            navState.isMobile = window.innerWidth <= 768;
-            console.log('📱 Mobile mode:', navState.isMobile);
+            const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
+            const navbar = document.querySelector('.navbar');
             
-            updateNavbarState();
-            setupEventListeners();
-            
-            console.log('✅ Navigation system initialized');
-        }
-
-        // Setup event listeners
-        function setupEventListeners() {
-            // Desktop hover events
-            if (navbar) {
-                navbar.addEventListener('mouseenter', () => {
-                    if (!navState.isMobile) {
-                        navState.isHovered = true;
-                        updateBodyPadding();
-                    }
-                });
-
-                navbar.addEventListener('mouseleave', () => {
-                    if (!navState.isMobile) {
-                        navState.isHovered = false;
-                        updateBodyPadding();
-                    }
-                });
+            if (!hamburgerBtn || !navbar) {
+                console.error('❌ Navbar hamburger button or navbar not found');
+                return;
             }
-
-            // Window resize handler
-            window.addEventListener('resize', handleResize);
-        }
-
-        // Update navbar state
-        function updateNavbarState() {
-            if (navState.isMobile) {
-                // Mobile: show top nav, hide sidebar
-                if (navbar) navbar.style.display = 'none';
-                if (mobileTopNav) mobileTopNav.style.display = 'block';
-                body.style.paddingLeft = '0';
-                body.style.paddingTop = '60px';
-            } else {
-                // Desktop: show sidebar, hide top nav
-                if (navbar) navbar.style.display = 'flex';
-                if (mobileTopNav) mobileTopNav.style.display = 'none';
-                body.style.paddingTop = '0';
-                updateBodyPadding();
-            }
-        }
-
-        // Update body padding for desktop hover effect
-        function updateBodyPadding() {
-            if (!navState.isMobile) {
-                if (navState.isHovered) {
-                    body.style.paddingLeft = '320px'; // Expanded navbar width
-                } else {
-                    body.style.paddingLeft = '40px'; // Minimized navbar width
-                }
+            
+            // Add click event listener to hamburger button - simple toggle
+            hamburgerBtn.addEventListener('click', function() {
+                const isExpanded = navbar.classList.contains('expanded');
                 
-                // Update WHO standard buttons responsiveness based on available space
-                updateWHOButtonsResponsiveness();
+                if (isExpanded) {
+                    // Minimize navbar
+                    navbar.classList.remove('expanded');
+                    navbar.classList.add('minimized');
+                    navbar.style.transform = 'translateX(-230px)';
+                    document.body.style.paddingLeft = '90px';
+                    
+                    // Position hamburger button at floating icons position when minimized
+                    hamburgerBtn.style.left = '25px';
+                    hamburgerBtn.style.top = '50px';
+                    console.log('🍔 Navbar minimized');
+                } else {
+                    // Expand navbar
+                    navbar.classList.remove('minimized');
+                    navbar.classList.add('expanded');
+                    navbar.style.transform = 'translateX(0)';
+                    document.body.style.paddingLeft = '320px';
+                    
+                    // Position hamburger button anchored to navbar when expanded
+                    hamburgerBtn.style.left = '250px';
+                    hamburgerBtn.style.top = '43px';
+                    console.log('🍔 Navbar expanded');
+                }
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile) {
+                    // Mobile: hide hamburger button
+                    hamburgerBtn.style.display = 'none';
+                } else {
+                    // Desktop: show hamburger button
+                    hamburgerBtn.style.display = 'flex';
+                }
+            });
+            
+            // Set initial state to EXPANDED (as requested)
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                hamburgerBtn.style.display = 'none';
+            } else {
+                hamburgerBtn.style.display = 'flex';
+                // Start with navbar EXPANDED
+                navbar.classList.add('expanded');
+                document.body.style.paddingLeft = '320px';
+                // Set initial hamburger position for expanded state
+                hamburgerBtn.style.left = '250px';
+                hamburgerBtn.style.top = '43px';
             }
+            
+            console.log('✅ Navbar hamburger button initialized successfully');
         }
         
-        function updateWHOButtonsResponsiveness() {
-            const whoButtons = document.querySelector('.who-standard-buttons');
-            if (whoButtons) {
-                // Add class to indicate navbar state for additional CSS targeting
-                if (navState.isHovered) {
-                    whoButtons.classList.add('navbar-expanded');
-                    whoButtons.classList.remove('navbar-collapsed');
-                } else {
-                    whoButtons.classList.add('navbar-collapsed');
-                    whoButtons.classList.remove('navbar-expanded');
-                }
-            }
-        }
-
-        // Handle window resize
-        function handleResize() {
-            const wasMobile = navState.isMobile;
-            navState.isMobile = window.innerWidth <= 768;
+        // Floating Navigation Icons
+        function initFloatingIcons() {
+            console.log('🎯 Initializing floating navigation icons...');
             
-            if (wasMobile !== navState.isMobile) {
-                console.log('📱 Screen size changed. Mobile mode:', navState.isMobile);
-                updateNavbarState();
+            const floatingIcons = document.querySelectorAll('.floating-nav-icon');
+            const navbar = document.getElementById('navbar');
+            
+            if (!navbar || floatingIcons.length === 0) {
+                console.log('⚠️ Navbar or floating icons not found');
+                return;
             }
+            
+            // Position floating icons beside navbar menu items
+            function positionFloatingIcons() {
+                const navbarMenu = navbar.querySelector('.navbar-menu ul');
+                if (!navbarMenu) return;
+                
+                const menuItems = navbarMenu.querySelectorAll('li');
+                
+                floatingIcons.forEach((icon, index) => {
+                    if (menuItems[index]) {
+                        const menuItem = menuItems[index];
+                        const rect = menuItem.getBoundingClientRect();
+                        
+                        // Position icon beside the menu item
+                        icon.style.position = 'fixed';
+                        icon.style.left = '20px';
+                        icon.style.top = (rect.top + rect.height / 2 - 28) + 'px';
+                        icon.style.zIndex = '1001';
+                    }
+                });
+            }
+            
+            // Initial positioning
+            positionFloatingIcons();
+            
+            // Update positioning on scroll and resize
+            window.addEventListener('scroll', positionFloatingIcons);
+            window.addEventListener('resize', positionFloatingIcons);
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile) {
+                    // Mobile: hide floating icons
+                    floatingIcons.forEach(icon => {
+                        icon.style.display = 'none';
+                    });
+                } else {
+                    // Desktop: show floating icons
+                    floatingIcons.forEach(icon => {
+                        icon.style.display = 'flex';
+                    });
+                    positionFloatingIcons();
+                }
+            });
+            
+            // Set initial state
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                floatingIcons.forEach(icon => {
+                    icon.style.display = 'none';
+                });
+            } else {
+                floatingIcons.forEach(icon => {
+                    icon.style.display = 'flex';
+                });
+            }
+            
+            console.log('✅ Floating navigation icons initialized successfully');
+        }
+        
+        // Initialize hamburger button when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initNavbarHamburgerButton);
+        } else {
+            initNavbarHamburgerButton();
+        }
+        
+        // Initialize floating icons when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initFloatingIcons);
+        } else {
+            initFloatingIcons();
         }
 
         // Debug: Test function to verify viewUserDetails is accessible
@@ -6699,16 +6924,7 @@ header {
             }
         });
 
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
-                initNavigation();
-                updateWHOButtonsResponsiveness();
-            });
-        } else {
-            initNavigation();
-            updateWHOButtonsResponsiveness();
-        }
+        // Old navigation initialization removed - now using hamburger button + floating icons
 
         // Municipalities and Barangays data
         const municipalities = <?php echo json_encode($municipalities); ?>;
