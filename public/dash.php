@@ -7506,6 +7506,11 @@ body {
     box-shadow: 0 2px 8px rgba(142, 185, 110, 0.2);
 }
 
+/* Navbar minimized state */
+.navbar.minimized {
+    transform: translateX(-230px) !important; /* Show 90px */
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
     .floating-nav-icons {
@@ -13820,7 +13825,7 @@ body {
                 hamburgerBtn.style.display = 'flex';
                 // Start with navbar minimized (like Gmail)
                 navbar.classList.add('minimized');
-                document.body.style.paddingLeft = '40px';
+                document.body.style.paddingLeft = '90px';
             }
             
             // Initialize hamburger button state
@@ -13870,7 +13875,7 @@ body {
                         // Position icon beside the menu item
                         icon.style.position = 'fixed';
                         icon.style.left = '20px';
-                        icon.style.top = (rect.top + rect.height / 2 - 30) + 'px';
+                        icon.style.top = (rect.top + rect.height / 2 - 40) + 'px';
                         icon.style.zIndex = '1001';
                     }
                 });
