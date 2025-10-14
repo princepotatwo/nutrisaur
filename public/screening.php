@@ -6144,6 +6144,35 @@ header {
             z-index: 1;
         }
 
+        /* COMPLETELY DISABLE NAVBAR HOVER - AGGRESSIVE OVERRIDE */
+        .navbar:hover,
+        .navbar *:hover,
+        .navbar.minimized:hover,
+        .navbar.minimized *:hover {
+            transform: translateX(-230px) !important;
+            width: 320px !important;
+            box-shadow: none !important;
+            background: none !important;
+            opacity: inherit !important;
+            pointer-events: none !important;
+        }
+
+        /* Force navbar to stay minimized when hovered */
+        .navbar.minimized {
+            transform: translateX(-230px) !important;
+            pointer-events: none !important;
+        }
+
+        /* Allow only navbar links to be clickable */
+        .navbar.minimized a {
+            pointer-events: auto !important;
+        }
+
+        /* Disable all navbar hover animations */
+        .navbar * {
+            transition: none !important;
+        }
+
     </style>
 </head>
 <body class="light-theme">
