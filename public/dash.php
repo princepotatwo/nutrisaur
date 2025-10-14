@@ -7476,8 +7476,8 @@ body {
 
 /* When navbar is minimized, position icons in the right margin area */
 .navbar.minimized .navbar-icon {
-    position: fixed;
-    right: 2px;
+    position: fixed !important;
+    right: 2px !important;
     width: 32px;
     height: 32px;
     background: rgba(161, 180, 84, 0.15);
@@ -7523,19 +7523,25 @@ body {
     border-color: rgba(142, 185, 110, 0.2);
 }
 
-/* Hover effects for minimized navbar icons */
+/* Hover effects for minimized navbar icons - keep them in fixed position */
 .navbar.minimized .navbar-icon:hover {
     background: rgba(161, 180, 84, 0.25);
     border-color: rgba(161, 180, 84, 0.4);
     transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
     transition: all 0.2s ease;
+    /* Ensure they stay in fixed position even on hover */
+    position: fixed !important;
+    right: 2px !important;
 }
 
 .light-theme .navbar.minimized .navbar-icon:hover {
     background: rgba(142, 185, 110, 0.25);
     border-color: rgba(142, 185, 110, 0.4);
     box-shadow: 0 4px 12px rgba(142, 185, 110, 0.3);
+    /* Ensure they stay in fixed position even on hover */
+    position: fixed !important;
+    right: 2px !important;
 }
 
 /* Hide original toggle button when navbar is minimized */
