@@ -10541,7 +10541,7 @@ header {
                         
                         <!-- Filters -->
                         <div style="display: flex; gap: 12px; margin-bottom: 15px; flex-wrap: wrap;">
-                            <select id="manager-who-standard" class="filter-select" onchange="updateManagerClassificationOptions()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                            <select id="manager-who-standard" class="filter-select" onchange="updateManagerClassificationOptions()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: #000000;">
                                 <option value="">Select WHO Standard</option>
                                 <option value="weight-for-age">Weight-for-Age</option>
                                 <option value="height-for-age">Height-for-Age</option>
@@ -10549,10 +10549,10 @@ header {
                                 <option value="bmi-for-age">BMI-for-Age</option>
                                 <option value="bmi-adult">BMI Adult</option>
                             </select>
-                            <select id="manager-classification" class="filter-select" onchange="loadManagerFoods()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);" disabled>
+                            <select id="manager-classification" class="filter-select" onchange="loadManagerFoods()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: #000000;" disabled>
                                 <option value="">Select Classification</option>
                             </select>
-                            <select id="manager-duration" class="filter-select" onchange="loadManagerFoods()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                            <select id="manager-duration" class="filter-select" onchange="loadManagerFoods()" style="padding: 8px 12px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: #000000;">
                                 <option value="">Select Duration</option>
                                 <option value="7">7-Day Plan</option>
                                 <option value="14">14-Day Plan</option>
@@ -10572,7 +10572,7 @@ header {
                     </div>
                     
                     <div id="manager-content" class="food-history-content">
-                        <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                        <div style="text-align: center; padding: 40px; color: #000000;">
                             Please select a classification and duration to view meal plan templates
                         </div>
                     </div>
@@ -10646,11 +10646,11 @@ header {
             const content = document.getElementById('manager-content');
             
             if (!whoStandard || !classification || !duration) {
-                content.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">Please select WHO standard, classification, and duration</div>';
+                content.innerHTML = '<div style="text-align: center; padding: 40px; color: #000000;">Please select WHO standard, classification, and duration</div>';
                 return;
             }
             
-            content.innerHTML = '<div style="text-align: center; padding: 40px;">Loading...</div>';
+            content.innerHTML = '<div style="text-align: center; padding: 40px; color: #000000;">Loading...</div>';
             
             // Create combined classification key: who_standard-classification
             const combinedClassification = `${whoStandard}-${classification}`;
@@ -10661,12 +10661,12 @@ header {
                     if (data.success) {
                         renderManagerTable(data.data, combinedClassification, duration);
                     } else {
-                        content.innerHTML = `<div style="text-align: center; padding: 40px; color: #f44336;">${data.error}</div>`;
+                        content.innerHTML = `<div style="text-align: center; padding: 40px; color: #000000;">${data.error}</div>`;
                     }
                 })
                 .catch(error => {
                     console.error('Error loading manager foods:', error);
-                    content.innerHTML = '<div style="text-align: center; padding: 40px; color: #f44336;">Error loading foods</div>';
+                    content.innerHTML = '<div style="text-align: center; padding: 40px; color: #000000;">Error loading foods</div>';
                 });
         }
 
@@ -10675,7 +10675,7 @@ header {
             
             if (!foodData || foodData.length === 0) {
                 content.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                    <div style="text-align: center; padding: 40px; color: #000000;">
                         No foods found for ${classification} ${duration}-day plan
                     </div>
                 `;
@@ -10698,7 +10698,7 @@ header {
                 
                 html += `
                     <div class="date-section" style="margin-bottom: 25px;">
-                        <h4 style="color: var(--color-highlight); margin-bottom: 10px;">Day ${day}</h4>
+                        <h4 style="color: #000000; margin-bottom: 10px;">Day ${day}</h4>
                         ${['Breakfast', 'Lunch', 'Dinner', 'Snacks'].map(meal => {
                             const mealFoods = dayFoods.filter(f => f.meal_category === meal);
                             if (mealFoods.length === 0) return '';
@@ -10708,18 +10708,18 @@ header {
                                     <table class="food-history-table">
                                         <thead>
                                             <tr>
-                                                <th style="border: 1px solid var(--color-border); border-bottom: 2px solid var(--color-border);">${meal}</th>
-                                                <th style="border: 1px solid var(--color-border); border-bottom: 2px solid var(--color-border);">Serving</th>
-                                                <th style="border: 1px solid var(--color-border); border-bottom: 2px solid var(--color-border);">Nutrition</th>
-                                                <th style="width: 120px; border: 1px solid var(--color-border); border-bottom: 2px solid var(--color-border);">Actions</th>
+                                                <th style="border: 1px solid var(--color-border); border-bottom: 2px solid var(--color-border); color: #000000;">${meal}</th>
+                                                <th style="border: 1px solid var(--color-border); border-bottom: 2px solid var(--color-border); color: #000000;">Serving</th>
+                                                <th style="border: 1px solid var(--color-border); border-bottom: 2px solid var(--color-border); color: #000000;">Nutrition</th>
+                                                <th style="width: 120px; border: 1px solid var(--color-border); border-bottom: 2px solid var(--color-border); color: #000000;">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             ${mealFoods.map(food => `
                                                 <tr>
-                                                    <td class="food-name-cell" style="border: 1px solid var(--color-border);">${food.food_name}</td>
-                                                    <td class="food-serving-cell" style="border: 1px solid var(--color-border);">${food.serving_size || 'N/A'}</td>
-                                                    <td class="food-nutrition-cell" style="border: 1px solid var(--color-border);">
+                                                    <td class="food-name-cell" style="border: 1px solid var(--color-border); color: #000000;">${food.food_name}</td>
+                                                    <td class="food-serving-cell" style="border: 1px solid var(--color-border); color: #000000;">${food.serving_size || 'N/A'}</td>
+                                                    <td class="food-nutrition-cell" style="border: 1px solid var(--color-border); color: #000000;">
                                                         <div>${food.calories} kcal</div>
                                                         <div style="font-size: 11px;">P: ${food.protein}g | C: ${food.carbs}g | F: ${food.fat}g</div>
                                                     </td>
@@ -10770,36 +10770,36 @@ header {
             modal.style.display = 'block';
             modal.innerHTML = `
                 <div class="modal-content" style="max-width: 500px; background: var(--color-card); padding: 20px; border-radius: 8px;">
-                    <h3 style="color: var(--text-primary); margin-bottom: 20px;">Edit Food</h3>
+                    <h3 style="color: #000000; margin-bottom: 20px;">Edit Food</h3>
                     <form id="edit-food-form" style="display: flex; flex-direction: column; gap: 12px;">
                         <input type="hidden" id="edit-food-id" value="${food.id}">
                         
-                        <label style="color: var(--text-primary);">Food Name:</label>
-                        <input type="text" id="edit-food-name" value="${food.food_name}" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        <label style="color: #000000;">Food Name:</label>
+                        <input type="text" id="edit-food-name" value="${food.food_name}" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: #000000;">
                         
-                        <label style="color: var(--text-primary);">Serving Size:</label>
-                        <input type="text" id="edit-serving-size" value="${food.serving_size || ''}" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        <label style="color: #000000;">Serving Size:</label>
+                        <input type="text" id="edit-serving-size" value="${food.serving_size || ''}" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: #000000;">
                         
-                        <label style="color: var(--text-primary);">Calories:</label>
-                        <input type="number" id="edit-calories" value="${food.calories}" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        <label style="color: #000000;">Calories:</label>
+                        <input type="number" id="edit-calories" value="${food.calories}" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: #000000;">
                         
-                        <label style="color: var(--text-primary);">Protein (g):</label>
-                        <input type="number" id="edit-protein" value="${food.protein || 0}" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        <label style="color: #000000;">Protein (g):</label>
+                        <input type="number" id="edit-protein" value="${food.protein || 0}" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: #000000;">
                         
-                        <label style="color: var(--text-primary);">Carbs (g):</label>
-                        <input type="number" id="edit-carbs" value="${food.carbs || 0}" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        <label style="color: #000000;">Carbs (g):</label>
+                        <input type="number" id="edit-carbs" value="${food.carbs || 0}" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: #000000;">
                         
-                        <label style="color: var(--text-primary);">Fat (g):</label>
-                        <input type="number" id="edit-fat" value="${food.fat || 0}" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        <label style="color: #000000;">Fat (g):</label>
+                        <input type="number" id="edit-fat" value="${food.fat || 0}" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: #000000;">
                         
-                        <label style="color: var(--text-primary);">Fiber (g):</label>
-                        <input type="number" id="edit-fiber" value="${food.fiber || 0}" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        <label style="color: #000000;">Fiber (g):</label>
+                        <input type="number" id="edit-fiber" value="${food.fiber || 0}" step="0.1" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: #000000;">
                         
-                        <label style="color: var(--text-primary);">Day Number:</label>
-                        <input type="number" id="edit-day-number" value="${food.day_number}" required min="1" max="${duration}" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        <label style="color: #000000;">Day Number:</label>
+                        <input type="number" id="edit-day-number" value="${food.day_number}" required min="1" max="${duration}" style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: #000000;">
                         
-                        <label style="color: var(--text-primary);">Meal Category:</label>
-                        <select id="edit-meal-category" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--text-primary);">
+                        <label style="color: #000000;">Meal Category:</label>
+                        <select id="edit-meal-category" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: #000000;">
                             <option value="Breakfast" ${food.meal_category === 'Breakfast' ? 'selected' : ''}>Breakfast</option>
                             <option value="Lunch" ${food.meal_category === 'Lunch' ? 'selected' : ''}>Lunch</option>
                             <option value="Dinner" ${food.meal_category === 'Dinner' ? 'selected' : ''}>Dinner</option>
