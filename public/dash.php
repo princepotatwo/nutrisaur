@@ -7437,8 +7437,8 @@ body {
 
 /* Desktop Navbar Toggle Button - Removed duplicate */
 
-/* Hover state - navbar expanded (shows full width) */
-.navbar:hover {
+/* Expanded state - navbar expanded (shows full width) */
+.navbar:not(.minimized) {
     transform: translateX(0); /* Show full navbar */
     box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(15px);
@@ -7475,7 +7475,7 @@ body {
 }
 
 /* When navbar is minimized, position icons in the right margin area */
-.navbar:not(:hover):not(.locked) .navbar-icon {
+.navbar.minimized .navbar-icon {
     position: fixed;
     right: 2px;
     width: 32px;
@@ -7492,33 +7492,33 @@ body {
 }
 
 /* Position each icon at different vertical positions in the right margin */
-.navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(1) .navbar-icon {
+.navbar.minimized .navbar-menu li:nth-child(1) .navbar-icon {
     top: 25%;
 }
 
-.navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(2) .navbar-icon {
+.navbar.minimized .navbar-menu li:nth-child(2) .navbar-icon {
     top: 40%;
 }
 
-.navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(3) .navbar-icon {
+.navbar.minimized .navbar-menu li:nth-child(3) .navbar-icon {
     top: 55%;
 }
 
-.navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(4) .navbar-icon {
+.navbar.minimized .navbar-menu li:nth-child(4) .navbar-icon {
     top: 70%;
 }
 
-.navbar:not(:hover):not(.locked) .navbar-menu li:nth-child(5) .navbar-icon {
+.navbar.minimized .navbar-menu li:nth-child(5) .navbar-icon {
     top: 85%;
 }
 
-.navbar:not(:hover):not(.locked) .navbar-icon svg {
+.navbar.minimized .navbar-icon svg {
     width: 20px;
     height: 20px;
 }
 
 /* Light theme for navbar icons */
-.light-theme .navbar:not(:hover):not(.locked) .navbar-icon {
+.light-theme .navbar.minimized .navbar-icon {
     background: rgba(142, 185, 110, 0.1);
     border-color: rgba(142, 185, 110, 0.2);
 }
@@ -7617,7 +7617,7 @@ body {
 }
 
 /* Prevent right margin area from triggering navbar hover when minimized */
-.navbar:not(:hover):not(.locked)::after {
+.navbar.minimized::after {
     content: '';
     position: fixed;
     right: 0;
@@ -7628,12 +7628,12 @@ body {
     pointer-events: none;
 }
 
-/* Make navbar header area exception to hover events when minimized */
-.navbar:not(:hover):not(.locked) .navbar-header {
+/* Make navbar header area exception when minimized */
+.navbar.minimized .navbar-header {
     pointer-events: none;
 }
 
-.navbar:not(:hover):not(.locked) .navbar-header .navbar-lock-btn {
+.navbar.minimized .navbar-header .navbar-toggle-btn {
     pointer-events: auto;
 }
 
@@ -7672,13 +7672,13 @@ body {
     transition: transform 0.2s ease, color 0.2s ease;
 }
 
-.navbar:hover .navbar-icon {
+.navbar:not(.minimized) .navbar-icon {
     transform: scale(1.05);
     color: var(--color-primary);
 }
 
 /* Expanded navbar state - show everything */
-.navbar:hover {
+.navbar:not(.minimized) {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -7686,9 +7686,9 @@ body {
     padding-top: 0;
 }
 
-.navbar:hover .navbar-logo-text,
-.navbar:hover span:not(.navbar-icon),
-.navbar:hover .navbar-footer {
+.navbar:not(.minimized) .navbar-logo-text,
+.navbar:not(.minimized) span:not(.navbar-icon),
+.navbar:not(.minimized) .navbar-footer {
     opacity: 1;
 }
 
@@ -8372,8 +8372,8 @@ body {
         display: none !important;
     }
     
-    .navbar:hover {
-        width: 320px !important; /* Hover: expanded */
+    .navbar:not(.minimized) {
+        width: 320px !important; /* Expanded state */
     }
     
     /* Body padding will be handled by JavaScript */
