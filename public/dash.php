@@ -7528,7 +7528,12 @@ body {
 
 /* Hide original toggle button when navbar is minimized */
 .navbar.minimized .navbar-toggle-btn {
-    display: none;
+    display: none !important;
+}
+
+/* Show original toggle button when navbar is expanded */
+.navbar:not(.minimized) .navbar-toggle-btn {
+    display: flex !important;
 }
 
 /* Position minimized hamburger button in same column as original toggle button */
@@ -7554,7 +7559,7 @@ body {
 
 /* Show minimized hamburger button when navbar is minimized */
 .navbar.minimized .navbar-hamburger-btn {
-    display: flex;
+    display: flex !important;
 }
 
 /* Hover states for minimized hamburger button */
@@ -7581,7 +7586,7 @@ body {
 
 /* Hide minimized hamburger button when navbar is expanded */
 .navbar:not(.minimized) .navbar-hamburger-btn {
-    display: none;
+    display: none !important;
 }
 
 /* Hamburger button SVG size - same as other icons */
