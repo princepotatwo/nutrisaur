@@ -7379,41 +7379,40 @@ body {
 
 /* Body padding will be handled by base styles */
 
-/* Floating Hamburger Icon - Gmail Style */
-.floating-hamburger-icon {
-    position: fixed;
+/* Navbar Hamburger Button - Gmail Style */
+.navbar-hamburger-btn {
+    position: absolute;
     top: 20px;
-    left: 60px; /* Position beside the minimized navbar */
-    z-index: 1000;
+    right: 20px;
     width: 40px;
     height: 40px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
     border-radius: 50%;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
+    z-index: 10;
 }
 
-.floating-hamburger-icon:hover {
+.navbar-hamburger-btn:hover {
     transform: scale(1.1);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
-.floating-hamburger-icon.locked {
+.navbar-hamburger-btn.locked {
     background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
     box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
 }
 
-.floating-hamburger-icon.locked:hover {
+.navbar-hamburger-btn.locked:hover {
     box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
 }
 
-.floating-hamburger-icon .hamburger-icon {
+.navbar-hamburger-btn .hamburger-icon {
     width: 20px;
     height: 20px;
     display: flex;
@@ -7422,7 +7421,7 @@ body {
     align-items: center;
 }
 
-.floating-hamburger-icon .hamburger-line {
+.navbar-hamburger-btn .hamburger-line {
     width: 18px;
     height: 2px;
     background: white;
@@ -7430,29 +7429,25 @@ body {
     transition: all 0.3s ease;
 }
 
-.floating-hamburger-icon.locked .hamburger-line:nth-child(1) {
+.navbar-hamburger-btn.locked .hamburger-line:nth-child(1) {
     transform: rotate(45deg) translate(5px, 5px);
 }
 
-.floating-hamburger-icon.locked .hamburger-line:nth-child(2) {
+.navbar-hamburger-btn.locked .hamburger-line:nth-child(2) {
     opacity: 0;
 }
 
-.floating-hamburger-icon.locked .hamburger-line:nth-child(3) {
+.navbar-hamburger-btn.locked .hamburger-line:nth-child(3) {
     transform: rotate(-45deg) translate(7px, -6px);
-}
-
-/* Adjust position when navbar is expanded */
-.navbar.locked ~ .floating-hamburger-icon {
-    left: 320px;
 }
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-    .floating-hamburger-icon {
+    .navbar-hamburger-btn {
         display: none; /* Hide on mobile */
     }
 }
+
 
 /* Content area animation - removed since we're using transform now */
 
@@ -8252,7 +8247,13 @@ body {
     <!-- Desktop Sidebar Navigation (unchanged) -->
     <div class="navbar" id="navbar">
         <div class="navbar-header">
-            
+            <button class="navbar-hamburger-btn" id="navbarHamburgerBtn" title="Pin Sidebar">
+                <div class="hamburger-icon">
+                    <div class="hamburger-line"></div>
+                    <div class="hamburger-line"></div>
+                    <div class="hamburger-line"></div>
+                </div>
+            </button>
             
             <div class="navbar-logo">
                 <div class="navbar-logo-icon">
@@ -8263,11 +8264,11 @@ body {
         </div>
         <div class="navbar-menu">
             <ul>
-                <li><a href="dash"><span class="navbar-icon"></span><span>Dashboard</span></a></li>
-                <li><a href="screening"><span class="navbar-icon"></span><span>MHO Assessment</span></a></li>
-                <li><a href="event"><span class="navbar-icon"></span><span>Nutrition Event Notifications</span></a></li>
-                <li><a href="settings"><span class="navbar-icon"></span><span>Settings & Admin</span></a></li>
-                <li><a href="logout" style="color: #ff5252;"><span class="navbar-icon"></span><span>Logout</span></a></li>
+                <li><a href="dash"><span class="navbar-icon">📊</span><span>Dashboard</span></a></li>
+                <li><a href="screening"><span class="navbar-icon">🏥</span><span>MHO Assessment</span></a></li>
+                <li><a href="event"><span class="navbar-icon">📢</span><span>Nutrition Event Notifications</span></a></li>
+                <li><a href="settings"><span class="navbar-icon">⚙️</span><span>Settings & Admin</span></a></li>
+                <li><a href="logout" style="color: #ff5252;"><span class="navbar-icon">🚪</span><span>Logout</span></a></li>
             </ul>
         </div>
         <div class="navbar-footer">
@@ -8276,14 +8277,6 @@ body {
         </div>
     </div>
 
-    <!-- Floating Hamburger Icon - Gmail Style -->
-    <div class="floating-hamburger-icon" id="floatingHamburgerIcon" title="Pin Sidebar">
-        <div class="hamburger-icon">
-            <div class="hamburger-line"></div>
-            <div class="hamburger-line"></div>
-            <div class="hamburger-line"></div>
-        </div>
-    </div>
     
     <div class="dashboard">
         <header>
@@ -13628,26 +13621,26 @@ body {
             initNavigation();
         }
 
-        // Floating Hamburger Icon Implementation - Gmail Style
+        // Navbar Hamburger Button Implementation - Gmail Style
         let isNavbarLocked = false;
         
-        function initFloatingHamburgerIcon() {
-            console.log('🍔 Initializing floating hamburger icon...');
+        function initNavbarHamburgerButton() {
+            console.log('🍔 Initializing navbar hamburger button...');
             
-            const floatingHamburgerIcon = document.getElementById('floatingHamburgerIcon');
+            const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
             const navbar = document.querySelector('.navbar');
             
-            if (!floatingHamburgerIcon || !navbar) {
-                console.error('❌ Floating hamburger icon or navbar not found');
+            if (!hamburgerBtn || !navbar) {
+                console.error('❌ Navbar hamburger button or navbar not found');
                 return;
             }
             
-            // Add click event listener to floating hamburger icon
-            floatingHamburgerIcon.addEventListener('click', function() {
+            // Add click event listener to hamburger button
+            hamburgerBtn.addEventListener('click', function() {
                 isNavbarLocked = !isNavbarLocked;
-                updateFloatingHamburgerIcon();
+                updateHamburgerButton();
                 
-                console.log('🍔 Floating hamburger icon clicked, new state:', isNavbarLocked);
+                console.log('🍔 Navbar hamburger button clicked, new state:', isNavbarLocked);
                 
                 if (isNavbarLocked) {
                     // Lock: Force navbar to stay expanded (like Gmail)
@@ -13664,14 +13657,14 @@ body {
                 }
             });
             
-            // Update floating hamburger icon appearance
-            function updateFloatingHamburgerIcon() {
+            // Update hamburger button appearance
+            function updateHamburgerButton() {
                 if (isNavbarLocked) {
-                    floatingHamburgerIcon.classList.add('locked');
-                    floatingHamburgerIcon.title = 'Unpin Sidebar';
+                    hamburgerBtn.classList.add('locked');
+                    hamburgerBtn.title = 'Unpin Sidebar';
                 } else {
-                    floatingHamburgerIcon.classList.remove('locked');
-                    floatingHamburgerIcon.title = 'Pin Sidebar';
+                    hamburgerBtn.classList.remove('locked');
+                    hamburgerBtn.title = 'Pin Sidebar';
                 }
             }
             
@@ -13680,11 +13673,11 @@ body {
                 const isMobile = window.innerWidth <= 768;
                 
                 if (isMobile) {
-                    // Mobile: hide floating hamburger icon
-                    floatingHamburgerIcon.style.display = 'none';
+                    // Mobile: hide hamburger button
+                    hamburgerBtn.style.display = 'none';
                 } else {
-                    // Desktop: show floating hamburger icon
-                    floatingHamburgerIcon.style.display = 'flex';
+                    // Desktop: show hamburger button
+                    hamburgerBtn.style.display = 'flex';
                     
                     // Respect lock state when switching to desktop
                     if (isNavbarLocked) {
@@ -13719,26 +13712,27 @@ body {
             // Set initial state
             const isMobile = window.innerWidth <= 768;
             if (isMobile) {
-                floatingHamburgerIcon.style.display = 'none';
+                hamburgerBtn.style.display = 'none';
             } else {
-                floatingHamburgerIcon.style.display = 'flex';
+                hamburgerBtn.style.display = 'flex';
                 // Start with navbar minimized (like Gmail)
                 navbar.classList.add('minimized');
                 document.body.style.paddingLeft = '40px';
             }
             
-            // Initialize hamburger icon state
-            updateFloatingHamburgerIcon();
+            // Initialize hamburger button state
+            updateHamburgerButton();
             
-            console.log('✅ Floating hamburger icon initialized successfully');
+            console.log('✅ Navbar hamburger button initialized successfully');
         }
         
-        // Initialize floating hamburger icon when DOM is ready
+        // Initialize navbar hamburger button when DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initFloatingHamburgerIcon);
+            document.addEventListener('DOMContentLoaded', initNavbarHamburgerButton);
         } else {
-            initFloatingHamburgerIcon();
+            initNavbarHamburgerButton();
         }
+
 
         // Seamless real-time dashboard updates (every 3 seconds)
         let realtimeUpdateInterval = null;
