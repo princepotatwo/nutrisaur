@@ -7533,39 +7533,9 @@ body.navbar-locked {
     padding-left: 320px !important;
 }
 
-/* Navbar contents should stay visible when locked */
-.navbar.locked .navbar-header,
-.navbar.locked .navbar-menu,
-.navbar.locked .navbar-footer,
-.navbar.locked .navbar-logo,
-.navbar.locked .navbar-logo-text,
-.navbar.locked .navbar-logo-icon,
-.navbar.locked ul,
-.navbar.locked li,
-.navbar.locked a {
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: block !important;
-}
-
-/* Ensure navbar menu items are fully visible when locked */
-.navbar.locked .navbar-menu ul {
-    display: block !important;
-}
-
-.navbar.locked .navbar-menu li {
-    display: block !important;
-    opacity: 1 !important;
-}
-
-.navbar.locked .navbar-menu a {
-    display: flex !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-/* Override any minimized styles when locked */
-.navbar.locked * {
+/* Navbar contents should stay visible when locked/expanded (no layout overrides) */
+.navbar.locked *,
+.navbar.expanded * {
     opacity: 1 !important;
     visibility: visible !important;
 }
@@ -13895,6 +13865,10 @@ body.navbar-locked {
             if (window.innerWidth >= 769) {
                 navbar.addEventListener('mouseenter', function() {
                     if (isNavbarLocked) return; // ignore hover when locked
+                    if (hoverMinimizeTimer) {
+                        clearTimeout(hoverMinimizeTimer);
+                        hoverMinimizeTimer = null;
+                    }
                     navbar.classList.remove('minimized');
                     navbar.classList.add('expanded');
                     navbar.style.transform = 'translateX(0)';
@@ -13906,7 +13880,7 @@ body.navbar-locked {
                     if (isNavbarLocked) return; // ignore hover when locked
                     
                     // Use a small delay to allow moving between navbar and icons
-                    setTimeout(() => {
+                    hoverMinimizeTimer = setTimeout(() => {
                         // Only minimize if not hovering over icons
                         if (!navbar.classList.contains('hovering-icons')) {
                             navbar.classList.add('minimized');
@@ -13915,7 +13889,8 @@ body.navbar-locked {
                             document.body.classList.remove('navbar-locked');
                             console.log('🎯 Navbar minimized after navbar leave');
                         }
-                    }, 100);
+                        hoverMinimizeTimer = null;
+                    }, 120);
                 });
             }
             
@@ -13983,6 +13958,9 @@ body.navbar-locked {
                 });
             }
             
+            // Shared debounce to prevent premature minimize between icon <-> navbar
+            let hoverMinimizeTimer = null;
+
             // Add hover functionality to floating icons to expand navbar
             // Icons should act like part of navbar - keep navbar expanded when hovering over them
             floatingIcons.forEach(icon => {
@@ -13992,6 +13970,11 @@ body.navbar-locked {
                     const isLocked = hamburgerBtn ? hamburgerBtn.classList.contains('locked') : false;
                     if (isLocked) return; // ignore hover when locked
                     
+                    if (hoverMinimizeTimer) {
+                        clearTimeout(hoverMinimizeTimer);
+                        hoverMinimizeTimer = null;
+                    }
+
                     console.log('🎯 Floating icon hover - expanding navbar');
                     
                     // Force navbar to expand by removing minimized class and transform
@@ -14017,7 +14000,7 @@ body.navbar-locked {
                     navbar.classList.remove('hovering-icons');
                     
                     // Use a small delay to allow moving between icon and navbar
-                    setTimeout(() => {
+                    hoverMinimizeTimer = setTimeout(() => {
                         // Only minimize if not hovering over navbar or icons
                         if (!navbar.matches(':hover') && !navbar.classList.contains('hovering-icons')) {
                             navbar.classList.add('minimized');
@@ -14026,7 +14009,8 @@ body.navbar-locked {
                             document.body.classList.remove('navbar-locked');
                             console.log('🎯 Navbar minimized after floating icon leave');
                         }
-                    }, 100);
+                        hoverMinimizeTimer = null;
+                    }, 120);
                 });
             });
             
