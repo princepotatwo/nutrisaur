@@ -7533,22 +7533,16 @@ body.navbar-locked {
     padding-left: 320px !important;
 }
 
-/* Invisible hover zone to expand navbar when minimized */
+/* Invisible hover zone - thin strip on left edge, doesn't interfere with navbar */
 .navbar-hover-zone {
     position: fixed;
     top: 0;
     left: 0;
-    width: 90px; /* match minimized visible width */
+    width: 20px; /* thin strip on left edge */
     height: 100vh;
     background: transparent;
     z-index: 1002; /* above navbar, below floating icons */
     pointer-events: auto;
-    transition: width 0.3s ease;
-}
-
-/* Expanded hover zone - wider when navbar is expanded */
-.navbar.expanded ~ .navbar-hover-zone {
-    width: 320px; /* match expanded navbar width */
 }
 
 /* Hide hover zone only when locked */
@@ -13836,7 +13830,7 @@ body.navbar-locked {
                     document.body.style.paddingLeft = '90px';
                     document.body.classList.remove('navbar-locked');
                     
-                    // Show hover zone when unlocked (CSS handles width)
+                    // Show hover zone when unlocked (thin strip doesn't interfere)
                     const hoverZone = document.getElementById('navbarHoverZone');
                     if (hoverZone) {
                         hoverZone.style.display = 'block';
@@ -13890,7 +13884,7 @@ body.navbar-locked {
                         document.body.style.paddingLeft = '90px';
                         document.body.classList.remove('navbar-locked');
                         
-                        // Show hover zone when unlocked (CSS handles width)
+                        // Show hover zone when unlocked (thin strip doesn't interfere)
                         if (hoverZone) {
                             hoverZone.style.display = 'block';
                         }
@@ -13996,8 +13990,7 @@ body.navbar-locked {
                 navbar.style.transform = 'translateX(0)';
                 document.body.style.paddingLeft = '320px';
                 
-                // Keep hover zone active but wider (CSS handles the width change)
-                // No need to hide/show - CSS transition handles the width change
+                // Hover zone stays active (thin strip doesn't interfere)
             }
 
             function minimizeNavbar() {
@@ -14007,8 +14000,7 @@ body.navbar-locked {
                 navbar.style.transform = 'translateX(-230px)';
                 document.body.style.paddingLeft = '90px';
                 
-                // Hover zone stays active but narrower (CSS handles the width change)
-                // No need to hide/show - CSS transition handles the width change
+                // Hover zone stays active (thin strip doesn't interfere)
             }
 
             function scheduleMinimize() {
