@@ -986,9 +986,10 @@ body {
     transition: all 0.3s ease;
 }
 
-.navbar li:hover {
+/* Disabled hover effect for navbar menu items */
+/* .navbar li:hover {
     transform: translateX(5px);
-}
+} */
 
 .navbar li:not(:last-child) {
     border-bottom: 1px solid rgba(161, 180, 84, 0.08);
@@ -1462,9 +1463,10 @@ header {
     transition: transform 0.3s ease;
 }
 
-.navbar-logo:hover {
+/* Disabled hover effect for navbar logo */
+/* .navbar-logo:hover {
     transform: scale(1.05);
-}
+} */
 
 .navbar-logo-icon {
     width: 48px;
@@ -1483,11 +1485,12 @@ header {
     box-shadow: 0 2px 8px rgba(161, 180, 84, 0.1);
 }
 
-.navbar-logo:hover .navbar-logo-icon {
+/* Disabled hover effect for navbar logo icon */
+/* .navbar-logo:hover .navbar-logo-icon {
     background: linear-gradient(135deg, rgba(161, 180, 84, 0.15), rgba(161, 180, 84, 0.08));
     border-color: rgba(161, 180, 84, 0.3);
     box-shadow: 0 4px 15px rgba(161, 180, 84, 0.2);
-}
+} */
 
 .light-theme .navbar-logo-icon {
     background: linear-gradient(135deg, rgba(142, 185, 110, 0.1), rgba(142, 185, 110, 0.05));
@@ -1495,11 +1498,12 @@ header {
     box-shadow: 0 2px 8px rgba(142, 185, 110, 0.1);
 }
 
-.light-theme .navbar-logo:hover .navbar-logo-icon {
+/* Disabled light theme hover effect for navbar logo icon */
+/* .light-theme .navbar-logo:hover .navbar-logo-icon {
     background: linear-gradient(135deg, rgba(142, 185, 110, 0.15), rgba(142, 185, 110, 0.08));
     border-color: rgba(142, 185, 110, 0.3);
     box-shadow: 0 4px 15px rgba(142, 185, 110, 0.2);
-}
+} */
 
 .navbar-logo-text {
     font-size: 24px;
@@ -1524,9 +1528,10 @@ header {
     transition: all 0.3s ease;
 }
 
-.navbar li:hover {
+/* Disabled hover effect for navbar menu items */
+/* .navbar li:hover {
     transform: translateX(5px);
-}
+} */
 
 .navbar li:not(:last-child) {
     border-bottom: 1px solid rgba(161, 180, 84, 0.08);
@@ -1567,7 +1572,8 @@ header {
     background: linear-gradient(90deg, transparent, rgba(142, 185, 110, 0.1), transparent);
 }
 
-.navbar a:hover {
+/* Disabled hover effect for navbar links */
+/* .navbar a:hover {
     background: linear-gradient(90deg, rgba(161, 180, 84, 0.08) 0%, rgba(161, 180, 84, 0.04) 100%);
     color: var(--color-highlight);
     opacity: 1;
@@ -1577,7 +1583,7 @@ header {
 
 .navbar a:hover::before {
     left: 100%;
-}
+} */
 
 .navbar a.active {
     background: linear-gradient(90deg, rgba(161, 180, 84, 0.15) 0%, rgba(161, 180, 84, 0.08) 100%);
@@ -1589,10 +1595,11 @@ header {
     transform: translateX(2px);
 }
 
-.light-theme .navbar a:hover {
+/* Disabled light theme hover effect for navbar links */
+/* .light-theme .navbar a:hover {
     background: linear-gradient(90deg, rgba(142, 185, 110, 0.08) 0%, rgba(142, 185, 110, 0.04) 100%);
     box-shadow: 0 4px 15px rgba(142, 185, 110, 0.15);
-}
+} */
 
 .light-theme .navbar a.active {
     background: linear-gradient(90deg, rgba(142, 185, 110, 0.15) 0%, rgba(142, 185, 110, 0.08) 100%);
