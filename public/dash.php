@@ -14274,15 +14274,17 @@ body {
                 console.log('🔒 Floating lock icon clicked, new state:', isNavbarLocked);
                 
                 if (isNavbarLocked) {
-                    // Lock: Force navbar to stay expanded
+                    // Lock: Force navbar to stay expanded (like Gmail)
                     navbar.classList.add('locked');
+                    navbar.classList.remove('minimized');
                     document.body.style.paddingLeft = '320px';
-                    console.log('🔒 Navbar locked - staying expanded');
+                    console.log('🔒 Navbar locked - staying expanded like Gmail');
                 } else {
-                    // Unlock: Allow normal hover behavior
+                    // Unlock: Minimize navbar (like Gmail)
                     navbar.classList.remove('locked');
+                    navbar.classList.add('minimized');
                     document.body.style.paddingLeft = '60px';
-                    console.log('🔓 Navbar unlocked - normal hover behavior');
+                    console.log('🔓 Navbar unlocked - minimized like Gmail');
                 }
             });
             
@@ -14311,9 +14313,11 @@ body {
                     // Respect lock state when switching to desktop
                     if (isNavbarLocked) {
                         navbar.classList.add('locked');
+                        navbar.classList.remove('minimized');
                         document.body.style.paddingLeft = '320px';
                     } else {
                         navbar.classList.remove('locked');
+                        navbar.classList.add('minimized');
                         document.body.style.paddingLeft = '60px';
                     }
                 }
@@ -14323,12 +14327,14 @@ body {
             if (window.innerWidth >= 769) {
                 navbar.addEventListener('mouseenter', function() {
                     if (!isNavbarLocked) {
+                        navbar.classList.remove('minimized');
                         document.body.style.paddingLeft = '320px';
                     }
                 });
                 
                 navbar.addEventListener('mouseleave', function() {
                     if (!isNavbarLocked) {
+                        navbar.classList.add('minimized');
                         document.body.style.paddingLeft = '60px';
                     }
                 });
@@ -14340,6 +14346,8 @@ body {
                 floatingLockIcon.style.display = 'none';
             } else {
                 floatingLockIcon.style.display = 'flex';
+                // Start with navbar minimized (like Gmail)
+                navbar.classList.add('minimized');
                 document.body.style.paddingLeft = '60px';
             }
             
