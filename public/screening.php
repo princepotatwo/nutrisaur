@@ -6788,8 +6788,7 @@ header {
         // ===== MODERN 2025 NAVIGATION SYSTEM =====
         // Navigation state management
         let navState = {
-            isMobile: window.innerWidth <= 768,
-            isHovered: false
+            isMobile: window.innerWidth <= 768
         };
 
         // DOM elements
@@ -6813,22 +6812,8 @@ header {
 
         // Setup event listeners
         function setupEventListeners() {
-            // Desktop hover events
-            if (navbar) {
-                navbar.addEventListener('mouseenter', () => {
-                    if (!navState.isMobile) {
-                        navState.isHovered = true;
-                        updateBodyPadding();
-                    }
-                });
-
-                navbar.addEventListener('mouseleave', () => {
-                    if (!navState.isMobile) {
-                        navState.isHovered = false;
-                        updateBodyPadding();
-                    }
-                });
-            }
+            // Desktop hover events - REMOVED (using hamburger button only)
+            // No mouseenter/mouseleave listeners on navbar
 
             // Window resize handler
             window.addEventListener('resize', handleResize);
@@ -6847,35 +6832,17 @@ header {
                 if (navbar) navbar.style.display = 'flex';
                 if (mobileTopNav) mobileTopNav.style.display = 'none';
                 body.style.paddingTop = '0';
-                updateBodyPadding();
             }
         }
 
-        // Update body padding for desktop hover effect
-        function updateBodyPadding() {
-            if (!navState.isMobile) {
-                if (navState.isHovered) {
-                    body.style.paddingLeft = '320px'; // Expanded navbar width
-                } else {
-                    body.style.paddingLeft = '40px'; // Minimized navbar width
-                }
-                
-                // Update WHO standard buttons responsiveness based on available space
-                updateWHOButtonsResponsiveness();
-            }
-        }
+        // Update body padding - handled by hamburger button JavaScript
         
         function updateWHOButtonsResponsiveness() {
             const whoButtons = document.querySelector('.who-standard-buttons');
             if (whoButtons) {
-                // Add class to indicate navbar state for additional CSS targeting
-                if (navState.isHovered) {
-                    whoButtons.classList.add('navbar-expanded');
-                    whoButtons.classList.remove('navbar-collapsed');
-                } else {
-                    whoButtons.classList.add('navbar-collapsed');
-                    whoButtons.classList.remove('navbar-expanded');
-                }
+                // WHO buttons responsiveness - no longer dependent on navbar hover state
+                whoButtons.classList.add('navbar-collapsed');
+                whoButtons.classList.remove('navbar-expanded');
             }
         }
 
@@ -11456,3 +11423,4 @@ header {
     </script>
 </body>
 </html>
+
