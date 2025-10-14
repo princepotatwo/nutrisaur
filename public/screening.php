@@ -1,4 +1,64 @@
 <?php
+// Handle auto-screening from AccountActivity (when weight/height updated) - MUST be first
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['auto_screening']) && $_POST['auto_screening'] === 'true') {
+    header('Content-Type: application/json');
+    
+    // Skip session validation for auto-screening
+    $user_data = [
+        'email' => $_POST['email'] ?? '',
+        'weight' => $_POST['weight'] ?? '',
+        'height' => $_POST['height'] ?? '',
+        'birthday' => $_POST['birthday'] ?? '',
+        'sex' => $_POST['sex'] ?? '',
+        'screening_date' => date('Y-m-d H:i:s')
+    ];
+    
+    // Validate required fields
+    if (empty($user_data['email']) || empty($user_data['weight']) || empty($user_data['height']) || empty($user_data['birthday']) || empty($user_data['sex'])) {
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Missing required fields for auto-screening'
+        ]);
+        exit;
+    }
+    
+    try {
+        // Include required files for auto-screening
+        require_once __DIR__ . '/api/DatabaseHelper.php';
+        require_once __DIR__ . '/../who_growth_standards.php';
+        
+        // Use existing getNutritionalAssessment function
+        $assessment = getNutritionalAssessment($user_data);
+        
+        // Use existing saveScreeningHistory function
+        if ($assessment['success']) {
+            $saved = saveScreeningHistory($user_data, $assessment);
+            if ($saved) {
+                echo json_encode([
+                    'success' => true, 
+                    'message' => 'Auto-screening completed successfully'
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false, 
+                    'message' => 'Failed to save screening history'
+                ]);
+            }
+        } else {
+            echo json_encode([
+                'success' => false, 
+                'message' => 'Auto-screening failed: ' . ($assessment['error'] ?? 'Unknown error')
+            ]);
+        }
+    } catch (Exception $e) {
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Auto-screening error: ' . $e->getMessage()
+        ]);
+    }
+    exit;
+}
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -338,38 +398,6 @@ $municipalities = [
     'PILAR' => ['Ala-uli', 'Bagumbayan', 'Balut I', 'Balut II', 'Bantan Munti', 'Burgos', 'Del Rosario (Pob.)', 'Diwa', 'Landing', 'Liyang', 'Nagwaling', 'Panilao', 'Pantingan', 'Poblacion', 'Rizal (Pob.)', 'Santa Rosa', 'Wakas North', 'Wakas South', 'Wawa'],
     'SAMAL' => ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan (Pob.)', 'San Roque (Pob.)', 'Santa Lucia', 'Sapa', 'Tabing Ilog', 'Gugo', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
 ];
-
-// Handle auto-screening from AccountActivity (when weight/height updated)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['auto_screening']) && $_POST['auto_screening'] === 'true') {
-    header('Content-Type: application/json');
-    
-    $user_data = [
-        'email' => $_POST['email'] ?? '',
-        'weight' => $_POST['weight'] ?? '',
-        'height' => $_POST['height'] ?? '',
-        'birthday' => $_POST['birthday'] ?? '',
-        'sex' => $_POST['sex'] ?? '',
-        'screening_date' => date('Y-m-d H:i:s')
-    ];
-    
-    // Use existing getNutritionalAssessment function
-    $assessment = getNutritionalAssessment($user_data);
-    
-    // Use existing saveScreeningHistory function
-    if ($assessment['success']) {
-        saveScreeningHistory($user_data, $assessment);
-        echo json_encode([
-            'success' => true, 
-            'message' => 'Auto-screening completed successfully'
-        ]);
-    } else {
-        echo json_encode([
-            'success' => false, 
-            'message' => 'Auto-screening failed: ' . ($assessment['error'] ?? 'Unknown error')
-        ]);
-    }
-    exit;
-}
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
