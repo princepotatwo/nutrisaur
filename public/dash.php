@@ -7665,6 +7665,62 @@ body {
     display: flex;
     align-items: center;
     padding: 15px 25px;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: all 0.3s ease;
+    border-radius: 0 12px 12px 0;
+    margin-right: 10px;
+    overflow: hidden;
+}
+
+.navbar li a:hover {
+    background: linear-gradient(90deg, rgba(161, 180, 84, 0.08) 0%, rgba(161, 180, 84, 0.04) 100%);
+    color: var(--color-highlight);
+    opacity: 1;
+    transform: translateX(2px);
+    box-shadow: 0 4px 15px rgba(161, 180, 84, 0.15);
+}
+
+.navbar li a.active {
+    background: linear-gradient(90deg, rgba(161, 180, 84, 0.15) 0%, rgba(161, 180, 84, 0.08) 100%);
+    color: var(--color-highlight);
+    opacity: 1;
+    border-left: 3px solid var(--color-highlight);
+    box-shadow: 0 6px 20px rgba(161, 180, 84, 0.2);
+    transform: translateX(2px);
+}
+
+/* Light theme hover effects */
+.light-theme .navbar li a:hover {
+    background: linear-gradient(90deg, rgba(142, 185, 110, 0.08) 0%, rgba(142, 185, 110, 0.04) 100%);
+    box-shadow: 0 4px 15px rgba(142, 185, 110, 0.15);
+}
+
+.light-theme .navbar li a.active {
+    background: linear-gradient(90deg, rgba(142, 185, 110, 0.15) 0%, rgba(142, 185, 110, 0.08) 100%);
+    border-left-color: var(--color-accent3);
+    box-shadow: 0 6px 20px rgba(142, 185, 110, 0.2);
+}
+
+/* Lock feature styling */
+.locked-menu-item {
+    position: relative;
+    opacity: 0.6;
+    cursor: not-allowed !important;
+    pointer-events: none;
+}
+
+.locked-menu-item:hover {
+    background: rgba(255, 193, 7, 0.1) !important;
+    color: #ffc107 !important;
+    transform: none !important;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2) !important;
+}
+
+.lock-icon {
+    margin-left: 8px;
+    font-size: 14px;
+    opacity: 0.8;
 }
 
 /* Body padding will be handled by base styles */
@@ -7757,6 +7813,7 @@ body {
     opacity: 0.8;
     pointer-events: auto;
     margin: 4px 0;
+    backdrop-filter: blur(10px);
 }
 
 .floating-nav-icon:hover {
@@ -8571,7 +8628,7 @@ body {
         <div class="navbar-menu">
             <ul>
                 <li><a href="dash">Dashboard</a></li>
-                <li><a href="screening">MHO Assessment</a></li>
+                <li><a href="screening" class="locked-menu-item" data-locked="true">MHO Assessment <span class="lock-icon">🔒</span></a></li>
                 <li><a href="event">Nutrition Event Notifications</a></li>
                 <li><a href="settings">Settings & Admin</a></li>
                 <li><a href="logout" style="color: #ff5252;">Logout</a></li>
