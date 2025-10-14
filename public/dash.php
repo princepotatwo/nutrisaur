@@ -7726,6 +7726,64 @@ body {
     opacity: 1;
 }
 
+/* Floating Navigation Icons - Always visible like Gmail */
+.floating-nav-icons {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 60px;
+    height: 100vh;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.floating-nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(161, 180, 84, 0.1);
+    border: 1px solid rgba(161, 180, 84, 0.2);
+    border-radius: 8px;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    opacity: 0.8;
+    pointer-events: auto;
+    margin: 4px 0;
+}
+
+.floating-nav-icon:hover {
+    background: rgba(161, 180, 84, 0.2);
+    border-color: rgba(161, 180, 84, 0.4);
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
+}
+
+.floating-nav-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Light theme for floating icons */
+.light-theme .floating-nav-icon {
+    background: rgba(142, 185, 110, 0.1);
+    border-color: rgba(142, 185, 110, 0.2);
+}
+
+.light-theme .floating-nav-icon:hover {
+    background: rgba(142, 185, 110, 0.2);
+    border-color: rgba(142, 185, 110, 0.4);
+    box-shadow: 0 2px 8px rgba(142, 185, 110, 0.2);
+}
+
 /* ===== MOBILE TOP NAVIGATION STYLES ===== */
 
 /* Mobile Top Navigation Bar */
@@ -8490,41 +8548,6 @@ body {
             </svg>
         </button>
         
-        <!-- Minimized state icons - match hamburger button styling exactly -->
-        <a href="dash" class="navbar-minimized-icon" style="top: 25%;" title="Dashboard">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7"></rect>
-                <rect x="14" y="3" width="7" height="7"></rect>
-                <rect x="14" y="14" width="7" height="7"></rect>
-                <rect x="3" y="14" width="7" height="7"></rect>
-            </svg>
-        </a>
-        <a href="screening" class="navbar-minimized-icon" style="top: 40%;" title="MHO Assessment">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"></path>
-                <polyline points="9,11 9,7 15,7 15,11"></polyline>
-                <path d="M9 7V3a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"></path>
-            </svg>
-        </a>
-        <a href="event" class="navbar-minimized-icon" style="top: 55%;" title="Event Notifications">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-            </svg>
-        </a>
-        <a href="settings" class="navbar-minimized-icon" style="top: 70%;" title="Settings">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-        </a>
-        <a href="logout" class="navbar-minimized-icon" style="top: 85%;" title="Logout">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                <polyline points="16,17 21,12 16,7"></polyline>
-                <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-        </a>
         
         <div class="navbar-header">
             <div class="navbar-logo">
@@ -8558,6 +8581,44 @@ body {
             <div>NutriSaur v2.0 • © 2025</div>
             <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></div>
         </div>
+    </div>
+    
+    <!-- Floating Navigation Icons - Always visible like Gmail -->
+    <div class="floating-nav-icons">
+        <a href="dash" class="floating-nav-icon" id="floating-dash" title="Dashboard">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+        </a>
+        <a href="screening" class="floating-nav-icon" id="floating-screening" title="MHO Assessment">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-4"></path>
+                <polyline points="9,11 9,7 15,7 15,11"></polyline>
+                <path d="M9 7V3a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"></path>
+            </svg>
+        </a>
+        <a href="event" class="floating-nav-icon" id="floating-event" title="Event Notifications">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+        </a>
+        <a href="settings" class="floating-nav-icon" id="floating-settings" title="Settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </a>
+        <a href="logout" class="floating-nav-icon" id="floating-logout" title="Logout" style="color: #ff5252;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16,17 21,12 16,7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+        </a>
     </div>
     
     <div class="dashboard">
@@ -13870,6 +13931,49 @@ body {
             console.log('✅ Modern mobile top navigation system initialized successfully');
         }
         
+        // Initialize floating navigation icons positioning
+        function initFloatingIcons() {
+            console.log('🎯 Initializing floating navigation icons...');
+            
+            const floatingIcons = document.querySelectorAll('.floating-nav-icon');
+            const navbar = document.getElementById('navbar');
+            
+            if (!navbar || floatingIcons.length === 0) {
+                console.log('⚠️ Navbar or floating icons not found');
+                return;
+            }
+            
+            // Position floating icons beside navbar menu items
+            function positionFloatingIcons() {
+                const navbarMenu = navbar.querySelector('.navbar-menu ul');
+                if (!navbarMenu) return;
+                
+                const menuItems = navbarMenu.querySelectorAll('li');
+                
+                floatingIcons.forEach((icon, index) => {
+                    if (menuItems[index]) {
+                        const menuItem = menuItems[index];
+                        const rect = menuItem.getBoundingClientRect();
+                        
+                        // Position icon beside the menu item
+                        icon.style.position = 'fixed';
+                        icon.style.left = '20px';
+                        icon.style.top = (rect.top + rect.height / 2 - 20) + 'px';
+                        icon.style.zIndex = '1001';
+                    }
+                });
+            }
+            
+            // Initial positioning
+            positionFloatingIcons();
+            
+            // Reposition on scroll and resize
+            window.addEventListener('scroll', positionFloatingIcons);
+            window.addEventListener('resize', positionFloatingIcons);
+            
+            console.log('✅ Floating navigation icons initialized successfully');
+        }
+        
         
         // Initialize mobile dropdown functionality
         function initMobileDropdowns() {
@@ -14002,9 +14106,13 @@ body {
 
         // Initialize when DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initNavigation);
+            document.addEventListener('DOMContentLoaded', function() {
+                initNavigation();
+                initFloatingIcons();
+            });
         } else {
             initNavigation();
+            initFloatingIcons();
         }
 
         // Seamless real-time dashboard updates (every 3 seconds)
