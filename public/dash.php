@@ -7717,10 +7717,82 @@ body {
     box-shadow: 0 2px 8px rgba(255, 193, 7, 0.2) !important;
 }
 
-.lock-icon {
-    margin-left: 8px;
-    font-size: 14px;
-    opacity: 0.8;
+/* Floating Lock Icon - Gmail Style */
+.floating-lock-icon {
+    position: fixed;
+    top: 20px;
+    left: 320px; /* Position beside the navbar when expanded */
+    z-index: 1000;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.floating-lock-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.floating-lock-icon.locked {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+}
+
+.floating-lock-icon.locked:hover {
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.floating-lock-icon .lock-icon {
+    font-size: 18px;
+    color: white;
+    margin: 0;
+    opacity: 1;
+}
+
+.floating-lock-icon .unlock-icon {
+    font-size: 18px;
+    color: white;
+    margin: 0;
+    opacity: 1;
+    display: none;
+}
+
+.floating-lock-icon.locked .lock-icon {
+    display: none;
+}
+
+.floating-lock-icon.locked .unlock-icon {
+    display: block;
+}
+
+/* Adjust position when navbar is minimized */
+.navbar.minimized ~ .floating-lock-icon {
+    left: 60px;
+}
+
+/* Position floating lock icon based on navbar state */
+.navbar:not(.locked) ~ .floating-lock-icon {
+    left: 60px;
+}
+
+.navbar.locked ~ .floating-lock-icon {
+    left: 320px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .floating-lock-icon {
+        display: none; /* Hide on mobile */
+    }
 }
 
 /* Body padding will be handled by base styles */
@@ -8628,7 +8700,7 @@ body {
         <div class="navbar-menu">
             <ul>
                 <li><a href="dash">Dashboard</a></li>
-                <li><a href="screening" class="locked-menu-item" data-locked="true">MHO Assessment <span class="lock-icon">🔒</span></a></li>
+                <li><a href="screening">MHO Assessment</a></li>
                 <li><a href="event">Nutrition Event Notifications</a></li>
                 <li><a href="settings">Settings & Admin</a></li>
                 <li><a href="logout" style="color: #ff5252;">Logout</a></li>
@@ -8638,6 +8710,12 @@ body {
             <div>NutriSaur v2.0 • © 2025</div>
             <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></div>
         </div>
+    </div>
+
+    <!-- Floating Lock Icon - Gmail Style -->
+    <div class="floating-lock-icon" id="floatingLockIcon" title="Lock Navbar">
+        <span class="lock-icon">🔒</span>
+        <span class="unlock-icon">🔓</span>
     </div>
     
     <!-- Floating Navigation Icons - Always visible like Gmail -->
@@ -14166,10 +14244,109 @@ body {
             document.addEventListener('DOMContentLoaded', function() {
                 initNavigation();
                 initFloatingIcons();
+                initFloatingLockIcon();
             });
         } else {
             initNavigation();
             initFloatingIcons();
+            initFloatingLockIcon();
+        }
+
+        // Floating Lock Icon Implementation - Gmail Style
+        let isNavbarLocked = false;
+        
+        function initFloatingLockIcon() {
+            console.log('🔒 Initializing floating lock icon...');
+            
+            const floatingLockIcon = document.getElementById('floatingLockIcon');
+            const navbar = document.querySelector('.navbar');
+            
+            if (!floatingLockIcon || !navbar) {
+                console.error('❌ Floating lock icon or navbar not found');
+                return;
+            }
+            
+            // Add click event listener to floating lock icon
+            floatingLockIcon.addEventListener('click', function() {
+                isNavbarLocked = !isNavbarLocked;
+                updateFloatingLockIcon();
+                
+                console.log('🔒 Floating lock icon clicked, new state:', isNavbarLocked);
+                
+                if (isNavbarLocked) {
+                    // Lock: Force navbar to stay expanded
+                    navbar.classList.add('locked');
+                    document.body.style.paddingLeft = '320px';
+                    console.log('🔒 Navbar locked - staying expanded');
+                } else {
+                    // Unlock: Allow normal hover behavior
+                    navbar.classList.remove('locked');
+                    document.body.style.paddingLeft = '60px';
+                    console.log('🔓 Navbar unlocked - normal hover behavior');
+                }
+            });
+            
+            // Update floating lock icon appearance
+            function updateFloatingLockIcon() {
+                if (isNavbarLocked) {
+                    floatingLockIcon.classList.add('locked');
+                    floatingLockIcon.title = 'Unlock Navbar';
+                } else {
+                    floatingLockIcon.classList.remove('locked');
+                    floatingLockIcon.title = 'Lock Navbar';
+                }
+            }
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile) {
+                    // Mobile: hide floating lock icon
+                    floatingLockIcon.style.display = 'none';
+                } else {
+                    // Desktop: show floating lock icon
+                    floatingLockIcon.style.display = 'flex';
+                    
+                    // Respect lock state when switching to desktop
+                    if (isNavbarLocked) {
+                        navbar.classList.add('locked');
+                        document.body.style.paddingLeft = '320px';
+                    } else {
+                        navbar.classList.remove('locked');
+                        document.body.style.paddingLeft = '60px';
+                    }
+                }
+            });
+            
+            // Desktop hover navigation (modified to respect lock state)
+            if (window.innerWidth >= 769) {
+                navbar.addEventListener('mouseenter', function() {
+                    if (!isNavbarLocked) {
+                        document.body.style.paddingLeft = '320px';
+                    }
+                });
+                
+                navbar.addEventListener('mouseleave', function() {
+                    if (!isNavbarLocked) {
+                        document.body.style.paddingLeft = '60px';
+                    }
+                });
+            }
+            
+            // Set initial state
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                floatingLockIcon.style.display = 'none';
+            } else {
+                floatingLockIcon.style.display = 'flex';
+                document.body.style.paddingLeft = '60px';
+            }
+            
+            // Initialize lock icon state
+            updateFloatingLockIcon();
+            
+            console.log('✅ Floating lock icon initialized successfully');
         }
 
         // Seamless real-time dashboard updates (every 3 seconds)
