@@ -5952,6 +5952,227 @@ header {
             color: var(--color-highlight);
         }
 
+        /* Navbar Hamburger Button - Match floating icons style */
+        .navbar-hamburger-btn {
+            position: fixed;
+            top: 50px; /* positioned to align with floating icons */
+            /* left position controlled by JavaScript */
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 1002;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-hamburger-btn:hover {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .navbar-hamburger-btn.locked {
+            background: rgba(76, 175, 80, 0.2);
+            border-color: #45a049;
+        }
+
+        .navbar-hamburger-btn.locked:hover {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .navbar-hamburger-btn .hamburger-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .navbar-hamburger-btn .hamburger-line {
+            width: 18px;
+            height: 2px;
+            background: #4CAF50;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-hamburger-btn.locked .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .navbar-hamburger-btn.locked .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .navbar-hamburger-btn.locked .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+        .navbar-hamburger-btn {
+                display: none; /* Hide on mobile */
+            }
+        }
+
+        /* Floating Navigation Icons - Always visible like Gmail */
+        .floating-nav-icons {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 60px;
+            height: 100vh;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .floating-nav-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(161, 180, 84, 0.1);
+            border: 1px solid rgba(161, 180, 84, 0.2);
+            border-radius: 8px;
+            color: var(--color-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+            pointer-events: auto;
+            margin: 4px 0;
+        }
+
+        .floating-nav-icon:hover {
+            background: rgba(161, 180, 84, 0.2);
+            border-color: rgba(161, 180, 84, 0.4);
+            opacity: 1;
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
+        }
+
+        .floating-nav-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Light theme for floating icons */
+        .light-theme .floating-nav-icon {
+            background: rgba(142, 185, 110, 0.1);
+            border-color: rgba(142, 185, 110, 0.2);
+        }
+
+        .light-theme .floating-nav-icon:hover {
+            background: rgba(142, 185, 110, 0.2);
+            border-color: rgba(142, 185, 110, 0.4);
+            box-shadow: 0 2px 8px rgba(142, 185, 110, 0.2);
+        }
+
+        /* Navbar minimized state */
+        .navbar.minimized {
+            transform: translateX(-230px) !important; /* Show 90px */
+        }
+
+        /* Navbar locked state - fixed expanded layout, ignore hover */
+        .navbar.locked {
+            transform: translateX(0) !important;
+            width: 320px !important;
+        }
+
+        /* When navbar is locked, ensure all elements stay expanded */
+        .navbar.locked ~ * {
+            /* Ensure dashboard and all content respects locked state */
+        }
+
+        /* Locked state should override all hover behaviors */
+        .navbar.locked:hover {
+            transform: translateX(0) !important;
+            width: 320px !important;
+        }
+
+        /* Ensure body padding stays at 320px when locked */
+        body.navbar-locked {
+            padding-left: 320px !important;
+        }
+
+        /* Removed hover trigger - using hamburger button only */
+
+        /* Navbar contents should stay visible when locked/expanded (no layout overrides) */
+        .navbar.locked *,
+        .navbar.expanded * {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .floating-nav-icons {
+                display: none; /* Hide on mobile */
+            }
+            .navbar-hover-zone {
+                display: none; /* Hide hover zone on mobile */
+            }
+        }
+
+        /* Content area animation - removed since we're using transform now */
+
+        /* Text content visibility - simple fade */
+        .navbar-logo-text,
+        .navbar span:not(.navbar-icon),
+        .navbar-footer {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        /* Navbar layout - always stretch, never center */
+        .navbar {
+            align-items: stretch !important; /* Never center, always stretch */
+        }
+
+        /* Navbar icon hover effect when minimized */
+        .navbar-icon {
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        /* Navbar minimized state - hide text elements */
+        .navbar.minimized .navbar-logo-text,
+        .navbar.minimized span:not(.navbar-icon),
+        .navbar.minimized .navbar-footer {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Navbar expanded state - show all elements */
+        .navbar.expanded .navbar-logo-text,
+        .navbar.expanded span:not(.navbar-icon),
+        .navbar.expanded .navbar-footer {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Navbar locked state - always show all elements */
+        .navbar.locked .navbar-logo-text,
+        .navbar.locked span:not(.navbar-icon),
+        .navbar.locked .navbar-footer {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
     </style>
 </head>
 <body class="light-theme">
