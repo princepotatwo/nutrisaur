@@ -7411,15 +7411,19 @@ header {
         function loadUserProgressChart(userEmail) {
             const canvasId = `progressChart-${userEmail}`;
             
-            // Fetch progress data
-            fetch(`api/screening_history_api.php?action=get_history&user_email=${encodeURIComponent(userEmail)}&limit=20`)
+            // Get the default WHO standard from the dropdown
+            const dropdown = document.getElementById(`whoStandardSelector-${userEmail}`);
+            const defaultStandard = dropdown ? dropdown.value : 'bmi-for-age';
+            
+            // Fetch progress data with the appropriate classification type
+            fetch(`api/screening_history_api.php?action=get_history&user_email=${encodeURIComponent(userEmail)}&limit=20&classification_type=${encodeURIComponent(defaultStandard)}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && data.data.chart) {
                         // Render chart
                         renderProgressChart(canvasId, data.data.chart);
                     } else {
-                        console.log('No chart data available');
+                        console.log('No chart data available for standard:', defaultStandard);
                     }
                 })
                 .catch(error => {
