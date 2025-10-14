@@ -7443,7 +7443,7 @@ body {
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-    .navbar-hamburger-btn {
+.navbar-hamburger-btn {
         display: none; /* Hide on mobile */
     }
 }
@@ -8318,8 +8318,8 @@ body {
                     <div class="hamburger-line"></div>
                     <div class="hamburger-line"></div>
                 </div>
-            </button>
-            
+        </button>
+        
             <div class="navbar-logo">
                 <div class="navbar-logo-icon">
                     <img src="/logo.png" alt="Logo" style="width: 40px; height: 40px;">
@@ -8341,7 +8341,7 @@ body {
             <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></div>
         </div>
     </div>
-
+    
     <!-- Floating Navigation Icons - Always visible like Gmail -->
     <div class="floating-nav-icons">
         <a href="dash" class="floating-nav-icon" id="floating-dash" title="Dashboard">
@@ -13521,11 +13521,11 @@ body {
             // Desktop hover navigation (unchanged)
             if (navbar && window.innerWidth >= 769) {
                 navbar.addEventListener('mouseenter', function() {
-                    expandNavbar();
+                        expandNavbar();
                 });
                 
                 navbar.addEventListener('mouseleave', function() {
-                    minimizeNavbar();
+                        minimizeNavbar();
                 });
             }
             
@@ -13562,7 +13562,7 @@ body {
             
             function minimizeNavbar() {
                 if (window.innerWidth >= 769) {
-                    document.body.style.paddingLeft = '40px';
+                    document.body.style.paddingLeft = '60px';
                 }
             }
             
@@ -13721,7 +13721,7 @@ body {
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initNavigation);
         } else {
-            initNavigation();
+                initNavigation();
         }
 
         // Navbar Hamburger Button Implementation - Gmail Style
@@ -13755,7 +13755,7 @@ body {
                     // Unlock: Allow normal hover behavior (like Gmail)
                     navbar.classList.remove('locked');
                     navbar.classList.add('minimized');
-                    document.body.style.paddingLeft = '40px';
+                    document.body.style.paddingLeft = '60px';
                     console.log('🍔 Navbar unlocked - normal hover behavior like Gmail');
                 }
             });
@@ -13765,7 +13765,7 @@ body {
                 if (isNavbarLocked) {
                     hamburgerBtn.classList.add('locked');
                     hamburgerBtn.title = 'Unpin Sidebar';
-                } else {
+        } else {
                     hamburgerBtn.classList.remove('locked');
                     hamburgerBtn.title = 'Pin Sidebar';
                 }
@@ -13790,7 +13790,7 @@ body {
                     } else {
                         navbar.classList.remove('locked');
                         navbar.classList.add('minimized');
-                        document.body.style.paddingLeft = '40px';
+                        document.body.style.paddingLeft = '60px';
                     }
                 }
             });
@@ -13807,7 +13807,7 @@ body {
                 navbar.addEventListener('mouseleave', function() {
                     if (!isNavbarLocked) {
                         navbar.classList.add('minimized');
-                        document.body.style.paddingLeft = '40px';
+                        document.body.style.paddingLeft = '60px';
                     }
                 });
             }
@@ -13820,7 +13820,7 @@ body {
                 hamburgerBtn.style.display = 'flex';
                 // Start with navbar minimized (like Gmail)
                 navbar.classList.add('minimized');
-                document.body.style.paddingLeft = '40px';
+                document.body.style.paddingLeft = '60px';
             }
             
             // Initialize hamburger button state
@@ -13863,7 +13863,7 @@ body {
                         // Position icon beside the menu item
                         icon.style.position = 'fixed';
                         icon.style.left = '20px';
-                        icon.style.top = (rect.top + rect.height / 2 - 20) + 'px';
+                        icon.style.top = (rect.top + rect.height / 2 - 30) + 'px';
                         icon.style.zIndex = '1001';
                     }
                 });
