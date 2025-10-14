@@ -46,6 +46,7 @@ try {
     $action = $_GET['action'] ?? $_POST['action'] ?? '';
     $user_email = $_GET['user_email'] ?? $_POST['user_email'] ?? '';
     $limit = max(1, intval($_GET['limit'] ?? $_POST['limit'] ?? 10)); // Ensure minimum 1 and integer
+    $classification_type = $_GET['classification_type'] ?? $_POST['classification_type'] ?? 'bmi-for-age';
     
     // Validate required parameters
     if (empty($user_email)) {
@@ -81,13 +82,13 @@ try {
             error_log("Screening history API: Found " . count($history) . " records for user: $user_email");
             error_log("Screening history API: Limit value: $limit");
             
-            // Group data by date and filter for BMI-for-age only
+            // Group data by date and filter for selected WHO standard
             $groupedData = [];
             foreach ($history as $record) {
                 $date = $record['screening_date'];
                 
-                // Only keep BMI-for-age records (most important WHO standard)
-                if ($record['classification_type'] === 'bmi-for-age') {
+                // Filter by selected classification type
+                if ($record['classification_type'] === $classification_type) {
                     if (!isset($groupedData[$date])) {
                         $groupedData[$date] = $record;
                     }
@@ -97,12 +98,12 @@ try {
             // Sort by date (oldest first for better timeline visualization)
             ksort($groupedData);
             
-            // Format data for Chart.js - BMI only
+            // Format data for Chart.js - dynamic based on selected standard
             $chartData = [
                 'labels' => [],
                 'datasets' => [
                     [
-                        'label' => 'BMI',
+                        'label' => strtoupper(str_replace('-', ' ', $classification_type)),
                         'data' => [],
                         'borderColor' => '#8CA86E',
                         'backgroundColor' => 'rgba(140, 168, 110, 0.2)',
@@ -124,11 +125,18 @@ try {
                 $date = new DateTime($record['screening_date']);
                 $dateLabel = $date->format('M j, Y');
                 
-                // Add to chart data (BMI only)
+                // Add to chart data - choose appropriate metric based on standard
+                $yValue = floatval($record['bmi']); // Default to BMI
+                if ($classification_type === 'weight-for-age' || $classification_type === 'weight-for-height') {
+                    $yValue = floatval($record['weight']);
+                } elseif ($classification_type === 'height-for-age') {
+                    $yValue = floatval($record['height']);
+                }
+                
                 $chartData['labels'][] = $dateLabel;
                 $chartData['datasets'][0]['data'][] = [
                     'x' => $dateLabel,
-                    'y' => floatval($record['bmi']),
+                    'y' => $yValue,
                     'classification' => $record['classification']
                 ];
                 

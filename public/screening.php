@@ -236,6 +236,28 @@ function saveScreeningHistory($user_data, $assessment) {
             }
         }
         
+        // Save Adult BMI classification if user is an adult (≥19 years or 228 months)
+        if ($ageInMonths >= 228) {
+            $bmi = $historyData['bmi'];
+            if ($bmi !== null) {
+                $adultClassification = getAdultBMIClassification($bmi);
+                $stmt = $pdo->prepare("INSERT INTO screening_history (user_email, screening_date, weight, height, bmi, age_months, sex, classification_type, classification, z_score, nutritional_risk) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([
+                    $historyData['user_email'],
+                    $historyData['screening_date'],
+                    $historyData['weight'],
+                    $historyData['height'],
+                    $historyData['bmi'],
+                    $historyData['age_months'],
+                    $historyData['sex'],
+                    'bmi-adult',
+                    $adultClassification['classification'],
+                    $adultClassification['z_score'],
+                    $historyData['nutritional_risk']
+                ]);
+            }
+        }
+        
         return true;
     } catch (Exception $e) {
         error_log("Error saving screening history: " . $e->getMessage());
@@ -316,6 +338,38 @@ $municipalities = [
     'PILAR' => ['Ala-uli', 'Bagumbayan', 'Balut I', 'Balut II', 'Bantan Munti', 'Burgos', 'Del Rosario (Pob.)', 'Diwa', 'Landing', 'Liyang', 'Nagwaling', 'Panilao', 'Pantingan', 'Poblacion', 'Rizal (Pob.)', 'Santa Rosa', 'Wakas North', 'Wakas South', 'Wawa'],
     'SAMAL' => ['East Calaguiman (Pob.)', 'East Daang Bago (Pob.)', 'Ibaba (Pob.)', 'Imelda', 'Lalawigan', 'Palili', 'San Juan (Pob.)', 'San Roque (Pob.)', 'Santa Lucia', 'Sapa', 'Tabing Ilog', 'Gugo', 'West Calaguiman (Pob.)', 'West Daang Bago (Pob.)']
 ];
+
+// Handle auto-screening from AccountActivity (when weight/height updated)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['auto_screening']) && $_POST['auto_screening'] === 'true') {
+    header('Content-Type: application/json');
+    
+    $user_data = [
+        'email' => $_POST['email'] ?? '',
+        'weight' => $_POST['weight'] ?? '',
+        'height' => $_POST['height'] ?? '',
+        'birthday' => $_POST['birthday'] ?? '',
+        'sex' => $_POST['sex'] ?? '',
+        'screening_date' => date('Y-m-d H:i:s')
+    ];
+    
+    // Use existing getNutritionalAssessment function
+    $assessment = getNutritionalAssessment($user_data);
+    
+    // Use existing saveScreeningHistory function
+    if ($assessment['success']) {
+        saveScreeningHistory($user_data, $assessment);
+        echo json_encode([
+            'success' => true, 
+            'message' => 'Auto-screening completed successfully'
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Auto-screening failed: ' . ($assessment['error'] ?? 'Unknown error')
+        ]);
+    }
+    exit;
+}
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -7215,8 +7269,11 @@ header {
 
                             <!-- Progress Tracking Card -->
                             <div class="profile-card progress-chart-card" style="grid-column: 1 / -1;">
-                                <div class="card-header">
+                                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                                     <h3>Progress Tracking</h3>
+                                    <select id="whoStandardSelector-${userData.email}" onchange="changeProgressChartStandard('${userData.email}', this.value)" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); font-size: 14px;">
+                                        ${getApplicableWHOStandards(userData.birthday)}
+                                    </select>
                                 </div>
                                 <div class="card-content" style="padding-bottom: 20px;">
                                     <div class="chart-container" style="height: 400px;">
@@ -7268,6 +7325,48 @@ header {
             }
         }
 
+        // Get applicable WHO standards based on user's age (reuses existing age logic from lines 6227-6231)
+        function getApplicableWHOStandards(birthday) {
+            const birthDate = new Date(birthday);
+            const today = new Date();
+            const ageInMonths = (today.getFullYear() - birthDate.getFullYear()) * 12 + (today.getMonth() - birthDate.getMonth());
+            
+            let options = '';
+            let defaultStandard = '';
+            
+            // Weight-for-age (0-71 months)
+            if (ageInMonths <= 71) {
+                options += '<option value="weight-for-age">Weight-for-Age (0-71 months)</option>';
+                if (ageInMonths <= 120) defaultStandard = 'weight-for-age';
+            }
+            
+            // Height-for-age (0-71 months per existing logic)
+            if (ageInMonths <= 71) {
+                options += '<option value="height-for-age">Height-for-Age (0-71 months)</option>';
+            }
+            
+            // Weight-for-height (0-60 months)
+            if (ageInMonths <= 60) {
+                options += '<option value="weight-for-height">Weight-for-Height (0-60 months)</option>';
+                defaultStandard = 'weight-for-height'; // Most important for young children
+            }
+            
+            // BMI-for-age (60-227 months)
+            if (ageInMonths >= 60 && ageInMonths < 228) {
+                const selected = defaultStandard === '' ? 'selected' : '';
+                options += `<option value="bmi-for-age" ${selected}>BMI-for-Age (5-19 years)</option>`;
+                if (defaultStandard === '') defaultStandard = 'bmi-for-age';
+            }
+            
+            // BMI Adult (≥228 months)
+            if (ageInMonths >= 228) {
+                options += '<option value="bmi-adult" selected>BMI Adult (≥19 years)</option>';
+                defaultStandard = 'bmi-adult';
+            }
+            
+            return options;
+        }
+
         // Load progress chart for a user
         function loadUserProgressChart(userEmail) {
             const canvasId = `progressChart-${userEmail}`;
@@ -7281,6 +7380,33 @@ header {
                         renderProgressChart(canvasId, data.data.chart);
                     } else {
                         console.log('No chart data available');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading progress data:', error);
+                });
+        }
+
+        // Change WHO standard for progress chart
+        function changeProgressChartStandard(userEmail, standard) {
+            const canvasId = `progressChart-${userEmail}`;
+            
+            // Fetch progress data with selected standard
+            fetch(`api/screening_history_api.php?action=get_history&user_email=${encodeURIComponent(userEmail)}&limit=20&classification_type=${encodeURIComponent(standard)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data.chart) {
+                        // Destroy existing chart
+                        const canvas = document.getElementById(canvasId);
+                        const existingChart = Chart.getChart(canvas);
+                        if (existingChart) {
+                            existingChart.destroy();
+                        }
+                        
+                        // Render new chart with selected standard
+                        renderProgressChart(canvasId, data.data.chart);
+                    } else {
+                        console.log('No chart data available for standard:', standard);
                     }
                 })
                 .catch(error => {
