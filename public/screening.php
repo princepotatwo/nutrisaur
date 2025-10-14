@@ -6083,6 +6083,7 @@ header {
             }
         }
 
+
         /* Content area animation - removed since we're using transform now */
 
         /* Text content visibility - simple fade */
@@ -6105,86 +6106,31 @@ header {
             transition: transform 0.2s ease, color 0.2s ease;
         }
 
-        /* Navbar minimized state - hide text elements */
+        .navbar:hover .navbar-icon, .navbar.expanded .navbar-icon {
+            transform: scale(1.05);
+            color: var(--color-primary);
+        }
+
+        /* Expanded navbar state - show everything */
+        .navbar:hover, .navbar.expanded {
+            padding-top: 0;
+        }
+
+        .navbar:hover .navbar-logo-text,
+        .navbar.expanded .navbar-logo-text,
+        .navbar:hover span:not(.navbar-icon),
+        .navbar.expanded span:not(.navbar-icon),
+        .navbar:hover .navbar-footer,
+        .navbar.expanded .navbar-footer {
+            opacity: 1;
+        }
+
+        /* Minimized state - hide text elements */
         .navbar.minimized .navbar-logo-text,
         .navbar.minimized span:not(.navbar-icon),
         .navbar.minimized .navbar-footer {
             opacity: 0;
             pointer-events: none;
-        }
-
-        /* Navbar expanded state - show all elements */
-        .navbar.expanded .navbar-logo-text,
-        .navbar.expanded span:not(.navbar-icon),
-        .navbar.expanded .navbar-footer {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        /* Navbar locked state - always show all elements */
-        .navbar.locked .navbar-logo-text,
-        .navbar.locked span:not(.navbar-icon),
-        .navbar.locked .navbar-footer {
-            opacity: 1 !important;
-            pointer-events: auto !important;
-        }
-
-        /* COMPLETELY DISABLE ALL NAVBAR HOVER EFFECTS - AGGRESSIVE OVERRIDE */
-        .navbar:hover,
-        .navbar *:hover,
-        .navbar-logo:hover,
-        .navbar-logo-icon:hover,
-        .navbar-logo-text:hover,
-        .navbar li:hover,
-        .navbar a:hover,
-        .navbar a:hover::before,
-        .navbar-icon:hover,
-        .navbar-footer:hover {
-            transform: none !important;
-            background: none !important;
-            background-color: inherit !important;
-            background-image: none !important;
-            box-shadow: none !important;
-            color: inherit !important;
-            opacity: inherit !important;
-            border-color: inherit !important;
-            border-left-color: inherit !important;
-            scale: 1 !important;
-            translate: none !important;
-            translateX: 0 !important;
-            translateY: 0 !important;
-        }
-
-        /* Force navbar to only respond to hamburger button */
-        .navbar {
-            pointer-events: none !important;
-        }
-
-        .navbar * {
-            pointer-events: none !important;
-        }
-
-        /* Allow clicks on navbar links only */
-        .navbar a {
-            pointer-events: auto !important;
-        }
-
-        /* Override any remaining hover effects with !important */
-        .navbar:hover {
-            transform: translateX(-230px) !important;
-            width: 320px !important;
-        }
-
-        .navbar.minimized:hover {
-            transform: translateX(-230px) !important;
-        }
-
-        .navbar.expanded:hover {
-            transform: translateX(0) !important;
-        }
-
-        .navbar.locked:hover {
-            transform: translateX(0) !important;
         }
 
     </style>
