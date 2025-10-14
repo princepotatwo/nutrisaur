@@ -13890,7 +13890,7 @@ body.navbar-locked {
                         // Position icon beside the menu item
                         icon.style.position = 'fixed';
                         icon.style.left = '20px';
-                        icon.style.top = (rect.top + rect.height / 2 - 20) + 'px';
+                        icon.style.top = (rect.top + rect.height / 2 - 35) + 'px';
                         icon.style.zIndex = '1001';
                     }
                 });
