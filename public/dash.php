@@ -7379,37 +7379,39 @@ body {
 
 /* Body padding will be handled by base styles */
 
-/* Navbar Hamburger Button - Gmail Style */
+/* Navbar Hamburger Button - Match floating icons style */
 .navbar-hamburger-btn {
-    position: absolute;
-    top: 28px; /* moved a bit down */
-    right: 20px;
+    position: fixed;
+    top: 50px; /* positioned to align with floating icons */
+    left: 20px; /* same left position as floating icons */
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    z-index: 10;
+    z-index: 1001;
+    backdrop-filter: blur(10px);
 }
 
 .navbar-hamburger-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    background: rgba(76, 175, 80, 0.1);
+    border-color: #45a049;
+    transform: scale(1.05);
 }
 
 .navbar-hamburger-btn.locked {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+    background: rgba(76, 175, 80, 0.2);
+    border-color: #45a049;
 }
 
 .navbar-hamburger-btn.locked:hover {
-    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    background: rgba(76, 175, 80, 0.3);
 }
 
 .navbar-hamburger-btn .hamburger-icon {
@@ -7424,7 +7426,7 @@ body {
 .navbar-hamburger-btn .hamburger-line {
     width: 18px;
     height: 2px;
-    background: white;
+    background: #4CAF50;
     border-radius: 1px;
     transition: all 0.3s ease;
 }
@@ -13802,7 +13804,7 @@ body.navbar-locked {
                 if (isMobile) {
                     // Mobile: hide hamburger button
                     hamburgerBtn.style.display = 'none';
-                } else {
+        } else {
                     // Desktop: show hamburger button
                     hamburgerBtn.style.display = 'flex';
                     
@@ -13890,7 +13892,7 @@ body.navbar-locked {
                         // Position icon beside the menu item
                         icon.style.position = 'fixed';
                         icon.style.left = '20px';
-                        icon.style.top = (rect.top + rect.height / 2 - 35) + 'px';
+                        icon.style.top = (rect.top + rect.height / 2 - 28) + 'px';
                         icon.style.zIndex = '1001';
                     }
                 });
