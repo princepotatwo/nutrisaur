@@ -7533,7 +7533,22 @@ body.navbar-locked {
     padding-left: 320px !important;
 }
 
-/* No separate hover zone needed - navbar handles its own hover */
+/* Navbar hover trigger - covers the visible minimized area */
+.navbar-hover-trigger {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 90px; /* match visible minimized width */
+    height: 100vh;
+    background: transparent;
+    z-index: 999; /* below navbar (1000) */
+    pointer-events: auto;
+}
+
+.navbar.locked ~ .navbar-hover-trigger,
+.navbar.expanded ~ .navbar-hover-trigger {
+    pointer-events: none; /* disable when expanded or locked */
+}
 
 /* Navbar contents should stay visible when locked/expanded (no layout overrides) */
 .navbar.locked *,
@@ -8383,6 +8398,9 @@ body.navbar-locked {
             <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></div>
         </div>
     </div>
+    
+    <!-- Navbar hover trigger - catches hover over visible minimized area -->
+    <div class="navbar-hover-trigger" id="navbarHoverTrigger"></div>
     
     <!-- Floating Navigation Icons - Always visible like Gmail -->
     <div class="floating-nav-icons">
@@ -13994,7 +14012,16 @@ body.navbar-locked {
                 });
             });
             
-            // No separate hover zone - navbar handles its own hover via :hover CSS and mouseenter/mouseleave
+            // Navbar hover trigger for minimized state
+            const hoverTrigger = document.getElementById('navbarHoverTrigger');
+            if (hoverTrigger) {
+                hoverTrigger.addEventListener('mouseenter', () => {
+                    if (navbar.classList.contains('locked')) return;
+                    hoverArea = 'navbar';
+                    expandNavbar();
+                    console.log('🎯 Hover trigger activated - expanding navbar');
+                });
+            }
             
             // Initial positioning
             positionFloatingIcons();
