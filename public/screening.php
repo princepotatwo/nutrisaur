@@ -213,15 +213,15 @@ function saveScreeningHistory($user_data, $assessment) {
             'screening_date' => $user_data['screening_date'],
             'weight' => $user_data['weight'],
             'height' => $user_data['height'],
-            'bmi' => $assessment['bmi'] ?? null,
+            'bmi' => $assessment['results']['bmi'] ?? null,
             'age_months' => $ageInMonths,
             'sex' => $user_data['sex'],
             'nutritional_risk' => $assessment['nutritional_risk'] ?? 'Low'
         ];
         
         // Save multiple classification types if available
-        if ($assessment['success'] && isset($assessment['growth_standards'])) {
-            $growthStandards = $assessment['growth_standards'];
+        if ($assessment['success'] && isset($assessment['results'])) {
+            $growthStandards = $assessment['results'];
             
             // BMI for age
             if (isset($growthStandards['bmi_for_age'])) {
@@ -304,6 +304,7 @@ function saveScreeningHistory($user_data, $assessment) {
         if ($ageInMonths >= 228) {
             error_log("Auto-screening: User is adult (age: $ageInMonths months), saving Adult BMI classification");
             $bmi = $historyData['bmi'];
+            error_log("Auto-screening: BMI value from historyData: " . ($bmi ?? 'null'));
             if ($bmi !== null) {
                 $adultClassification = getAdultBMIClassification($bmi);
                 error_log("Auto-screening: Adult BMI classification: " . json_encode($adultClassification));
