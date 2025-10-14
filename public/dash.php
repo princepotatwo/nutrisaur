@@ -13560,12 +13560,14 @@ body {
             function expandNavbar() {
                 if (window.innerWidth >= 769) {
                     document.body.style.paddingLeft = '320px';
+                    document.body.style.paddingRight = '15px';
                 }
             }
             
             function minimizeNavbar() {
                 if (window.innerWidth >= 769) {
                     document.body.style.paddingLeft = '15px';
+                    document.body.style.paddingRight = '15px';
                 }
             }
             
@@ -13753,12 +13755,14 @@ body {
                     navbar.classList.add('locked');
                     navbar.classList.remove('minimized');
                     document.body.style.paddingLeft = '320px';
+                    document.body.style.paddingRight = '15px';
                     console.log('🍔 Navbar locked - staying expanded like Gmail');
                 } else {
                     // Unlock: Allow normal hover behavior (like Gmail)
                     navbar.classList.remove('locked');
                     navbar.classList.add('minimized');
                     document.body.style.paddingLeft = '15px';
+                    document.body.style.paddingRight = '15px';
                     console.log('🍔 Navbar unlocked - normal hover behavior like Gmail');
                 }
             });
@@ -13790,10 +13794,12 @@ body {
                         navbar.classList.add('locked');
                         navbar.classList.remove('minimized');
                         document.body.style.paddingLeft = '320px';
+                        document.body.style.paddingRight = '15px';
                     } else {
                         navbar.classList.remove('locked');
                         navbar.classList.add('minimized');
                         document.body.style.paddingLeft = '15px';
+                        document.body.style.paddingRight = '15px';
                     }
                 }
             });
@@ -13804,6 +13810,7 @@ body {
                     if (!isNavbarLocked) {
                         navbar.classList.remove('minimized');
                         document.body.style.paddingLeft = '320px';
+                        document.body.style.paddingRight = '15px';
                     }
                 });
                 
@@ -13811,6 +13818,7 @@ body {
                     if (!isNavbarLocked) {
                         navbar.classList.add('minimized');
                         document.body.style.paddingLeft = '15px';
+                        document.body.style.paddingRight = '15px';
                     }
                 });
             }
@@ -13824,6 +13832,7 @@ body {
                 // Start with navbar minimized (like Gmail)
                 navbar.classList.add('minimized');
                 document.body.style.paddingLeft = '15px';
+                document.body.style.paddingRight = '15px';
             }
             
             // Initialize hamburger button state
@@ -13850,6 +13859,9 @@ body {
                 console.log('⚠️ Navbar or floating icons not found');
                 return;
             }
+            
+            // Get the navbar lock state from the hamburger button function
+            let isNavbarLocked = false;
             
             // Position floating icons beside navbar menu items
             function positionFloatingIcons() {
@@ -13884,6 +13896,33 @@ body {
             
             // Initial positioning
             positionFloatingIcons();
+            
+            // Add hover functionality to floating icons
+            floatingIcons.forEach(icon => {
+                icon.addEventListener('mouseenter', function() {
+                    // Check if navbar is locked by looking at the hamburger button
+                    const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
+                    const isLocked = hamburgerBtn && hamburgerBtn.classList.contains('locked');
+                    
+                    if (!isLocked && window.innerWidth >= 769) {
+                        navbar.classList.remove('minimized');
+                        document.body.style.paddingLeft = '320px';
+                        document.body.style.paddingRight = '15px';
+                    }
+                });
+                
+                icon.addEventListener('mouseleave', function() {
+                    // Check if navbar is locked by looking at the hamburger button
+                    const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
+                    const isLocked = hamburgerBtn && hamburgerBtn.classList.contains('locked');
+                    
+                    if (!isLocked && window.innerWidth >= 769) {
+                        navbar.classList.add('minimized');
+                        document.body.style.paddingLeft = '15px';
+                        document.body.style.paddingRight = '15px';
+                    }
+                });
+            });
             
             // Update positioning on scroll and resize
             window.addEventListener('scroll', positionFloatingIcons);
