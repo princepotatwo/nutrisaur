@@ -13798,8 +13798,8 @@ body.navbar-locked {
                     document.body.style.paddingLeft = '320px';
                     
                     // Position hamburger button anchored to navbar when expanded
-                    hamburgerBtn.style.left = '270px'; // 280px - 10px left
-                    hamburgerBtn.style.top = '47px'; // 50px - 3px up
+                    hamburgerBtn.style.left = '250px';
+                    hamburgerBtn.style.top = '43px';
                     console.log('🍔 Navbar expanded');
                 }
             });
