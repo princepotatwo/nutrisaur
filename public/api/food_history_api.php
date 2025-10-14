@@ -1027,7 +1027,15 @@ function determineUserClassification($user) {
  * Determine which WHO standard to use based on user's data
  */
 function determineWHOStandard($user) {
-    // Check if user has WHO standard classifications
+    // First, check age to determine if we should use BMI Adult
+    $ageInMonths = calculateAgeInMonths($user['birthday'] ?? '1970-01-01');
+    
+    // For adults (19+ years = 228+ months), prioritize BMI Adult
+    if ($ageInMonths >= 228) {
+        return 'bmi-adult';
+    }
+    
+    // For children and teens, check if user has WHO standard classifications
     $whoClassifications = [
         'bmi-for-age' => $user['bmi-for-age'] ?? '',
         'weight-for-age' => $user['weight-for-age'] ?? '',
@@ -1035,7 +1043,7 @@ function determineWHOStandard($user) {
         'weight-for-height' => $user['weight-for-height'] ?? ''
     ];
     
-    // Priority order for WHO standards
+    // Priority order for WHO standards (for children/teens)
     $priority = ['bmi-for-age', 'weight-for-height', 'weight-for-age', 'height-for-age'];
     
     foreach ($priority as $standard) {
@@ -1044,9 +1052,7 @@ function determineWHOStandard($user) {
         }
     }
     
-    // Fallback: determine by age
-    $ageInMonths = calculateAgeInMonths($user['birthday'] ?? '1970-01-01');
-    
+    // Fallback: determine by age for children/teens
     if ($ageInMonths < 24) {
         // Under 2 years: use weight-for-height
         return 'weight-for-height';
@@ -1054,7 +1060,7 @@ function determineWHOStandard($user) {
         // 2-5 years: use weight-for-height or BMI-for-age
         return 'bmi-for-age';
     } else {
-        // 5+ years: use BMI-for-age
+        // 5-18 years: use BMI-for-age
         return 'bmi-for-age';
     }
 }
