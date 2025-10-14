@@ -7386,7 +7386,7 @@ body {
     /* left position controlled by JavaScript */
     width: 40px;
     height: 40px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.1);
     border: 2px solid #4CAF50;
     border-radius: 8px;
     cursor: pointer;
@@ -8400,9 +8400,8 @@ body.navbar-locked {
         </a>
         <a href="screening" class="floating-nav-icon" id="floating-screening" title="MHO Assessment">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 12l2 2 4-4"></path>
-                <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"></path>
-                <path d="M3 5c0-1.1.9-2 2-2h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5z"></path>
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
         </a>
         <a href="event" class="floating-nav-icon" id="floating-event" title="Event Notifications">
