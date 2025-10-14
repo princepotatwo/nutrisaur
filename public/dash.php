@@ -7474,10 +7474,10 @@ body {
     transition: all 0.3s ease;
 }
 
-/* When navbar is minimized, position icons in the right margin area */
+/* When navbar is minimized, position icons independently like hamburger button */
 .navbar.minimized .navbar-icon {
-    position: fixed !important;
-    right: 2px !important;
+    position: fixed;
+    right: 2px;
     width: 32px;
     height: 32px;
     background: rgba(161, 180, 84, 0.15);
@@ -7489,9 +7489,12 @@ body {
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    pointer-events: auto;
 }
 
-/* Position each icon at different vertical positions in the right margin */
+/* Position each icon at different vertical positions independently */
 .navbar.minimized .navbar-menu li:nth-child(1) .navbar-icon {
     top: 25%;
 }
@@ -7523,25 +7526,19 @@ body {
     border-color: rgba(142, 185, 110, 0.2);
 }
 
-/* Hover effects for minimized navbar icons - keep them in fixed position */
+/* Hover effects for minimized navbar icons */
 .navbar.minimized .navbar-icon:hover {
     background: rgba(161, 180, 84, 0.25);
     border-color: rgba(161, 180, 84, 0.4);
     transform: scale(1.1);
     box-shadow: 0 4px 12px rgba(161, 180, 84, 0.3);
     transition: all 0.2s ease;
-    /* Ensure they stay in fixed position even on hover */
-    position: fixed !important;
-    right: 2px !important;
 }
 
 .light-theme .navbar.minimized .navbar-icon:hover {
     background: rgba(142, 185, 110, 0.25);
     border-color: rgba(142, 185, 110, 0.4);
     box-shadow: 0 4px 12px rgba(142, 185, 110, 0.3);
-    /* Ensure they stay in fixed position even on hover */
-    position: fixed !important;
-    right: 2px !important;
 }
 
 /* Hide original toggle button when navbar is minimized */
