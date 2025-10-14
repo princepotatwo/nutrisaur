@@ -917,7 +917,7 @@ if (isset($_GET['logout'])) {
     flex-direction: column;
     backdrop-filter: blur(10px);
     transition: transform 0.3s ease-in-out;
-    transform: translateX(-200px); /* Show 120px instead of 40px */
+    transform: translateX(-230px); /* Show 90px instead of 120px */
 }
 
 /* Base body styles */
@@ -13545,7 +13545,7 @@ body {
                 } else {
                     // Desktop: show desktop navbar, hide mobile top nav
                     if (navbar) navbar.style.display = 'flex';
-                    document.body.style.paddingLeft = '120px';
+                    document.body.style.paddingLeft = '90px';
                     document.body.style.paddingTop = '0';
                     document.body.style.width = '';
                     document.body.style.maxWidth = '';
@@ -13562,7 +13562,7 @@ body {
             
             function minimizeNavbar() {
                 if (window.innerWidth >= 769) {
-                    document.body.style.paddingLeft = '120px';
+                    document.body.style.paddingLeft = '90px';
                 }
             }
             
@@ -13755,7 +13755,7 @@ body {
                     // Unlock: Allow normal hover behavior (like Gmail)
                     navbar.classList.remove('locked');
                     navbar.classList.add('minimized');
-                    document.body.style.paddingLeft = '120px';
+                    document.body.style.paddingLeft = '90px';
                     console.log('🍔 Navbar unlocked - normal hover behavior like Gmail');
                 }
             });
@@ -13790,7 +13790,7 @@ body {
                     } else {
                         navbar.classList.remove('locked');
                         navbar.classList.add('minimized');
-                        document.body.style.paddingLeft = '120px';
+                        document.body.style.paddingLeft = '90px';
                     }
                 }
             });
@@ -13807,7 +13807,7 @@ body {
                 navbar.addEventListener('mouseleave', function() {
                     if (!isNavbarLocked) {
                         navbar.classList.add('minimized');
-                        document.body.style.paddingLeft = '120px';
+                        document.body.style.paddingLeft = '90px';
                     }
                 });
             }
@@ -13870,7 +13870,7 @@ body {
                         // Position icon beside the menu item
                         icon.style.position = 'fixed';
                         icon.style.left = '20px';
-                        icon.style.top = (rect.top + rect.height / 2 - 20) + 'px';
+                        icon.style.top = (rect.top + rect.height / 2 - 30) + 'px';
                         icon.style.zIndex = '1001';
                     }
                 });
@@ -13896,7 +13896,7 @@ body {
                     
                     if (!isLocked) {
                         navbar.classList.add('minimized');
-                        document.body.style.paddingLeft = '120px';
+                        document.body.style.paddingLeft = '90px';
                     }
                 });
             });
