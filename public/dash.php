@@ -7517,6 +7517,22 @@ body {
     width: 320px !important;
 }
 
+/* When navbar is locked, ensure all elements stay expanded */
+.navbar.locked ~ * {
+    /* Ensure dashboard and all content respects locked state */
+}
+
+/* Locked state should override all hover behaviors */
+.navbar.locked:hover {
+    transform: translateX(0) !important;
+    width: 320px !important;
+}
+
+/* Ensure body padding stays at 320px when locked */
+body.navbar-locked {
+    padding-left: 320px !important;
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
     .floating-nav-icons {
@@ -13760,13 +13776,17 @@ body {
                     // Lock: Force navbar to stay expanded (like Gmail)
                     navbar.classList.add('locked');
                     navbar.classList.remove('minimized');
+                    navbar.style.transform = 'translateX(0)';
                     document.body.style.paddingLeft = '320px';
+                    document.body.classList.add('navbar-locked');
                     console.log('🍔 Navbar locked - staying expanded like Gmail');
                 } else {
                     // Unlock: Allow normal hover behavior (like Gmail)
                     navbar.classList.remove('locked');
                     navbar.classList.add('minimized');
+                    navbar.style.transform = 'translateX(-230px)';
                     document.body.style.paddingLeft = '90px';
+                    document.body.classList.remove('navbar-locked');
                     console.log('🍔 Navbar unlocked - normal hover behavior like Gmail');
                 }
             });
@@ -13797,11 +13817,15 @@ body {
                     if (isNavbarLocked) {
                         navbar.classList.add('locked');
                         navbar.classList.remove('minimized');
+                        navbar.style.transform = 'translateX(0)';
                         document.body.style.paddingLeft = '320px';
+                        document.body.classList.add('navbar-locked');
                     } else {
                         navbar.classList.remove('locked');
                         navbar.classList.add('minimized');
+                        navbar.style.transform = 'translateX(-230px)';
                         document.body.style.paddingLeft = '90px';
+                        document.body.classList.remove('navbar-locked');
                     }
                 }
             });
@@ -13811,7 +13835,9 @@ body {
                 navbar.addEventListener('mouseenter', function() {
                     if (isNavbarLocked) return; // ignore hover when locked
                     navbar.classList.remove('minimized');
+                    navbar.style.transform = 'translateX(0)';
                     document.body.style.paddingLeft = '320px';
+                    document.body.classList.remove('navbar-locked');
                 });
                 
                 navbar.addEventListener('mouseleave', function() {
@@ -13824,6 +13850,7 @@ body {
                             navbar.classList.add('minimized');
                             navbar.style.transform = 'translateX(-230px)';
                             document.body.style.paddingLeft = '90px';
+                            document.body.classList.remove('navbar-locked');
                             console.log('🎯 Navbar minimized after navbar leave');
                         }
                     }, 100);
@@ -13909,6 +13936,7 @@ body {
                     navbar.classList.remove('minimized');
                     navbar.style.transform = 'translateX(0)';
                     document.body.style.paddingLeft = '320px';
+                    document.body.classList.remove('navbar-locked');
                     
                     // Add a class to indicate we're hovering over floating icons
                     navbar.classList.add('hovering-icons');
@@ -13932,6 +13960,7 @@ body {
                             navbar.classList.add('minimized');
                             navbar.style.transform = 'translateX(-230px)';
                             document.body.style.paddingLeft = '90px';
+                            document.body.classList.remove('navbar-locked');
                             console.log('🎯 Navbar minimized after floating icon leave');
                         }
                     }, 100);
