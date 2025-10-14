@@ -6051,10 +6051,7 @@ header {
         }
 
         /* Locked state should override all hover behaviors */
-        .navbar.locked:hover {
-            transform: translateX(0) !important;
-            width: 320px !important;
-        }
+        /* Navbar locked state - no hover needed */
 
         /* Ensure body padding stays at 320px when locked */
         body.navbar-locked {
@@ -6103,21 +6100,15 @@ header {
             transition: transform 0.2s ease, color 0.2s ease;
         }
 
-        .navbar:hover .navbar-icon, .navbar.expanded .navbar-icon {
-            transform: scale(1.05);
-            color: var(--color-primary);
-        }
+        /* Navbar icon hover removed - using hamburger button only */
 
         /* Expanded navbar state - show everything */
-        .navbar:hover, .navbar.expanded {
+        .navbar.expanded {
             padding-top: 0;
         }
 
-        .navbar:hover .navbar-logo-text,
         .navbar.expanded .navbar-logo-text,
-        .navbar:hover span:not(.navbar-icon),
         .navbar.expanded span:not(.navbar-icon),
-        .navbar:hover .navbar-footer,
         .navbar.expanded .navbar-footer {
             opacity: 1;
         }
@@ -6144,34 +6135,7 @@ header {
             z-index: 1;
         }
 
-        /* COMPLETELY DISABLE NAVBAR HOVER - AGGRESSIVE OVERRIDE */
-        .navbar:hover,
-        .navbar *:hover,
-        .navbar.minimized:hover,
-        .navbar.minimized *:hover {
-            transform: translateX(-230px) !important;
-            width: 320px !important;
-            box-shadow: none !important;
-            background: none !important;
-            opacity: inherit !important;
-            pointer-events: none !important;
-        }
-
-        /* Force navbar to stay minimized when hovered */
-        .navbar.minimized {
-            transform: translateX(-230px) !important;
-            pointer-events: none !important;
-        }
-
-        /* Allow only navbar links to be clickable */
-        .navbar.minimized a {
-            pointer-events: auto !important;
-        }
-
-        /* Disable all navbar hover animations */
-        .navbar * {
-            transition: none !important;
-        }
+        /* Navbar hover completely disabled - using hamburger button only */
 
     </style>
 </head>
