@@ -8392,11 +8392,10 @@ body.navbar-locked {
     <div class="floating-nav-icons">
         <a href="dash" class="floating-nav-icon" id="floating-dash" title="Dashboard">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 3v18h18"></path>
-                <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
-                <circle cx="18" cy="8" r="2"></circle>
-                <circle cx="13" cy="13" r="2"></circle>
-                <circle cx="7" cy="18" r="2"></circle>
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
             </svg>
         </a>
         <a href="screening" class="floating-nav-icon" id="floating-screening" title="MHO Assessment">
@@ -8404,9 +8403,6 @@ body.navbar-locked {
                 <path d="M9 12l2 2 4-4"></path>
                 <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"></path>
                 <path d="M3 5c0-1.1.9-2 2-2h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5z"></path>
-                <path d="M9 5h6v2H9V5z"></path>
-                <path d="M9 9h6v2H9V9z"></path>
-                <path d="M9 13h4v2H9v-2z"></path>
             </svg>
         </a>
         <a href="event" class="floating-nav-icon" id="floating-event" title="Event Notifications">
