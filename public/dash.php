@@ -13800,7 +13800,7 @@ body.navbar-locked {
                     });
                     
                     console.log('🍔 Navbar locked - staying expanded like Gmail');
-                } else {
+        } else {
                     // Unlock: Allow normal hover behavior (like Gmail)
                     navbar.classList.remove('locked');
                     navbar.classList.remove('expanded');
@@ -13865,32 +13865,19 @@ body.navbar-locked {
             if (window.innerWidth >= 769) {
                 navbar.addEventListener('mouseenter', function() {
                     if (isNavbarLocked) return; // ignore hover when locked
-                    if (hoverMinimizeTimer) {
-                        clearTimeout(hoverMinimizeTimer);
-                        hoverMinimizeTimer = null;
+                    isHoveringNavbar = true;
+                    if (hoverTimer) {
+                        clearTimeout(hoverTimer);
+                        hoverTimer = null;
                     }
-                    navbar.classList.remove('minimized');
-                    navbar.classList.add('expanded');
-                    navbar.style.transform = 'translateX(0)';
-                    document.body.style.paddingLeft = '320px';
-                    document.body.classList.remove('navbar-locked');
+                    expandNavbar();
+                    console.log('🎯 Navbar hover - expanding navbar');
                 });
                 
                 navbar.addEventListener('mouseleave', function() {
                     if (isNavbarLocked) return; // ignore hover when locked
-                    
-                    // Use a small delay to allow moving between navbar and icons
-                    hoverMinimizeTimer = setTimeout(() => {
-                        // Only minimize if not hovering over icons
-                        if (!navbar.classList.contains('hovering-icons')) {
-                            navbar.classList.add('minimized');
-                            navbar.style.transform = 'translateX(-230px)';
-                            document.body.style.paddingLeft = '90px';
-                            document.body.classList.remove('navbar-locked');
-                            console.log('🎯 Navbar minimized after navbar leave');
-                        }
-                        hoverMinimizeTimer = null;
-                    }, 120);
+                    isHoveringNavbar = false;
+                    checkMinimize();
                 });
             }
             
@@ -13958,59 +13945,68 @@ body.navbar-locked {
                 });
             }
             
-            // Shared debounce to prevent premature minimize between icon <-> navbar
-            let hoverMinimizeTimer = null;
+            // Global hover state management for navbar and floating icons
+            let isHoveringNavbar = false;
+            let isHoveringIcons = false;
+            let hoverTimer = null;
 
-            // Add hover functionality to floating icons to expand navbar
-            // Icons should act like part of navbar - keep navbar expanded when hovering over them
+            // Function to expand navbar
+            function expandNavbar() {
+                const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
+                const isLocked = hamburgerBtn ? hamburgerBtn.classList.contains('locked') : false;
+                if (isLocked) return;
+
+                navbar.classList.remove('minimized');
+                navbar.classList.add('expanded');
+                navbar.style.transform = 'translateX(0)';
+                document.body.style.paddingLeft = '320px';
+                document.body.classList.remove('navbar-locked');
+            }
+
+            // Function to minimize navbar
+            function minimizeNavbar() {
+                const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
+                const isLocked = hamburgerBtn ? hamburgerBtn.classList.contains('locked') : false;
+                if (isLocked) return;
+
+                navbar.classList.add('minimized');
+                navbar.classList.remove('expanded');
+                navbar.style.transform = 'translateX(-230px)';
+                document.body.style.paddingLeft = '90px';
+                document.body.classList.remove('navbar-locked');
+            }
+
+            // Function to check if we should minimize
+            function checkMinimize() {
+                if (hoverTimer) {
+                    clearTimeout(hoverTimer);
+                    hoverTimer = null;
+                }
+
+                hoverTimer = setTimeout(() => {
+                    if (!isHoveringNavbar && !isHoveringIcons) {
+                        minimizeNavbar();
+                        console.log('🎯 Navbar minimized - no hover detected');
+                    }
+                    hoverTimer = null;
+                }, 150);
+            }
+
+            // Add hover functionality to floating icons
             floatingIcons.forEach(icon => {
                 icon.addEventListener('mouseenter', function() {
-                    // Check lock state dynamically
-                    const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
-                    const isLocked = hamburgerBtn ? hamburgerBtn.classList.contains('locked') : false;
-                    if (isLocked) return; // ignore hover when locked
-                    
-                    if (hoverMinimizeTimer) {
-                        clearTimeout(hoverMinimizeTimer);
-                        hoverMinimizeTimer = null;
+                    isHoveringIcons = true;
+                    if (hoverTimer) {
+                        clearTimeout(hoverTimer);
+                        hoverTimer = null;
                     }
-
+                    expandNavbar();
                     console.log('🎯 Floating icon hover - expanding navbar');
-                    
-                    // Force navbar to expand by removing minimized class and transform
-                    navbar.classList.remove('minimized');
-                    navbar.classList.add('expanded');
-                    navbar.style.transform = 'translateX(0)';
-                    document.body.style.paddingLeft = '320px';
-                    document.body.classList.remove('navbar-locked');
-                    
-                    // Add a class to indicate we're hovering over floating icons
-                    navbar.classList.add('hovering-icons');
-                    
-                    console.log('🎯 Navbar expanded by floating icon hover');
                 });
                 
                 icon.addEventListener('mouseleave', function() {
-                    // Check lock state dynamically
-                    const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
-                    const isLocked = hamburgerBtn ? hamburgerBtn.classList.contains('locked') : false;
-                    if (isLocked) return; // ignore hover when locked
-                    
-                    // Remove the hovering-icons class but don't minimize immediately
-                    navbar.classList.remove('hovering-icons');
-                    
-                    // Use a small delay to allow moving between icon and navbar
-                    hoverMinimizeTimer = setTimeout(() => {
-                        // Only minimize if not hovering over navbar or icons
-                        if (!navbar.matches(':hover') && !navbar.classList.contains('hovering-icons')) {
-                            navbar.classList.add('minimized');
-                            navbar.style.transform = 'translateX(-230px)';
-                            document.body.style.paddingLeft = '90px';
-                            document.body.classList.remove('navbar-locked');
-                            console.log('🎯 Navbar minimized after floating icon leave');
-                        }
-                        hoverMinimizeTimer = null;
-                    }, 120);
+                    isHoveringIcons = false;
+                    checkMinimize();
                 });
             });
             
