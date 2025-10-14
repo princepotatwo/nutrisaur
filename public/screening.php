@@ -6129,28 +6129,62 @@ header {
             pointer-events: auto !important;
         }
 
-        /* COMPLETELY DISABLE ALL NAVBAR HOVER EFFECTS */
+        /* COMPLETELY DISABLE ALL NAVBAR HOVER EFFECTS - AGGRESSIVE OVERRIDE */
         .navbar:hover,
-        .navbar *:hover {
+        .navbar *:hover,
+        .navbar-logo:hover,
+        .navbar-logo-icon:hover,
+        .navbar-logo-text:hover,
+        .navbar li:hover,
+        .navbar a:hover,
+        .navbar a:hover::before,
+        .navbar-icon:hover,
+        .navbar-footer:hover {
             transform: none !important;
             background: none !important;
+            background-color: inherit !important;
+            background-image: none !important;
             box-shadow: none !important;
             color: inherit !important;
             opacity: inherit !important;
+            border-color: inherit !important;
+            border-left-color: inherit !important;
+            scale: 1 !important;
+            translate: none !important;
+            translateX: 0 !important;
+            translateY: 0 !important;
         }
 
         /* Force navbar to only respond to hamburger button */
         .navbar {
-            pointer-events: none;
+            pointer-events: none !important;
         }
 
         .navbar * {
-            pointer-events: none;
+            pointer-events: none !important;
         }
 
         /* Allow clicks on navbar links only */
         .navbar a {
-            pointer-events: auto;
+            pointer-events: auto !important;
+        }
+
+        /* Override any remaining hover effects with !important */
+        .navbar:hover {
+            transform: translateX(-230px) !important;
+            width: 320px !important;
+        }
+
+        .navbar.minimized:hover {
+            transform: translateX(-230px) !important;
+        }
+
+        .navbar.expanded:hover {
+            transform: translateX(0) !important;
+        }
+
+        .navbar.locked:hover {
+            transform: translateX(0) !important;
         }
 
     </style>
