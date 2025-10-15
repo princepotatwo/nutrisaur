@@ -8526,17 +8526,17 @@ function closeCreateEventModal() {
             
             let csvContent;
             if (isSuperAdmin) {
-                // Super admin template includes municipality column - EXACT COPY of manual event
+                // Super admin template includes municipality column - Target all users instead of just flagged
                 csvContent = `title,date_time,municipality,location,barangay,organizer,description,who_standard,classification,user_status
-vhjvhvf,${formatDate(future1)},MARIVELES,Alion,kevinpingol123,vhvhcghch,bmi-adult,Underweight,flagged
-Health Seminar,${formatDate(future2)},MARIVELES,,Dr. Juan Cruz,Community health education and awareness (all barangays),weight-for-age,Severely Underweight,flagged_and_notes
-Medical Mission,${formatDate(future3)},MARIVELES,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,height-for-age,Stunted,with_notes`;
+vhjvhvf,${formatDate(future1)},MARIVELES,Alion,kevinpingol123,vhvhcghch,bmi-adult,Underweight,
+Health Seminar,${formatDate(future2)},MARIVELES,,Dr. Juan Cruz,Community health education and awareness (all barangays),weight-for-age,Severely Underweight,
+Medical Mission,${formatDate(future3)},MARIVELES,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,height-for-age,Stunted,`;
             } else {
-                // Regular user template uses their municipality automatically - EXACT COPY of manual event
+                // Regular user template uses their municipality automatically - Target all users instead of just flagged
                 csvContent = `title,date_time,location,barangay,organizer,description,who_standard,classification,user_status
-vhjvhvf,${formatDate(future1)},${userMunicipality},Alion,kevinpingol123,vhvhcghch,bmi-adult,Underweight,flagged
-Health Seminar,${formatDate(future2)},${userMunicipality},,Dr. Juan Cruz,Community health education and awareness (all barangays),weight-for-age,Severely Underweight,flagged_and_notes
-Medical Mission,${formatDate(future3)},${userMunicipality},Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,height-for-age,Stunted,with_notes`;
+vhjvhvf,${formatDate(future1)},${userMunicipality},Alion,kevinpingol123,vhvhcghch,bmi-adult,Underweight,
+Health Seminar,${formatDate(future2)},${userMunicipality},,Dr. Juan Cruz,Community health education and awareness (all barangays),weight-for-age,Severely Underweight,
+Medical Mission,${formatDate(future3)},${userMunicipality},Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,height-for-age,Stunted,`;
             }
             
             const blob = new Blob([csvContent], { type: 'text/csv' });
