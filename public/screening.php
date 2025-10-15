@@ -801,16 +801,6 @@ body {
     overflow: hidden;
 }
 
-.navbar-footer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(161, 180, 84, 0.3), transparent);
-}
-
 /* Dark theme navbar footer styles */
 .dark-theme .navbar-footer {
     border-top-color: rgba(164, 188, 46, 0.15);
@@ -830,7 +820,7 @@ body {
     left: 0;
     width: 100%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(161, 180, 84, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(161, 180, 84, 0.3), transparent);
 }
 
 /* Dark theme navbar footer before styles */
