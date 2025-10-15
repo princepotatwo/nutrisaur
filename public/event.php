@@ -4431,6 +4431,10 @@ header {
     align-items: center;
     border: 1px solid rgba(161, 180, 84, 0.2);
     transition: all 0.3s ease;
+    max-width: calc(100% - 60px);
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 header:hover {
