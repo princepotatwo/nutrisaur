@@ -292,6 +292,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             try {
                 $name = $_POST['name'] ?? '';
                 $email = $_POST['email'] ?? '';
+                $personal_email = $_POST['personal_email'] ?? '';
+                $full_name = $_POST['full_name'] ?? '';
                 $currentUserId = $_SESSION['user_id'] ?? null;
                 
                 if (!$currentUserId) {
@@ -306,9 +308,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     break;
                 }
                 
-                // Update user profile in database
-                $stmt = $pdo->prepare("UPDATE users SET username = ?, email = ? WHERE user_id = ?");
-                $result = $stmt->execute([$name, $email, $currentUserId]);
+                // Update user profile in database including personal_email and full_name
+                $stmt = $pdo->prepare("UPDATE users SET username = ?, email = ?, personal_email = ?, full_name = ? WHERE user_id = ?");
+                $result = $stmt->execute([$name, $email, $personal_email, $full_name, $currentUserId]);
                 
                 if ($result) {
                     // Update session data
@@ -5627,6 +5629,42 @@ header {
                         <span id="profileEmail"><?php echo htmlspecialchars($_SESSION['email'] ?? 'N/A'); ?></span>
                     </div>
                     <div class="profile-field">
+                        <label>Personal Email:</label>
+                        <span id="profilePersonalEmail"><?php 
+                            // Get personal email from database
+                            $personal_email = 'Not set';
+                            if (isset($_SESSION['user_id'])) {
+                                require_once __DIR__ . "/../config.php";
+                                $pdo_profile = getDatabaseConnection();
+                                if ($pdo_profile) {
+                                    $stmt = $pdo_profile->prepare("SELECT personal_email FROM users WHERE user_id = ?");
+                                    $stmt->execute([$_SESSION['user_id']]);
+                                    $user_data = $stmt->fetch();
+                                    if ($user_data && !empty($user_data['personal_email'])) {
+                                        $personal_email = $user_data['personal_email'];
+                                    }
+                                }
+                            }
+                            echo htmlspecialchars($personal_email);
+                        ?></span>
+                    </div>
+                    <div class="profile-field">
+                        <label>Full Name:</label>
+                        <span id="profileFullName"><?php 
+                            // Get full name from database
+                            $full_name = 'Not set';
+                            if (isset($_SESSION['user_id']) && isset($pdo_profile)) {
+                                $stmt = $pdo_profile->prepare("SELECT full_name FROM users WHERE user_id = ?");
+                                $stmt->execute([$_SESSION['user_id']]);
+                                $user_data = $stmt->fetch();
+                                if ($user_data && !empty($user_data['full_name'])) {
+                                    $full_name = $user_data['full_name'];
+                                }
+                            }
+                            echo htmlspecialchars($full_name);
+                        ?></span>
+                    </div>
+                    <div class="profile-field">
                         <label>Role:</label>
                         <span id="profileRole"><?php echo htmlspecialchars($_SESSION['role'] ?? 'Admin'); ?></span>
                     </div>
@@ -5644,6 +5682,14 @@ header {
                                 <input type="email" id="editEmail" name="email" value="<?php echo htmlspecialchars($_SESSION['email'] ?? ''); ?>" required style="flex: 1;">
                                 <button type="button" onclick="showChangeEmailModal()" class="btn-change-email">Change Email</button>
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPersonalEmail">Personal Email:</label>
+                            <input type="email" id="editPersonalEmail" name="personal_email" value="<?php echo htmlspecialchars($personal_email ?? ''); ?>" placeholder="Enter your personal email">
+                        </div>
+                        <div class="form-group">
+                            <label for="editFullName">Full Name:</label>
+                            <input type="text" id="editFullName" name="full_name" value="<?php echo htmlspecialchars($full_name ?? ''); ?>" placeholder="Enter your full name">
                         </div>
                         <div class="form-actions">
                             <button type="button" class="btn-cancel" onclick="cancelProfileEdit()">Cancel</button>
@@ -6615,6 +6661,8 @@ header {
             const formData = new FormData(this);
             const name = formData.get('name');
             const email = formData.get('email');
+            const personal_email = formData.get('personal_email');
+            const full_name = formData.get('full_name');
             
             // Update profile via API
             fetch('/settings.php', {
@@ -6622,7 +6670,7 @@ header {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `action=update_profile&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`
+                body: `action=update_profile&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&personal_email=${encodeURIComponent(personal_email)}&full_name=${encodeURIComponent(full_name)}`
             })
             .then(response => response.json())
             .then(data => {
@@ -6630,6 +6678,8 @@ header {
                     // Update the display
                     document.getElementById('profileName').textContent = name;
                     document.getElementById('profileEmail').textContent = email;
+                    document.getElementById('profilePersonalEmail').textContent = personal_email || 'Not set';
+                    document.getElementById('profileFullName').textContent = full_name || 'Not set';
                     
                     // Update session data (if available)
                     if (typeof updateSessionData === 'function') {
