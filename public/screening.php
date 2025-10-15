@@ -866,7 +866,6 @@ body {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding-top: 20px;
 }
 
 /* Navbar icon hover effect when minimized */
