@@ -9950,7 +9950,7 @@ Medical Mission,${formatDate(future3)},Poblacion,Poblacion,Dr. Ana Reyes,Free me
                     console.log('🔧 DEBUG: Event data received:', event);
                     
                     // Set filtering fields if they exist
-                    if (event.municipality) {
+                    if (event.municipality && event.municipality.trim() !== '') {
                         console.log('🔧 DEBUG: Setting municipality:', event.municipality);
                         document.getElementById('editEventMunicipality').value = event.municipality;
                         updateEditBarangayOptions();
@@ -9963,9 +9963,28 @@ Medical Mission,${formatDate(future3)},Poblacion,Poblacion,Dr. Ana Reyes,Free me
                             }, 10);
                         }
                     } else if (event.barangay) {
-                        // If no municipality but has barangay, set it directly
-                        console.log('🔧 DEBUG: Setting barangay directly (no municipality):', event.barangay);
-                        document.getElementById('editEventBarangay').value = event.barangay;
+                        // If no municipality but has barangay, try to find municipality from barangay
+                        console.log('🔧 DEBUG: No municipality, trying to find municipality for barangay:', event.barangay);
+                        let foundMunicipality = '';
+                        for (const [municipality, barangays] of Object.entries(municipalityBarangays)) {
+                            if (barangays.includes(event.barangay)) {
+                                foundMunicipality = municipality;
+                                break;
+                            }
+                        }
+                        
+                        if (foundMunicipality) {
+                            console.log('🔧 DEBUG: Found municipality for barangay:', foundMunicipality);
+                            document.getElementById('editEventMunicipality').value = foundMunicipality;
+                            updateEditBarangayOptions();
+                            setTimeout(() => {
+                                document.getElementById('editEventBarangay').value = event.barangay;
+                                console.log('🔧 DEBUG: Barangay value set to:', document.getElementById('editEventBarangay').value);
+                            }, 10);
+                        } else {
+                            console.log('🔧 DEBUG: Could not find municipality for barangay, setting barangay directly');
+                            document.getElementById('editEventBarangay').value = event.barangay;
+                        }
                     }
                     if (event.who_standard) {
                         console.log('🔧 DEBUG: Setting WHO standard:', event.who_standard);
