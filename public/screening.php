@@ -7518,6 +7518,18 @@ header {
                                         <span class="info-label">Pregnancy Status</span>
                                         <span class="info-value">${getPregnancyStatus(userData.is_pregnant)}</span>
                                     </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Parent Name</span>
+                                        <span class="info-value">${userData.parent_name || 'N/A'}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Parent Email</span>
+                                        <span class="info-value">${userData.parent_email || 'N/A'}</span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">Parent Contact Number</span>
+                                        <span class="info-value">${userData.parent_phone || 'N/A'}</span>
+                                    </div>
                                 </div>
                             </div>
 
