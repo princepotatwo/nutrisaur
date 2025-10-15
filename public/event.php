@@ -475,49 +475,114 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
     header('Content-Type: application/json');
     
     $eventId = $_GET['event_id'] ?? null;
+    $targetLocation = $_GET['location'] ?? null;
+    $whoStandard = $_GET['who_standard'] ?? null;
+    $classification = $_GET['classification'] ?? null;
+    $userStatus = $_GET['user_status'] ?? null;
     
     try {
         $db = DatabaseAPI::getInstance();
         
-        if ($eventId) {
-            // Get users not already in this event
-            $sql = "SELECT name, email, birthday, sex, municipality, barangay 
-                    FROM community_users 
-                    WHERE email NOT IN (
-                        SELECT community_user_email 
-                        FROM event_participants 
-                        WHERE event_id = ?
-                    )
-                    ORDER BY name ASC";
-            $result = $db->universalQuery($sql, [$eventId]);
-        } else {
-            // Get all users
-            $sql = "SELECT name, email, birthday, sex, municipality, barangay 
-                    FROM community_users 
-                    ORDER BY name ASC";
-            $result = $db->universalQuery($sql);
+        // Build base query for users not already in the event
+        $baseWhere = "email NOT IN (SELECT community_user_email FROM event_participants WHERE event_id = ?)";
+        $params = [$eventId];
+        
+        // Add location filtering
+        if (!empty($targetLocation) && $targetLocation !== 'all' && $targetLocation !== 'All Locations') {
+            if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
+                $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
+                $municipalityName = str_replace('_', ' ', $municipalityName);
+                $baseWhere .= " AND municipality = ?";
+                $params[] = $municipalityName;
+            } else {
+                $baseWhere .= " AND barangay = ?";
+                $params[] = $targetLocation;
+            }
         }
         
+        // Add user status filtering
+        if (!empty($userStatus)) {
+            switch ($userStatus) {
+                case 'active':
+                    $baseWhere .= " AND status = 'active'";
+                    break;
+                case 'flagged':
+                    $baseWhere .= " AND status = 'active'"; // For now, same as active
+                    break;
+                case 'with_notes':
+                    $baseWhere .= " AND notes IS NOT NULL AND notes != ''";
+                    break;
+                case 'flagged_and_notes':
+                    $baseWhere .= " AND status = 'active' AND notes IS NOT NULL AND notes != ''";
+                    break;
+            }
+        }
+        
+        $sql = "SELECT name, email, birthday, sex, municipality, barangay, weight, height, screening_date, status, notes
+                FROM community_users 
+                WHERE $baseWhere
+                ORDER BY name ASC";
+        
+        $result = $db->universalQuery($sql, $params);
+        
         if ($result['success']) {
-            // Calculate age for each user (years and months)
+            // Calculate age for each user (years and months) and apply WHO classification filtering
             $users = $result['data'];
-            foreach ($users as &$user) {
-                if ($user['birthday']) {
-                    $birthDate = new DateTime($user['birthday']);
-                    $today = new DateTime();
-                    $ageDiff = $today->diff($birthDate);
-                    
-                    if ($ageDiff->y > 0) {
-                        $user['age'] = $ageDiff->y . 'y ' . $ageDiff->m . 'm';
-                    } else {
-                        $user['age'] = $ageDiff->m . 'm';
+            $filteredUsers = [];
+            
+            // If WHO classification filtering is requested, filter users
+            if (!empty($whoStandard) && !empty($classification)) {
+                require_once __DIR__ . '/../who_growth_standards.php';
+                $who = new WHOGrowthStandards();
+                
+                foreach ($users as $user) {
+                    // Calculate age for WHO classification
+                    if ($user['birthday'] && $user['weight'] && $user['height']) {
+                        $birthDate = new DateTime($user['birthday']);
+                        $today = new DateTime();
+                        $ageInMonths = ($today->diff($birthDate)->y * 12) + $today->diff($birthDate)->m;
+                        
+                        // Get WHO classification
+                        $userClassification = '';
+                        if ($whoStandard === 'weight-for-age') {
+                            $userClassification = $who->getWeightForAgeClassification($user['sex'], $ageInMonths, $user['weight']);
+                        } elseif ($whoStandard === 'height-for-age') {
+                            $userClassification = $who->getHeightForAgeClassification($user['sex'], $ageInMonths, $user['height']);
+                        } elseif ($whoStandard === 'weight-for-height') {
+                            $userClassification = $who->getWeightForHeightClassification($user['sex'], $ageInMonths, $user['weight'], $user['height']);
+                        }
+                        
+                        // Only include users that match the target classification
+                        if ($userClassification === $classification) {
+                            $user['age'] = $ageInMonths > 12 ? 
+                                floor($ageInMonths / 12) . 'y ' . ($ageInMonths % 12) . 'm' : 
+                                $ageInMonths . 'm';
+                            $user['who_classification'] = $userClassification;
+                            $filteredUsers[] = $user;
+                        }
                     }
-                } else {
-                    $user['age'] = 'N/A';
                 }
+            } else {
+                // No WHO filtering, just calculate ages
+                foreach ($users as &$user) {
+                    if ($user['birthday']) {
+                        $birthDate = new DateTime($user['birthday']);
+                        $today = new DateTime();
+                        $ageDiff = $today->diff($birthDate);
+                        
+                        if ($ageDiff->y > 0) {
+                            $user['age'] = $ageDiff->y . 'y ' . $ageDiff->m . 'm';
+                        } else {
+                            $user['age'] = $ageDiff->m . 'm';
+                        }
+                    } else {
+                        $user['age'] = 'N/A';
+                    }
+                }
+                $filteredUsers = $users;
             }
             
-            echo json_encode(['success' => true, 'users' => $users]);
+            echo json_encode(['success' => true, 'users' => $filteredUsers]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to fetch users: ' . ($result['message'] ?? 'Unknown error')]);
         }
@@ -3419,7 +3484,7 @@ body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 20px;
+            padding-top: 0;
             gap: 15px;
             pointer-events: none;
         }
@@ -5513,7 +5578,7 @@ header:hover {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    padding-top: 20px;
+    padding-top: 0;
 }
 
 
@@ -6801,6 +6866,63 @@ header:hover {
                             <span class="close" onclick="closeBulkAddModal()">&times;</span>
                         </div>
                         <div class="bulk-add-body">
+                            <!-- Filtering Options -->
+                            <div class="filter-options" style="margin-bottom: 20px; padding: 15px; background: var(--color-card); border-radius: 8px; border: 1px solid var(--color-border);">
+                                <h5 style="margin-bottom: 15px; color: var(--color-highlight);">Filter Eligible Participants</h5>
+                                <div class="filter-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label for="filterLocation">Location:</label>
+                                        <select id="filterLocation" class="form-control" onchange="applyFilters()">
+                                            <option value="">All Locations</option>
+                                            <option value="MUNICIPALITY_Limay">Limay Municipality</option>
+                                            <option value="MUNICIPALITY_Orion">Orion Municipality</option>
+                                            <option value="MUNICIPALITY_Pilar">Pilar Municipality</option>
+                                            <option value="MUNICIPALITY_Balanga">Balanga Municipality</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="filterUserStatus">User Status:</label>
+                                        <select id="filterUserStatus" class="form-control" onchange="applyFilters()">
+                                            <option value="">All Users</option>
+                                            <option value="active">Active Users</option>
+                                            <option value="flagged">Flagged Users</option>
+                                            <option value="with_notes">Users with Notes</option>
+                                            <option value="flagged_and_notes">Flagged with Notes</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="filter-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                    <div class="form-group">
+                                        <label for="filterWhoStandard">WHO Standard:</label>
+                                        <select id="filterWhoStandard" class="form-control" onchange="applyFilters()">
+                                            <option value="">No WHO Filter</option>
+                                            <option value="weight-for-age">Weight for Age</option>
+                                            <option value="height-for-age">Height for Age</option>
+                                            <option value="weight-for-height">Weight for Height</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="filterClassification">Classification:</label>
+                                        <select id="filterClassification" class="form-control" onchange="applyFilters()">
+                                            <option value="">All Classifications</option>
+                                            <option value="Severely Underweight">Severely Underweight</option>
+                                            <option value="Underweight">Underweight</option>
+                                            <option value="Normal">Normal</option>
+                                            <option value="Overweight">Overweight</option>
+                                            <option value="Obese">Obese</option>
+                                            <option value="Severely Stunted">Severely Stunted</option>
+                                            <option value="Stunted">Stunted</option>
+                                            <option value="Normal Height">Normal Height</option>
+                                            <option value="Tall">Tall</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 15px; text-align: right;">
+                                    <button type="button" class="btn btn-secondary" onclick="clearFilters()" style="margin-right: 10px;">Clear Filters</button>
+                                    <button type="button" class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+                                </div>
+                            </div>
+                            
                             <div class="search-box">
                                 <input type="text" id="participantSearch" placeholder="Search participants..." class="form-control" onkeyup="filterParticipants()">
                             </div>
