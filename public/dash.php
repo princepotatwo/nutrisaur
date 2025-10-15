@@ -7386,7 +7386,7 @@ body {
     justify-content: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    z-index: 999;
+    z-index: 1005;
     backdrop-filter: blur(10px);
 }
 
