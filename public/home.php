@@ -2,10 +2,6 @@
 // Start the session
 session_start();
 
-// Debug: Log session info
-error_log("Session started - ID: " . session_id());
-error_log("Session data at start: " . print_r($_SESSION, true));
-
 // Check if user requires password setup (security check to prevent bypassing)
 if (isset($_SESSION['pending_password_setup']) && $_SESSION['pending_password_setup'] === true) {
     // Only allow access to password setup forms and AJAX handlers
@@ -26,10 +22,12 @@ if (isset($_POST['test_session'])) {
     exit;
 }
 
-// Check if user is already logged in
+// Check if user is already logged in (but don't redirect AJAX requests)
 $isLoggedIn = isset($_SESSION['user_id']) || isset($_SESSION['admin_id']);
-if ($isLoggedIn) {
-    // Redirect to dashboard if already logged in
+$isAjaxRequest = isset($_POST['ajax_action']) || isset($_POST['google_oauth']) || isset($_POST['google_oauth_code']);
+
+if ($isLoggedIn && !$isAjaxRequest) {
+    // Redirect to dashboard if already logged in (but not for AJAX requests)
     header("Location: /dash");
     exit;
 }
@@ -773,11 +771,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             exit;
             
         case 'google_setup_password':
-            // Debug: Log the request
-            error_log("Google setup password request received");
-            error_log("Session data: " . print_r($_SESSION, true));
-            error_log("POST data: " . print_r($_POST, true));
-            
             $newPassword = $_POST['new_password'];
             $confirmPassword = $_POST['confirm_password'];
             
@@ -820,9 +813,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             
             try {
                 // Check if user has pending password setup
-                error_log("Checking pending password setup - pending_user_id: " . ($_SESSION['pending_user_id'] ?? 'NOT SET'));
                 if (!isset($_SESSION['pending_user_id'])) {
-                    error_log("No pending user for password setup");
                     echo json_encode(['success' => false, 'message' => 'No pending password setup found']);
                     exit;
                 }
@@ -875,9 +866,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             
         case 'check_password_setup_required':
             // Check if user requires password setup
-            error_log("Checking password setup requirement - Session ID: " . session_id());
-            error_log("Session data: " . print_r($_SESSION, true));
-            
             if (isset($_SESSION['pending_password_setup']) && $_SESSION['pending_password_setup'] === true) {
                 echo json_encode(['requires_password_setup' => true]);
             } else {
@@ -3249,62 +3237,6 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
         async function setupGooglePassword(newPassword, confirmPassword) {
             try {
                 showMessage('Setting up password...', 'info');
-                
-                // Debug: Test basic PHP first
-                try {
-                    console.log('Testing basic PHP...');
-                    const basicResponse = await fetch('/home.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: 'ajax_action=test_basic'
-                    });
-                    const basicData = await basicResponse.json();
-                    console.log('Basic test:', basicData);
-                    
-                    // Now test session
-                    console.log('Testing session...');
-                    const testResponse = await fetch('/home.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: 'ajax_action=test_session'
-                    });
-                    const testData = await testResponse.json();
-                    console.log('Session test:', testData);
-                    
-                    // Now check session debug
-                    console.log('Testing debug session...');
-                    const debugResponse = await fetch('/home.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: 'ajax_action=debug_session'
-                    });
-                    const debugData = await debugResponse.json();
-                    console.log('Session debug:', debugData);
-                } catch (error) {
-                    console.error('Debug test failed:', error);
-                    console.error('Error details:', error.message);
-                    
-                    // Try to get the raw response to see what we're actually getting
-                    try {
-                        const rawResponse = await fetch('/home.php', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                            },
-                            body: 'ajax_action=test_basic'
-                        });
-                        const rawText = await rawResponse.text();
-                        console.error('Raw response:', rawText.substring(0, 500)); // First 500 chars
-                    } catch (rawError) {
-                        console.error('Could not get raw response:', rawError);
-                    }
-                }
                 
                 const formData = new FormData();
                 formData.append('new_password', newPassword);
