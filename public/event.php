@@ -7387,7 +7387,6 @@ function closeCreateEventModal() {
                 if (data.success) {
                     alert('Participant added successfully');
                     loadEventParticipants(eventId);
-                    loadAvailableUsers(eventId);
                     loadEventDetails(eventId); // Refresh participant count
                 } else {
                     alert('Error adding participant: ' + data.message);
@@ -7416,7 +7415,6 @@ function closeCreateEventModal() {
                     showNotification('Participant removed successfully', 'success');
                     const eventId = getCurrentEventId();
                     loadEventParticipants(eventId);
-                    loadAvailableUsers(eventId);
                     loadEventDetails(eventId); // Refresh participant count
                 } else {
                     showNotification('Error removing participant: ' + data.message, 'error');
@@ -7472,7 +7470,6 @@ function closeCreateEventModal() {
             document.getElementById('viewEventModal').style.display = 'block';
             loadEventDetails(eventId);
             loadEventParticipants(eventId);
-            loadAvailableUsers(eventId);
         }
 
         // Show bulk add modal
