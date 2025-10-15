@@ -2162,7 +2162,7 @@ body {
     color: var(--color-text);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 20px;
-    padding-left: 90px; /* Space for minimized navbar */
+    padding-left: 60px; /* Space for minimized navbar + margin */
     line-height: 1.6;
     letter-spacing: 0.2px;
     transition: padding-left 0.4s ease;
@@ -2873,20 +2873,26 @@ body {
     transform: translateX(-230px); /* Show 90px when minimized */
 }
 
+/* Base body styles */
+body {
+    padding-left: 90px; /* Space for minimized navbar */
+    transition: padding-left 0.4s ease;
+}
+
 /* Navbar states */
 .navbar.minimized {
     transform: translateX(-230px) !important;
-}
-
-.navbar.expanded {
-    transform: translateX(0) !important;
-    width: 320px !important;
 }
 
 .navbar:hover, .navbar.expanded {
     transform: translateX(0); /* Show full navbar */
     box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(15px);
+}
+
+.navbar.expanded {
+    transform: translateX(0) !important;
+    width: 320px !important;
 }
 
 .navbar.expanded * {
@@ -2908,112 +2914,6 @@ body {
 .navbar.expanded .navbar-footer {
     opacity: 1;
     pointer-events: auto;
-}
-
-/* Navbar Hamburger Button - Match floating icons style */
-.navbar-hamburger-btn {
-    position: fixed;
-    top: 50px; /* positioned to align with floating icons */
-    /* left position controlled by JavaScript */
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(161, 180, 84, 0.3);
-    border-radius: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1002;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.navbar-hamburger-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(161, 180, 84, 0.5);
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-
-.hamburger-icon {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    width: 20px;
-    height: 20px;
-}
-
-.hamburger-line {
-    width: 100%;
-    height: 2px;
-    background: rgba(161, 180, 84, 0.8);
-    border-radius: 1px;
-    transition: all 0.3s ease;
-}
-
-.navbar-hamburger-btn:hover .hamburger-line {
-    background: rgba(161, 180, 84, 1);
-}
-
-/* Floating Navigation Icons - Always visible like Gmail */
-.floating-nav-icons {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1001;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 20px 0;
-}
-
-.floating-nav-icon {
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(161, 180, 84, 0.3);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    text-decoration: none;
-    color: var(--color-text);
-}
-
-.floating-nav-icon:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(161, 180, 84, 0.5);
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    color: var(--color-highlight);
-}
-
-.floating-nav-icon svg {
-    width: 20px;
-    height: 20px;
-    stroke: currentColor;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-    .navbar-hamburger-btn,
-    .floating-nav-icons {
-        display: none !important;
-    }
-    
-    .navbar {
-        transform: translateX(-100%) !important;
-    }
-    
-    body {
-        padding-left: 0 !important;
-    }
 }
 
 .navbar-header {
@@ -3195,13 +3095,14 @@ body {
 }
 
 .navbar-footer {
-    padding: 25px 20px;
+    padding: 25px;
+    text-align: center;
     border-top: 2px solid rgba(164, 188, 46, 0.15);
     font-size: 12px;
     opacity: 0.7;
-    text-align: center;
     background: linear-gradient(135deg, transparent 0%, rgba(161, 180, 84, 0.03) 100%);
     position: relative;
+    overflow: hidden;
 }
 
 .navbar-footer::before {
@@ -3211,7 +3112,7 @@ body {
     left: 0;
     width: 100%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(161, 180, 84, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(161, 180, 84, 0.3), transparent);
 }
 
 .light-theme .navbar-footer {
@@ -3220,6 +3121,79 @@ body {
 
 .light-theme .navbar-footer::before {
     background: linear-gradient(90deg, transparent, rgba(142, 185, 110, 0.2), transparent);
+}
+
+/* Navbar Hamburger Button - Match floating icons style */
+.navbar-hamburger-btn {
+    position: fixed;
+    top: 50px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--color-highlight);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1002;
+    transition: all 0.3s ease;
+}
+
+.navbar-hamburger-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.hamburger-icon {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.hamburger-line {
+    width: 20px;
+    height: 2px;
+    background: var(--color-highlight);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+/* Floating Navigation Icons */
+.floating-nav-icons {
+    position: fixed;
+    left: 0;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    pointer-events: none;
+}
+
+.floating-nav-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--color-highlight);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-highlight);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+}
+
+.floating-nav-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.floating-nav-icon svg {
+    flex-shrink: 0;
 }
 
 .navbar-footer div:first-child {
@@ -6088,8 +6062,7 @@ header:hover {
             </table>
     </div>
     
-<!-- Navigation -->
-    <!-- Desktop Sidebar Navigation (unchanged) -->
+<!-- Desktop Sidebar Navigation -->
     <div class="navbar" id="navbar">
         <div class="navbar-header">
         
@@ -6146,10 +6119,17 @@ header:hover {
                 <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
         </a>
-        <a href="settings" class="floating-nav-icon" id="floating-settings" title="Settings & Admin">
+        <a href="settings" class="floating-nav-icon" id="floating-settings" title="Settings">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </a>
+        <a href="logout" class="floating-nav-icon" id="floating-logout" title="Logout" style="color: #ff5252;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16,17 21,12 16,7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
             </svg>
         </a>
     </div>
@@ -7414,6 +7394,150 @@ function closeCreateEventModal() {
                     deleteAllBtn.disabled = false;
                 }
             });
+        }
+        
+        // Navbar Hamburger Button Initialization
+        function initNavbarHamburgerButton() {
+            console.log('🍔 Initializing navbar hamburger button...');
+            
+            const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
+            const navbar = document.getElementById('navbar');
+            
+            if (!hamburgerBtn || !navbar) {
+                console.error('❌ Navbar hamburger button or navbar not found');
+                return;
+            }
+            
+            // Add click event listener to hamburger button - simple toggle
+            hamburgerBtn.addEventListener('click', function() {
+                const isExpanded = navbar.classList.contains('expanded');
+                
+                if (isExpanded) {
+                    // Minimize navbar
+                    navbar.classList.remove('expanded');
+                    navbar.classList.add('minimized');
+                    navbar.style.transform = 'translateX(-230px)';
+                    document.body.style.paddingLeft = '90px';
+                    
+                    // Position hamburger button at floating icons position when minimized
+                    hamburgerBtn.style.left = '25px';
+                    hamburgerBtn.style.top = '50px';
+                    
+                    // Save state to localStorage
+                    localStorage.setItem('navbarExpanded', 'false');
+                    console.log('🍔 Navbar minimized');
+                } else {
+                    // Expand navbar
+                    navbar.classList.remove('minimized');
+                    navbar.classList.add('expanded');
+                    navbar.style.transform = 'translateX(0)';
+                    document.body.style.paddingLeft = '320px';
+                    
+                    // Position hamburger button anchored to navbar when expanded
+                    hamburgerBtn.style.left = '250px';
+                    hamburgerBtn.style.top = '43px';
+                    
+                    // Save state to localStorage
+                    localStorage.setItem('navbarExpanded', 'true');
+                    console.log('🍔 Navbar expanded');
+                }
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    // Mobile: hide hamburger button
+                    hamburgerBtn.style.display = 'none';
+                } else {
+                    // Desktop: show hamburger button
+                    hamburgerBtn.style.display = 'flex';
+                }
+            });
+            
+            // Load saved navbar state from localStorage
+            const savedNavbarState = localStorage.getItem('navbarExpanded');
+            const isMobile = window.innerWidth <= 768;
+            
+            if (isMobile) {
+                hamburgerBtn.style.display = 'none';
+            } else {
+                hamburgerBtn.style.display = 'flex';
+                
+                if (savedNavbarState === 'false') {
+                    // Start with navbar MINIMIZED (saved state)
+                    navbar.classList.add('minimized');
+                    navbar.style.transform = 'translateX(-230px)';
+                    document.body.style.paddingLeft = '90px';
+                    hamburgerBtn.style.left = '25px';
+                    hamburgerBtn.style.top = '50px';
+                    console.log('📱 Loaded minimized navbar state');
+                } else {
+                    // Start with navbar EXPANDED (default or saved state)
+                    navbar.classList.add('expanded');
+                    navbar.style.transform = 'translateX(0)';
+                    document.body.style.paddingLeft = '320px';
+                    hamburgerBtn.style.left = '250px';
+                    hamburgerBtn.style.top = '43px';
+                    console.log('📱 Loaded expanded navbar state');
+                }
+            }
+            
+            console.log('✅ Navbar hamburger button initialized successfully');
+        }
+        
+        // Floating Navigation Icons
+        function initFloatingIcons() {
+            console.log('🎯 Initializing floating navigation icons...');
+            
+            const floatingIcons = document.querySelectorAll('.floating-nav-icon');
+            const navbar = document.getElementById('navbar');
+            
+            if (!navbar || floatingIcons.length === 0) {
+                console.log('⚠️ Navbar or floating icons not found');
+                return;
+            }
+            
+            // Position floating icons beside navbar menu items
+            function positionFloatingIcons() {
+                const navbarMenu = navbar.querySelector('.navbar-menu ul');
+                if (!navbarMenu) return;
+                
+                const menuItems = navbarMenu.querySelectorAll('li a');
+                
+                floatingIcons.forEach((icon, index) => {
+                    if (menuItems[index]) {
+                        const rect = menuItems[index].getBoundingClientRect();
+                        icon.style.top = (rect.top + rect.height / 2 - 28) + 'px';
+                        icon.style.left = '25px';
+                    }
+                });
+            }
+            
+            // Position icons on load
+            positionFloatingIcons();
+            
+            // Reposition on window resize
+            window.addEventListener('resize', positionFloatingIcons);
+            
+            // Reposition on scroll (in case navbar scrolls)
+            window.addEventListener('scroll', positionFloatingIcons);
+            
+            console.log('✅ Floating navigation icons initialized successfully');
+        }
+        
+        // Initialize navbar hamburger button when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initNavbarHamburgerButton);
+        } else {
+            initNavbarHamburgerButton();
+        }
+        
+        // Initialize floating icons when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initFloatingIcons);
+        } else {
+            initFloatingIcons();
         }
     </script>
     <script>
@@ -9538,148 +9662,6 @@ Medical Mission,${formatDate(future3)},LIMAY,Poblacion,Dr. Ana Reyes,Free medica
             document.addEventListener('DOMContentLoaded', initNavigation);
         } else {
             initNavigation();
-        }
-
-        // Navbar Hamburger Button System
-        function initNavbarHamburgerButton() {
-            console.log('🍔 Initializing navbar hamburger button...');
-            
-            const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
-            const navbar = document.getElementById('navbar');
-            
-            if (!hamburgerBtn || !navbar) {
-                console.error('❌ Navbar hamburger button or navbar not found');
-                return;
-            }
-            
-            // Add click event listener to hamburger button - simple toggle
-            hamburgerBtn.addEventListener('click', function() {
-                const isExpanded = navbar.classList.contains('expanded');
-                
-                if (isExpanded) {
-                    // Minimize navbar
-                    navbar.classList.remove('expanded');
-                    navbar.classList.add('minimized');
-                    navbar.style.transform = 'translateX(-230px)';
-                    document.body.style.paddingLeft = '90px';
-                    
-                    // Position hamburger button at floating icons position when minimized
-                    hamburgerBtn.style.left = '25px';
-                    hamburgerBtn.style.top = '50px';
-                    
-                    // Save state to localStorage
-                    localStorage.setItem('navbarExpanded', 'false');
-                    console.log('🍔 Navbar minimized');
-                } else {
-                    // Expand navbar
-                    navbar.classList.remove('minimized');
-                    navbar.classList.add('expanded');
-                    navbar.style.transform = 'translateX(0)';
-                    document.body.style.paddingLeft = '320px';
-                    
-                    // Position hamburger button anchored to navbar when expanded
-                    hamburgerBtn.style.left = '250px';
-                    hamburgerBtn.style.top = '43px';
-                    
-                    // Save state to localStorage
-                    localStorage.setItem('navbarExpanded', 'true');
-                    console.log('🍔 Navbar expanded');
-                }
-            });
-            
-            // Handle window resize
-            window.addEventListener('resize', function() {
-                const isMobile = window.innerWidth <= 768;
-                if (isMobile) {
-                    hamburgerBtn.style.display = 'none';
-                } else {
-                    hamburgerBtn.style.display = 'flex';
-                }
-            });
-            
-            // Load saved navbar state from localStorage
-            const savedNavbarState = localStorage.getItem('navbarExpanded');
-            const isMobile = window.innerWidth <= 768;
-            
-            if (isMobile) {
-                hamburgerBtn.style.display = 'none';
-            } else {
-                hamburgerBtn.style.display = 'flex';
-                
-                if (savedNavbarState === 'false') {
-                    // Start with navbar MINIMIZED (saved state)
-                    navbar.classList.add('minimized');
-                    navbar.style.transform = 'translateX(-230px)';
-                    document.body.style.paddingLeft = '90px';
-                    hamburgerBtn.style.left = '25px';
-                    hamburgerBtn.style.top = '50px';
-                    console.log('📱 Loaded minimized navbar state');
-                } else {
-                    // Start with navbar EXPANDED (default or saved state)
-                    navbar.classList.add('expanded');
-                    navbar.style.transform = 'translateX(0)';
-                    document.body.style.paddingLeft = '320px';
-                    hamburgerBtn.style.left = '250px';
-                    hamburgerBtn.style.top = '43px';
-                    console.log('📱 Loaded expanded navbar state');
-                }
-            }
-            
-            console.log('✅ Navbar hamburger button initialized successfully');
-        }
-        
-        // Floating Navigation Icons
-        function initFloatingIcons() {
-            console.log('🎯 Initializing floating navigation icons...');
-            
-            const floatingIcons = document.querySelectorAll('.floating-nav-icon');
-            const navbar = document.getElementById('navbar');
-            
-            if (!navbar || floatingIcons.length === 0) {
-                console.log('⚠️ Navbar or floating icons not found');
-                return;
-            }
-            
-            // Position floating icons beside navbar menu items
-            function positionFloatingIcons() {
-                const navbarMenu = navbar.querySelector('.navbar-menu ul');
-                if (!navbarMenu) return;
-                
-                const menuItems = navbarMenu.querySelectorAll('li');
-                
-                floatingIcons.forEach((icon, index) => {
-                    if (index < menuItems.length) {
-                        const menuItem = menuItems[index];
-                        const rect = menuItem.getBoundingClientRect();
-                        
-                        // Position icon beside the menu item
-                        icon.style.position = 'fixed';
-                        icon.style.left = '25px';
-                        icon.style.top = (rect.top + rect.height / 2 - 28) + 'px';
-                        icon.style.zIndex = '1001';
-                    }
-                });
-            }
-            
-            // Position icons on load and resize
-            positionFloatingIcons();
-            window.addEventListener('resize', positionFloatingIcons);
-            
-            console.log('✅ Floating navigation icons initialized successfully');
-        }
-        
-        // Initialize navbar hamburger button when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initNavbarHamburgerButton);
-        } else {
-            initNavbarHamburgerButton();
-        }
-        
-        // Initialize floating icons when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initFloatingIcons);
-        } else {
-            initFloatingIcons();
         }
     </script>
 </body>
