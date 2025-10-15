@@ -6212,7 +6212,6 @@ header {
                                 <span class="btn-text">Download Template</span>
                             </button>
                             <button class="btn-secondary" onclick="showCSVImportModal()">
-                                <span class="btn-icon">📁</span>
                                 <span class="btn-text">Import CSV</span>
                             </button>
                         </div>
@@ -7733,14 +7732,14 @@ header {
                             title: {
                                 display: true,
                                 text: 'Screening Date',
-                                color: 'var(--text-color)',
+                                color: document.body.classList.contains('dark-theme') ? '#FFFFFF' : '#1B3A1B',
                                 font: {
                                     size: 14,
                                     weight: 'bold'
                                 }
                             },
                             ticks: {
-                                color: 'var(--text-color)',
+                                color: document.body.classList.contains('dark-theme') ? '#FFFFFF' : '#1B3A1B',
                                 maxRotation: 45
                             },
                             grid: {
@@ -7753,14 +7752,14 @@ header {
                             title: {
                                 display: true,
                                 text: 'BMI',
-                                color: 'var(--text-color)',
+                                color: document.body.classList.contains('dark-theme') ? '#FFFFFF' : '#1B3A1B',
                                 font: {
                                     size: 14,
                                     weight: 'bold'
                                 }
                             },
                             ticks: {
-                                color: 'var(--text-color)',
+                                color: document.body.classList.contains('dark-theme') ? '#FFFFFF' : '#1B3A1B',
                                 callback: function(value) {
                                     return value.toFixed(1);
                                 }
