@@ -226,7 +226,6 @@ function bulkImportFoods($pdo, $data) {
     }
     
     $imported_count = 0;
-    $users_affected = [];
     $errors = [];
     
     // Start transaction
@@ -234,7 +233,6 @@ function bulkImportFoods($pdo, $data) {
     
     try {
         foreach ($foods as $food) {
-            $user_email = $food['user_email'] ?? '';
             $food_name = $food['food_name'] ?? '';
             $serving_size = $food['serving_size'] ?? '';
             $calories = $food['calories'] ?? 0;
@@ -245,51 +243,37 @@ function bulkImportFoods($pdo, $data) {
             $day_number = $food['day_number'] ?? 1;
             $meal_category = $food['meal_category'] ?? 'Breakfast';
             
-            if (empty($user_email) || empty($food_name)) {
-                $errors[] = "Missing user_email or food_name for row";
+            if (empty($food_name)) {
+                $errors[] = "Missing food_name for row";
                 continue;
             }
             
-            // Check if user exists
-            $userCheckSql = "SELECT email FROM community_users WHERE email = ?";
-            $userStmt = $pdo->prepare($userCheckSql);
-            $userStmt->execute([$user_email]);
-            $user = $userStmt->fetch(PDO::FETCH_ASSOC);
-            
-            if (!$user) {
-                $errors[] = "User $user_email not found";
-                continue;
-            }
-            
-            // Add to user_food_history with is_mho_recommended = 1
-            $insertSql = "INSERT INTO user_food_history 
-                         (user_email, food_name, serving_size, calories, protein, carbs, fat, fiber, 
-                          meal_category, date, is_mho_recommended, classification, plan_duration, day_number) 
-                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'recommended', 1, ?, ?, ?)";
+            // Add to mho_food_templates table (like Add Food to Template button)
+            $insertSql = "INSERT INTO mho_food_templates 
+                         (classification, plan_duration, day_number, meal_category, food_name, 
+                          calories, serving_size, protein, carbs, fat, fiber, emoji) 
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
             $insertStmt = $pdo->prepare($insertSql);
             $result = $insertStmt->execute([
-                $user_email,
+                $classification,
+                $duration,
+                $day_number,
+                $meal_category,
                 $food_name,
-                $serving_size,
                 $calories,
+                $serving_size,
                 $protein,
                 $carbs,
                 $fat,
                 $fiber,
-                $meal_category,
-                $classification,
-                $duration,
-                $day_number
+                '🍽️' // Default emoji
             ]);
             
             if ($result) {
                 $imported_count++;
-                if (!in_array($user_email, $users_affected)) {
-                    $users_affected[] = $user_email;
-                }
             } else {
-                $errors[] = "Failed to import food for $user_email: $food_name";
+                $errors[] = "Failed to import food: $food_name";
             }
         }
         
@@ -298,9 +282,8 @@ function bulkImportFoods($pdo, $data) {
         
         echo json_encode([
             'success' => true,
-            'message' => 'Bulk import completed',
+            'message' => 'Bulk import to template completed',
             'imported_count' => $imported_count,
-            'users_affected' => count($users_affected),
             'errors' => $errors
         ]);
         

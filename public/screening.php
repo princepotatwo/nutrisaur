@@ -11230,12 +11230,14 @@ header {
             
             const combinedClassification = `${whoStandard}-${classification}`;
             
-            // Create CSV template with headers
+            // Create CSV template with headers (no user_email since we're adding to template)
             const csvContent = [
-                ['user_email', 'food_name', 'serving_size', 'calories', 'protein', 'carbs', 'fat', 'fiber', 'day_number', 'meal_category'],
-                ['user1@example.com', 'Rice', '1 cup', '200', '4', '45', '0.5', '0.5', '1', 'Breakfast'],
-                ['user2@example.com', 'Chicken', '100g', '165', '31', '0', '3.6', '0', '1', 'Lunch'],
-                ['user3@example.com', 'Vegetables', '1 cup', '25', '2', '5', '0.2', '2', '1', 'Dinner']
+                ['food_name', 'serving_size', 'calories', 'protein', 'carbs', 'fat', 'fiber', 'day_number', 'meal_category'],
+                ['Rice', '1 cup', '200', '4', '45', '0.5', '0.5', '1', 'Breakfast'],
+                ['Chicken', '100g', '165', '31', '0', '3.6', '0', '1', 'Lunch'],
+                ['Vegetables', '1 cup', '25', '2', '5', '0.2', '2', '1', 'Dinner'],
+                ['Eggs', '2 pieces', '140', '12', '1', '10', '0', '2', 'Breakfast'],
+                ['Fish', '150g', '200', '40', '0', '4', '0', '2', 'Dinner']
             ];
             
             // Convert to CSV string
@@ -11270,7 +11272,7 @@ header {
                 <div class="modal-content" style="max-width: 600px; background: var(--color-card); padding: 20px; border-radius: 8px;">
                     <h3 style="color: var(--color-text); margin-bottom: 20px;">Import CSV Template</h3>
                     <p style="color: var(--color-text); margin-bottom: 15px;">
-                        Upload a CSV file with food data for multiple users. 
+                        Upload a CSV file with food data to add multiple foods to the template at once. 
                         <a href="#" onclick="downloadMHOCSVTemplate()" style="color: var(--color-highlight);">Download template</a> to see the required format.
                     </p>
                     <form id="mho-csv-import-form" style="display: flex; flex-direction: column; gap: 12px;">
@@ -11317,8 +11319,8 @@ header {
                 const lines = csvText.split('\n');
                 const headers = lines[0].split(',');
                 
-                // Validate headers
-                const expectedHeaders = ['user_email', 'food_name', 'serving_size', 'calories', 'protein', 'carbs', 'fat', 'fiber', 'day_number', 'meal_category'];
+                // Validate headers (no user_email since we're adding to template)
+                const expectedHeaders = ['food_name', 'serving_size', 'calories', 'protein', 'carbs', 'fat', 'fiber', 'day_number', 'meal_category'];
                 const isValidFormat = expectedHeaders.every(header => headers.includes(header));
                 
                 if (!isValidFormat) {
@@ -11326,23 +11328,22 @@ header {
                     return;
                 }
                 
-                // Process CSV data
+                // Process CSV data (no user_email since we're adding to template)
                 const foodData = [];
                 for (let i = 1; i < lines.length; i++) {
                     if (lines[i].trim()) {
                         const values = lines[i].split(',');
                         if (values.length >= expectedHeaders.length) {
                             foodData.push({
-                                user_email: values[0],
-                                food_name: values[1],
-                                serving_size: values[2],
-                                calories: parseFloat(values[3]) || 0,
-                                protein: parseFloat(values[4]) || 0,
-                                carbs: parseFloat(values[5]) || 0,
-                                fat: parseFloat(values[6]) || 0,
-                                fiber: parseFloat(values[7]) || 0,
-                                day_number: parseInt(values[8]) || 1,
-                                meal_category: values[9]
+                                food_name: values[0],
+                                serving_size: values[1],
+                                calories: parseFloat(values[2]) || 0,
+                                protein: parseFloat(values[3]) || 0,
+                                carbs: parseFloat(values[4]) || 0,
+                                fat: parseFloat(values[5]) || 0,
+                                fiber: parseFloat(values[6]) || 0,
+                                day_number: parseInt(values[7]) || 1,
+                                meal_category: values[8]
                             });
                         }
                     }
@@ -11370,7 +11371,7 @@ header {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert(`Successfully imported ${data.imported_count} food items for ${data.users_affected} users`);
+                        alert(`Successfully imported ${data.imported_count} food items to template`);
                         // Close modal and refresh the manager
                         document.querySelector('.modal').remove();
                         loadManagerFoods();
