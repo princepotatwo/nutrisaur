@@ -1466,6 +1466,10 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
         
         if (!empty($userStatus)) {
             switch ($userStatus) {
+                case 'all':
+                    // Target all active users
+                    $userStatusWhere = " AND status = 'active'";
+                    break;
                 case 'flagged':
                     // For now, target all active users since flagged column doesn't exist
                     $userStatusWhere = " AND status = 'active'";
@@ -8526,17 +8530,17 @@ function closeCreateEventModal() {
             
             let csvContent;
             if (isSuperAdmin) {
-                // Super admin template includes municipality column - Target all users instead of just flagged
+                // Super admin template includes municipality column - Target all users
                 csvContent = `title,date_time,municipality,location,barangay,organizer,description,who_standard,classification,user_status
-vhjvhvf,${formatDate(future1)},MARIVELES,Alion,kevinpingol123,vhvhcghch,bmi-adult,Underweight,
-Health Seminar,${formatDate(future2)},MARIVELES,,Dr. Juan Cruz,Community health education and awareness (all barangays),weight-for-age,Severely Underweight,
-Medical Mission,${formatDate(future3)},MARIVELES,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,height-for-age,Stunted,`;
+vhjvhvf,${formatDate(future1)},MARIVELES,Alion,kevinpingol123,vhvhcghch,bmi-adult,Underweight,all
+Health Seminar,${formatDate(future2)},MARIVELES,,Dr. Juan Cruz,Community health education and awareness (all barangays),weight-for-age,Severely Underweight,all
+Medical Mission,${formatDate(future3)},MARIVELES,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,height-for-age,Stunted,all`;
             } else {
-                // Regular user template uses their municipality automatically - Target all users instead of just flagged
+                // Regular user template uses their municipality automatically - Target all users
                 csvContent = `title,date_time,location,barangay,organizer,description,who_standard,classification,user_status
-vhjvhvf,${formatDate(future1)},${userMunicipality},Alion,kevinpingol123,vhvhcghch,bmi-adult,Underweight,
-Health Seminar,${formatDate(future2)},${userMunicipality},,Dr. Juan Cruz,Community health education and awareness (all barangays),weight-for-age,Severely Underweight,
-Medical Mission,${formatDate(future3)},${userMunicipality},Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,height-for-age,Stunted,`;
+vhjvhvf,${formatDate(future1)},${userMunicipality},Alion,kevinpingol123,vhvhcghch,bmi-adult,Underweight,all
+Health Seminar,${formatDate(future2)},${userMunicipality},,Dr. Juan Cruz,Community health education and awareness (all barangays),weight-for-age,Severely Underweight,all
+Medical Mission,${formatDate(future3)},${userMunicipality},Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,height-for-age,Stunted,all`;
             }
             
             const blob = new Blob([csvContent], { type: 'text/csv' });
