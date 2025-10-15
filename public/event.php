@@ -6622,8 +6622,9 @@ function getEditTargetLocation() {
 
 // Function to close create event modal
 function closeCreateEventModal() {
-    document.getElementById('createEventModal').style.display = 'none';
-    document.getElementById('newCreateEventForm').reset();
+    // No modal to close since form is directly on the page
+    // Just scroll to top of page smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
         // Function to close edit event modal  
@@ -7223,8 +7224,9 @@ function closeCreateEventModal() {
 
 // Function to close create event modal
 function closeCreateEventModal() {
-    document.getElementById('createEventModal').style.display = 'none';
-    document.getElementById('newCreateEventForm').reset();
+    // No modal to close since form is directly on the page
+    // Just scroll to top of page smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
         // 🚨 GLOBAL EVENT CREATION HANDLER - Available immediately
