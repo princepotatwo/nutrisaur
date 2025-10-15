@@ -1541,7 +1541,7 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
             
             // Filter users by WHO classification
             $filteredUsers = [];
-            require_once __DIR__ . '/api/who_growth_standards.php';
+            require_once __DIR__ . '/../who_growth_standards.php';
             $who = new WHOGrowthStandards();
             
             error_log("🔍 WHO filtering: Found " . count($allUsers) . " users to check");
