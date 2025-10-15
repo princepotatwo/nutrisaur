@@ -147,7 +147,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
             }
             
             // Check if user still has default password
-            $hasDefaultPassword = password_verify('password123', $existingUser['password']);
+            $hasDefaultPassword = password_verify('password123', $existingUser['password']) || 
+                      password_verify('mho123', $existingUser['password']);
             
             // User exists, log them in
             $_SESSION['user_id'] = $existingUser['user_id'];
@@ -178,7 +179,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
                 }
                 
                 // Check if user still has default password
-                $hasDefaultPassword = password_verify('password123', $userByEmail['password']);
+                $hasDefaultPassword = password_verify('password123', $userByEmail['password']) || 
+                      password_verify('mho123', $userByEmail['password']);
                 
                 // Link Google account to existing user
                 $updateStmt = $pdo->prepare("UPDATE users SET google_id = ?, google_name = ?, google_picture = ?, email_verified = 1 WHERE user_id = ?");
@@ -273,7 +275,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
             }
             
             // Check if user still has default password
-            $hasDefaultPassword = password_verify('password123', $existingUser['password']);
+            $hasDefaultPassword = password_verify('password123', $existingUser['password']) || 
+                      password_verify('mho123', $existingUser['password']);
             
             // User exists, log them in
             $_SESSION['user_id'] = $existingUser['user_id'];
@@ -304,7 +307,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
                 }
                 
                 // Check if user still has default password
-                $hasDefaultPassword = password_verify('password123', $userByEmail['password']);
+                $hasDefaultPassword = password_verify('password123', $userByEmail['password']) || 
+                      password_verify('mho123', $userByEmail['password']);
                 
                 // Link Google account to existing user
                 $updateStmt = $pdo->prepare("UPDATE users SET google_id = ?, google_name = ?, google_picture = ?, email_verified = 1 WHERE user_id = ?");
@@ -689,8 +693,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             }
             
             try {
-                // Verify reset token
-                $stmt = $pdo->prepare("SELECT user_id, username, email FROM users WHERE password_reset_code = ? AND password_reset_expires > NOW()");
+                // Verify reset token and get user info including personal_email and full_name
+                $stmt = $pdo->prepare("SELECT user_id, username, email, personal_email, full_name FROM users WHERE password_reset_code = ? AND password_reset_expires > NOW()");
                 $stmt->execute([$resetToken]);
                 $user = $stmt->fetch();
                 
@@ -708,12 +712,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                     $_SESSION['email'] = $user['email'];
                     $_SESSION['is_admin'] = true;
                     
-                    echo json_encode(['success' => true, 'message' => 'Password set up successfully! You are now logged in.', 'redirect' => '/dash']);
+                    // Check if personal info is missing
+                    $needsPersonalInfo = empty($user['personal_email']) || empty($user['full_name']);
+                    
+                    echo json_encode([
+                        'success' => true, 
+                        'message' => 'Password set up successfully! You are now logged in.',
+                        'needs_personal_info' => $needsPersonalInfo,
+                        'redirect' => $needsPersonalInfo ? null : '/dash'
+                    ]);
                 } else {
                     echo json_encode(['success' => false, 'message' => 'Invalid or expired setup link']);
                 }
             } catch (Exception $e) {
                 echo json_encode(['success' => false, 'message' => 'Password setup failed: ' . $e->getMessage()]);
+            }
+            exit;
+            
+        case 'save_personal_info':
+            $personalEmail = trim($_POST['personal_email']);
+            $fullName = trim($_POST['full_name']);
+            
+            if (empty($personalEmail) || empty($fullName)) {
+                echo json_encode(['success' => false, 'message' => 'Please fill in all fields']);
+                exit;
+            }
+            
+            if (!filter_var($personalEmail, FILTER_VALIDATE_EMAIL)) {
+                echo json_encode(['success' => false, 'message' => 'Please enter a valid email address']);
+                exit;
+            }
+            
+            if ($pdo === null) {
+                echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
+                exit;
+            }
+            
+            try {
+                // Check if user is logged in
+                if (!isset($_SESSION['user_id'])) {
+                    echo json_encode(['success' => false, 'message' => 'You must be logged in to save personal information']);
+                    exit;
+                }
+                
+                // Update user's personal information
+                $updateStmt = $pdo->prepare("UPDATE users SET personal_email = ?, full_name = ? WHERE user_id = ?");
+                $result = $updateStmt->execute([$personalEmail, $fullName, $_SESSION['user_id']]);
+                
+                if ($result) {
+                    echo json_encode([
+                        'success' => true, 
+                        'message' => 'Personal information saved successfully!',
+                        'redirect' => '/dash'
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Failed to save personal information']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => 'Failed to save personal information: ' . $e->getMessage()]);
             }
             exit;
     }
@@ -1950,6 +2006,19 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
                 <input type="hidden" id="reset_token" name="reset_token">
                 <button type="submit" class="auth-btn" id="setup-password-btn">Set Up Password</button>
             </form>
+            
+            <!-- Personal Information Collection Form -->
+            <form id="personal-info-form" method="post" action="" style="display: none;">
+                <div class="input-group">
+                    <label for="personal_email">Personal Email Address</label>
+                    <input type="email" id="personal_email" name="personal_email" required autocomplete="email" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                </div>
+                <div class="input-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" required autocomplete="name" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                </div>
+                <button type="submit" class="auth-btn" id="submit-personal-info-btn">Complete Setup</button>
+            </form>
         </div>
     </div>
 
@@ -2488,6 +2557,7 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             setupVerificationForm();
             setupForgotPasswordForm();
             setupPasswordSetupForm();
+            setupPersonalInfoForm();
             
             // Only show login form if no password setup token
             const urlParams = new URLSearchParams(window.location.search);
@@ -2630,7 +2700,7 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
         
         // Hide all forms
         function hideAllForms() {
-            const forms = ['auth-form', 'verification-form', 'forgot-password-form', 'reset-code-form', 'new-password-form', 'password-setup-form'];
+            const forms = ['auth-form', 'verification-form', 'forgot-password-form', 'reset-code-form', 'new-password-form', 'password-setup-form', 'personal-info-form'];
             forms.forEach(formId => {
                 const form = document.getElementById(formId);
                 if (form) form.style.display = 'none';
@@ -2790,7 +2860,12 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
                 
                 if (data.success) {
                     showMessage('Password set up successfully! You are now logged in.', 'success');
-                    if (data.redirect) {
+                    if (data.needs_personal_info) {
+                        // Transition to personal info form
+                        setTimeout(() => {
+                            showPersonalInfoForm();
+                        }, 1500);
+                    } else if (data.redirect) {
                         setTimeout(() => {
                             window.location.href = data.redirect;
                         }, 2000);
@@ -2825,6 +2900,78 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
                     authForm.style.display = 'none';
                 }
             }
+        }
+        
+        // Show personal info form
+        function showPersonalInfoForm() {
+            hideAllForms();
+            document.getElementById('personal-info-form').style.display = 'block';
+            document.getElementById('auth-title').textContent = 'Complete Your Profile';
+            showMessage('Please provide your personal information to complete your account setup.', 'info');
+        }
+        
+        // Setup personal info form
+        function setupPersonalInfoForm() {
+            const personalInfoForm = document.getElementById('personal-info-form');
+            
+            if (personalInfoForm) {
+                personalInfoForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const personalEmail = document.getElementById('personal_email').value;
+                    const fullName = document.getElementById('full_name').value;
+                    
+                    if (!personalEmail || !fullName) {
+                        showMessage('Please fill in all fields', 'error');
+                        return;
+                    }
+                    
+                    if (!isValidEmail(personalEmail)) {
+                        showMessage('Please enter a valid email address', 'error');
+                        return;
+                    }
+                    
+                    await savePersonalInfo(personalEmail, fullName);
+                });
+            }
+        }
+        
+        // Save personal info function
+        async function savePersonalInfo(personalEmail, fullName) {
+            try {
+                showMessage('Saving personal information...', 'info');
+                
+                const formData = new FormData();
+                formData.append('personal_email', personalEmail);
+                formData.append('full_name', fullName);
+                formData.append('ajax_action', 'save_personal_info');
+                
+                const response = await fetch('/home.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('Personal information saved successfully! Redirecting to dashboard...', 'success');
+                    if (data.redirect) {
+                        setTimeout(() => {
+                            window.location.href = data.redirect;
+                        }, 2000);
+                    }
+                } else {
+                    showMessage(data.message || 'Failed to save personal information', 'error');
+                }
+            } catch (error) {
+                showMessage('An error occurred. Please try again later.', 'error');
+                console.error('Save personal info error:', error);
+            }
+        }
+        
+        // Email validation helper
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
         }
 
 

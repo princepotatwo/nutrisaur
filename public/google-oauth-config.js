@@ -315,10 +315,10 @@ class GoogleOAuth {
             
             if (result.success) {
                 if (result.needs_password_change) {
-                    this.showMessage('Google sign-in successful! Please change your password.', 'success');
+                    this.showMessage('Google sign-in successful! Please set up your password.', 'success');
                     setTimeout(() => {
-                        window.location.href = '/settings';
-                    }, 1000);
+                        this.showPasswordSetupForm();
+                    }, 1500);
                 } else {
                     this.showMessage('Google sign-in successful! Redirecting...', 'success');
                     setTimeout(() => {
@@ -361,10 +361,10 @@ class GoogleOAuth {
             
             if (result.success) {
                 if (result.needs_password_change) {
-                    this.showMessage('Google sign-in successful! Please change your password.', 'success');
+                    this.showMessage('Google sign-in successful! Please set up your password.', 'success');
                     setTimeout(() => {
-                        window.location.href = '/settings';
-                    }, 1000);
+                        this.showPasswordSetupForm();
+                    }, 1500);
                 } else {
                     this.showMessage('Google sign-in successful! Redirecting...', 'success');
                     setTimeout(() => {
@@ -378,6 +378,23 @@ class GoogleOAuth {
         } catch (error) {
             console.error('Error exchanging code for token:', error);
             this.showMessage('An error occurred during Google sign-in. Please try again.', 'error');
+        }
+    }
+
+    showPasswordSetupForm() {
+        // Hide all forms first
+        const forms = ['auth-form', 'verification-form', 'forgot-password-form', 'reset-code-form', 'new-password-form', 'personal-info-form'];
+        forms.forEach(formId => {
+            const form = document.getElementById(formId);
+            if (form) form.style.display = 'none';
+        });
+        
+        // Show password setup form
+        const passwordSetupForm = document.getElementById('password-setup-form');
+        if (passwordSetupForm) {
+            passwordSetupForm.style.display = 'block';
+            document.getElementById('auth-title').textContent = 'Set Up Your Password';
+            this.showMessage('Please set up your password to complete your account setup.', 'info');
         }
     }
 
