@@ -2,10 +2,14 @@
 // Start the session
 session_start();
 
+// Debug: Log session info
+error_log("Session started - ID: " . session_id());
+error_log("Session data at start: " . print_r($_SESSION, true));
+
 // Check if user requires password setup (security check to prevent bypassing)
 if (isset($_SESSION['requires_password_setup']) && $_SESSION['requires_password_setup'] === true) {
     // Only allow access to password setup forms and AJAX handlers
-    $allowedActions = ['google_setup_password', 'save_personal_info'];
+    $allowedActions = ['google_setup_password', 'save_personal_info', 'debug_session', 'check_password_setup_required'];
     $currentAction = $_POST['ajax_action'] ?? '';
     
     // If not an allowed action and not accessing password setup forms, redirect to password setup
@@ -852,11 +856,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             
         case 'debug_session':
             // Debug session data
+            error_log("Debug session called - Session ID: " . session_id());
+            error_log("Full session data: " . print_r($_SESSION, true));
+            
             echo json_encode([
                 'session_id' => session_id(),
                 'session_data' => $_SESSION,
                 'user_id_set' => isset($_SESSION['user_id']),
-                'requires_password_setup' => isset($_SESSION['requires_password_setup'])
+                'requires_password_setup' => isset($_SESSION['requires_password_setup']),
+                'user_id_value' => $_SESSION['user_id'] ?? 'NOT SET'
+            ]);
+            exit;
+            
+        case 'test_session':
+            // Simple session test
+            $_SESSION['test_value'] = 'session_working_' . time();
+            echo json_encode([
+                'success' => true,
+                'session_id' => session_id(),
+                'test_value' => $_SESSION['test_value'],
+                'session_data' => $_SESSION
             ]);
             exit;
             
@@ -3184,16 +3203,31 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             try {
                 showMessage('Setting up password...', 'info');
                 
-                // Debug: Check session first
-                const debugResponse = await fetch('/home.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'ajax_action=debug_session'
-                });
-                const debugData = await debugResponse.json();
-                console.log('Session debug:', debugData);
+                // Debug: Test session first
+                try {
+                    const testResponse = await fetch('/home.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'ajax_action=test_session'
+                    });
+                    const testData = await testResponse.json();
+                    console.log('Session test:', testData);
+                    
+                    // Now check session debug
+                    const debugResponse = await fetch('/home.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'ajax_action=debug_session'
+                    });
+                    const debugData = await debugResponse.json();
+                    console.log('Session debug:', debugData);
+                } catch (error) {
+                    console.error('Session test failed:', error);
+                }
                 
                 const formData = new FormData();
                 formData.append('new_password', newPassword);
