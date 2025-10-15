@@ -98,6 +98,7 @@ if (isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
 // Function to get adult BMI classification (for children over 71 months)
 // This is only used as fallback for children over 71 months when WHO standards don't apply
 function getAdultBMIClassification($bmi) {
+    if ($bmi < 16.0) return ['z_score' => -2.0, 'classification' => 'Severely Underweight'];
     if ($bmi < 18.5) return ['z_score' => -1.0, 'classification' => 'Underweight'];
     if ($bmi < 25) return ['z_score' => 0.0, 'classification' => 'Normal'];
     if ($bmi < 30) return ['z_score' => 1.0, 'classification' => 'Overweight'];
