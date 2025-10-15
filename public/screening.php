@@ -794,9 +794,11 @@ body {
 }
 
 .navbar-footer {
-    padding: 25px;
-    text-align: center;
+    padding: 25px 20px;
     border-top: 2px solid rgba(164, 188, 46, 0.15);
+    font-size: 12px;
+    opacity: 0.7;
+    text-align: center;
     background: linear-gradient(135deg, transparent 0%, rgba(161, 180, 84, 0.03) 100%);
     position: relative;
     overflow: hidden;
