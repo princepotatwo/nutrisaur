@@ -950,6 +950,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_notification_cou
         $classification = $_POST['classification'] ?? '';
         $userStatus = $_POST['user_status'] ?? '';
         
+        // Convert string "null" to empty string
+        if ($userStatus === 'null') {
+            $userStatus = '';
+        }
+        
+        error_log("🔍 Manual Event WHO params: whoStandard='$whoStandard', classification='$classification', userStatus='$userStatus'");
+        
         // Get user count for confirmation modal with WHO filtering
         $users = getFCMTokensByLocation($location, $whoStandard, $classification, $userStatus);
         $userCount = count($users);
@@ -1494,6 +1501,7 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
         
         if (!empty($whoStandard) && !empty($classification)) {
             error_log("🔍 WHO Standard filtering requested: $whoStandard = $classification");
+            error_log("🔍 WHO filtering: whoStandard='$whoStandard', classification='$classification', userStatus='$userStatus'");
             
             // Get all users and filter by WHO classification dynamically
             $allUsers = [];
@@ -1535,6 +1543,8 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
             require_once __DIR__ . '/api/who_growth_standards.php';
             $who = new WHOGrowthStandards();
             
+            error_log("🔍 WHO filtering: Found " . count($allUsers) . " users to check");
+            
             foreach ($allUsers as $user) {
                 $userClassification = null;
                 
@@ -1547,6 +1557,8 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
                     else if ($bmi < 25) $userClassification = 'Normal';
                     else if ($bmi < 30) $userClassification = 'Overweight';
                     else $userClassification = 'Obese';
+                    
+                    error_log("🔍 User BMI calculation: weight={$user['weight']}, height={$user['height']}, BMI=$bmi, classification=$userClassification");
                 } else {
                     // For other WHO standards, use comprehensive assessment
                     $assessment = $who->getComprehensiveAssessment(
@@ -1568,6 +1580,7 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
                 }
                 
                 // Check if user matches the target classification
+                error_log("🔍 User classification check: userClassification='$userClassification', target='$classification', match=" . ($userClassification === $classification ? 'YES' : 'NO'));
                 if ($userClassification === $classification) {
                     $filteredUsers[] = [
                         'fcm_token' => $user['fcm_token'],
@@ -1575,6 +1588,7 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
                         'user_barangay' => $user['barangay'],
                         'municipality' => $user['municipality']
                     ];
+                    error_log("🔍 User MATCHED: {$user['email']} with classification $userClassification");
                 }
             }
             
