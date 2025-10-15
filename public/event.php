@@ -410,6 +410,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     exit;
 }
 
+// Update participant attendance status
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['action'] === 'update_attendance') {
+    header('Content-Type: application/json');
+    
+    $participantId = $_POST['participant_id'] ?? null;
+    $attended = isset($_POST['attended']) ? (bool)$_POST['attended'] : false;
+    
+    if (!$participantId) {
+        echo json_encode(['success' => false, 'message' => 'Missing participant ID']);
+        exit;
+    }
+    
+    try {
+        $db = DatabaseAPI::getInstance();
+        $markedBy = $_SESSION['admin_id'] ?? $_SESSION['user_id'] ?? 'system';
+        
+        $result = $db->universalUpdate('event_participants', [
+            'attended' => $attended,
+            'attendance_marked_at' => date('Y-m-d H:i:s'),
+            'attendance_marked_by' => $markedBy
+        ], 'id = ?', [$participantId]);
+        
+        if ($result['success']) {
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Attendance updated successfully',
+                'attended' => $attended
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Failed to update attendance: ' . ($result['message'] ?? 'Unknown error')]);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+    }
+    exit;
+}
+
 // Get event participants
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['action'] === 'get_event_participants') {
     header('Content-Type: application/json');
@@ -428,6 +465,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['action']) && $_GET['acti
         $sql = "SELECT 
                     ep.id as participant_id,
                     ep.added_at,
+                    ep.attended,
+                    ep.attendance_marked_at,
+                    ep.attendance_marked_by,
                     cu.name,
                     cu.email,
                     cu.birthday,
@@ -1104,6 +1144,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
             
             error_log("✅ Event created successfully with ID: $eventId");
             
+            // Add eligible users as participants automatically
+            try {
+                error_log("👥 Adding eligible participants for event ID: $eventId");
+                $participantsAdded = addEligibleParticipants($eventId, $location, $whoStandard, $classification, $userStatus);
+                error_log("✅ Added $participantsAdded eligible participants to event");
+            } catch (Exception $e) {
+                error_log("⚠️ Error adding participants: " . $e->getMessage());
+            }
+            
             // Send notifications
             try {
                 error_log("📱 Sending notifications for event: $title at $location");
@@ -1112,15 +1161,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
                 $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer, $whoStandard, $classification, $userStatus);
                 
                 if ($notificationResult['success']) {
-                    $successMessage = "🎉 Event '$title' created and notifications sent successfully! " . $notificationResult['message'];
+                    $successMessage = "🎉 Event '$title' created with $participantsAdded eligible participants and notifications sent successfully! " . $notificationResult['message'];
                     error_log("✅ Notification sent successfully: " . $notificationResult['message']);
                 } else {
-                    $successMessage = "🎉 Event '$title' created but notification warning: " . $notificationResult['message'];
+                    $successMessage = "🎉 Event '$title' created with $participantsAdded eligible participants but notification warning: " . $notificationResult['message'];
                     error_log("⚠️ Notification warning: " . $notificationResult['message']);
                 }
             } catch (Exception $e) {
                 error_log("❌ Notification error: " . $e->getMessage());
-                $successMessage = "🎉 Event '$title' created but notification failed: " . $e->getMessage();
+                $successMessage = "🎉 Event '$title' created with $participantsAdded eligible participants but notification failed: " . $e->getMessage();
             }
             
             error_log("✅ Event creation completed successfully");
@@ -1447,6 +1496,63 @@ function sendNotificationViaAPI($notificationData) {
     } catch (Exception $e) {
         error_log("Error in sendNotificationViaAPI: " . $e->getMessage());
         return ['success' => false, 'error' => $e->getMessage()];
+    }
+}
+
+// Function to automatically add eligible participants to an event
+function addEligibleParticipants($eventId, $targetLocation = null, $whoStandard = null, $classification = null, $userStatus = null) {
+    $db = DatabaseAPI::getInstance();
+    
+    try {
+        error_log("🔍 addEligibleParticipants: eventId=$eventId, location=$targetLocation, whoStandard=$whoStandard, classification=$classification, userStatus=$userStatus");
+        
+        // Get eligible users using the same logic as notifications
+        $eligibleUsers = getFCMTokensByLocation($targetLocation, $whoStandard, $classification, $userStatus);
+        
+        error_log("👥 Found " . count($eligibleUsers) . " eligible users to add as participants");
+        
+        $participantsAdded = 0;
+        $adminId = $_SESSION['admin_id'] ?? $_SESSION['user_id'] ?? 'system';
+        
+        foreach ($eligibleUsers as $userData) {
+            $userEmail = $userData['user_email'] ?? null;
+            
+            if (!$userEmail) {
+                continue;
+            }
+            
+            // Check if participant already exists
+            $checkResult = $db->universalQuery(
+                "SELECT id FROM event_participants WHERE event_id = ? AND community_user_email = ?",
+                [$eventId, $userEmail]
+            );
+            
+            if ($checkResult['success'] && !empty($checkResult['data'])) {
+                // Participant already exists, skip
+                continue;
+            }
+            
+            // Add participant
+            $result = $db->universalInsert('event_participants', [
+                'event_id' => $eventId,
+                'community_user_email' => $userEmail,
+                'added_by' => $adminId,
+                'attended' => false  // Default to not attended
+            ]);
+            
+            if ($result['success']) {
+                $participantsAdded++;
+            } else {
+                error_log("⚠️ Failed to add participant $userEmail: " . ($result['message'] ?? 'Unknown error'));
+            }
+        }
+        
+        error_log("✅ Successfully added $participantsAdded participants to event $eventId");
+        return $participantsAdded;
+        
+    } catch (Exception $e) {
+        error_log("❌ Error in addEligibleParticipants: " . $e->getMessage());
+        return 0;
     }
 }
 
@@ -6952,12 +7058,13 @@ header:hover {
                                 <th>Sex</th>
                                 <th>Municipality</th>
                                 <th>Barangay</th>
+                                <th>Attended</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="participantsTableBody">
                             <tr>
-                                <td colspan="7" class="no-participants">No participants yet</td>
+                                <td colspan="8" class="no-participants">No participants yet</td>
                             </tr>
                         </tbody>
                     </table>
@@ -7291,6 +7398,38 @@ function closeCreateEventModal() {
             }
         }
 
+        // Update participant attendance status
+        async function updateAttendance(participantId, attended) {
+            try {
+                const formData = new FormData();
+                formData.append('action', 'update_attendance');
+                formData.append('participant_id', participantId);
+                formData.append('attended', attended ? '1' : '0');
+                
+                const response = await fetch('event.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification(attended ? 'Marked as attended' : 'Marked as not attended', 'success');
+                } else {
+                    showNotification('Error updating attendance: ' + data.message, 'error');
+                    // Revert checkbox state on error
+                    const checkbox = event.target;
+                    checkbox.checked = !attended;
+                }
+            } catch (error) {
+                console.error('Error updating attendance:', error);
+                showNotification('Error updating attendance', 'error');
+                // Revert checkbox state on error
+                const checkbox = event.target;
+                checkbox.checked = !attended;
+            }
+        }
+
         // Get current event ID from modal
         function getCurrentEventId() {
             // Extract event ID from the modal or store it globally
@@ -7460,7 +7599,7 @@ function closeCreateEventModal() {
             
             if (tbody.children.length === 0) {
                 const row = document.createElement('tr');
-                row.innerHTML = '<td colspan="7" class="no-participants">No participants yet</td>';
+                row.innerHTML = '<td colspan="8" class="no-participants">No participants yet</td>';
                 tbody.appendChild(row);
             }
         }
@@ -7473,6 +7612,11 @@ function closeCreateEventModal() {
                 row.className = 'pending-participant';
             }
             
+            const attendedChecked = participant.attended ? 'checked' : '';
+            const attendanceCheckbox = isPending ? 
+                '<span class="text-muted">-</span>' : 
+                `<input type="checkbox" ${attendedChecked} onchange="updateAttendance(${participant.participant_id}, this.checked)" class="attendance-checkbox" title="Mark as attended">`;
+            
             row.innerHTML = `
                 <td>${participant.name} ${isPending ? '<span class="pending-badge">(Pending)</span>' : ''}</td>
                 <td>${participant.email}</td>
@@ -7480,6 +7624,9 @@ function closeCreateEventModal() {
                 <td>${participant.sex || 'N/A'}</td>
                 <td>${participant.municipality || 'N/A'}</td>
                 <td>${participant.barangay || 'N/A'}</td>
+                <td style="text-align: center;">
+                    ${attendanceCheckbox}
+                </td>
                 <td>
                     ${isPending ? 
                         `<button onclick="removePendingParticipant('${participant.email}')" class="btn btn-warning btn-sm">Remove</button>` :
