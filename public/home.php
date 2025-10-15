@@ -747,6 +747,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             exit;
             
         case 'google_setup_password':
+            // Debug: Log the request
+            error_log("Google setup password request received");
+            error_log("Session data: " . print_r($_SESSION, true));
+            error_log("POST data: " . print_r($_POST, true));
+            
             $newPassword = $_POST['new_password'];
             $confirmPassword = $_POST['confirm_password'];
             
@@ -789,7 +794,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             
             try {
                 // Check if user is logged in
+                error_log("Checking session - user_id: " . ($_SESSION['user_id'] ?? 'NOT SET'));
                 if (!isset($_SESSION['user_id'])) {
+                    error_log("User not logged in for password setup");
                     echo json_encode(['success' => false, 'message' => 'You must be logged in to set up your password']);
                     exit;
                 }
