@@ -1846,34 +1846,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         continue; // Skip header
                     }
                         
-                    // Validate columns - accept both 5 and 6 columns for backward compatibility
-                        if (count($data) < 5) {
-                        $errors[] = "Row $row: Need at least 5 columns (title, date_time, location, organizer, description)";
+                    // Check if user is super admin to determine expected format
+                    $isSuperAdmin = isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin';
+                    
+                    // Validate columns based on user type
+                    if ($isSuperAdmin) {
+                        // Super admin format: title, date_time, municipality, location, barangay, organizer, description, who_standard, classification, user_status
+                        if (count($data) < 7) {
+                            $errors[] = "Row $row: Super admin format needs at least 7 columns (title, date_time, municipality, location, organizer, description)";
                             continue;
                         }
                         
-                    // Handle backward compatibility: if 5 columns, treat as old format without barangay
-                    if (count($data) == 5) {
-                        // Old format: title, date_time, location, organizer, description
-                        $barangay = ''; // Empty barangay = target all barangays in municipality
-                    } else {
-                        // New format: title, date_time, location, barangay, organizer, description
-                        $barangay = trim($data[3]);
-                    }
+                        // Super admin format with municipality
+                        $title = trim($data[0]);
+                        $date_time = trim($data[1]);
+                        $municipality = trim($data[2]);
+                        $location = trim($data[3]);
+                        $barangay = trim($data[4]);
+                        $organizer = trim($data[5]);
+                        $description = trim($data[6]);
+                        $whoStandard = isset($data[7]) ? trim($data[7]) : '';
+                        $classification = isset($data[8]) ? trim($data[8]) : '';
+                        $userStatus = isset($data[9]) ? trim($data[9]) : '';
                         
-                    // Extract data based on format
+                    } else {
+                        // Regular user format: title, date_time, location, barangay, organizer, description, who_standard, classification, user_status
+                        if (count($data) < 6) {
+                            $errors[] = "Row $row: Need at least 6 columns (title, date_time, location, organizer, description)";
+                            continue;
+                        }
+                        
+                        // Regular user format (uses their municipality automatically)
                         $title = trim($data[0]);
                         $date_time = trim($data[1]);
                         $location = trim($data[2]);
-                        
-                    if (count($data) == 5) {
-                        // Old format: title, date_time, location, organizer, description
-                        $organizer = trim($data[3]);
-                        $description = trim($data[4]);
-                    } else {
-                        // New format: title, date_time, location, barangay, organizer, description
+                        $barangay = trim($data[3]);
                         $organizer = trim($data[4]);
                         $description = trim($data[5]);
+                        $whoStandard = isset($data[6]) ? trim($data[6]) : '';
+                        $classification = isset($data[7]) ? trim($data[7]) : '';
+                        $userStatus = isset($data[8]) ? trim($data[8]) : '';
+                        
+                        // Use user's municipality for regular users
+                        $municipality = $user_municipality ?? 'MARIVELES';
                     }
                         
                         // Validate required fields
@@ -1936,38 +1951,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                                 $notificationTitle = "🎯 Event: $title";
                                 $notificationBody = "New event: $title at $location" . (!empty($barangay) ? " - $barangay" : "") . " on " . date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s')));
                                 
-                                // Target users based on barangay field
-                                if (empty($barangay)) {
-                                    // If barangay is empty, target all users in the municipality
-                                $tokenStmt = $pdo->prepare("
-                                    SELECT fcm_token, email FROM community_users 
-                                    WHERE fcm_token IS NOT NULL AND fcm_token != ''
-                                        AND municipality = ?
-                                    ");
-                                    $tokenStmt->execute([$location]);
-                                    error_log("🔔 CSV: Targeting all users in municipality: $location");
-                                } else {
-                                    // If barangay has value, target users in that specific barangay
-                                    $tokenStmt = $pdo->prepare("
-                                        SELECT fcm_token, email FROM community_users 
-                                        WHERE fcm_token IS NOT NULL AND fcm_token != ''
-                                        AND barangay = ?
-                                    ");
-                                    $tokenStmt->execute([$barangay]);
-                                    error_log("🔔 CSV: Targeting users in specific barangay: $barangay");
-                                }
-                                $tokens = $tokenStmt->fetchAll();
+                                // Use the centralized getFCMTokensByLocation function with WHO classification and user status targeting
+                                error_log("🔍 CSV: WHO Standard: '$whoStandard', Classification: '$classification', User Status: '$userStatus'");
+                                $fcmTokenData = getFCMTokensByLocation($location, $whoStandard, $classification, $userStatus);
                                 
-                                error_log("🔔 CSV: Found " . count($tokens) . " FCM tokens for location: $location");
+                                error_log("🔔 CSV: Found " . count($fcmTokenData) . " FCM tokens for location: $location");
                                 
                                 $successCount = 0;
-                                foreach ($tokens as $token) {
-                                    $fcmResult = sendEventFCMNotificationToToken($token['fcm_token'], $notificationTitle, $notificationBody);
+                                foreach ($fcmTokenData as $tokenData) {
+                                    $fcmToken = $tokenData['fcm_token'];
+                                    $userEmail = $tokenData['user_email'];
+                                    
+                                    if (empty($fcmToken) || empty($userEmail)) {
+                                        continue;
+                                    }
+                                    
+                                    $fcmResult = sendEventFCMNotificationToToken($fcmToken, $notificationTitle, $notificationBody);
                                     if ($fcmResult['success']) {
                                         $successCount++;
-                                        error_log("✅ CSV: FCM sent to " . $token['email']);
+                                        error_log("✅ CSV: FCM sent to " . $userEmail);
                                     } else {
-                                        error_log("❌ CSV: FCM failed for " . $token['email'] . ": " . ($fcmResult['error'] ?? 'Unknown error'));
+                                        error_log("❌ CSV: FCM failed for " . $userEmail . ": " . ($fcmResult['error'] ?? 'Unknown error'));
                                     }
                                 }
                                 
@@ -8155,10 +8159,24 @@ function closeCreateEventModal() {
                 return `${year}-${month}-${day} ${hours}:${minutes}`;
             };
             
-            const csvContent = `title,date_time,location,barangay,organizer,description
-Nutrition Workshop,${formatDate(future1)},CITY OF BALANGA,Bagumbayan,Dr. Maria Santos,Free nutrition screening and health consultation
-Health Seminar,${formatDate(future2)},ABUCAY,,Dr. Juan Cruz,Community health education and awareness (all barangays)
-Medical Mission,${formatDate(future3)},LIMAY,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation`;
+            // Check if user is super admin
+            const isSuperAdmin = <?php echo (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin') ? 'true' : 'false'; ?>;
+            const userMunicipality = '<?php echo htmlspecialchars($user_municipality ?? "MARIVELES"); ?>';
+            
+            let csvContent;
+            if (isSuperAdmin) {
+                // Super admin template includes municipality column
+                csvContent = `title,date_time,municipality,location,barangay,organizer,description,who_standard,classification,user_status
+Nutrition Workshop,${formatDate(future1)},CITY OF BALANGA,Bagumbayan,Dr. Maria Santos,Free nutrition screening and health consultation,bmi-adult,Underweight,flagged
+Health Seminar,${formatDate(future2)},ABUCAY,,Dr. Juan Cruz,Community health education and awareness (all barangays),weight-for-age,Severely Underweight,flagged_and_notes
+Medical Mission,${formatDate(future3)},LIMAY,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,height-for-age,Stunted,with_notes`;
+            } else {
+                // Regular user template uses their municipality automatically
+                csvContent = `title,date_time,location,barangay,organizer,description,who_standard,classification,user_status
+Nutrition Workshop,${formatDate(future1)},${userMunicipality},Bagumbayan,Dr. Maria Santos,Free nutrition screening and health consultation,bmi-adult,Underweight,flagged
+Health Seminar,${formatDate(future2)},${userMunicipality},,Dr. Juan Cruz,Community health education and awareness (all barangays),weight-for-age,Severely Underweight,flagged_and_notes
+Medical Mission,${formatDate(future3)},${userMunicipality},Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,height-for-age,Stunted,with_notes`;
+            }
             
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
