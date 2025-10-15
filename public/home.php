@@ -7,7 +7,7 @@ error_log("Session started - ID: " . session_id());
 error_log("Session data at start: " . print_r($_SESSION, true));
 
 // Check if user requires password setup (security check to prevent bypassing)
-if (isset($_SESSION['requires_password_setup']) && $_SESSION['requires_password_setup'] === true) {
+if (isset($_SESSION['pending_password_setup']) && $_SESSION['pending_password_setup'] === true) {
     // Only allow access to password setup forms and AJAX handlers
     $allowedActions = ['google_setup_password', 'save_personal_info', 'debug_session', 'check_password_setup_required', 'test_basic', 'test_session'];
     $currentAction = $_POST['ajax_action'] ?? '';
