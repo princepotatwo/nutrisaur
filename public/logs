@@ -1,177 +1,826 @@
-2025-10-14 18:55:01.044 29541-29541 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760439301044
-2025-10-14 18:55:01.109 29541-29541 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760439301109
-2025-10-14 18:55:01.109 29541-29541 SessionManager          com.example.nutrisaur11              D  Using cached session validation result: true
-2025-10-14 18:55:01.142 29541-29541 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760439301142
-2025-10-14 18:55:01.143 29541-29541 SessionManager          com.example.nutrisaur11              D  User marked as idle
-2025-10-14 18:55:01.163 29541-29541 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760439301163
-2025-10-14 18:55:01.163 29541-29541 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
-2025-10-14 18:55:01.163 29541-29541 SessionManager          com.example.nutrisaur11              D  Using cached valid session
-2025-10-14 18:55:01.164 29541-29541 IS_CTS_MODE             com.example.nutrisaur11              D  false
-2025-10-14 18:55:01.164 29541-29541 MULTI_WIND...CH_ENABLED com.example.nutrisaur11              D  false
-2025-10-14 18:55:01.165 29541-29541 DecorView[]             com.example.nutrisaur11              D  getWindowModeFromSystem  windowmode is 1
-2025-10-14 18:55:01.236 29541-29541 AccountActivity         com.example.nutrisaur11              D  Fetching fresh user data from community_users table...
-2025-10-14 18:55:01.236 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
-2025-10-14 18:55:01.236 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: kevinpingol123@gmail.com
-2025-10-14 18:55:01.237 29541-29672 CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
-2025-10-14 18:55:01.237 29541-29672 CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
-2025-10-14 18:55:01.241 29541-29541 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760439301240
-2025-10-14 18:55:01.241 29541-29541 SessionManager          com.example.nutrisaur11              D  === REAL-TIME SESSION VALIDATION ===
-2025-10-14 18:55:01.241 29541-29541 SessionManager          com.example.nutrisaur11              D  Using cached valid session
-2025-10-14 18:55:01.241 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === CHECKING ARCHIVE STATUS ===
-2025-10-14 18:55:01.241 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
-2025-10-14 18:55:01.241 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: kevinpingol123@gmail.com
-2025-10-14 18:55:01.241 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === CHECKING USER EXISTENCE ===
-2025-10-14 18:55:01.242 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
-2025-10-14 18:55:01.243 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: kevinpingol123@gmail.com
-2025-10-14 18:55:01.243 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === CHECKING ARCHIVE STATUS ===
-2025-10-14 18:55:01.243 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
-2025-10-14 18:55:01.243 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: kevinpingol123@gmail.com
-2025-10-14 18:55:01.243 29541-29541 AccountActivity         com.example.nutrisaur11              D  Activity resumed - fetching fresh user data
-2025-10-14 18:55:01.243 29541-29541 AccountActivity         com.example.nutrisaur11              D  Fetching fresh user data from community_users table...
-2025-10-14 18:55:01.243 29541-29674 CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
-2025-10-14 18:55:01.243 29541-29676 CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
-2025-10-14 18:55:01.243 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === FORCE REFRESHING USER DATA FROM DATABASE ===
-2025-10-14 18:55:01.243 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Force refreshing data for: kevinpingol123@gmail.com
-2025-10-14 18:55:01.243 29541-29674 CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
-2025-10-14 18:55:01.243 29541-29677 CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
-2025-10-14 18:55:01.244 29541-29677 CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
-2025-10-14 18:55:01.244 29541-29676 CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
-2025-10-14 18:55:01.248 29541-29679 CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
-2025-10-14 18:55:01.248 29541-29679 CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
-2025-10-14 18:55:01.250 29541-29541 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-14 18:55:01.250 29541-29541 SessionManager          com.example.nutrisaur11              D  Using cached session validation result: true
-2025-10-14 18:55:01.251 29541-29541 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-14 18:55:01.251 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-14 18:55:01.251 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-14 18:55:01.251 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-14 18:55:01.251 29541-29541 SessionManager          com.example.nutrisaur11              D  Database check completed in 0ms
-2025-10-14 18:55:01.251 29541-29541 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-14 18:55:01.258  3040-3351  ActivityManagerWrapper  com.miui.home                        E  getRecentTasks: taskId=11285   userId=0   baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.example.nutrisaur11/.SplashActivity }
-2025-10-14 18:55:01.378 29541-29541 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus false
-2025-10-14 18:55:01.439 29541-29541 SessionManager          com.example.nutrisaur11              D  User marked as idle
-2025-10-14 18:55:01.441 29541-29541 MainActivity            com.example.nutrisaur11              D  Data update receiver unregistered
-2025-10-14 18:55:01.483 29541-29541 DecorView[]             com.example.nutrisaur11              D  onWindowFocusChanged hasWindowFocus true
-2025-10-14 18:55:01.534 29541-29672 CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
-2025-10-14 18:55:01.534 29541-29672 CommunityUserManager    com.example.nutrisaur11              D  API response message: 
-2025-10-14 18:55:01.535 29541-29672 CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Kawayan","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"85","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGonfRAbhb5xo9V8ufuveE8EQB7Cu5A_7D-d4pqd9OQodrKTUVp48IfMw6HxDJr6XEHhTwD-QrZt7Uv25kP61USRCnHqLqO4RVcN4VUBRhb83IxLpE","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
-2025-10-14 18:55:01.536 29541-29672 CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
-2025-10-14 18:55:01.536 29541-29672 CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=85, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Kawayan, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
-2025-10-14 18:55:01.536 29541-29672 AccountActivity         com.example.nutrisaur11              D  Fresh user data fetched from community_users table
-2025-10-14 18:55:01.537 29541-29541 AccountActivity         com.example.nutrisaur11              D  Populating form fields with user data
-2025-10-14 18:55:01.557 29541-29541 AccountActivity         com.example.nutrisaur11              D  Updating barangay spinner for municipality: DINALUPIHAN with 29 barangays
-2025-10-14 18:55:01.557 29541-29541 AccountActivity         com.example.nutrisaur11              D  Barangay spinner updated, current selection: Select your barangay
-2025-10-14 18:55:01.558 29541-29541 AccountActivity         com.example.nutrisaur11              D  Original values stored for change detection
-2025-10-14 18:55:01.558 29541-29541 AccountActivity         com.example.nutrisaur11              D  Form fields populated with database data
-2025-10-14 18:55:01.617 29541-29541 AccountActivity         com.example.nutrisaur11              D  Barangay set to: Kawayan at position: 8
-2025-10-14 18:55:01.618 29541-29541 AccountActivity         com.example.nutrisaur11              D  Updating barangay spinner for municipality: DINALUPIHAN with 29 barangays
-2025-10-14 18:55:01.618 29541-29541 AccountActivity         com.example.nutrisaur11              D  Barangay spinner updated, current selection: Select your barangay
-2025-10-14 18:55:01.634 29541-29676 CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
-2025-10-14 18:55:01.634 29541-29676 CommunityUserManager    com.example.nutrisaur11              D  API response message: 
-2025-10-14 18:55:01.636 29541-29676 CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Kawayan","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"85","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGonfRAbhb5xo9V8ufuveE8EQB7Cu5A_7D-d4pqd9OQodrKTUVp48IfMw6HxDJr6XEHhTwD-QrZt7Uv25kP61USRCnHqLqO4RVcN4VUBRhb83IxLpE","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
-2025-10-14 18:55:01.636 29541-29677 CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
-2025-10-14 18:55:01.636 29541-29677 CommunityUserManager    com.example.nutrisaur11              D  API response message: 
-2025-10-14 18:55:01.638 29541-29676 CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
-2025-10-14 18:55:01.638 29541-29676 CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=85, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Kawayan, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
-2025-10-14 18:55:01.638 29541-29676 CommunityUserManager    com.example.nutrisaur11              D  User exists and has valid data
-2025-10-14 18:55:01.638 29541-29677 CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Kawayan","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"85","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGonfRAbhb5xo9V8ufuveE8EQB7Cu5A_7D-d4pqd9OQodrKTUVp48IfMw6HxDJr6XEHhTwD-QrZt7Uv25kP61USRCnHqLqO4RVcN4VUBRhb83IxLpE","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
-2025-10-14 18:55:01.639 29541-29677 CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
-2025-10-14 18:55:01.639 29541-29677 CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=85, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Kawayan, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
-2025-10-14 18:55:01.639 29541-29677 CommunityUserManager    com.example.nutrisaur11              D  User status: 1
-2025-10-14 18:55:01.639 29541-29677 CommunityUserManager    com.example.nutrisaur11              D  User is active (status = 1)
-2025-10-14 18:55:01.659 29541-29679 CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
-2025-10-14 18:55:01.659 29541-29679 CommunityUserManager    com.example.nutrisaur11              D  API response message: 
-2025-10-14 18:55:01.661 29541-29679 CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Kawayan","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"85","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGonfRAbhb5xo9V8ufuveE8EQB7Cu5A_7D-d4pqd9OQodrKTUVp48IfMw6HxDJr6XEHhTwD-QrZt7Uv25kP61USRCnHqLqO4RVcN4VUBRhb83IxLpE","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
-2025-10-14 18:55:01.662 29541-29679 CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
-2025-10-14 18:55:01.662 29541-29679 CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=85, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Kawayan, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
-2025-10-14 18:55:01.662 29541-29679 AccountActivity         com.example.nutrisaur11              D  Fresh user data fetched from community_users table
-2025-10-14 18:55:01.684 29541-29541 AccountActivity         com.example.nutrisaur11              D  Populating form fields with user data
-2025-10-14 18:55:01.687 29541-29541 AccountActivity         com.example.nutrisaur11              D  Updating barangay spinner for municipality: DINALUPIHAN with 29 barangays
-2025-10-14 18:55:01.687 29541-29541 AccountActivity         com.example.nutrisaur11              D  Barangay spinner updated, current selection: Select your barangay
-2025-10-14 18:55:01.688 29541-29541 AccountActivity         com.example.nutrisaur11              D  Original values stored for change detection
-2025-10-14 18:55:01.688 29541-29541 AccountActivity         com.example.nutrisaur11              D  Form fields populated with database data
-2025-10-14 18:55:01.756 29541-29541 AccountActivity         com.example.nutrisaur11              D  Barangay set to: Kawayan at position: 8
-2025-10-14 18:55:01.793 29541-29716 ProfileInstaller        com.example.nutrisaur11              D  Installing profile for com.example.nutrisaur11
-2025-10-14 18:55:01.824 29541-29674 CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
-2025-10-14 18:55:01.824 29541-29674 CommunityUserManager    com.example.nutrisaur11              D  API response message: 
-2025-10-14 18:55:01.841 29541-29674 CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Kawayan","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"85","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGonfRAbhb5xo9V8ufuveE8EQB7Cu5A_7D-d4pqd9OQodrKTUVp48IfMw6HxDJr6XEHhTwD-QrZt7Uv25kP61USRCnHqLqO4RVcN4VUBRhb83IxLpE","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
-2025-10-14 18:55:01.841 29541-29674 CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
-2025-10-14 18:55:01.841 29541-29674 CommunityUserManager    com.example.nutrisaur11              D  Fresh user data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=85, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Kawayan, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
-2025-10-14 18:55:01.841 29541-29674 CommunityUserManager    com.example.nutrisaur11              D  User status: 1
-2025-10-14 18:55:01.841 29541-29674 CommunityUserManager    com.example.nutrisaur11              D  User is active (status = 1)
-2025-10-14 18:55:03.470 29541-29541 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760439303470
-2025-10-14 18:55:03.585 29541-29541 Compatibil...geReporter com.example.nutrisaur11              D  Compat change id reported: 163400105; UID 10355; state: ENABLED
-2025-10-14 18:55:04.252 29541-29541 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-14 18:55:04.253 29541-29541 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-14 18:55:04.253 29541-29541 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-14 18:55:04.253 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-14 18:55:04.255 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-14 18:55:04.255 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-14 18:55:04.255 29541-29541 SessionManager          com.example.nutrisaur11              D  Database check completed in 2ms
-2025-10-14 18:55:04.256 29541-29541 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-14 18:55:04.260 29541-29541 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-14 18:55:04.260 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-14 18:55:04.260 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-14 18:55:04.261 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-14 18:55:04.261 29541-29541 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-14 18:55:04.261 29541-29541 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-14 18:55:04.262 29541-29541 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760439304262
-2025-10-14 18:55:04.309 29541-29541 InputMethodManager      com.example.nutrisaur11              D  showSoftInput() view=androidx.appcompat.widget.AppCompatEditText{d9a45cd VFED..CL. .F.P.... 0,0-220,59 #7f080114 app:id/edit_weight aid=1073741830} flags=0 reason=SHOW_SOFT_INPUT
-2025-10-14 18:55:04.384 29541-29554 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223268912094ms; Flags=0, FrameTimelineVsyncId=5847917, IntendedVsync=103124760635547, Vsync=103124760635547, InputEventId=732439053, HandleInputStart=103124768569564, AnimationStart=103124768575814, PerformTraversalsStart=103124768579408, DrawStart=103124803313366, FrameDeadline=103124777302213, FrameInterval=103124768537897, FrameStartTime=16666666, SyncQueued=103124804617897, SyncStart=103124804737116, IssueDrawCommandsStart=103124805170606, SwapBuffers=103124807894147, FrameCompleted=9223372036854775807, DequeueBufferDuration=36719, QueueBufferDuration=911406, GpuCompleted=9223372036854775807, SwapBuffersCompleted=103124809544564, DisplayPresentTime=0, 
-2025-10-14 18:55:04.411 29541-29541 InsetsController        com.example.nutrisaur11              D  show(ime(), fromIme=true)
-2025-10-14 18:55:05.203 29541-29541 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760439305203
-2025-10-14 18:55:05.228 29541-29541 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760439305228
-2025-10-14 18:55:05.769 29541-29553 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223268910677ms; Flags=0, FrameTimelineVsyncId=5847979, IntendedVsync=103126177000864, Vsync=103126177000864, InputEventId=0, HandleInputStart=103126180845345, AnimationStart=103126180851803, PerformTraversalsStart=103126180854720, DrawStart=103126182219980, FrameDeadline=103126210334196, FrameInterval=103126180804668, FrameStartTime=16666666, SyncQueued=103126182950449, SyncStart=103126183105970, IssueDrawCommandsStart=103126183632532, SwapBuffers=103126186916334, FrameCompleted=9223372036854775807, DequeueBufferDuration=57604, QueueBufferDuration=1302188, GpuCompleted=9223372036854775807, SwapBuffersCompleted=103126189021855, DisplayPresentTime=0, 
-2025-10-14 18:55:06.267 29541-29553 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223268910177ms; Flags=0, FrameTimelineVsyncId=5847986, IntendedVsync=103126677389471, Vsync=103126677389471, InputEventId=0, HandleInputStart=103126679673782, AnimationStart=103126679679563, PerformTraversalsStart=103126679682168, DrawStart=103126681384407, FrameDeadline=103126710722803, FrameInterval=103126679642220, FrameStartTime=16666666, SyncQueued=103126682067480, SyncStart=103126682451751, IssueDrawCommandsStart=103126682888522, SwapBuffers=103126686147584, FrameCompleted=9223372036854775807, DequeueBufferDuration=70677, QueueBufferDuration=1250677, GpuCompleted=9223372036854775807, SwapBuffersCompleted=103126688172532, DisplayPresentTime=0, 
-2025-10-14 18:55:06.798 29541-29541 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760439306798
-2025-10-14 18:55:06.807 29541-29541 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760439306807
-2025-10-14 18:55:06.858 29541-29549 ple.nutrisaur1          com.example.nutrisaur11              W  Cleared Reference was only reachable from finalizer (only reported once)
-2025-10-14 18:55:06.870 29541-29551 System                  com.example.nutrisaur11              W  A resource failed to call close. 
-2025-10-14 18:55:06.873 29541-29551 System                  com.example.nutrisaur11              W  A resource failed to call close. 
-2025-10-14 18:55:07.083 29541-29541 MIUIInput               com.example.nutrisaur11              D  [KeyEvent] ViewRootImpl KeyEvent { action=ACTION_DOWN, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=103127503, downTime=103127503, deviceId=-1, source=0x101, displayId=0 }
-2025-10-14 18:55:07.146 29541-29541 MIUIInput               com.example.nutrisaur11              D  [KeyEvent] ViewRootImpl KeyEvent { action=ACTION_UP, keyCode=KEYCODE_BACK, scanCode=0, metaState=0, flags=0x48, repeatCount=0, eventTime=103127574, downTime=103127503, deviceId=-1, source=0x101, displayId=0 }
-2025-10-14 18:55:07.262 29541-29541 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-14 18:55:07.263 29541-29541 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-14 18:55:07.263 29541-29541 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-14 18:55:07.263 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-14 18:55:07.263 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-14 18:55:07.263 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-14 18:55:07.263 29541-29541 SessionManager          com.example.nutrisaur11              D  Database check completed in 0ms
-2025-10-14 18:55:07.264 29541-29541 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-14 18:55:07.265 29541-29541 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-14 18:55:07.265 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-14 18:55:07.266 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-14 18:55:07.266 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-14 18:55:07.266 29541-29541 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-14 18:55:07.266 29541-29541 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-14 18:55:07.817 29541-29541 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760439307817
-2025-10-14 18:55:08.537 29541-29541 SessionManager          com.example.nutrisaur11              D  User interaction recorded at: 1760439308536
-2025-10-14 18:55:08.604 29541-29541 AccountActivity         com.example.nutrisaur11              D  Saving profile changes
-2025-10-14 18:55:08.947 29541-29741 AccountActivity         com.example.nutrisaur11              D  Profile updated successfully: {"success":true,"message":"Record updated successfully","affected_rows":1,"sql":"UPDATE community_users SET name = ?, email = ?, birthday = ?, sex = ?, municipality = ?, barangay = ?, weight = ?, height = ? WHERE email = ?"}
-2025-10-14 18:55:08.948 29541-29541 AccountActivity         com.example.nutrisaur11              D  Profile updated successfully
-2025-10-14 18:55:08.952 29541-29541 Compatibil...geReporter com.example.nutrisaur11              D  Compat change id reported: 147798919; UID 10355; state: ENABLED
-2025-10-14 18:55:08.961 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Cleared user data cache for: kevinpingol123@gmail.com
-2025-10-14 18:55:08.992 29541-29707 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223268907460ms; Flags=0, FrameTimelineVsyncId=5848091, IntendedVsync=103129394127158, Vsync=103129394127158, InputEventId=0, HandleInputStart=103129396438469, AnimationStart=103129396442896, PerformTraversalsStart=103129396446541, DrawStart=103129400885656, FrameDeadline=103129410793824, FrameInterval=103129396415552, FrameStartTime=16666666, SyncQueued=103129402102479, SyncStart=103129402184719, IssueDrawCommandsStart=103129402422375, SwapBuffers=103129404244979, FrameCompleted=9223372036854775807, DequeueBufferDuration=32239, QueueBufferDuration=1002448, GpuCompleted=9223372036854775807, SwapBuffersCompleted=103129405720812, DisplayPresentTime=0, 
-2025-10-14 18:55:09.255 29541-29745 AccountActivity         com.example.nutrisaur11              D  Auto-screening response: {"success":true,"message":"Auto-screening completed successfully"}
-2025-10-14 18:55:09.356 29541-29707 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223268907094ms; Flags=0, FrameTimelineVsyncId=5848114, IntendedVsync=103129760427248, Vsync=103129760427248, InputEventId=0, HandleInputStart=103129763105760, AnimationStart=103129763119041, PerformTraversalsStart=103129763127010, DrawStart=103129764067531, FrameDeadline=103129793760580, FrameInterval=103129763047062, FrameStartTime=16666666, SyncQueued=103129765281333, SyncStart=103129765519406, IssueDrawCommandsStart=103129766505760, SwapBuffers=103129772813416, FrameCompleted=9223372036854775807, DequeueBufferDuration=94792, QueueBufferDuration=2577084, GpuCompleted=9223372036854775807, SwapBuffersCompleted=103129777039927, DisplayPresentTime=0, 
-2025-10-14 18:55:09.855 29541-29707 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223268906593ms; Flags=0, FrameTimelineVsyncId=5848122, IntendedVsync=103130260586754, Vsync=103130260586754, InputEventId=0, HandleInputStart=103130263722687, AnimationStart=103130263736697, PerformTraversalsStart=103130263744822, DrawStart=103130264759406, FrameDeadline=103130293920086, FrameInterval=103130263656749, FrameStartTime=16666666, SyncQueued=103130266192114, SyncStart=103130266907479, IssueDrawCommandsStart=103130267648208, SwapBuffers=103130274147479, FrameCompleted=9223372036854775807, DequeueBufferDuration=83906, QueueBufferDuration=2384948, GpuCompleted=9223372036854775807, SwapBuffersCompleted=103130277791958, DisplayPresentTime=0, 
-2025-10-14 18:55:10.268 29541-29541 SessionManager          com.example.nutrisaur11              D  === PERIODIC SESSION VALIDATION ===
-2025-10-14 18:55:10.269 29541-29541 SessionManager          com.example.nutrisaur11              D  User is active, validating with database
-2025-10-14 18:55:10.269 29541-29541 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-14 18:55:10.269 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-14 18:55:10.270 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Cache expired for user: kevinpingol123@gmail.com
-2025-10-14 18:55:10.272 29541-29749 CommunityUserManager    com.example.nutrisaur11              D  Making API request to: https://nutrisaur-production.up.railway.app/api/DatabaseAPI.php?action=get_community_user_data
-2025-10-14 18:55:10.273 29541-29749 CommunityUserManager    com.example.nutrisaur11              D  Request data: {"email":"kevinpingol123@gmail.com"}
-2025-10-14 18:55:10.632 29541-29749 CommunityUserManager    com.example.nutrisaur11              D  API response code: 200
-2025-10-14 18:55:10.632 29541-29749 CommunityUserManager    com.example.nutrisaur11              D  API response message: 
-2025-10-14 18:55:10.635 29541-29749 CommunityUserManager    com.example.nutrisaur11              D  API response for get_community_user_data: {"success":true,"message":"User data retrieved successfully","user":{"name":"Pingol , Kevin C.","email":"kevinpingol123@gmail.com","municipality":"DINALUPIHAN","barangay":"Kawayan","sex":"Male","birthday":"2005-10-10","is_pregnant":"N\/A","weight":"95","height":"171","screening_date":"2025-10-10 06:47:30","fcm_token":"dDgJr74pRHukYxdkYiGyAE:APA91bGonfRAbhb5xo9V8ufuveE8EQB7Cu5A_7D-d4pqd9OQodrKTUVp48IfMw6HxDJr6XEHhTwD-QrZt7Uv25kP61USRCnHqLqO4RVcN4VUBRhb83IxLpE","is_flagged":0,"bmi-for-age":"","weight-for-height":"","weight-for-age":"","weight-for-length":"","height-for-age":""}}
-2025-10-14 18:55:10.637 29541-29749 CommunityUserManager    com.example.nutrisaur11              D  Cached user data for: kevinpingol123@gmail.com
-2025-10-14 18:55:10.637 29541-29749 CommunityUserManager    com.example.nutrisaur11              D  User data retrieved successfully: {birthday=2005-10-10, is_pregnant=N/A, muac_category=, notes=, weight_kg=95, nutritional_risk=, height_cm=171, sex=Male, municipality=DINALUPIHAN, muac_cm=, screening_date=2025-10-10 06:47:30, bmi_category=, name=Pingol , Kevin C., barangay=Kawayan, email=kevinpingol123@gmail.com, age=, bmi=, status=1}
-2025-10-14 18:55:10.637 29541-29541 SessionManager          com.example.nutrisaur11              D  Database check completed in 368ms
-2025-10-14 18:55:10.638 29541-29541 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-14 18:55:10.642 29541-29541 SessionManager          com.example.nutrisaur11              D  Checking user existence in database: kevinpingol123@gmail.com
-2025-10-14 18:55:10.642 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  === GETTING CURRENT USER DATA FROM DATABASE (ASYNC) ===
-2025-10-14 18:55:10.643 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Retrieved cached user data for: kevinpingol123@gmail.com
-2025-10-14 18:55:10.643 29541-29541 CommunityUserManager    com.example.nutrisaur11              D  Returning cached user data
-2025-10-14 18:55:10.643 29541-29541 SessionManager          com.example.nutrisaur11              D  Database check completed in 1ms
-2025-10-14 18:55:10.643 29541-29541 SessionManager          com.example.nutrisaur11              D  User exists and is valid: kevinpingol123@gmail.com
-2025-10-14 18:55:12.188 29541-29707 OpenGLRenderer          com.example.nutrisaur11              I  Davey! duration=9223268904260ms; Flags=0, FrameTimelineVsyncId=5848164, IntendedVsync=103132594185391, Vsync=103132594185391, InputEventId=0, HandleInputStart=103132598449926, AnimationStart=103132598464822, PerformTraversalsStart=103132598474040, DrawStart=103132599585551, FrameDeadline=103132627518723, FrameInterval=103132598380707, FrameStartTime=16666666, SyncQueued=103132601811332, SyncStart=103132602226384, IssueDrawCommandsStart=103132603216436, SwapBuffers=103132605709144, FrameCompleted=9223372036854775807, DequeueBufferDuration=86458, QueueBufferDuration=2274427, GpuCompleted=9223372036854775807, SwapBuffersCompleted=103132609251228, DisplayPresentTime=0, 
+2025-10-15T10:25:40.000000000Z [inf]  Starting Container
+2025-10-15T10:25:40.723538362Z [err]  [Wed Oct 15 10:25:40 2025] PHP 8.1.33 Development Server (http://0.0.0.0:8080) started
+2025-10-15T10:25:42.024599125Z [err]  [Wed Oct 15 10:25:42 2025] 100.64.0.2:40439 Accepted
+2025-10-15T10:25:42.024605701Z [err]  [Wed Oct 15 10:25:42 2025] === ROUTER DEBUG ===
+2025-10-15T10:25:42.024610280Z [err]  [Wed Oct 15 10:25:42 2025] Requested path: health
+2025-10-15T10:25:42.024615615Z [err]  [Wed Oct 15 10:25:42 2025] Public path: /var/www/html/public/
+2025-10-15T10:25:42.024620118Z [err]  [Wed Oct 15 10:25:42 2025] Public API path: /var/www/html/public/api/
+2025-10-15T10:25:42.024624539Z [err]  [Wed Oct 15 10:25:42 2025] Request URI: /health
+2025-10-15T10:25:42.024628949Z [err]  [Wed Oct 15 10:25:42 2025] Script Name: /index.php
+2025-10-15T10:25:42.024633966Z [err]  [Wed Oct 15 10:25:42 2025] 100.64.0.2:40439 [200]: GET /health
+2025-10-15T10:25:42.024638583Z [err]  [Wed Oct 15 10:25:42 2025] 100.64.0.2:40439 Closing
+2025-10-15T10:26:02.028252280Z [err]  [Wed Oct 15 10:25:52 2025] 100.64.0.3:10986 Accepted
+2025-10-15T10:26:02.028258741Z [err]  [Wed Oct 15 10:25:52 2025] === ROUTER DEBUG ===
+2025-10-15T10:26:02.028265134Z [err]  [Wed Oct 15 10:25:52 2025] Requested path: 
+2025-10-15T10:26:02.028269136Z [err]  [Wed Oct 15 10:25:52 2025] Public path: /var/www/html/public/
+2025-10-15T10:26:02.028272954Z [err]  [Wed Oct 15 10:25:52 2025] Public API path: /var/www/html/public/api/
+2025-10-15T10:26:02.028276939Z [err]  [Wed Oct 15 10:25:52 2025] Request URI: /
+2025-10-15T10:26:02.028280803Z [err]  [Wed Oct 15 10:25:52 2025] Script Name: /index.php
+2025-10-15T10:26:02.028284838Z [err]  [Wed Oct 15 10:25:52 2025] 100.64.0.3:10986 [200]: GET /
+2025-10-15T10:26:02.028288509Z [err]  [Wed Oct 15 10:25:52 2025] 100.64.0.3:10986 Closing
+2025-10-15T10:26:02.028292350Z [err]  [Wed Oct 15 10:25:52 2025] 100.64.0.3:10992 Accepted
+2025-10-15T10:26:02.028296222Z [err]  [Wed Oct 15 10:25:52 2025] 100.64.0.3:10992 [200]: GET /google-oauth-config.js
+2025-10-15T10:26:02.028300134Z [err]  [Wed Oct 15 10:25:52 2025] 100.64.0.3:10992 Closing
+2025-10-15T10:26:02.028303861Z [err]  [Wed Oct 15 10:25:52 2025] 100.64.0.3:11000 Accepted
+2025-10-15T10:26:02.028307558Z [err]  [Wed Oct 15 10:25:52 2025] 100.64.0.3:11000 [200]: POST /home.php
+2025-10-15T10:26:02.028311456Z [err]  [Wed Oct 15 10:25:52 2025] 100.64.0.3:11000 Closing
+2025-10-15T10:26:02.028315120Z [err]  [Wed Oct 15 10:25:52 2025] 100.64.0.3:11006 Accepted
+2025-10-15T10:26:02.028321181Z [err]  [Wed Oct 15 10:25:52 2025] 100.64.0.3:11006 [200]: POST /home.php
+2025-10-15T10:26:02.028325540Z [err]  [Wed Oct 15 10:25:52 2025] 100.64.0.3:11006 Closing
+2025-10-15T10:26:02.954256422Z [err]  [Wed Oct 15 10:26:02 2025] 100.64.0.3:14108 Accepted
+2025-10-15T10:26:03.214950028Z [err]  [Wed Oct 15 10:26:03 2025] 100.64.0.3:14108 [200]: POST /home.php
+2025-10-15T10:26:03.214956043Z [err]  [Wed Oct 15 10:26:03 2025] 100.64.0.3:14108 Closing
+2025-10-15T10:26:04.290812818Z [err]  [Wed Oct 15 10:26:04 2025] 100.64.0.3:14124 Accepted
+2025-10-15T10:26:04.290822915Z [err]  [Wed Oct 15 10:26:04 2025] === ROUTER DEBUG ===
+2025-10-15T10:26:04.290829504Z [err]  [Wed Oct 15 10:26:04 2025] Requested path: dash
+2025-10-15T10:26:04.290835705Z [err]  [Wed Oct 15 10:26:04 2025] Public path: /var/www/html/public/
+2025-10-15T10:26:04.290841863Z [err]  [Wed Oct 15 10:26:04 2025] Public API path: /var/www/html/public/api/
+2025-10-15T10:26:04.290848074Z [err]  [Wed Oct 15 10:26:04 2025] Request URI: /dash
+2025-10-15T10:26:04.290854259Z [err]  [Wed Oct 15 10:26:04 2025] Script Name: /index.php
+2025-10-15T10:26:04.320186195Z [err]  [Wed Oct 15 10:26:04 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:04.335745026Z [err]  [Wed Oct 15 10:26:04 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:04.342712242Z [err]  [Wed Oct 15 10:26:04 2025] 🏛️ DASH.PHP - User ID: 53, Admin ID: not set, Municipality: MARIVELES
+2025-10-15T10:26:04.345587055Z [err]  [Wed Oct 15 10:26:04 2025] 🔍 getTimeFrameData Debug - Starting
+2025-10-15T10:26:04.345593647Z [err]  [Wed Oct 15 10:26:04 2025]   - Barangay: null
+2025-10-15T10:26:04.345599086Z [err]  [Wed Oct 15 10:26:04 2025] 🔍 getTimeFrameData Debug - Querying database
+2025-10-15T10:26:04.345604632Z [err]  [Wed Oct 15 10:26:04 2025]   - WHERE clause: 1=1
+2025-10-15T10:26:04.345610263Z [err]  [Wed Oct 15 10:26:04 2025]   - Params: []
+2025-10-15T10:26:04.345615450Z [err]  [Wed Oct 15 10:26:04 2025]   - Query result success: YES
+2025-10-15T10:26:04.345620594Z [err]  [Wed Oct 15 10:26:04 2025]   - Query result message: No message
+2025-10-15T10:26:04.345626830Z [err]  [Wed Oct 15 10:26:04 2025]   - Number of users found: 31
+2025-10-15T10:26:04.350777323Z [err]  [Wed Oct 15 10:26:04 2025] 🔍 getDetailedScreeningResponses: Found 31 users for location: 
+2025-10-15T10:26:04.350786531Z [err]  [Wed Oct 15 10:26:04 2025] 🔍 getDetailedScreeningResponses: First user municipality: Unknown
+2025-10-15T10:26:04.350792050Z [err]  [Wed Oct 15 10:26:04 2025] 🔍 getDetailedScreeningResponses: First user barangay: Unknown
+2025-10-15T10:26:04.361036658Z [err]  [Wed Oct 15 10:26:04 2025] 📊 WHO Classification Summary for weight-for-age:
+2025-10-15T10:26:04.361044683Z [err]  [Wed Oct 15 10:26:04 2025]   - Total users in database: 31
+2025-10-15T10:26:04.361050814Z [err]  [Wed Oct 15 10:26:04 2025]   - Users eligible for standard: 5
+2025-10-15T10:26:04.361057805Z [err]  [Wed Oct 15 10:26:04 2025]   - Users processed (with classifications): 5
+2025-10-15T10:26:04.361063385Z [err]  [Wed Oct 15 10:26:04 2025]   - Classifications: {"Severely Underweight":2,"Underweight":1,"Normal":2,"Overweight":0,"Obese":0,"Severely Wasted":0,"Wasted":0,"Severely Stunted":0,"Stunted":0,"Tall":0,"No Data":0}
+2025-10-15T10:26:04.361069681Z [err]  [Wed Oct 15 10:26:04 2025] 🔍 getDetailedScreeningResponses: Found 31 users for location: 
+2025-10-15T10:26:04.361075801Z [err]  [Wed Oct 15 10:26:04 2025] 🔍 getDetailedScreeningResponses: First user municipality: Unknown
+2025-10-15T10:26:04.361082144Z [err]  [Wed Oct 15 10:26:04 2025] 🔍 getDetailedScreeningResponses: First user barangay: Unknown
+2025-10-15T10:26:04.371152146Z [err]  [Wed Oct 15 10:26:04 2025] 📊 WHO Classification Summary for height-for-age:
+2025-10-15T10:26:04.371159952Z [err]  [Wed Oct 15 10:26:04 2025]   - Total users in database: 31
+2025-10-15T10:26:04.371164356Z [err]  [Wed Oct 15 10:26:04 2025]   - Users eligible for standard: 5
+2025-10-15T10:26:04.371168996Z [err]  [Wed Oct 15 10:26:04 2025]   - Users processed (with classifications): 5
+2025-10-15T10:26:04.371173248Z [err]  [Wed Oct 15 10:26:04 2025]   - Classifications: {"Severely Underweight":0,"Underweight":0,"Normal":2,"Overweight":0,"Obese":0,"Severely Wasted":0,"Wasted":0,"Severely Stunted":3,"Stunted":0,"Tall":0,"No Data":0}
+2025-10-15T10:26:04.372538067Z [err]  [Wed Oct 15 10:26:04 2025] 🔍 getDetailedScreeningResponses: Found 31 users for location: 
+2025-10-15T10:26:04.372544727Z [err]  [Wed Oct 15 10:26:04 2025] 🔍 getDetailedScreeningResponses: First user municipality: Unknown
+2025-10-15T10:26:04.372549458Z [err]  [Wed Oct 15 10:26:04 2025] 🔍 getDetailedScreeningResponses: First user barangay: Unknown
+2025-10-15T10:26:04.380295445Z [err]  [Wed Oct 15 10:26:04 2025] 📊 WHO Classification Summary for weight-for-height:
+2025-10-15T10:26:04.380307397Z [err]  [Wed Oct 15 10:26:04 2025]   - Total users in database: 31
+2025-10-15T10:26:04.380314162Z [err]  [Wed Oct 15 10:26:04 2025]   - Users eligible for standard: 5
+2025-10-15T10:26:04.380320053Z [err]  [Wed Oct 15 10:26:04 2025]   - Users processed (with classifications): 5
+2025-10-15T10:26:04.380325845Z [err]  [Wed Oct 15 10:26:04 2025]   - Classifications: {"Severely Underweight":0,"Underweight":0,"Normal":2,"Overweight":0,"Obese":0,"Severely Wasted":2,"Wasted":1,"Severely Stunted":0,"Stunted":0,"Tall":0,"No Data":0}
+2025-10-15T10:26:04.564735614Z [err]  [Wed Oct 15 10:26:04 2025] 🔍 Nutritional Statistics Debug - Starting
+2025-10-15T10:26:04.564743959Z [err]  [Wed Oct 15 10:26:04 2025]   - Barangay: null
+2025-10-15T10:26:04.757344248Z [err]  [Wed Oct 15 10:26:04 2025]   - Total users found: 5
+2025-10-15T10:26:04.757390884Z [err]  [Wed Oct 15 10:26:04 2025] 🔍 Nutritional Statistics generated successfully
+2025-10-15T10:26:04.760982848Z [err]  [Wed Oct 15 10:26:04 2025] 100.64.0.3:14124 [200]: GET /dash
+2025-10-15T10:26:04.760992125Z [err]  [Wed Oct 15 10:26:04 2025] 100.64.0.3:14124 Closing
+2025-10-15T10:26:04.981634153Z [err]  [Wed Oct 15 10:26:04 2025] 100.64.0.3:14134 Accepted
+2025-10-15T10:26:04.981643488Z [err]  [Wed Oct 15 10:26:04 2025] 100.64.0.3:14134 [200]: GET /logo.png
+2025-10-15T10:26:04.984988665Z [err]  [Wed Oct 15 10:26:04 2025] 100.64.0.3:14134 Closing
+2025-10-15T10:26:05.155723768Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14136 Accepted
+2025-10-15T10:26:05.155739417Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14140 Accepted
+2025-10-15T10:26:05.155744592Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14142 Accepted
+2025-10-15T10:26:05.160422434Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.169604818Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.169614113Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_trends_chart_data'
+2025-10-15T10:26:05.169620463Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.169626402Z [err]  (
+2025-10-15T10:26:05.169631725Z [err]      [action] => get_trends_chart_data
+2025-10-15T10:26:05.169636973Z [err]      [from_date] => 2025-01-01
+2025-10-15T10:26:05.169641124Z [err]      [to_date] => 2025-10-09
+2025-10-15T10:26:05.169645728Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.169649705Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:05.169653950Z [err]  )
+2025-10-15T10:26:05.169658225Z [err]  
+2025-10-15T10:26:05.169662601Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.169666577Z [err]  (
+2025-10-15T10:26:05.169671185Z [err]  )
+2025-10-15T10:26:05.169675811Z [err]  
+2025-10-15T10:26:05.176590178Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14136 [200]: GET /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=MARIVELES&who_standard=weight-for-age
+2025-10-15T10:26:05.179704723Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14136 Closing
+2025-10-15T10:26:05.190410066Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.192852218Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.192859372Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_all_who_classifications_bulk'
+2025-10-15T10:26:05.192863596Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.192867684Z [err]  (
+2025-10-15T10:26:05.192871580Z [err]      [action] => get_all_who_classifications_bulk
+2025-10-15T10:26:05.192876234Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.192880408Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:05.192885109Z [err]  )
+2025-10-15T10:26:05.192889779Z [err]  
+2025-10-15T10:26:05.192894909Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.192899179Z [err]  (
+2025-10-15T10:26:05.192903222Z [err]  )
+2025-10-15T10:26:05.192907121Z [err]  
+2025-10-15T10:26:05.196261257Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: FILTERING BY MUNICIPALITY: MARIVELES
+2025-10-15T10:26:05.196267436Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 7 users for location: MARIVELES
+2025-10-15T10:26:05.196271410Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: MARIVELES
+2025-10-15T10:26:05.196274986Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Alion
+2025-10-15T10:26:05.200268703Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14140 [200]: GET /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=MARIVELES&who_standard=weight-for-age
+2025-10-15T10:26:05.200274885Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14140 Closing
+2025-10-15T10:26:05.200348383Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14144 Accepted
+2025-10-15T10:26:05.212460907Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.214533068Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.214537692Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_severe_cases'
+2025-10-15T10:26:05.214542292Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.214546600Z [err]  (
+2025-10-15T10:26:05.214551089Z [err]      [action] => get_severe_cases
+2025-10-15T10:26:05.214557075Z [err]      [barangay] => 
+2025-10-15T10:26:05.214561547Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:05.214566223Z [err]  )
+2025-10-15T10:26:05.214570685Z [err]  
+2025-10-15T10:26:05.214575298Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.214579722Z [err]  (
+2025-10-15T10:26:05.214584486Z [err]  )
+2025-10-15T10:26:05.214589051Z [err]  
+2025-10-15T10:26:05.214593185Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getSevereCasesBulk called with barangay: '', whoStandard: 'weight-for-age'
+2025-10-15T10:26:05.216857572Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 31 users for location: 
+2025-10-15T10:26:05.216863730Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: Unknown
+2025-10-15T10:26:05.216871550Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Unknown
+2025-10-15T10:26:05.216881160Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getSevereCasesBulk found 31 users after filtering
+2025-10-15T10:26:05.224232007Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getSevereCasesBulk found 2 severe cases for whoStandard: 'weight-for-age'
+2025-10-15T10:26:05.224238172Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 Severe cases: [{"name":"Severe Underweight Boy","age":"2y 0m","classification":"Severely Underweight","screening_date":"2024-01-15","barangay":"Bagumbayan","municipality":"CITY OF BALANGA"},{"name":"Birth Severe Underweight","age":"0m","classification":"Severely Underweight","screening_date":"2024-01-15","barangay":"Bagumbayan","municipality":"CITY OF BALANGA"}]
+2025-10-15T10:26:05.224242555Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14142 [200]: GET /api/DatabaseAPI.php?action=get_severe_cases&barangay=&who_standard=weight-for-age
+2025-10-15T10:26:05.224247018Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14142 Closing
+2025-10-15T10:26:05.229261699Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.237473534Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.237480029Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'analysis_data'
+2025-10-15T10:26:05.237484494Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.237488380Z [err]  (
+2025-10-15T10:26:05.237492161Z [err]      [action] => analysis_data
+2025-10-15T10:26:05.237496604Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.237501082Z [err]  )
+2025-10-15T10:26:05.237543598Z [err]  
+2025-10-15T10:26:05.237550097Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.237555869Z [err]  (
+2025-10-15T10:26:05.237561007Z [err]  )
+2025-10-15T10:26:05.237565983Z [err]  
+2025-10-15T10:26:05.242531334Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14144 [200]: GET /api/DatabaseAPI.php?action=analysis_data&barangay=MARIVELES
+2025-10-15T10:26:05.242538915Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14144 Closing
+2025-10-15T10:26:05.257041554Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14166 Accepted
+2025-10-15T10:26:05.267112316Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.274174946Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.274180173Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_age_classification_line_chart'
+2025-10-15T10:26:05.274185178Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.274190416Z [err]  (
+2025-10-15T10:26:05.274195954Z [err]      [action] => get_age_classification_line_chart
+2025-10-15T10:26:05.274201008Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:05.274205624Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.274209718Z [err]  )
+2025-10-15T10:26:05.274214215Z [err]  
+2025-10-15T10:26:05.274218233Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.274222581Z [err]  (
+2025-10-15T10:26:05.274227941Z [err]  )
+2025-10-15T10:26:05.274233072Z [err]  
+2025-10-15T10:26:05.274266989Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: FILTERING BY MUNICIPALITY: MARIVELES
+2025-10-15T10:26:05.274286095Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 7 users for location: MARIVELES
+2025-10-15T10:26:05.274290935Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: MARIVELES
+2025-10-15T10:26:05.274295274Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Alion
+2025-10-15T10:26:05.281548883Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Donut data success: YES
+2025-10-15T10:26:05.281557765Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: WHO Standard: weight-for-age
+2025-10-15T10:26:05.281564219Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Classifications from donut: {"Severely Underweight":0,"Underweight":1,"Normal":1,"Overweight":0,"Obese":0,"No Data":5}
+2025-10-15T10:26:05.281570478Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: FILTERING BY MUNICIPALITY: MARIVELES
+2025-10-15T10:26:05.285503252Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 7 users for location: MARIVELES
+2025-10-15T10:26:05.285511703Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: MARIVELES
+2025-10-15T10:26:05.285517507Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Alion
+2025-10-15T10:26:05.288569497Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 1 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-10-15T10:26:05.288579092Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 2 NOT ELIGIBLE for weight-for-age - Age: 25.3 years (304 months)
+2025-10-15T10:26:05.288585204Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 3 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-10-15T10:26:05.288591339Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 4 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-10-15T10:26:05.288597108Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 5 NOT ELIGIBLE for weight-for-age - Age: 28.8 years (346 months)
+2025-10-15T10:26:05.288604501Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User Underweight Girl - Birthday: 2022-03-20, Age: 1.8 years (22 months), Range: 22-28m, Classification: Underweight
+2025-10-15T10:26:05.288619836Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User Birth Normal - Birthday: 2024-01-01, Age: 0 years (0 months), Range: 0-7m, Classification: Normal
+2025-10-15T10:26:05.288625849Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: WHO Standard: weight-for-age
+2025-10-15T10:26:05.288631508Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Processed 7 users, skipped 0, eligible 2, charted 2
+2025-10-15T10:26:05.288637884Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Classification counts: {"Underweight":[0,0,0,1,0,0,0,0,0,0],"Normal":[1,0,0,0,0,0,0,0,0,0]}
+2025-10-15T10:26:05.288644511Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Age classification summary - Total users: 2
+2025-10-15T10:26:05.288651888Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Classification counts: {"Underweight":[0,0,0,1,0,0,0,0,0,0],"Normal":[1,0,0,0,0,0,0,0,0,0]}
+2025-10-15T10:26:05.288657650Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14166 [200]: GET /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=MARIVELES
+2025-10-15T10:26:05.288666611Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14166 Closing
+2025-10-15T10:26:05.296445309Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14174 Accepted
+2025-10-15T10:26:05.300135960Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.310652353Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.310661969Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_barangay_distribution_bulk'
+2025-10-15T10:26:05.310668365Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.310676162Z [err]  (
+2025-10-15T10:26:05.310681185Z [err]      [action] => get_barangay_distribution_bulk
+2025-10-15T10:26:05.310687002Z [err]  )
+2025-10-15T10:26:05.310693181Z [err]  
+2025-10-15T10:26:05.310699236Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.310704544Z [err]  (
+2025-10-15T10:26:05.310711008Z [err]  )
+2025-10-15T10:26:05.310716092Z [err]  
+2025-10-15T10:26:05.310721306Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 31 users for location: 
+2025-10-15T10:26:05.310726794Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: Unknown
+2025-10-15T10:26:05.310732310Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Unknown
+2025-10-15T10:26:05.310738161Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14174 [200]: GET /api/DatabaseAPI.php?action=get_barangay_distribution_bulk
+2025-10-15T10:26:05.310743459Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14174 Closing
+2025-10-15T10:26:05.369259417Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14190 Accepted
+2025-10-15T10:26:05.374889949Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.378026199Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.378032793Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_trends_chart_data'
+2025-10-15T10:26:05.378037709Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.378043453Z [err]  (
+2025-10-15T10:26:05.378048163Z [err]      [action] => get_trends_chart_data
+2025-10-15T10:26:05.378052714Z [err]      [from_date] => 2025-01-01
+2025-10-15T10:26:05.378057380Z [err]      [to_date] => 2025-10-09
+2025-10-15T10:26:05.378061057Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.378064921Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:05.378069019Z [err]  )
+2025-10-15T10:26:05.378072724Z [err]  
+2025-10-15T10:26:05.378076533Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.378080273Z [err]  (
+2025-10-15T10:26:05.378084122Z [err]  )
+2025-10-15T10:26:05.378089308Z [err]  
+2025-10-15T10:26:05.388497401Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14190 [200]: GET /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=MARIVELES&who_standard=weight-for-age
+2025-10-15T10:26:05.388504466Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14190 Closing
+2025-10-15T10:26:05.388508971Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14202 Accepted
+2025-10-15T10:26:05.394599742Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.403218246Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.403225271Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_gender_distribution_bulk'
+2025-10-15T10:26:05.403229658Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.403233790Z [err]  (
+2025-10-15T10:26:05.403237899Z [err]      [action] => get_gender_distribution_bulk
+2025-10-15T10:26:05.403242243Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.403247737Z [err]  )
+2025-10-15T10:26:05.403252011Z [err]  
+2025-10-15T10:26:05.403255862Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.403259714Z [err]  (
+2025-10-15T10:26:05.403264006Z [err]  )
+2025-10-15T10:26:05.403267899Z [err]  
+2025-10-15T10:26:05.403274563Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: FILTERING BY MUNICIPALITY: MARIVELES
+2025-10-15T10:26:05.403278445Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 7 users for location: MARIVELES
+2025-10-15T10:26:05.403282392Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: MARIVELES
+2025-10-15T10:26:05.403287304Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Alion
+2025-10-15T10:26:05.403300623Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14202 [200]: GET /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=MARIVELES
+2025-10-15T10:26:05.403304810Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14202 Closing
+2025-10-15T10:26:05.440566128Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14218 Accepted
+2025-10-15T10:26:05.443744849Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.453578759Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.453586777Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_severe_cases'
+2025-10-15T10:26:05.453638964Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.453645999Z [err]  (
+2025-10-15T10:26:05.453650182Z [err]      [action] => get_severe_cases
+2025-10-15T10:26:05.453654145Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.453657844Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:05.453661944Z [err]  )
+2025-10-15T10:26:05.453667211Z [err]  
+2025-10-15T10:26:05.453670915Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.453674971Z [err]  (
+2025-10-15T10:26:05.453678724Z [err]  )
+2025-10-15T10:26:05.453682612Z [err]  
+2025-10-15T10:26:05.453686483Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getSevereCasesBulk called with barangay: 'MARIVELES', whoStandard: 'weight-for-age'
+2025-10-15T10:26:05.453695799Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: FILTERING BY MUNICIPALITY: MARIVELES
+2025-10-15T10:26:05.457807358Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 7 users for location: MARIVELES
+2025-10-15T10:26:05.457814204Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: MARIVELES
+2025-10-15T10:26:05.457820046Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Alion
+2025-10-15T10:26:05.457826588Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getSevereCasesBulk found 7 users after filtering
+2025-10-15T10:26:05.459756125Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getSevereCasesBulk found 0 severe cases for whoStandard: 'weight-for-age'
+2025-10-15T10:26:05.459764750Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14218 [200]: GET /api/DatabaseAPI.php?action=get_severe_cases&barangay=MARIVELES&who_standard=weight-for-age
+2025-10-15T10:26:05.459770531Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14218 Closing
+2025-10-15T10:26:05.459776625Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14228 Accepted
+2025-10-15T10:26:05.473372588Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.477462247Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.477468315Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'intelligent_programs'
+2025-10-15T10:26:05.477473391Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.477478571Z [err]  (
+2025-10-15T10:26:05.477485057Z [err]      [action] => intelligent_programs
+2025-10-15T10:26:05.477490366Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.477495246Z [err]  )
+2025-10-15T10:26:05.477500464Z [err]  
+2025-10-15T10:26:05.477507697Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.477512880Z [err]  (
+2025-10-15T10:26:05.477518102Z [err]  )
+2025-10-15T10:26:05.477525061Z [err]  
+2025-10-15T10:26:05.477530666Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14228 [200]: GET /api/DatabaseAPI.php?action=intelligent_programs&barangay=MARIVELES
+2025-10-15T10:26:05.477536507Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14228 Closing
+2025-10-15T10:26:05.511478098Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14244 Accepted
+2025-10-15T10:26:05.519028208Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.526265746Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.526276611Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_trends_chart_data'
+2025-10-15T10:26:05.526283610Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.526289586Z [err]  (
+2025-10-15T10:26:05.526295723Z [err]      [action] => get_trends_chart_data
+2025-10-15T10:26:05.526301876Z [err]      [from_date] => 2025-01-01
+2025-10-15T10:26:05.526307954Z [err]      [to_date] => 2025-10-09
+2025-10-15T10:26:05.526314045Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.526320248Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:05.526326236Z [err]  )
+2025-10-15T10:26:05.526333258Z [err]  
+2025-10-15T10:26:05.526339135Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.526345182Z [err]  (
+2025-10-15T10:26:05.526351219Z [err]  )
+2025-10-15T10:26:05.526357193Z [err]  
+2025-10-15T10:26:05.532934882Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14244 [200]: GET /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=MARIVELES&who_standard=weight-for-age
+2025-10-15T10:26:05.532940013Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14244 Closing
+2025-10-15T10:26:05.591844819Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14246 Accepted
+2025-10-15T10:26:05.595836903Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.601305577Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.601311819Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_trends_chart_data'
+2025-10-15T10:26:05.601316241Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.601320104Z [err]  (
+2025-10-15T10:26:05.601324370Z [err]      [action] => get_trends_chart_data
+2025-10-15T10:26:05.601329419Z [err]      [from_date] => 2025-01-01
+2025-10-15T10:26:05.601333784Z [err]      [to_date] => 2025-10-09
+2025-10-15T10:26:05.601340471Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.601345310Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:05.601349446Z [err]  )
+2025-10-15T10:26:05.601353786Z [err]  
+2025-10-15T10:26:05.601359125Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.601363068Z [err]  (
+2025-10-15T10:26:05.601367083Z [err]  )
+2025-10-15T10:26:05.601371124Z [err]  
+2025-10-15T10:26:05.611644954Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14246 [200]: GET /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=MARIVELES&who_standard=weight-for-age
+2025-10-15T10:26:05.611652841Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14246 Closing
+2025-10-15T10:26:05.611658162Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14262 Accepted
+2025-10-15T10:26:05.636234364Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.644682721Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.644686919Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_age_classification_line_chart'
+2025-10-15T10:26:05.644690762Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.644694957Z [err]  (
+2025-10-15T10:26:05.644699032Z [err]      [action] => get_age_classification_line_chart
+2025-10-15T10:26:05.644703337Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:05.644709969Z [err]      [barangay] => 
+2025-10-15T10:26:05.644713640Z [err]  )
+2025-10-15T10:26:05.644717487Z [err]  
+2025-10-15T10:26:05.644721726Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.644725842Z [err]  (
+2025-10-15T10:26:05.644729511Z [err]  )
+2025-10-15T10:26:05.644733062Z [err]  
+2025-10-15T10:26:05.644750478Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 31 users for location: 
+2025-10-15T10:26:05.644754674Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: Unknown
+2025-10-15T10:26:05.644758277Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Unknown
+2025-10-15T10:26:05.650746582Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Donut data success: YES
+2025-10-15T10:26:05.650754793Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: WHO Standard: weight-for-age
+2025-10-15T10:26:05.650761655Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Classifications from donut: {"Severely Underweight":2,"Underweight":1,"Normal":2,"Overweight":0,"Obese":0,"No Data":26}
+2025-10-15T10:26:05.656881380Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 31 users for location: 
+2025-10-15T10:26:05.656891321Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: Unknown
+2025-10-15T10:26:05.656897671Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Unknown
+2025-10-15T10:26:05.662875866Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 1 skipped - missing fields - Birthday: 1900-01-01, Weight: 0, Height: 0, Sex: Unknown
+2025-10-15T10:26:05.662883585Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 2 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-10-15T10:26:05.662888914Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 3 NOT ELIGIBLE for weight-for-age - Age: 25.3 years (304 months)
+2025-10-15T10:26:05.662893180Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 4 NOT ELIGIBLE for weight-for-age - Age: 25.3 years (304 months)
+2025-10-15T10:26:05.662897652Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 5 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-10-15T10:26:05.662901987Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User Underweight Girl - Birthday: 2022-03-20, Age: 1.8 years (22 months), Range: 22-28m, Classification: Underweight
+2025-10-15T10:26:05.662905918Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User Severe Underweight Boy - Birthday: 2022-01-15, Age: 2 years (24 months), Range: 22-28m, Classification: Severely Underweight
+2025-10-15T10:26:05.662910065Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User Normal Weight Boy - Birthday: 2021-06-10, Age: 2.6 years (31 months), Range: 29-35m, Classification: Normal
+2025-10-15T10:26:05.662914243Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User Birth Normal - Birthday: 2024-01-01, Age: 0 years (0 months), Range: 0-7m, Classification: Normal
+2025-10-15T10:26:05.662918902Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User Birth Severe Underweight - Birthday: 2024-01-01, Age: 0 years (0 months), Range: 0-7m, Classification: Severely Underweight
+2025-10-15T10:26:05.662922974Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: WHO Standard: weight-for-age
+2025-10-15T10:26:05.662927050Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Processed 31 users, skipped 1, eligible 5, charted 5
+2025-10-15T10:26:05.662931588Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Classification counts: {"Underweight":[0,0,0,1,0,0,0,0,0,0],"Severely Underweight":[1,0,0,1,0,0,0,0,0,0],"Normal":[1,0,0,0,1,0,0,0,0,0]}
+2025-10-15T10:26:05.662945160Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Age classification summary - Total users: 5
+2025-10-15T10:26:05.662949320Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Classification counts: {"Underweight":[0,0,0,1,0,0,0,0,0,0],"Severely Underweight":[1,0,0,1,0,0,0,0,0,0],"Normal":[1,0,0,0,1,0,0,0,0,0]}
+2025-10-15T10:26:05.662953416Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14262 [200]: GET /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=
+2025-10-15T10:26:05.662957387Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14262 Closing
+2025-10-15T10:26:05.665588274Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14264 Accepted
+2025-10-15T10:26:05.673534595Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.677838039Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.677843521Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_age_classification_line_chart'
+2025-10-15T10:26:05.677848946Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.677854498Z [err]  (
+2025-10-15T10:26:05.677860038Z [err]      [action] => get_age_classification_line_chart
+2025-10-15T10:26:05.677865754Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:05.677871650Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.677877651Z [err]  )
+2025-10-15T10:26:05.677884705Z [err]  
+2025-10-15T10:26:05.677890167Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.677895951Z [err]  (
+2025-10-15T10:26:05.677906258Z [err]  )
+2025-10-15T10:26:05.677911729Z [err]  
+2025-10-15T10:26:05.678368613Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: FILTERING BY MUNICIPALITY: MARIVELES
+2025-10-15T10:26:05.683984822Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 7 users for location: MARIVELES
+2025-10-15T10:26:05.683991437Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: MARIVELES
+2025-10-15T10:26:05.683997055Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Alion
+2025-10-15T10:26:05.686842787Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Donut data success: YES
+2025-10-15T10:26:05.686848281Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: WHO Standard: weight-for-age
+2025-10-15T10:26:05.686853642Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Classifications from donut: {"Severely Underweight":0,"Underweight":1,"Normal":1,"Overweight":0,"Obese":0,"No Data":5}
+2025-10-15T10:26:05.688688786Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 7 users for location: MARIVELES
+2025-10-15T10:26:05.688695304Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: MARIVELES
+2025-10-15T10:26:05.688701403Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Alion
+2025-10-15T10:26:05.689267013Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: FILTERING BY MUNICIPALITY: MARIVELES
+2025-10-15T10:26:05.692405510Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 1 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-10-15T10:26:05.692409680Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 2 NOT ELIGIBLE for weight-for-age - Age: 25.3 years (304 months)
+2025-10-15T10:26:05.692413504Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 3 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-10-15T10:26:05.692417809Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 4 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-10-15T10:26:05.692422574Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 5 NOT ELIGIBLE for weight-for-age - Age: 28.8 years (346 months)
+2025-10-15T10:26:05.692426828Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User Underweight Girl - Birthday: 2022-03-20, Age: 1.8 years (22 months), Range: 22-28m, Classification: Underweight
+2025-10-15T10:26:05.692431350Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User Birth Normal - Birthday: 2024-01-01, Age: 0 years (0 months), Range: 0-7m, Classification: Normal
+2025-10-15T10:26:05.692435808Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: WHO Standard: weight-for-age
+2025-10-15T10:26:05.692439870Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Processed 7 users, skipped 0, eligible 2, charted 2
+2025-10-15T10:26:05.692444079Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Classification counts: {"Underweight":[0,0,0,1,0,0,0,0,0,0],"Normal":[1,0,0,0,0,0,0,0,0,0]}
+2025-10-15T10:26:05.692448529Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Age classification summary - Total users: 2
+2025-10-15T10:26:05.692452773Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Classification counts: {"Underweight":[0,0,0,1,0,0,0,0,0,0],"Normal":[1,0,0,0,0,0,0,0,0,0]}
+2025-10-15T10:26:05.692458016Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14264 [200]: GET /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=MARIVELES
+2025-10-15T10:26:05.692462549Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14264 Closing
+2025-10-15T10:26:05.739198613Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14276 Accepted
+2025-10-15T10:26:05.739204738Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.746453968Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.746461129Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_barangay_distribution_bulk'
+2025-10-15T10:26:05.746467576Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.746473498Z [err]  (
+2025-10-15T10:26:05.746480484Z [err]      [action] => get_barangay_distribution_bulk
+2025-10-15T10:26:05.746486554Z [err]  )
+2025-10-15T10:26:05.746492964Z [err]  
+2025-10-15T10:26:05.746499320Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.746505467Z [err]  (
+2025-10-15T10:26:05.746511952Z [err]  )
+2025-10-15T10:26:05.746518300Z [err]  
+2025-10-15T10:26:05.748235100Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 31 users for location: 
+2025-10-15T10:26:05.748240188Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: Unknown
+2025-10-15T10:26:05.748245036Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Unknown
+2025-10-15T10:26:05.748249459Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14276 [200]: GET /api/DatabaseAPI.php?action=get_barangay_distribution_bulk
+2025-10-15T10:26:05.748256597Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14276 Closing
+2025-10-15T10:26:05.755211858Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14288 Accepted
+2025-10-15T10:26:05.757258361Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.765157691Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.765165054Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_severe_cases'
+2025-10-15T10:26:05.765171284Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.765175480Z [err]  (
+2025-10-15T10:26:05.765179713Z [err]      [action] => get_severe_cases
+2025-10-15T10:26:05.765184093Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.765188837Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:05.765192876Z [err]  )
+2025-10-15T10:26:05.765196888Z [err]  
+2025-10-15T10:26:05.765201221Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.765205785Z [err]  (
+2025-10-15T10:26:05.765209970Z [err]  )
+2025-10-15T10:26:05.765214202Z [err]  
+2025-10-15T10:26:05.765218807Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getSevereCasesBulk called with barangay: 'MARIVELES', whoStandard: 'weight-for-age'
+2025-10-15T10:26:05.765223005Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: FILTERING BY MUNICIPALITY: MARIVELES
+2025-10-15T10:26:05.765227217Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 7 users for location: MARIVELES
+2025-10-15T10:26:05.765231789Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: MARIVELES
+2025-10-15T10:26:05.765236139Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Alion
+2025-10-15T10:26:05.765240276Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getSevereCasesBulk found 7 users after filtering
+2025-10-15T10:26:05.774901065Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getSevereCasesBulk found 0 severe cases for whoStandard: 'weight-for-age'
+2025-10-15T10:26:05.774908227Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14288 [200]: GET /api/DatabaseAPI.php?action=get_severe_cases&barangay=MARIVELES&who_standard=weight-for-age
+2025-10-15T10:26:05.774913878Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14288 Closing
+2025-10-15T10:26:05.783664989Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14298 Accepted
+2025-10-15T10:26:05.791938275Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.802841082Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.802847667Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_gender_distribution_bulk'
+2025-10-15T10:26:05.802852386Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.802856746Z [err]  (
+2025-10-15T10:26:05.802860707Z [err]      [action] => get_gender_distribution_bulk
+2025-10-15T10:26:05.802864659Z [err]      [barangay] => 
+2025-10-15T10:26:05.802868517Z [err]  )
+2025-10-15T10:26:05.802872470Z [err]  
+2025-10-15T10:26:05.802876519Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.802880451Z [err]  (
+2025-10-15T10:26:05.802884276Z [err]  )
+2025-10-15T10:26:05.802888224Z [err]  
+2025-10-15T10:26:05.802899459Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 31 users for location: 
+2025-10-15T10:26:05.802903191Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: Unknown
+2025-10-15T10:26:05.802907051Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Unknown
+2025-10-15T10:26:05.802910780Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14298 [200]: GET /api/DatabaseAPI.php?action=get_gender_distribution_bulk&barangay=
+2025-10-15T10:26:05.802925367Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14298 Closing
+2025-10-15T10:26:05.823426324Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14302 Accepted
+2025-10-15T10:26:05.827438269Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.834653706Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.834663497Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_all_who_classifications_bulk'
+2025-10-15T10:26:05.834670150Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.834680296Z [err]  (
+2025-10-15T10:26:05.834686158Z [err]      [action] => get_all_who_classifications_bulk
+2025-10-15T10:26:05.834691922Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.834698105Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:05.834703678Z [err]  )
+2025-10-15T10:26:05.834709449Z [err]  
+2025-10-15T10:26:05.834715203Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.834720341Z [err]  (
+2025-10-15T10:26:05.834726018Z [err]  )
+2025-10-15T10:26:05.834731586Z [err]  
+2025-10-15T10:26:05.834842511Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: FILTERING BY MUNICIPALITY: MARIVELES
+2025-10-15T10:26:05.834848343Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 7 users for location: MARIVELES
+2025-10-15T10:26:05.834853972Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: MARIVELES
+2025-10-15T10:26:05.834859720Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Alion
+2025-10-15T10:26:05.842350433Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14302 [200]: GET /api/DatabaseAPI.php?action=get_all_who_classifications_bulk&barangay=MARIVELES&who_standard=weight-for-age
+2025-10-15T10:26:05.842360114Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14302 Closing
+2025-10-15T10:26:05.892989969Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14318 Accepted
+2025-10-15T10:26:05.895835181Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.908017878Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.908028560Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_age_classification_line_chart'
+2025-10-15T10:26:05.908036875Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.908043868Z [err]  (
+2025-10-15T10:26:05.908048804Z [err]      [action] => get_age_classification_line_chart
+2025-10-15T10:26:05.908053829Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:05.908058451Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.908064968Z [err]  )
+2025-10-15T10:26:05.908071385Z [err]  
+2025-10-15T10:26:05.908077678Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.908084289Z [err]  (
+2025-10-15T10:26:05.908089680Z [err]  )
+2025-10-15T10:26:05.908094211Z [err]  
+2025-10-15T10:26:05.908099183Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: FILTERING BY MUNICIPALITY: MARIVELES
+2025-10-15T10:26:05.908113938Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 7 users for location: MARIVELES
+2025-10-15T10:26:05.908118959Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: MARIVELES
+2025-10-15T10:26:05.908126643Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Alion
+2025-10-15T10:26:05.918406267Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Donut data success: YES
+2025-10-15T10:26:05.918418381Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: WHO Standard: weight-for-age
+2025-10-15T10:26:05.918426247Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Classifications from donut: {"Severely Underweight":0,"Underweight":1,"Normal":1,"Overweight":0,"Obese":0,"No Data":5}
+2025-10-15T10:26:05.918438909Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: FILTERING BY MUNICIPALITY: MARIVELES
+2025-10-15T10:26:05.918445591Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: Found 7 users for location: MARIVELES
+2025-10-15T10:26:05.918452566Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user municipality: MARIVELES
+2025-10-15T10:26:05.918459012Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 getDetailedScreeningResponses: First user barangay: Alion
+2025-10-15T10:26:05.920429721Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 1 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-10-15T10:26:05.920441426Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 2 NOT ELIGIBLE for weight-for-age - Age: 25.3 years (304 months)
+2025-10-15T10:26:05.920450859Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 3 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-10-15T10:26:05.920459843Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 4 NOT ELIGIBLE for weight-for-age - Age: 20 years (240 months)
+2025-10-15T10:26:05.920465877Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Age classification summary - Total users: 2
+2025-10-15T10:26:05.920473591Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User 5 NOT ELIGIBLE for weight-for-age - Age: 28.8 years (346 months)
+2025-10-15T10:26:05.920476480Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Classification counts: {"Underweight":[0,0,0,1,0,0,0,0,0,0],"Normal":[1,0,0,0,0,0,0,0,0,0]}
+2025-10-15T10:26:05.920487176Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User Underweight Girl - Birthday: 2022-03-20, Age: 1.8 years (22 months), Range: 22-28m, Classification: Underweight
+2025-10-15T10:26:05.920487291Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14318 [200]: GET /api/DatabaseAPI.php?action=get_age_classification_line_chart&who_standard=weight-for-age&barangay=MARIVELES
+2025-10-15T10:26:05.920496751Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14318 Closing
+2025-10-15T10:26:05.920500583Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: User Birth Normal - Birthday: 2024-01-01, Age: 0 years (0 months), Range: 0-7m, Classification: Normal
+2025-10-15T10:26:05.920508606Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: WHO Standard: weight-for-age
+2025-10-15T10:26:05.920515539Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Processed 7 users, skipped 0, eligible 2, charted 2
+2025-10-15T10:26:05.920524590Z [err]  [Wed Oct 15 10:26:05 2025] DEBUG: Classification counts: {"Underweight":[0,0,0,1,0,0,0,0,0,0],"Normal":[1,0,0,0,0,0,0,0,0,0]}
+2025-10-15T10:26:05.973757755Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14328 Accepted
+2025-10-15T10:26:05.978063697Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:05.985434468Z [err]  [Wed Oct 15 10:26:05 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:05.985441281Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - Action received: 'get_trends_chart_data'
+2025-10-15T10:26:05.985449059Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:05.985453522Z [err]  (
+2025-10-15T10:26:05.985457854Z [err]      [action] => get_trends_chart_data
+2025-10-15T10:26:05.985463545Z [err]      [from_date] => 2025-01-01
+2025-10-15T10:26:05.985467506Z [err]      [to_date] => 2025-10-09
+2025-10-15T10:26:05.985471503Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:05.985475525Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:05.985479895Z [err]  )
+2025-10-15T10:26:05.985484599Z [err]  
+2025-10-15T10:26:05.985489696Z [err]  [Wed Oct 15 10:26:05 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:05.985495477Z [err]  (
+2025-10-15T10:26:05.985500572Z [err]  )
+2025-10-15T10:26:05.985506103Z [err]  
+2025-10-15T10:26:05.995379567Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14328 [200]: GET /api/DatabaseAPI.php?action=get_trends_chart_data&from_date=2025-01-01&to_date=2025-10-09&barangay=MARIVELES&who_standard=weight-for-age
+2025-10-15T10:26:05.995385716Z [err]  [Wed Oct 15 10:26:05 2025] 100.64.0.3:14328 Closing
+2025-10-15T10:26:06.046818151Z [err]  [Wed Oct 15 10:26:06 2025] 100.64.0.3:14342 Accepted
+2025-10-15T10:26:06.056118821Z [err]  [Wed Oct 15 10:26:06 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:06.059492470Z [err]  [Wed Oct 15 10:26:06 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:06.059501512Z [err]  [Wed Oct 15 10:26:06 2025] 🔍 DatabaseAPI Debug - Action received: 'get_severe_cases'
+2025-10-15T10:26:06.059508556Z [err]  [Wed Oct 15 10:26:06 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:06.059514848Z [err]  (
+2025-10-15T10:26:06.059520943Z [err]      [action] => get_severe_cases
+2025-10-15T10:26:06.059527145Z [err]      [barangay] => MARIVELES
+2025-10-15T10:26:06.059533253Z [err]      [who_standard] => weight-for-age
+2025-10-15T10:26:06.059538962Z [err]  )
+2025-10-15T10:26:06.059545087Z [err]  
+2025-10-15T10:26:06.059551681Z [err]  [Wed Oct 15 10:26:06 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:06.059558890Z [err]  (
+2025-10-15T10:26:06.059566411Z [err]  )
+2025-10-15T10:26:06.059572399Z [err]  
+2025-10-15T10:26:06.059578463Z [err]  [Wed Oct 15 10:26:06 2025] 🔍 getSevereCasesBulk called with barangay: 'MARIVELES', whoStandard: 'weight-for-age'
+2025-10-15T10:26:06.066061123Z [err]  [Wed Oct 15 10:26:06 2025] 🔍 getDetailedScreeningResponses: FILTERING BY MUNICIPALITY: MARIVELES
+2025-10-15T10:26:06.066073439Z [err]  [Wed Oct 15 10:26:06 2025] 🔍 getDetailedScreeningResponses: Found 7 users for location: MARIVELES
+2025-10-15T10:26:06.066079584Z [err]  [Wed Oct 15 10:26:06 2025] 🔍 getDetailedScreeningResponses: First user municipality: MARIVELES
+2025-10-15T10:26:06.066089068Z [err]  [Wed Oct 15 10:26:06 2025] 🔍 getDetailedScreeningResponses: First user barangay: Alion
+2025-10-15T10:26:06.066095201Z [err]  [Wed Oct 15 10:26:06 2025] 🔍 getSevereCasesBulk found 7 users after filtering
+2025-10-15T10:26:06.069185811Z [err]  [Wed Oct 15 10:26:06 2025] 🔍 getSevereCasesBulk found 0 severe cases for whoStandard: 'weight-for-age'
+2025-10-15T10:26:06.069192975Z [err]  [Wed Oct 15 10:26:06 2025] 100.64.0.3:14342 [200]: GET /api/DatabaseAPI.php?action=get_severe_cases&barangay=MARIVELES&who_standard=weight-for-age
+2025-10-15T10:26:06.069202766Z [err]  [Wed Oct 15 10:26:06 2025] 100.64.0.3:14342 Closing
+2025-10-15T10:26:06.727118902Z [err]  [Wed Oct 15 10:26:06 2025] 100.64.0.3:14350 Accepted
+2025-10-15T10:26:06.735697891Z [err]  [Wed Oct 15 10:26:06 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:06.739369129Z [err]  [Wed Oct 15 10:26:06 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:06.740490234Z [err]  [Wed Oct 15 10:26:06 2025] 100.64.0.3:14350 [200]: GET /api/dashboard_assessment_stats.php
+2025-10-15T10:26:06.740498069Z [err]  [Wed Oct 15 10:26:06 2025] 100.64.0.3:14350 Closing
+2025-10-15T10:26:08.465057154Z [err]  [Wed Oct 15 10:26:08 2025] 100.64.0.3:14358 Accepted
+2025-10-15T10:26:08.465064102Z [err]  [Wed Oct 15 10:26:08 2025] === ROUTER DEBUG ===
+2025-10-15T10:26:08.465069026Z [err]  [Wed Oct 15 10:26:08 2025] Requested path: settings
+2025-10-15T10:26:08.465073197Z [err]  [Wed Oct 15 10:26:08 2025] Public path: /var/www/html/public/
+2025-10-15T10:26:08.465077841Z [err]  [Wed Oct 15 10:26:08 2025] Public API path: /var/www/html/public/api/
+2025-10-15T10:26:08.465082020Z [err]  [Wed Oct 15 10:26:08 2025] Request URI: /settings
+2025-10-15T10:26:08.465086195Z [err]  [Wed Oct 15 10:26:08 2025] Script Name: /index.php
+2025-10-15T10:26:08.474911711Z [err]  [Wed Oct 15 10:26:08 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:08.479897859Z [err]  [Wed Oct 15 10:26:08 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:08.510008070Z [err]  [Wed Oct 15 10:26:08 2025] 100.64.0.3:14358 [200]: GET /settings
+2025-10-15T10:26:08.510016188Z [err]  [Wed Oct 15 10:26:08 2025] 100.64.0.3:14358 Closing
+2025-10-15T10:26:08.733788530Z [err]  [Wed Oct 15 10:26:08 2025] 100.64.0.3:25140 Accepted
+2025-10-15T10:26:08.733792812Z [err]  [Wed Oct 15 10:26:08 2025] 100.64.0.3:25140 [200]: GET /logo.png
+2025-10-15T10:26:08.733796701Z [err]  [Wed Oct 15 10:26:08 2025] 100.64.0.3:25140 Closing
+2025-10-15T10:26:12.252295816Z [err]  [Wed Oct 15 10:26:12 2025] 100.64.0.3:25152 Accepted
+2025-10-15T10:26:12.257545861Z [err]  [Wed Oct 15 10:26:12 2025] === ROUTER DEBUG ===
+2025-10-15T10:26:12.257550081Z [err]  [Wed Oct 15 10:26:12 2025] Requested path: screening
+2025-10-15T10:26:12.257563971Z [err]  [Wed Oct 15 10:26:12 2025] Public path: /var/www/html/public/
+2025-10-15T10:26:12.257567955Z [err]  [Wed Oct 15 10:26:12 2025] Public API path: /var/www/html/public/api/
+2025-10-15T10:26:12.257571748Z [err]  [Wed Oct 15 10:26:12 2025] Request URI: /screening
+2025-10-15T10:26:12.257575488Z [err]  [Wed Oct 15 10:26:12 2025] Script Name: /index.php
+2025-10-15T10:26:12.274832229Z [err]  [Wed Oct 15 10:26:12 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:12.281662727Z [err]  [Wed Oct 15 10:26:12 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:12.468275081Z [err]  [Wed Oct 15 10:26:12 2025] 100.64.0.3:25152 [200]: GET /screening
+2025-10-15T10:26:12.468279626Z [err]  [Wed Oct 15 10:26:12 2025] 100.64.0.3:25152 Closing
+2025-10-15T10:26:12.527223187Z [err]  [Wed Oct 15 10:26:12 2025] 100.64.0.3:25168 Accepted
+2025-10-15T10:26:12.527229882Z [err]  [Wed Oct 15 10:26:12 2025] 100.64.0.3:25168 [200]: GET /logo.png
+2025-10-15T10:26:12.527234500Z [err]  [Wed Oct 15 10:26:12 2025] 100.64.0.3:25168 Closing
+2025-10-15T10:26:15.113983250Z [err]  [Wed Oct 15 10:26:15 2025] 100.64.0.3:25178 Accepted
+2025-10-15T10:26:15.113995284Z [err]  [Wed Oct 15 10:26:15 2025] === ROUTER DEBUG ===
+2025-10-15T10:26:15.114002485Z [err]  [Wed Oct 15 10:26:15 2025] Requested path: event
+2025-10-15T10:26:15.114008904Z [err]  [Wed Oct 15 10:26:15 2025] Public path: /var/www/html/public/
+2025-10-15T10:26:15.114015189Z [err]  [Wed Oct 15 10:26:15 2025] Public API path: /var/www/html/public/api/
+2025-10-15T10:26:15.114021268Z [err]  [Wed Oct 15 10:26:15 2025] Request URI: /event
+2025-10-15T10:26:15.114027230Z [err]  [Wed Oct 15 10:26:15 2025] Script Name: /index.php
+2025-10-15T10:26:15.120283806Z [err]  [Wed Oct 15 10:26:15 2025] 🚀 EVENT.PHP LOADED - URI: /event
+2025-10-15T10:26:15.120291289Z [err]  [Wed Oct 15 10:26:15 2025] 🚀 GET PARAMS: []
+2025-10-15T10:26:15.138620938Z [err]  [Wed Oct 15 10:26:15 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:15.146020062Z [err]  [Wed Oct 15 10:26:15 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:15.157170918Z [err]  [Wed Oct 15 10:26:15 2025] 100.64.0.3:25178 [200]: GET /event
+2025-10-15T10:26:15.157182171Z [err]  [Wed Oct 15 10:26:15 2025] 100.64.0.3:25178 Closing
+2025-10-15T10:26:15.343990266Z [err]  [Wed Oct 15 10:26:15 2025] 100.64.0.3:25184 Accepted
+2025-10-15T10:26:15.343995575Z [err]  [Wed Oct 15 10:26:15 2025] 100.64.0.3:25184 [200]: GET /logo.png
+2025-10-15T10:26:15.344000754Z [err]  [Wed Oct 15 10:26:15 2025] 100.64.0.3:25184 Closing
+2025-10-15T10:26:15.468646948Z [err]  [Wed Oct 15 10:26:15 2025] 100.64.0.3:25200 Accepted
+2025-10-15T10:26:15.478306900Z [err]  [Wed Oct 15 10:26:15 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:15.482203289Z [err]  [Wed Oct 15 10:26:15 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:15.482209952Z [err]  [Wed Oct 15 10:26:15 2025] 🔍 DatabaseAPI Debug - Action received: 'get_user_notifications'
+2025-10-15T10:26:15.482215396Z [err]  [Wed Oct 15 10:26:15 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:15.482220428Z [err]  (
+2025-10-15T10:26:15.482225605Z [err]  )
+2025-10-15T10:26:15.482230249Z [err]  
+2025-10-15T10:26:15.482235298Z [err]  [Wed Oct 15 10:26:15 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:15.482240186Z [err]  (
+2025-10-15T10:26:15.482245497Z [err]  )
+2025-10-15T10:26:15.482250907Z [err]  
+2025-10-15T10:26:15.482253607Z [err]  [Wed Oct 15 10:26:15 2025] 100.64.0.3:25200 [200]: POST /api/DatabaseAPI.php
+2025-10-15T10:26:15.482266556Z [err]  [Wed Oct 15 10:26:15 2025] 100.64.0.3:25200 Closing
+2025-10-15T10:26:35.488248796Z [err]  [Wed Oct 15 10:26:34 2025] 100.64.0.4:46230 Accepted
+2025-10-15T10:26:35.488260160Z [err]  [Wed Oct 15 10:26:34 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:35.488268482Z [err]  [Wed Oct 15 10:26:34 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:35.488274983Z [err]  [Wed Oct 15 10:26:34 2025] 🔍 DatabaseAPI Debug - Action received: 'get_user_notifications'
+2025-10-15T10:26:35.488281839Z [err]  [Wed Oct 15 10:26:34 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:35.488293864Z [err]  (
+2025-10-15T10:26:35.488300008Z [err]  )
+2025-10-15T10:26:35.488306784Z [err]  
+2025-10-15T10:26:35.488313135Z [err]  [Wed Oct 15 10:26:34 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:35.488319957Z [err]  (
+2025-10-15T10:26:35.488326454Z [err]  )
+2025-10-15T10:26:35.488332944Z [err]  
+2025-10-15T10:26:35.488339221Z [err]  [Wed Oct 15 10:26:34 2025] 100.64.0.4:46230 [200]: POST /api/DatabaseAPI.php
+2025-10-15T10:26:35.488345374Z [err]  [Wed Oct 15 10:26:34 2025] 100.64.0.4:46230 Closing
+2025-10-15T10:26:41.653617214Z [err]  [Wed Oct 15 10:26:41 2025] 100.64.0.5:33288 Accepted
+2025-10-15T10:26:41.653625928Z [err]  [Wed Oct 15 10:26:41 2025] 🚀 EVENT.PHP LOADED - URI: /event.php
+2025-10-15T10:26:41.653632271Z [err]  [Wed Oct 15 10:26:41 2025] 🚀 GET PARAMS: []
+2025-10-15T10:26:41.671976910Z [err]  [Wed Oct 15 10:26:41 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:41.676891237Z [err]  [Wed Oct 15 10:26:41 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:41.677600754Z [err]  [Wed Oct 15 10:26:41 2025] 🚨 CHECK NOTIFICATION COUNT HANDLER CALLED
+2025-10-15T10:26:41.677667497Z [err]  [Wed Oct 15 10:26:41 2025] 🔍 POST data received: {"check_notification_count":"1","eventTitle":"Community Risk Reduction Program","eventType":"Event","eventDescription":"wwww","date_time":"2025-10-16T18:26","eventLocation":"Alion","eventMunicipality":"MARIVELES","eventBarangay":"Alion","organizer":"kevinpingol123","who_standard":"bmi-adult","classification":"Normal","user_status":"null"}
+2025-10-15T10:26:41.677674053Z [err]  [Wed Oct 15 10:26:41 2025] 🔍 Field values - Title: 'Community Risk Reduction Program', Type: 'Event', Description: 'wwww', Date: '2025-10-16T18:26', Location: 'Alion', Organizer: 'kevinpingol123'
+2025-10-15T10:26:41.677679171Z [err]  [Wed Oct 15 10:26:41 2025] 🔍 Additional fields - Municipality: 'MARIVELES', Barangay: 'Alion'
+2025-10-15T10:26:41.677684464Z [err]  [Wed Oct 15 10:26:41 2025] 🔍 Manual Event WHO params: whoStandard='bmi-adult', classification='Normal', userStatus=''
+2025-10-15T10:26:41.677690234Z [err]  [Wed Oct 15 10:26:41 2025] getFCMTokensByLocation called with targetLocation: 'Alion', whoStandard: 'bmi-adult', classification: 'Normal', userStatus: ''
+2025-10-15T10:26:41.677695000Z [err]  [Wed Oct 15 10:26:41 2025] 🔍 WHO Standard filtering requested: bmi-adult = Normal
+2025-10-15T10:26:41.677699616Z [err]  [Wed Oct 15 10:26:41 2025] 🔍 WHO filtering: whoStandard='bmi-adult', classification='Normal', userStatus=''
+2025-10-15T10:26:41.686982296Z [err]  [Wed Oct 15 10:26:41 2025] 🔍 WHO filtering: Found 1 users to check
+2025-10-15T10:26:41.687007381Z [err]  [Wed Oct 15 10:26:41 2025] 🔍 User BMI calculation: weight=55, height=171, BMI=18.809206251496, classification=Normal
+2025-10-15T10:26:41.687014775Z [err]  [Wed Oct 15 10:26:41 2025] 🔍 User classification check: userClassification='Normal', target='Normal', match=YES
+2025-10-15T10:26:41.687030575Z [err]  [Wed Oct 15 10:26:41 2025] 🔍 User MATCHED: kevinpingol123@gmail.com with classification Normal
+2025-10-15T10:26:41.687036435Z [err]  [Wed Oct 15 10:26:41 2025] 🔍 WHO filtering: Found 1 users with bmi-adult = Normal
+2025-10-15T10:26:41.687041542Z [err]  [Wed Oct 15 10:26:41 2025] 100.64.0.5:33288 [200]: POST /event.php
+2025-10-15T10:26:41.687055065Z [err]  [Wed Oct 15 10:26:41 2025] 100.64.0.5:33288 Closing
+2025-10-15T10:26:43.366678020Z [err]  [Wed Oct 15 10:26:43 2025] 100.64.0.5:33296 Accepted
+2025-10-15T10:26:43.366689269Z [err]  [Wed Oct 15 10:26:43 2025] 🚀 EVENT.PHP LOADED - URI: /event.php
+2025-10-15T10:26:43.366694977Z [err]  [Wed Oct 15 10:26:43 2025] 🚀 GET PARAMS: []
+2025-10-15T10:26:43.381058631Z [err]  [Wed Oct 15 10:26:43 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:43.385053563Z [err]  [Wed Oct 15 10:26:43 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:43.388261794Z [err]  [Wed Oct 15 10:26:43 2025] === NEW EVENT CREATION LOGIC STARTED ===
+2025-10-15T10:26:43.388270968Z [err]  [Wed Oct 15 10:26:43 2025] Form data received: Title=Community Risk Reduction Program, Type=Event, Location=Alion, Organizer=kevinpingol123
+2025-10-15T10:26:43.400910363Z [err]  [Wed Oct 15 10:26:43 2025] ✅ Event created successfully with ID: 2
+2025-10-15T10:26:43.400916916Z [err]  [Wed Oct 15 10:26:43 2025] 👥 Adding eligible participants for event ID: 2
+2025-10-15T10:26:43.400921665Z [err]  [Wed Oct 15 10:26:43 2025] 🔍 addEligibleParticipants: eventId=2, location=Alion, whoStandard=, classification=, userStatus=
+2025-10-15T10:26:43.400925783Z [err]  [Wed Oct 15 10:26:43 2025] getFCMTokensByLocation called with targetLocation: 'Alion', whoStandard: '', classification: '', userStatus: ''
+2025-10-15T10:26:43.400929613Z [err]  [Wed Oct 15 10:26:43 2025] Processing barangay case: Alion - getting tokens for specific barangay
+2025-10-15T10:26:43.400933852Z [err]  [Wed Oct 15 10:26:43 2025] FCM targeting using DatabaseAPI: barangay 'Alion' - Found 1 tokens
+2025-10-15T10:26:43.400938030Z [err]  [Wed Oct 15 10:26:43 2025] 👥 Found 1 eligible users to add as participants
+2025-10-15T10:26:43.406743636Z [err]  [Wed Oct 15 10:26:43 2025] ⚠️ Failed to add participant kevinpingol123@gmail.com: Database error: SQLSTATE[HY000]: General error: 1366 Incorrect integer value: '' for column 'attended' at row 1
+2025-10-15T10:26:43.406759397Z [err]  [Wed Oct 15 10:26:43 2025] ✅ Successfully added 0 participants to event 2
+2025-10-15T10:26:43.406768103Z [err]  [Wed Oct 15 10:26:43 2025] ✅ Added 0 eligible participants to event
+2025-10-15T10:26:43.406774137Z [err]  [Wed Oct 15 10:26:43 2025] 📱 Sending notifications for event: Community Risk Reduction Program at Alion
+2025-10-15T10:26:43.406780332Z [err]  [Wed Oct 15 10:26:43 2025] 🔍 WHO Standard: '', Classification: '', User Status: ''
+2025-10-15T10:26:43.406786381Z [err]  [Wed Oct 15 10:26:43 2025] 🚨 sendEventNotifications called for event: Community Risk Reduction Program
+2025-10-15T10:26:43.406791490Z [err]  [Wed Oct 15 10:26:43 2025] 🔔 Manual Event: Sending notification for event: Community Risk Reduction Program at Alion
+2025-10-15T10:26:43.406798839Z [err]  [Wed Oct 15 10:26:43 2025] 🔍 sendEventNotifications - WHO Standard: '', Classification: '', User Status: ''
+2025-10-15T10:26:43.406804677Z [err]  [Wed Oct 15 10:26:43 2025] getFCMTokensByLocation called with targetLocation: 'Alion', whoStandard: '', classification: '', userStatus: ''
+2025-10-15T10:26:43.406810165Z [err]  [Wed Oct 15 10:26:43 2025] Processing barangay case: Alion - getting tokens for specific barangay
+2025-10-15T10:26:43.410807262Z [err]  [Wed Oct 15 10:26:43 2025] FCM targeting using DatabaseAPI: barangay 'Alion' - Found 1 tokens
+2025-10-15T10:26:43.410814385Z [err]  [Wed Oct 15 10:26:43 2025] 📱 FCM tokens found: 1 for location: 'Alion'
+2025-10-15T10:26:43.410819206Z [err]  [Wed Oct 15 10:26:43 2025] 🔔 sendEventFCMNotificationToToken called with token: dDgJr74pRHukYxdkYiGy...
+2025-10-15T10:26:43.497949659Z [err]  [Wed Oct 15 10:26:43 2025] 🔔 FCM result: {"success":true,"response":"{\n  \"name\": \"projects\/nutrisaur-ebf29\/messages\/0:1760524003470332%87f665de87f665de\"\n}\n"}
+2025-10-15T10:26:43.497971052Z [err]  [Wed Oct 15 10:26:43 2025] Event notification sent successfully to kevinpingol123@gmail.com: 🎯 Event: Community Risk Reduction Program
+2025-10-15T10:26:43.497976968Z [err]  [Wed Oct 15 10:26:43 2025] 📤 Notifications sent: 1 successful, 0 failed
+2025-10-15T10:26:43.501801333Z [err]  [Wed Oct 15 10:26:43 2025] Error logging notification attempt: SQLSTATE[01000]: Warning: 1265 Data truncated for column 'target_type' at row 1
+2025-10-15T10:26:43.501808424Z [err]  [Wed Oct 15 10:26:43 2025] ✅ Notification sent successfully: Notification sent to 1 users in Alion
+2025-10-15T10:26:43.501813697Z [err]  [Wed Oct 15 10:26:43 2025] ✅ Event creation completed successfully
+2025-10-15T10:26:43.501817552Z [err]  [Wed Oct 15 10:26:43 2025] Event creation logic completed - staying on same page
+2025-10-15T10:26:43.501821734Z [err]  [Wed Oct 15 10:26:43 2025] 100.64.0.5:33296 [200]: POST /event.php
+2025-10-15T10:26:43.501828160Z [err]  [Wed Oct 15 10:26:43 2025] 100.64.0.5:33296 Closing
+2025-10-15T10:26:45.351908085Z [err]  [Wed Oct 15 10:26:45 2025] 100.64.0.5:33298 Accepted
+2025-10-15T10:26:45.351914104Z [err]  [Wed Oct 15 10:26:45 2025] === ROUTER DEBUG ===
+2025-10-15T10:26:45.351920249Z [err]  [Wed Oct 15 10:26:45 2025] Requested path: event
+2025-10-15T10:26:45.351925134Z [err]  [Wed Oct 15 10:26:45 2025] Public path: /var/www/html/public/
+2025-10-15T10:26:45.351930578Z [err]  [Wed Oct 15 10:26:45 2025] Public API path: /var/www/html/public/api/
+2025-10-15T10:26:45.351954104Z [err]  [Wed Oct 15 10:26:45 2025] Request URI: /event
+2025-10-15T10:26:45.351959843Z [err]  [Wed Oct 15 10:26:45 2025] Script Name: /index.php
+2025-10-15T10:26:45.351964355Z [err]  [Wed Oct 15 10:26:45 2025] 🚀 EVENT.PHP LOADED - URI: /event
+2025-10-15T10:26:45.351968592Z [err]  [Wed Oct 15 10:26:45 2025] 🚀 GET PARAMS: []
+2025-10-15T10:26:45.370013835Z [err]  [Wed Oct 15 10:26:45 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:45.374668758Z [err]  [Wed Oct 15 10:26:45 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:45.385098184Z [err]  [Wed Oct 15 10:26:45 2025] 100.64.0.5:33298 [200]: GET /event
+2025-10-15T10:26:45.385106517Z [err]  [Wed Oct 15 10:26:45 2025] 100.64.0.5:33298 Closing
+2025-10-15T10:26:45.610176115Z [err]  [Wed Oct 15 10:26:45 2025] 100.64.0.5:33302 Accepted
+2025-10-15T10:26:45.610182330Z [err]  [Wed Oct 15 10:26:45 2025] 100.64.0.5:33302 [200]: GET /logo.png
+2025-10-15T10:26:45.610188932Z [err]  [Wed Oct 15 10:26:45 2025] 100.64.0.5:33302 Closing
+2025-10-15T10:26:45.742134103Z [err]  [Wed Oct 15 10:26:45 2025] 100.64.0.5:33310 Accepted
+2025-10-15T10:26:45.742140822Z [err]  [Wed Oct 15 10:26:45 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:45.742148502Z [err]  [Wed Oct 15 10:26:45 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:45.742156252Z [err]  [Wed Oct 15 10:26:45 2025] 🔍 DatabaseAPI Debug - Action received: 'get_user_notifications'
+2025-10-15T10:26:45.742163652Z [err]  [Wed Oct 15 10:26:45 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:45.742171329Z [err]  (
+2025-10-15T10:26:45.742178462Z [err]  )
+2025-10-15T10:26:45.742187220Z [err]  
+2025-10-15T10:26:45.742193805Z [err]  [Wed Oct 15 10:26:45 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:45.742200803Z [err]  (
+2025-10-15T10:26:45.742207864Z [err]  )
+2025-10-15T10:26:45.742216659Z [err]  
+2025-10-15T10:26:45.742224277Z [err]  [Wed Oct 15 10:26:45 2025] 100.64.0.5:33310 [200]: POST /api/DatabaseAPI.php
+2025-10-15T10:26:45.742231362Z [err]  [Wed Oct 15 10:26:45 2025] 100.64.0.5:33310 Closing
+2025-10-15T10:26:47.315718259Z [err]  [Wed Oct 15 10:26:47 2025] 100.64.0.5:21250 Accepted
+2025-10-15T10:26:47.315809770Z [err]  [Wed Oct 15 10:26:47 2025] 🚀 EVENT.PHP LOADED - URI: /event.php?action=get_event_details&event_id=1
+2025-10-15T10:26:47.315816232Z [err]  [Wed Oct 15 10:26:47 2025] 🚀 GET PARAMS: {"action":"get_event_details","event_id":"1"}
+2025-10-15T10:26:47.325802218Z [err]  [Wed Oct 15 10:26:47 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:47.329129197Z [err]  [Wed Oct 15 10:26:47 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:47.333355455Z [err]  [Wed Oct 15 10:26:47 2025] 100.64.0.5:21250 [200]: GET /event.php?action=get_event_details&event_id=1
+2025-10-15T10:26:47.333363486Z [err]  [Wed Oct 15 10:26:47 2025] 100.64.0.5:21250 Closing
+2025-10-15T10:26:47.333370538Z [err]  [Wed Oct 15 10:26:47 2025] 100.64.0.5:21258 Accepted
+2025-10-15T10:26:47.333377712Z [err]  [Wed Oct 15 10:26:47 2025] 100.64.0.5:21272 Accepted
+2025-10-15T10:26:47.333384031Z [err]  [Wed Oct 15 10:26:47 2025] 🚀 EVENT.PHP LOADED - URI: /event.php?action=get_event_participants&event_id=1
+2025-10-15T10:26:47.333389828Z [err]  [Wed Oct 15 10:26:47 2025] 🚀 GET PARAMS: {"action":"get_event_participants","event_id":"1"}
+2025-10-15T10:26:47.346013904Z [err]  [Wed Oct 15 10:26:47 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:47.353316312Z [err]  [Wed Oct 15 10:26:47 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:47.356003339Z [err]  [Wed Oct 15 10:26:47 2025] 100.64.0.5:21258 [200]: GET /event.php?action=get_event_participants&event_id=1
+2025-10-15T10:26:47.356007606Z [err]  [Wed Oct 15 10:26:47 2025] 100.64.0.5:21258 Closing
+2025-10-15T10:26:47.356012045Z [err]  [Wed Oct 15 10:26:47 2025] 🚀 EVENT.PHP LOADED - URI: /event.php?action=get_available_users&event_id=1
+2025-10-15T10:26:47.356016316Z [err]  [Wed Oct 15 10:26:47 2025] 🚀 GET PARAMS: {"action":"get_available_users","event_id":"1"}
+2025-10-15T10:26:47.359433766Z [err]  [Wed Oct 15 10:26:47 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:47.370449214Z [err]  [Wed Oct 15 10:26:47 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:47.373897363Z [err]  [Wed Oct 15 10:26:47 2025] 100.64.0.5:21272 [200]: GET /event.php?action=get_available_users&event_id=1
+2025-10-15T10:26:47.373923611Z [err]  [Wed Oct 15 10:26:47 2025] 100.64.0.5:21272 Closing
+2025-10-15T10:26:48.954768669Z [err]  [Wed Oct 15 10:26:48 2025] 100.64.0.5:21284 Accepted
+2025-10-15T10:26:48.954778626Z [err]  [Wed Oct 15 10:26:48 2025] 🚀 EVENT.PHP LOADED - URI: /event.php?action=get_available_users&event_id=1
+2025-10-15T10:26:48.954785609Z [err]  [Wed Oct 15 10:26:48 2025] 🚀 GET PARAMS: {"action":"get_available_users","event_id":"1"}
+2025-10-15T10:26:48.960663751Z [err]  [Wed Oct 15 10:26:48 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:48.967487529Z [err]  [Wed Oct 15 10:26:48 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:48.967496288Z [err]  [Wed Oct 15 10:26:48 2025] 100.64.0.5:21284 [200]: GET /event.php?action=get_available_users&event_id=1
+2025-10-15T10:26:48.967502198Z [err]  [Wed Oct 15 10:26:48 2025] 100.64.0.5:21284 Closing
+2025-10-15T10:26:53.477011673Z [err]  [Wed Oct 15 10:26:53 2025] 100.64.0.4:16758 Accepted
+2025-10-15T10:26:53.477018281Z [err]  [Wed Oct 15 10:26:53 2025] === ROUTER DEBUG ===
+2025-10-15T10:26:53.477022862Z [err]  [Wed Oct 15 10:26:53 2025] Requested path: event
+2025-10-15T10:26:53.477027034Z [err]  [Wed Oct 15 10:26:53 2025] Public path: /var/www/html/public/
+2025-10-15T10:26:53.477031770Z [err]  [Wed Oct 15 10:26:53 2025] Public API path: /var/www/html/public/api/
+2025-10-15T10:26:53.477036688Z [err]  [Wed Oct 15 10:26:53 2025] Request URI: /event
+2025-10-15T10:26:53.477040487Z [err]  [Wed Oct 15 10:26:53 2025] Script Name: /index.php
+2025-10-15T10:26:53.477044515Z [err]  [Wed Oct 15 10:26:53 2025] 🚀 EVENT.PHP LOADED - URI: /event
+2025-10-15T10:26:53.477048135Z [err]  [Wed Oct 15 10:26:53 2025] 🚀 GET PARAMS: []
+2025-10-15T10:26:53.489884533Z [err]  [Wed Oct 15 10:26:53 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:53.497030511Z [err]  [Wed Oct 15 10:26:53 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:53.497039485Z [err]  [Wed Oct 15 10:26:53 2025] 100.64.0.4:16758 [200]: GET /event
+2025-10-15T10:26:53.497059456Z [err]  [Wed Oct 15 10:26:53 2025] 100.64.0.4:16758 Closing
+2025-10-15T10:26:53.680178775Z [err]  [Wed Oct 15 10:26:53 2025] 100.64.0.4:16762 Accepted
+2025-10-15T10:26:53.680188553Z [err]  [Wed Oct 15 10:26:53 2025] 100.64.0.4:16762 [200]: GET /logo.png
+2025-10-15T10:26:53.680194945Z [err]  [Wed Oct 15 10:26:53 2025] 100.64.0.4:16762 Closing
+2025-10-15T10:26:53.773495412Z [err]  [Wed Oct 15 10:26:53 2025] 100.64.0.4:16770 Accepted
+2025-10-15T10:26:53.781347938Z [err]  [Wed Oct 15 10:26:53 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:53.791127283Z [err]  [Wed Oct 15 10:26:53 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:53.791133709Z [err]  [Wed Oct 15 10:26:53 2025] 🔍 DatabaseAPI Debug - Action received: 'get_user_notifications'
+2025-10-15T10:26:53.791138148Z [err]  [Wed Oct 15 10:26:53 2025] 🔍 DatabaseAPI Debug - GET params: Array
+2025-10-15T10:26:53.791142255Z [err]  (
+2025-10-15T10:26:53.791146671Z [err]  )
+2025-10-15T10:26:53.791151906Z [err]  
+2025-10-15T10:26:53.791156884Z [err]  [Wed Oct 15 10:26:53 2025] 🔍 DatabaseAPI Debug - POST params: Array
+2025-10-15T10:26:53.791161483Z [err]  (
+2025-10-15T10:26:53.791165630Z [err]  )
+2025-10-15T10:26:53.791169742Z [err]  
+2025-10-15T10:26:53.791174298Z [err]  [Wed Oct 15 10:26:53 2025] 100.64.0.4:16770 [200]: POST /api/DatabaseAPI.php
+2025-10-15T10:26:53.791178804Z [err]  [Wed Oct 15 10:26:53 2025] 100.64.0.4:16770 Closing
+2025-10-15T10:26:55.275477684Z [err]  [Wed Oct 15 10:26:55 2025] 100.64.0.4:16786 Accepted
+2025-10-15T10:26:55.275487028Z [err]  [Wed Oct 15 10:26:55 2025] 100.64.0.4:16790 Accepted
+2025-10-15T10:26:55.275494014Z [err]  [Wed Oct 15 10:26:55 2025] 🚀 EVENT.PHP LOADED - URI: /event.php?action=get_event_participants&event_id=1
+2025-10-15T10:26:55.275500605Z [err]  [Wed Oct 15 10:26:55 2025] 🚀 GET PARAMS: {"action":"get_event_participants","event_id":"1"}
+2025-10-15T10:26:55.284306085Z [err]  [Wed Oct 15 10:26:55 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:55.288275039Z [err]  [Wed Oct 15 10:26:55 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:55.290831495Z [err]  [Wed Oct 15 10:26:55 2025] 100.64.0.4:16786 [200]: GET /event.php?action=get_event_participants&event_id=1
+2025-10-15T10:26:55.290838676Z [err]  [Wed Oct 15 10:26:55 2025] 100.64.0.4:16786 Closing
+2025-10-15T10:26:55.290844163Z [err]  [Wed Oct 15 10:26:55 2025] 100.64.0.4:16794 Accepted
+2025-10-15T10:26:55.290848773Z [err]  [Wed Oct 15 10:26:55 2025] 🚀 EVENT.PHP LOADED - URI: /event.php?action=get_event_details&event_id=1
+2025-10-15T10:26:55.290853128Z [err]  [Wed Oct 15 10:26:55 2025] 🚀 GET PARAMS: {"action":"get_event_details","event_id":"1"}
+2025-10-15T10:26:55.294354046Z [err]  [Wed Oct 15 10:26:55 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:55.302046833Z [err]  [Wed Oct 15 10:26:55 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:55.306793482Z [err]  [Wed Oct 15 10:26:55 2025] 100.64.0.4:16790 [200]: GET /event.php?action=get_event_details&event_id=1
+2025-10-15T10:26:55.306799807Z [err]  [Wed Oct 15 10:26:55 2025] 100.64.0.4:16790 Closing
+2025-10-15T10:26:55.306803826Z [err]  [Wed Oct 15 10:26:55 2025] 🚀 EVENT.PHP LOADED - URI: /event.php?action=get_available_users&event_id=1
+2025-10-15T10:26:55.306807583Z [err]  [Wed Oct 15 10:26:55 2025] 🚀 GET PARAMS: {"action":"get_available_users","event_id":"1"}
+2025-10-15T10:26:55.310399320Z [err]  [Wed Oct 15 10:26:55 2025] DatabaseAPI: PDO connection established on attempt 1
+2025-10-15T10:26:55.317991308Z [err]  [Wed Oct 15 10:26:55 2025] DatabaseAPI Constructor - PDO: success, MySQLi: success
+2025-10-15T10:26:55.317996716Z [err]  [Wed Oct 15 10:26:55 2025] 100.64.0.4:16794 [200]: GET /event.php?action=get_available_users&event_id=1
+2025-10-15T10:26:55.318001710Z [err]  [Wed Oct 15 10:26:55 2025] 100.64.0.4:16794 Closing
