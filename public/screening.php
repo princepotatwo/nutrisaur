@@ -852,8 +852,7 @@ body {
 .navbar span:not(.navbar-icon),
 .navbar-footer {
     opacity: 0;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    transform: translateX(-10px);
+    transition: opacity 0.3s ease;
     white-space: nowrap;
 }
 
