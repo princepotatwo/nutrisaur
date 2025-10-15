@@ -2884,15 +2884,11 @@ body {
     transform: translateX(-230px) !important;
 }
 
-.navbar:hover, .navbar.expanded {
-    transform: translateX(0); /* Show full navbar */
-    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(15px);
-}
-
 .navbar.expanded {
     transform: translateX(0) !important;
     width: 320px !important;
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
 }
 
 .navbar.expanded * {
