@@ -1509,7 +1509,7 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
             if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '' || $targetLocation === 'All Locations') {
                 // Get all users
                 $allUsersStmt = $db->getPDO()->prepare("
-                    SELECT user_id, fcm_token, email, barangay, municipality, weight, height, birthday, sex, screening_date
+                    SELECT fcm_token, email, barangay, municipality, weight, height, birthday, sex, screening_date
                     FROM community_users
                     WHERE fcm_token IS NOT NULL AND fcm_token != ''
                 ");
@@ -1520,7 +1520,7 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
                 $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
                 $municipalityName = str_replace('_', ' ', $municipalityName);
                 $municipalityStmt = $db->getPDO()->prepare("
-                    SELECT user_id, fcm_token, email, barangay, municipality, weight, height, birthday, sex, screening_date
+                    SELECT fcm_token, email, barangay, municipality, weight, height, birthday, sex, screening_date
                     FROM community_users
                     WHERE fcm_token IS NOT NULL AND fcm_token != '' AND municipality = :municipality
                 ");
@@ -1530,7 +1530,7 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
             } else {
                 // Get users by barangay
                 $barangayStmt = $db->getPDO()->prepare("
-                    SELECT user_id, fcm_token, email, barangay, municipality, weight, height, birthday, sex, screening_date
+                    SELECT fcm_token, email, barangay, municipality, weight, height, birthday, sex, screening_date
                     FROM community_users
                     WHERE fcm_token IS NOT NULL AND fcm_token != '' AND barangay = :barangay
                 ");
