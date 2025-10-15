@@ -793,13 +793,22 @@ body {
 }
 
 .navbar-footer {
-    padding: 25px 20px;
-    border-top: 2px solid rgba(164, 188, 46, 0.15);
-    font-size: 12px;
-    opacity: 0.7;
+    padding: 25px;
     text-align: center;
+    border-top: 2px solid rgba(164, 188, 46, 0.15);
     background: linear-gradient(135deg, transparent 0%, rgba(161, 180, 84, 0.03) 100%);
     position: relative;
+    overflow: hidden;
+}
+
+.navbar-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(161, 180, 84, 0.3), transparent);
 }
 
 /* Dark theme navbar footer styles */
