@@ -3124,77 +3124,108 @@ body {
 }
 
 /* Navbar Hamburger Button - Match floating icons style */
-.navbar-hamburger-btn {
-    position: fixed;
-    top: 50px;
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid var(--color-highlight);
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 1002;
-    transition: all 0.3s ease;
-}
+        .navbar-hamburger-btn {
+            position: fixed;
+            top: 50px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1002;
+            transition: all 0.3s ease;
+        }
 
-.navbar-hamburger-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
-}
+        .navbar-hamburger-btn:hover {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: #45a049;
+            transform: scale(1.05);
+        }
 
-.hamburger-icon {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
+        .navbar-hamburger-btn .hamburger-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+        }
 
-.hamburger-line {
-    width: 20px;
-    height: 2px;
-    background: var(--color-highlight);
-    border-radius: 2px;
-    transition: all 0.3s ease;
-}
+        .navbar-hamburger-btn .hamburger-line {
+            width: 18px;
+            height: 2px;
+            background: #4CAF50;
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
 
 /* Floating Navigation Icons */
-.floating-nav-icons {
-    position: fixed;
-    left: 0;
-    z-index: 999;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    pointer-events: none;
-}
+        .floating-nav-icons {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 60px;
+            height: 100vh;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            gap: 15px;
+            pointer-events: none;
+        }
 
-.floating-nav-icon {
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid var(--color-highlight);
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-highlight);
-    text-decoration: none;
-    transition: all 0.3s ease;
-    pointer-events: auto;
-}
+        .floating-nav-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(161, 180, 84, 0.1);
+            border: 1px solid rgba(161, 180, 84, 0.2);
+            border-radius: 8px;
+            color: var(--color-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
 
-.floating-nav-icon:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
-}
+        .floating-nav-icon:hover {
+            background: rgba(161, 180, 84, 0.2);
+            border-color: rgba(161, 180, 84, 0.4);
+            opacity: 1;
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(161, 180, 84, 0.2);
+        }
 
-.floating-nav-icon svg {
-    flex-shrink: 0;
-}
+        .floating-nav-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .light-theme .floating-nav-icon {
+            background: rgba(142, 185, 110, 0.1);
+            border-color: rgba(142, 185, 110, 0.2);
+        }
+
+        .light-theme .floating-nav-icon:hover {
+            background: rgba(142, 185, 110, 0.2);
+            border-color: rgba(142, 185, 110, 0.4);
+            box-shadow: 0 2px 8px rgba(142, 185, 110, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .navbar-hamburger-btn {
+                display: none;
+            }
+            .floating-nav-icons {
+                display: none;
+            }
+        }
 
 .navbar-footer div:first-child {
     font-weight: 600;
