@@ -1788,9 +1788,11 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
 
 // Handle CSV notification count check before import
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_csv_notification_count'])) {
+    error_log("🔍 CSV NOTIFICATION COUNT CHECK - Handler called");
     header('Content-Type: application/json');
     
     if (isset($_FILES['csvFile']) && $_FILES['csvFile']['error'] == 0) {
+        error_log("🔍 CSV file received: " . $_FILES['csvFile']['name']);
         $file = $_FILES['csvFile'];
         
         // Simple validation
@@ -1839,8 +1841,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_csv_notification
                     if (empty($title) || empty($location)) continue;
                     
                     // Get user count for this event
+                    error_log("🔍 Processing event: $title, Location: $location, WHO: $whoStandard, Classification: $classification, Status: $userStatus");
                     $fcmTokenData = getFCMTokensByLocation($location, $whoStandard, $classification, $userStatus);
                     $userCount = count($fcmTokenData);
+                    error_log("🔍 Found $userCount users for event: $title");
                     
                     $events[] = [
                         'title' => $title,
@@ -7368,12 +7372,17 @@ function closeCreateEventModal() {
         // CSV Import Handler - Same pattern as manual event creation
         async function handleCsvImport() {
             console.log('🚨 CSV IMPORT STARTED - CHECKING NOTIFICATION COUNTS FIRST');
+            console.log('🔍 File input element:', document.getElementById('csvFile'));
+            console.log('🔍 File input files:', document.getElementById('csvFile').files);
             
             const fileInput = document.getElementById('csvFile');
             if (!fileInput.files[0]) {
+                console.log('❌ No file selected');
                 alert('Please select a CSV file first.');
                 return;
             }
+            
+            console.log('✅ File selected:', fileInput.files[0].name);
             
             try {
                 console.log('🔄 Checking CSV notification counts...');
