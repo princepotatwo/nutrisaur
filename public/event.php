@@ -593,7 +593,10 @@ if (isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
 }
 
 // Check if user is authenticated (skip for API calls)
-$isApiCall = isset($_GET['action']) || (isset($_POST['action']) && in_array($_POST['action'], ['create_new_event', 'save_event_only', 'test_ajax', 'debug_fcm_tokens', 'debug_notification']));
+$isApiCall = isset($_GET['action']) || 
+             (isset($_POST['action']) && in_array($_POST['action'], ['create_new_event', 'save_event_only', 'test_ajax', 'debug_fcm_tokens', 'debug_notification'])) ||
+             isset($_POST['check_notification_count']) || 
+             isset($_POST['create_event']);
 $isAuthenticated = false;
 
 // Check if regular user is authenticated
