@@ -427,7 +427,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         $markedBy = $_SESSION['admin_id'] ?? $_SESSION['user_id'] ?? 'system';
         
         $result = $db->universalUpdate('event_participants', [
-            'attended' => $attended,
+            'attended' => $attended ? 1 : 0,
             'attendance_marked_at' => date('Y-m-d H:i:s'),
             'attendance_marked_by' => $markedBy
         ], 'id = ?', [$participantId]);
@@ -1537,7 +1537,7 @@ function addEligibleParticipants($eventId, $targetLocation = null, $whoStandard 
                 'event_id' => $eventId,
                 'community_user_email' => $userEmail,
                 'added_by' => $adminId,
-                'attended' => false  // Default to not attended
+                'attended' => 0  // Default to not attended (0 = false, 1 = true)
             ]);
             
             if ($result['success']) {
