@@ -13766,22 +13766,36 @@ body.navbar-locked {
             
             // Add click event listener to hamburger button - simple toggle
             hamburgerBtn.addEventListener('click', function() {
-                if (isNavbarLocked) {
-                    // Unlock navbar
-                    isNavbarLocked = false;
-                    hamburgerBtn.classList.remove('locked');
-                    navbar.classList.remove('locked');
-                    document.body.classList.remove('navbar-locked');
-                    localStorage.setItem('navbarLocked', 'false');
-                    console.log('🔓 Navbar unlocked');
+                const isExpanded = navbar.classList.contains('expanded');
+                
+                if (isExpanded) {
+                    // Minimize navbar
+                    navbar.classList.remove('expanded');
+                    navbar.classList.add('minimized');
+                    navbar.style.transform = 'translateX(-230px)';
+                    document.body.style.paddingLeft = '90px';
+                    
+                    // Position hamburger button at floating icons position when minimized
+                    hamburgerBtn.style.left = '25px';
+                    hamburgerBtn.style.top = '50px'; // Reset to original position
+                    
+                    // Save state to localStorage
+                    localStorage.setItem('navbarExpanded', 'false');
+                    console.log('🍔 Navbar minimized');
                 } else {
-                    // Lock navbar
-                    isNavbarLocked = true;
-                    hamburgerBtn.classList.add('locked');
-                    navbar.classList.add('locked');
-                    document.body.classList.add('navbar-locked');
-                    localStorage.setItem('navbarLocked', 'true');
-                    console.log('🔒 Navbar locked');
+                    // Expand navbar
+                    navbar.classList.remove('minimized');
+                    navbar.classList.add('expanded');
+                    navbar.style.transform = 'translateX(0)';
+                    document.body.style.paddingLeft = '320px';
+                    
+                    // Position hamburger button anchored to navbar when expanded
+                    hamburgerBtn.style.left = '250px';
+                    hamburgerBtn.style.top = '43px';
+                    
+                    // Save state to localStorage
+                    localStorage.setItem('navbarExpanded', 'true');
+                    console.log('🍔 Navbar expanded');
                 }
             });
             
@@ -13825,16 +13839,32 @@ body.navbar-locked {
             // No hover navigation - hamburger button only
             
             // Set initial state
+            // Load saved navbar state from localStorage
+            const savedNavbarState = localStorage.getItem('navbarExpanded');
             const isMobile = window.innerWidth <= 768;
+            
             if (isMobile) {
                 hamburgerBtn.style.display = 'none';
             } else {
                 hamburgerBtn.style.display = 'flex';
-                // Start with navbar minimized (like Gmail)
-                navbar.classList.add('minimized');
-                document.body.style.paddingLeft = '90px';
-                // Set initial hamburger position for minimized state
-                hamburgerBtn.style.left = '25px';
+                
+                if (savedNavbarState === 'true') {
+                    // Start with navbar EXPANDED (saved state)
+                    navbar.classList.add('expanded');
+                    navbar.style.transform = 'translateX(0)';
+                    document.body.style.paddingLeft = '320px';
+                    hamburgerBtn.style.left = '250px';
+                    hamburgerBtn.style.top = '43px';
+                    console.log('📱 Loaded expanded navbar state');
+                } else {
+                    // Start with navbar MINIMIZED (default or saved state)
+                    navbar.classList.add('minimized');
+                    navbar.style.transform = 'translateX(-230px)';
+                    document.body.style.paddingLeft = '90px';
+                    hamburgerBtn.style.left = '25px';
+                    hamburgerBtn.style.top = '50px';
+                    console.log('📱 Loaded minimized navbar state');
+                }
             }
             
             // Initialize hamburger button state
@@ -13848,34 +13878,6 @@ body.navbar-locked {
             document.addEventListener('DOMContentLoaded', initNavbarHamburgerButton);
         } else {
             initNavbarHamburgerButton();
-        }
-        
-        // Load navbar lock state from localStorage on page load
-        function loadNavbarLockState() {
-            const savedLockState = localStorage.getItem('navbarLocked');
-            if (savedLockState === 'true') {
-                const navbar = document.getElementById('navbar');
-                const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
-                if (navbar && hamburgerBtn) {
-                    navbar.classList.add('locked');
-                    navbar.classList.add('expanded');
-                    navbar.classList.remove('minimized');
-                    navbar.style.transform = 'translateX(0)';
-                    document.body.style.paddingLeft = '320px';
-                    document.body.classList.add('navbar-locked');
-                    hamburgerBtn.classList.add('locked');
-                    hamburgerBtn.style.left = '250px';
-                    hamburgerBtn.style.top = '43px';
-                    isNavbarLocked = true;
-                }
-            }
-        }
-        
-        // Load lock state when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadNavbarLockState);
-        } else {
-            loadNavbarLockState();
         }
 
         // Floating Navigation Icons - Always visible like Gmail
