@@ -601,7 +601,7 @@ body {
 }
 
 .navbar-header {
-    padding: 35px 25px;
+    padding: 0 25px;
     display: flex;
     align-items: center;
     border-bottom: 2px solid rgba(164, 188, 46, 0.15);
