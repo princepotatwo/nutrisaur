@@ -7292,10 +7292,10 @@ function closeCreateEventModal() {
                     body: new URLSearchParams({
                         'check_notification_count': '1',
                         'eventTitle': eventData.title,
-                        'eventType': eventData.type || 'Event',
+                        'eventType': 'Event', // Default event type
                         'eventDescription': eventData.description,
                         'date_time': eventData.date_time,
-                        'location': eventData.location,
+                        'eventLocation': eventData.location, // Changed from 'location' to 'eventLocation'
                         'organizer': eventData.organizer,
                         'who_standard': eventData.who_standard,
                         'classification': eventData.classification,
