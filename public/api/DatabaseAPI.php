@@ -6619,6 +6619,32 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $result = $updateStmt->execute($updateValues);
                     
                     if ($result) {
+                        // Check if weight or height changed for auto-screening
+                        $weightChanged = false;
+                        $heightChanged = false;
+                        
+                        // Check if weight was updated
+                        foreach ($updateFields as $field) {
+                            if (strpos($field, 'weight') !== false) {
+                                $weightChanged = true;
+                                break;
+                            }
+                        }
+                        
+                        // Check if height was updated
+                        foreach ($updateFields as $field) {
+                            if (strpos($field, 'height') !== false) {
+                                $heightChanged = true;
+                                break;
+                            }
+                        }
+                        
+                        // Trigger auto-screening if weight or height changed
+                        if ($weightChanged || $heightChanged) {
+                            error_log("🔍 Auto-screening triggered: weightChanged=$weightChanged, heightChanged=$heightChanged");
+                            triggerAutoScreening($originalEmail, $data);
+                        }
+                        
                         // Send FCM notification for profile update
                         $notificationEmail = !empty($newEmail) ? $newEmail : $originalEmail;
                         sendProfileUpdatedNotification($notificationEmail, 'profile');
@@ -8423,6 +8449,79 @@ function getFlaggingStatus($db, $userEmail, $date = null) {
             'success' => false,
             'error' => 'Failed to get flagging status: ' . $e->getMessage()
         ];
+    }
+}
+
+/**
+ * Trigger auto-screening for progress tracking when weight or height changes
+ */
+function triggerAutoScreening($email, $userData) {
+    try {
+        error_log("🔍 Triggering auto-screening for user: $email");
+        
+        // Get user data from database to ensure we have all required fields
+        $pdo = getDatabaseConnection();
+        if (!$pdo) {
+            error_log("❌ Auto-screening: Database connection failed");
+            return false;
+        }
+        
+        $stmt = $pdo->prepare("SELECT email, weight, height, birthday, sex FROM community_users WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$user) {
+            error_log("❌ Auto-screening: User not found: $email");
+            return false;
+        }
+        
+        // Prepare auto-screening data
+        $screeningData = [
+            'auto_screening' => 'true',
+            'email' => $user['email'],
+            'weight' => $user['weight'],
+            'height' => $user['height'],
+            'birthday' => $user['birthday'],
+            'sex' => $user['sex']
+        ];
+        
+        error_log("🔍 Auto-screening data: " . json_encode($screeningData));
+        
+        // Call screening.php with auto-screening data
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'http://localhost/screening.php');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($screeningData));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/x-www-form-urlencoded',
+            'Accept: application/json'
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+        
+        if ($error) {
+            error_log("❌ Auto-screening CURL error: $error");
+            return false;
+        }
+        
+        if ($httpCode === 200) {
+            error_log("✅ Auto-screening completed successfully for $email");
+            error_log("🔍 Auto-screening response: $response");
+            return true;
+        } else {
+            error_log("❌ Auto-screening failed with HTTP code: $httpCode");
+            error_log("🔍 Auto-screening response: $response");
+            return false;
+        }
+        
+    } catch (Exception $e) {
+        error_log("❌ Auto-screening error: " . $e->getMessage());
+        return false;
     }
 }
 
