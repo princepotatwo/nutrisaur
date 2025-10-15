@@ -908,6 +908,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_notification_cou
     // Debug: Log received POST data
     error_log("🔍 POST data received: " . json_encode($_POST));
     error_log("🔍 Field values - Title: '$title', Type: '$type', Description: '$description', Date: '$date_time', Location: '$location', Organizer: '$organizer'");
+    error_log("🔍 Additional fields - Municipality: '" . ($_POST['eventMunicipality'] ?? 'NOT_SET') . "', Barangay: '" . ($_POST['eventBarangay'] ?? 'NOT_SET') . "'");
     
     // Handle case where location might be empty but we have other location data
     if (empty($location) || $location === 'all') {
@@ -7339,6 +7340,8 @@ function closeCreateEventModal() {
                         'eventDescription': eventData.description,
                         'date_time': eventData.date_time,
                         'eventLocation': eventData.location, // Changed from 'location' to 'eventLocation'
+                        'eventMunicipality': actualMunicipality || '', // Include municipality
+                        'eventBarangay': barangay || '', // Include barangay
                         'organizer': eventData.organizer,
                         'who_standard': eventData.who_standard,
                         'classification': eventData.classification,
