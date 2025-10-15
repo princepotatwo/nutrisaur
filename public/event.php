@@ -981,6 +981,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
     $date_time = $_POST['date_time'] ?? $_POST['eventDate'] ?? '';
     $location = $_POST['eventLocation'] ?? 'all';
     $organizer = $_POST['organizer'] ?? $_POST['eventOrganizer'] ?? '';
+    $whoStandard = $_POST['who_standard'] ?? null;
+    $classification = $_POST['classification'] ?? null;
+    $userStatus = $_POST['user_status'] ?? null;
     
     error_log("Form data received: Title=$title, Type=$type, Location=$location, Organizer=$organizer");
     
@@ -1017,8 +1020,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
             
             error_log("✅ Event created successfully with ID: $eventId");
             
-            // Notifications are handled by the save_event_only handler
-            $successMessage = "🎉 Event '$title' created successfully!";
+            // Send notifications
+            try {
+                error_log("📱 Sending notifications for event: $title at $location");
+                error_log("🔍 WHO Standard: '$whoStandard', Classification: '$classification', User Status: '$userStatus'");
+                
+                $notificationResult = sendEventNotifications($eventId, $title, $type, $description, $date_time, $location, $organizer, $whoStandard, $classification, $userStatus);
+                
+                if ($notificationResult['success']) {
+                    $successMessage = "🎉 Event '$title' created and notifications sent successfully! " . $notificationResult['message'];
+                    error_log("✅ Notification sent successfully: " . $notificationResult['message']);
+                } else {
+                    $successMessage = "🎉 Event '$title' created but notification warning: " . $notificationResult['message'];
+                    error_log("⚠️ Notification warning: " . $notificationResult['message']);
+                }
+            } catch (Exception $e) {
+                error_log("❌ Notification error: " . $e->getMessage());
+                $successMessage = "🎉 Event '$title' created but notification failed: " . $e->getMessage();
+            }
             
             error_log("✅ Event creation completed successfully");
             
@@ -7115,6 +7134,9 @@ function closeCreateEventModal() {
             formData.append('date_time', eventData.date_time);
             formData.append('eventLocation', eventData.location);
             formData.append('organizer', eventData.organizer);
+            formData.append('who_standard', eventData.who_standard || '');
+            formData.append('classification', eventData.classification || '');
+            formData.append('user_status', eventData.user_status || '');
 
             // Show loading state
             const confirmBtn = document.querySelector('#notificationConfirmModal .btn-primary');
