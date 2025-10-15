@@ -7396,12 +7396,12 @@ function closeCreateEventModal() {
             });
         }
         
-        // Navbar Hamburger Button Initialization
+        // Hamburger Button Navigation
         function initNavbarHamburgerButton() {
             console.log('🍔 Initializing navbar hamburger button...');
             
             const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
-            const navbar = document.getElementById('navbar');
+            const navbar = document.querySelector('.navbar');
             
             if (!hamburgerBtn || !navbar) {
                 console.error('❌ Navbar hamburger button or navbar not found');
@@ -7446,6 +7446,7 @@ function closeCreateEventModal() {
             // Handle window resize
             window.addEventListener('resize', function() {
                 const isMobile = window.innerWidth <= 768;
+                
                 if (isMobile) {
                     // Mobile: hide hamburger button
                     hamburgerBtn.style.display = 'none';
@@ -7503,30 +7504,63 @@ function closeCreateEventModal() {
                 const navbarMenu = navbar.querySelector('.navbar-menu ul');
                 if (!navbarMenu) return;
                 
-                const menuItems = navbarMenu.querySelectorAll('li a');
+                const menuItems = navbarMenu.querySelectorAll('li');
                 
                 floatingIcons.forEach((icon, index) => {
                     if (menuItems[index]) {
-                        const rect = menuItems[index].getBoundingClientRect();
+                        const menuItem = menuItems[index];
+                        const rect = menuItem.getBoundingClientRect();
+                        
+                        // Position icon beside the menu item
+                        icon.style.position = 'fixed';
+                        icon.style.left = '20px';
                         icon.style.top = (rect.top + rect.height / 2 - 28) + 'px';
-                        icon.style.left = '25px';
+                        icon.style.zIndex = '1001';
                     }
                 });
             }
             
-            // Position icons on load
+            // Initial positioning
             positionFloatingIcons();
             
-            // Reposition on window resize
+            // Update positioning on scroll and resize
+            window.addEventListener('scroll', positionFloatingIcons);
             window.addEventListener('resize', positionFloatingIcons);
             
-            // Reposition on scroll (in case navbar scrolls)
-            window.addEventListener('scroll', positionFloatingIcons);
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                const isMobile = window.innerWidth <= 768;
+                
+                if (isMobile) {
+                    // Mobile: hide floating icons
+                    floatingIcons.forEach(icon => {
+                        icon.style.display = 'none';
+                    });
+                } else {
+                    // Desktop: show floating icons
+                    floatingIcons.forEach(icon => {
+                        icon.style.display = 'flex';
+                    });
+                    positionFloatingIcons();
+                }
+            });
+            
+            // Set initial state
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                floatingIcons.forEach(icon => {
+                    icon.style.display = 'none';
+                });
+            } else {
+                floatingIcons.forEach(icon => {
+                    icon.style.display = 'flex';
+                });
+            }
             
             console.log('✅ Floating navigation icons initialized successfully');
         }
         
-        // Initialize navbar hamburger button when DOM is ready
+        // Initialize hamburger button when DOM is ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initNavbarHamburgerButton);
         } else {
