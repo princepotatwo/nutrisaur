@@ -147,8 +147,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
             }
             
             // Check if user still has default password
-            $hasDefaultPassword = password_verify('password123', $existingUser['password']) || 
-                      password_verify('mho123', $existingUser['password']);
+            $hasDefaultPassword = password_verify('mho123', $existingUser['password']);
             
             // User exists, log them in
             $_SESSION['user_id'] = $existingUser['user_id'];
@@ -179,8 +178,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
                 }
                 
                 // Check if user still has default password
-                $hasDefaultPassword = password_verify('password123', $userByEmail['password']) || 
-                      password_verify('mho123', $userByEmail['password']);
+                $hasDefaultPassword = password_verify('mho123', $userByEmail['password']);
                 
                 // Link Google account to existing user
                 $updateStmt = $pdo->prepare("UPDATE users SET google_id = ?, google_name = ?, google_picture = ?, email_verified = 1 WHERE user_id = ?");
@@ -275,8 +273,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
             }
             
             // Check if user still has default password
-            $hasDefaultPassword = password_verify('password123', $existingUser['password']) || 
-                      password_verify('mho123', $existingUser['password']);
+            $hasDefaultPassword = password_verify('mho123', $existingUser['password']);
             
             // User exists, log them in
             $_SESSION['user_id'] = $existingUser['user_id'];
@@ -307,8 +304,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
                 }
                 
                 // Check if user still has default password
-                $hasDefaultPassword = password_verify('password123', $userByEmail['password']) || 
-                      password_verify('mho123', $userByEmail['password']);
+                $hasDefaultPassword = password_verify('mho123', $userByEmail['password']);
                 
                 // Link Google account to existing user
                 $updateStmt = $pdo->prepare("UPDATE users SET google_id = ?, google_name = ?, google_picture = ?, email_verified = 1 WHERE user_id = ?");
@@ -723,6 +719,88 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                     ]);
                 } else {
                     echo json_encode(['success' => false, 'message' => 'Invalid or expired setup link']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => 'Password setup failed: ' . $e->getMessage()]);
+            }
+            exit;
+            
+        case 'google_setup_password':
+            $newPassword = $_POST['new_password'];
+            $confirmPassword = $_POST['confirm_password'];
+            
+            if (empty($newPassword) || empty($confirmPassword)) {
+                echo json_encode(['success' => false, 'message' => 'Please fill in all fields']);
+                exit;
+            }
+            
+            if ($newPassword !== $confirmPassword) {
+                echo json_encode(['success' => false, 'message' => 'Passwords do not match']);
+                exit;
+            }
+            
+            if (strlen($newPassword) < 6) {
+                echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
+                exit;
+            }
+            
+            if (strlen($newPassword) > 20) {
+                echo json_encode(['success' => false, 'message' => 'Password must be 20 characters or less']);
+                exit;
+            }
+            
+            // Check for at least one uppercase letter
+            if (!preg_match('/[A-Z]/', $newPassword)) {
+                echo json_encode(['success' => false, 'message' => 'Password must contain at least one uppercase letter']);
+                exit;
+            }
+            
+            // Check for at least one symbol
+            if (!preg_match('/[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]/', $newPassword)) {
+                echo json_encode(['success' => false, 'message' => 'Password must contain at least one symbol (!@#$%^&*()_+-=[]{}|;\':",./<>?)']);
+                exit;
+            }
+            
+            if ($pdo === null) {
+                echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
+                exit;
+            }
+            
+            try {
+                // Check if user is logged in
+                if (!isset($_SESSION['user_id'])) {
+                    echo json_encode(['success' => false, 'message' => 'You must be logged in to set up your password']);
+                    exit;
+                }
+                
+                // Get user info including personal_email and full_name
+                $stmt = $pdo->prepare("SELECT user_id, username, email, personal_email, full_name FROM users WHERE user_id = ?");
+                $stmt->execute([$_SESSION['user_id']]);
+                $user = $stmt->fetch();
+                
+                if ($user) {
+                    // Hash new password
+                    $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+                    
+                    // Update password
+                    $updateStmt = $pdo->prepare("UPDATE users SET password = ? WHERE user_id = ?");
+                    $result = $updateStmt->execute([$hashedPassword, $user['user_id']]);
+                    
+                    if ($result) {
+                        // Check if personal info is missing
+                        $needsPersonalInfo = empty($user['personal_email']) || empty($user['full_name']);
+                        
+                        echo json_encode([
+                            'success' => true, 
+                            'message' => 'Password set up successfully!',
+                            'needs_personal_info' => $needsPersonalInfo,
+                            'redirect' => $needsPersonalInfo ? null : '/dash'
+                        ]);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Failed to update password']);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'User not found']);
                 }
             } catch (Exception $e) {
                 echo json_encode(['success' => false, 'message' => 'Password setup failed: ' . $e->getMessage()]);
@@ -2007,6 +2085,27 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
                 <button type="submit" class="auth-btn" id="setup-password-btn">Set Up Password</button>
             </form>
             
+            <!-- Google OAuth Password Setup Form -->
+            <form id="google-password-setup-form" method="post" action="" style="display: none;">
+                <div class="input-group">
+                    <label for="google_setup_new_password">New Password</label>
+                    <input type="password" id="google_setup_new_password" name="new_password" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                </div>
+                <div class="input-group password-field">
+                    <label for="google_setup_confirm_password">Confirm Password</label>
+                    <input type="password" id="google_setup_confirm_password" name="confirm_password" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <button type="button" class="password-toggle" id="toggle-google-password-setup-confirm" data-target="google_setup_confirm_password" aria-label="Toggle password visibility" title="Show/Hide password">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                        <svg class="eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                            <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
+                        </svg>
+                    </button>
+                </div>
+                <button type="submit" class="auth-btn" id="google-setup-password-btn">Set Up Password</button>
+            </form>
+            
             <!-- Personal Information Collection Form -->
             <form id="personal-info-form" method="post" action="" style="display: none;">
                 <div class="input-group">
@@ -2557,6 +2656,7 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             setupVerificationForm();
             setupForgotPasswordForm();
             setupPasswordSetupForm();
+            setupGooglePasswordSetupForm();
             setupPersonalInfoForm();
             
             // Only show login form if no password setup token
@@ -2700,7 +2800,7 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
         
         // Hide all forms
         function hideAllForms() {
-            const forms = ['auth-form', 'verification-form', 'forgot-password-form', 'reset-code-form', 'new-password-form', 'password-setup-form', 'personal-info-form'];
+            const forms = ['auth-form', 'verification-form', 'forgot-password-form', 'reset-code-form', 'new-password-form', 'password-setup-form', 'google-password-setup-form', 'personal-info-form'];
             forms.forEach(formId => {
                 const form = document.getElementById(formId);
                 if (form) form.style.display = 'none';
@@ -2910,6 +3010,36 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             showMessage('Please provide your personal information to complete your account setup.', 'info');
         }
         
+        // Setup Google OAuth password setup form
+        function setupGooglePasswordSetupForm() {
+            const googlePasswordSetupForm = document.getElementById('google-password-setup-form');
+            
+            if (googlePasswordSetupForm) {
+                googlePasswordSetupForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const newPassword = document.getElementById('google_setup_new_password').value;
+                    const confirmPassword = document.getElementById('google_setup_confirm_password').value;
+                    
+                    if (!newPassword || !confirmPassword) {
+                        showMessage('Please fill in all password fields', 'error');
+                        return;
+                    }
+                    
+                    if (newPassword !== confirmPassword) {
+                        showMessage('Passwords do not match', 'error');
+                        return;
+                    }
+                    
+                    if (newPassword.length < 6) {
+                        showMessage('Password must be at least 6 characters long', 'error');
+                        return;
+                    }
+                    
+                    await setupGooglePassword(newPassword, confirmPassword);
+                });
+            }
+        }
+        
         // Setup personal info form
         function setupPersonalInfoForm() {
             const personalInfoForm = document.getElementById('personal-info-form');
@@ -2965,6 +3095,44 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             } catch (error) {
                 showMessage('An error occurred. Please try again later.', 'error');
                 console.error('Save personal info error:', error);
+            }
+        }
+        
+        // Setup Google password function
+        async function setupGooglePassword(newPassword, confirmPassword) {
+            try {
+                showMessage('Setting up password...', 'info');
+                
+                const formData = new FormData();
+                formData.append('new_password', newPassword);
+                formData.append('confirm_password', confirmPassword);
+                formData.append('ajax_action', 'google_setup_password');
+                
+                const response = await fetch('/home.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('Password set up successfully!', 'success');
+                    if (data.needs_personal_info) {
+                        // Transition to personal info form
+                        setTimeout(() => {
+                            showPersonalInfoForm();
+                        }, 1500);
+                    } else if (data.redirect) {
+                        setTimeout(() => {
+                            window.location.href = data.redirect;
+                        }, 2000);
+                    }
+                } else {
+                    showMessage(data.message || 'Failed to set up password', 'error');
+                }
+            } catch (error) {
+                showMessage('An error occurred. Please try again later.', 'error');
+                console.error('Setup Google password error:', error);
             }
         }
         

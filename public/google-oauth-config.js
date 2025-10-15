@@ -383,16 +383,16 @@ class GoogleOAuth {
 
     showPasswordSetupForm() {
         // Hide all forms first
-        const forms = ['auth-form', 'verification-form', 'forgot-password-form', 'reset-code-form', 'new-password-form', 'personal-info-form'];
+        const forms = ['auth-form', 'verification-form', 'forgot-password-form', 'reset-code-form', 'new-password-form', 'password-setup-form', 'personal-info-form'];
         forms.forEach(formId => {
             const form = document.getElementById(formId);
             if (form) form.style.display = 'none';
         });
         
-        // Show password setup form
-        const passwordSetupForm = document.getElementById('password-setup-form');
-        if (passwordSetupForm) {
-            passwordSetupForm.style.display = 'block';
+        // Show Google OAuth password setup form
+        const googlePasswordSetupForm = document.getElementById('google-password-setup-form');
+        if (googlePasswordSetupForm) {
+            googlePasswordSetupForm.style.display = 'block';
             document.getElementById('auth-title').textContent = 'Set Up Your Password';
             this.showMessage('Please set up your password to complete your account setup.', 'info');
         }
