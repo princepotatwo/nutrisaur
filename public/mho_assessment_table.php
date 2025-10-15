@@ -1036,7 +1036,7 @@ if (isDBConnected()) {
                                     </td>
                                     <td class="tooltip">
                                         <?php echo htmlspecialchars($bmiValue); ?>
-                                        <span class="tooltiptext">BMI: <?php echo htmlspecialchars($bmiValue); ?><br>Category: <?php echo $bmi < 18.5 ? 'Underweight' : ($bmi < 25 ? 'Normal' : ($bmi < 30 ? 'Overweight' : 'Obese')); ?></span>
+                                        <span class="tooltiptext">BMI: <?php echo htmlspecialchars($bmiValue); ?><br>Category: <?php echo $bmi < 16.0 ? 'Severely Underweight' : ($bmi < 18.5 ? 'Underweight' : ($bmi < 25 ? 'Normal' : ($bmi < 30 ? 'Overweight' : 'Obese'))); ?></span>
                                     </td>
                                     <td>
                                         <span class="risk-badge <?php echo $riskClass; ?>"><?php echo ucfirst($riskLevel); ?> Risk</span>

@@ -1283,7 +1283,8 @@ function handleGetUserCountByClassification($pdo) {
                         case 'bmi_adult':
                             // Calculate BMI for adults
                             $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
-                            if ($bmi < 18.5) $classification = 'Underweight';
+                            if ($bmi < 16.0) $classification = 'Severely Underweight';
+                            else if ($bmi < 18.5) $classification = 'Underweight';
                             else if ($bmi < 25) $classification = 'Normal';
                             else if ($bmi < 30) $classification = 'Overweight';
                             else $classification = 'Obese';
