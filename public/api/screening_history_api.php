@@ -125,6 +125,23 @@ try {
                 $date = new DateTime($record['screening_date']);
                 $dateLabel = $date->format('M j, Y');
                 
+                // Calculate fresh classification for BMI Adult
+                $freshClassification = $record['classification']; // Default to stored
+                if ($classification_type === 'bmi-adult') {
+                    $bmi = floatval($record['bmi']);
+                    if ($bmi < 16.0) {
+                        $freshClassification = 'Severely Underweight';
+                    } else if ($bmi < 18.5) {
+                        $freshClassification = 'Underweight';
+                    } else if ($bmi < 25) {
+                        $freshClassification = 'Normal';
+                    } else if ($bmi < 30) {
+                        $freshClassification = 'Overweight';
+                    } else {
+                        $freshClassification = 'Obese';
+                    }
+                }
+                
                 // Add to chart data - choose appropriate metric based on standard
                 $yValue = floatval($record['bmi']); // Default to BMI
                 if ($classification_type === 'weight-for-age' || $classification_type === 'weight-for-height') {
@@ -137,7 +154,7 @@ try {
                 $chartData['datasets'][0]['data'][] = [
                     'x' => $dateLabel,
                     'y' => $yValue,
-                    'classification' => $record['classification']
+                    'classification' => $freshClassification
                 ];
                 
                 // Add to table data (simplified)
@@ -145,12 +162,12 @@ try {
                     'date' => $dateLabel,
                     'weight' => $record['weight'],
                     'bmi' => $record['bmi'],
-                    'classification' => $record['classification']
+                    'classification' => $freshClassification
                 ];
                 
                 // Track classifications for legend
-                if ($record['classification']) {
-                    $classifications[$record['classification']] = getClassificationColor($record['classification']);
+                if ($freshClassification) {
+                    $classifications[$freshClassification] = getClassificationColor($freshClassification);
                 }
             }
             
