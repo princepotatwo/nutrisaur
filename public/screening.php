@@ -6743,6 +6743,7 @@ header {
                 hamburgerBtn.style.display = 'flex';
                 // Start with navbar EXPANDED
                 navbar.classList.add('expanded');
+                navbar.style.transform = 'translateX(0)';
                 document.body.style.paddingLeft = '320px';
                 // Set initial hamburger position for expanded state
                 hamburgerBtn.style.left = '250px';
