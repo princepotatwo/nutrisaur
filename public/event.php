@@ -1583,6 +1583,12 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
             
             error_log("Total FCM tokens with barangay data: $tokenWithBarangayCount, Total active FCM tokens: $tokenCount");
             
+            // Debug: Show actual barangay names in database
+            $debugStmt = $db->getPDO()->prepare("SELECT DISTINCT barangay, municipality FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != ''");
+            $debugStmt->execute();
+            $actualBarangays = $debugStmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("🔍 Actual barangay names in database: " . json_encode($actualBarangays));
+            
             // Debug: Show what municipalities and barangays actually exist in the database
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
                 $debugStmt = $db->getPDO()->prepare("SELECT DISTINCT municipality, COUNT(*) as count FROM community_users WHERE fcm_token IS NOT NULL AND fcm_token != '' GROUP BY municipality");
@@ -8539,17 +8545,17 @@ function closeCreateEventModal() {
             
             let csvContent;
             if (isSuperAdmin) {
-                // Super admin template includes municipality column - Use specific barangay names
+                // Super admin template includes municipality column - Use same approach as manual event (no WHO filtering)
                 csvContent = `title,date_time,municipality,location,barangay,organizer,description,who_standard,classification,user_status
-vhjvhvf,${formatDate(future1)},MARIVELES,Alion,Alion,kevinpingol123,vhvhcghch,bmi-adult,Underweight,all
-Health Seminar,${formatDate(future2)},MARIVELES,Alion,,Dr. Juan Cruz,Community health education and awareness (all barangays),weight-for-age,Severely Underweight,all
-Medical Mission,${formatDate(future3)},MARIVELES,Poblacion,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,height-for-age,Stunted,all`;
+vhjvhvf,${formatDate(future1)},MARIVELES,Alion,Alion,kevinpingol123,vhvhcghch,,,all
+Health Seminar,${formatDate(future2)},MARIVELES,Alion,,Dr. Juan Cruz,Community health education and awareness (all barangays),,,all
+Medical Mission,${formatDate(future3)},MARIVELES,Poblacion,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,,,all`;
             } else {
-                // Regular user template uses their municipality automatically - Use specific barangay names
+                // Regular user template uses their municipality automatically - Use same approach as manual event (no WHO filtering)
                 csvContent = `title,date_time,location,barangay,organizer,description,who_standard,classification,user_status
-vhjvhvf,${formatDate(future1)},Alion,Alion,kevinpingol123,vhvhcghch,bmi-adult,Underweight,all
-Health Seminar,${formatDate(future2)},Alion,,Dr. Juan Cruz,Community health education and awareness (all barangays),weight-for-age,Severely Underweight,all
-Medical Mission,${formatDate(future3)},Poblacion,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,height-for-age,Stunted,all`;
+vhjvhvf,${formatDate(future1)},Alion,Alion,kevinpingol123,vhvhcghch,,,all
+Health Seminar,${formatDate(future2)},Alion,,Dr. Juan Cruz,Community health education and awareness (all barangays),,,all
+Medical Mission,${formatDate(future3)},Poblacion,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,,,all`;
             }
             
             const blob = new Blob([csvContent], { type: 'text/csv' });
