@@ -8470,6 +8470,7 @@ function getFlaggingStatus($db, $userEmail, $date = null) {
 
 /**
  * Trigger auto-screening for progress tracking when weight or height changes
+ * Directly calls screening logic instead of HTTP request to avoid deadlock
  */
 function triggerAutoScreening($email, $userData) {
     try {
@@ -8491,63 +8492,51 @@ function triggerAutoScreening($email, $userData) {
             return false;
         }
         
-        // Prepare auto-screening data
-        $screeningData = [
-            'auto_screening' => 'true',
+        // Prepare user data for screening
+        $user_data = [
             'email' => $user['email'],
             'weight' => $user['weight'],
             'height' => $user['height'],
             'birthday' => $user['birthday'],
-            'sex' => $user['sex']
+            'sex' => $user['sex'],
+            'screening_date' => date('Y-m-d H:i:s')
         ];
         
-        error_log("🔍 Auto-screening data: " . json_encode($screeningData));
+        error_log("🔍 Auto-screening data: " . json_encode($user_data));
         
-                // Call screening.php with auto-screening data
-                // Use the current domain dynamically - force HTTPS for Railway
-                $protocol = 'https'; // Force HTTPS for Railway deployment
-                $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-                $baseUrl = $protocol . '://' . $host;
-                $screeningUrl = $baseUrl . '/screening.php';
-        
-        error_log("🔍 Auto-screening URL: $screeningUrl");
-        
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $screeningUrl);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($screeningData));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirects
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification for Railway
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL host verification
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/x-www-form-urlencoded',
-            'Accept: application/json'
-        ]);
-        
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-        curl_close($ch);
-        
-        if ($error) {
-            error_log("❌ Auto-screening CURL error: $error");
+        // Validate required fields
+        if (empty($user_data['email']) || empty($user_data['weight']) || empty($user_data['height']) || empty($user_data['birthday']) || empty($user_data['sex'])) {
+            error_log("❌ Auto-screening: Missing required fields");
             return false;
         }
         
-        if ($httpCode === 200) {
-            error_log("✅ Auto-screening completed successfully for $email");
-            error_log("🔍 Auto-screening response: $response");
-            return true;
+        // Load screening functions
+        require_once __DIR__ . '/ScreeningFunctions.php';
+        
+        // Use existing getNutritionalAssessment function
+        $assessment = getNutritionalAssessment($user_data);
+        
+        // Use existing saveScreeningHistory function
+        if ($assessment['success']) {
+            error_log("✅ Auto-screening: Assessment successful, attempting to save...");
+            $saved = saveScreeningHistory($user_data, $assessment);
+            error_log("🔍 Auto-screening: Save result: " . ($saved ? 'success' : 'failed'));
+            
+            if ($saved) {
+                error_log("✅ Auto-screening completed successfully for $email");
+                return true;
+            } else {
+                error_log("❌ Auto-screening: Failed to save screening history");
+                return false;
+            }
         } else {
-            error_log("❌ Auto-screening failed with HTTP code: $httpCode");
-            error_log("🔍 Auto-screening response: $response");
+            error_log("❌ Auto-screening: Assessment failed: " . json_encode($assessment));
             return false;
         }
         
     } catch (Exception $e) {
         error_log("❌ Auto-screening error: " . $e->getMessage());
+        error_log("❌ Auto-screening stack trace: " . $e->getTraceAsString());
         return false;
     }
 }
