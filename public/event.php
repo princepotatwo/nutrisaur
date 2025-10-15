@@ -909,6 +909,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_notification_cou
     error_log("🔍 POST data received: " . json_encode($_POST));
     error_log("🔍 Field values - Title: '$title', Type: '$type', Description: '$description', Date: '$date_time', Location: '$location', Organizer: '$organizer'");
     
+    // Handle case where location might be empty but we have other location data
+    if (empty($location) || $location === 'all') {
+        // Check if we have barangay or municipality data to determine location
+        $barangay = $_POST['eventBarangay'] ?? '';
+        $municipality = $_POST['eventMunicipality'] ?? '';
+        
+        if (!empty($barangay)) {
+            $location = $barangay;
+            error_log("🔍 Using barangay as location: $location");
+        } elseif (!empty($municipality)) {
+            $location = 'MUNICIPALITY_' . str_replace(' ', '_', $municipality);
+            error_log("🔍 Using municipality as location: $location");
+        }
+    }
+    
     // Validate required fields
     if (empty($title) || empty($type) || empty($description) || empty($date_time) || empty($organizer)) {
         error_log("❌ Validation failed - missing fields: title=" . (empty($title) ? 'EMPTY' : 'OK') . ", type=" . (empty($type) ? 'EMPTY' : 'OK') . ", description=" . (empty($description) ? 'EMPTY' : 'OK') . ", date_time=" . (empty($date_time) ? 'EMPTY' : 'OK') . ", organizer=" . (empty($organizer) ? 'EMPTY' : 'OK'));
@@ -5909,7 +5924,7 @@ header:hover {
                 </div>
                 
                 <div class="form-group">
-                    <label for="eventMunicipality">Municipality <span style="color: red;">*</span></label>
+                    <label for="eventMunicipality">Municipality</label>
                     <select id="eventMunicipality" name="eventMunicipality" onchange="updateBarangayOptions()" required <?php echo (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin') ? '' : 'disabled'; ?>>
                         <?php if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin'): ?>
                             <option value="">Select Municipality</option>
@@ -5932,9 +5947,6 @@ header:hover {
                             </option>
                         <?php endif; ?>
                     </select>
-                    <?php if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin'): ?>
-                        <small class="form-help">Select a municipality to target users in that area</small>
-                    <?php endif; ?>
                                 </div>
                                 
                 <div class="form-group">
@@ -7243,20 +7255,33 @@ function closeCreateEventModal() {
     console.log('🔍 Municipality value:', municipality);
     console.log('🔍 Barangay value:', barangay);
     
-    // Validate municipality selection for Super Admin
-    if (!municipality || municipality === '') {
-        alert('Please select a municipality before creating an event.');
-        return;
+    // Handle case where municipality is null (for regular users with auto-selected municipality)
+    let actualMunicipality = municipality;
+    if (!municipality && barangay) {
+        // For regular users, municipality is auto-selected based on session
+        // We need to get it from the form's disabled field or determine from barangay
+        const municipalityField = form.querySelector('#eventMunicipality');
+        if (municipalityField && municipalityField.value) {
+            actualMunicipality = municipalityField.value;
+            console.log('🔍 Auto-detected municipality from disabled field:', actualMunicipality);
+        } else {
+            // Fallback: if we can't get municipality, use barangay as location
+            actualMunicipality = null;
+            console.log('🔍 Using barangay as location since municipality not available');
+        }
     }
     
     // Determine target location based on municipality and barangay selection
     let targetLocation;
-    if (municipality === 'all') {
+    if (actualMunicipality === 'all') {
         targetLocation = 'all';
     } else if (barangay) {
         targetLocation = barangay; // Target specific barangay
+    } else if (actualMunicipality) {
+        targetLocation = 'MUNICIPALITY_' + actualMunicipality.replace(/ /g, '_'); // Target all barangays in municipality
     } else {
-        targetLocation = 'MUNICIPALITY_' + municipality.replace(/ /g, '_'); // Target all barangays in municipality
+        // Fallback to barangay if no municipality available
+        targetLocation = barangay || 'all';
     }
     
             const eventData = {
