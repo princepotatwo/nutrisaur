@@ -985,9 +985,7 @@ body {
     transition: all 0.3s ease;
 }
 
-.navbar li:hover {
-    transform: translateX(5px);
-}
+/* Hover effects removed */
 
 .navbar li:not(:last-child) {
     border-bottom: 1px solid rgba(161, 180, 84, 0.08);
@@ -1255,10 +1253,7 @@ header {
     border: 1px solid var(--color-border);
 }
 
-.stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
+/* Hover effects removed */
 
 .stat-card h3 {
     margin: 0 0 15px 0;
@@ -1297,10 +1292,7 @@ header {
     border: 1px solid var(--color-border);
 }
 
-.chart-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-}
+/* Hover effects removed */
 
 .chart-card h3 {
     margin: 0 0 20px 0;
@@ -1457,9 +1449,7 @@ header {
     transition: all 0.3s ease;
 }
 
-.navbar li:hover {
-    transform: translateX(5px);
-}
+/* Hover effects removed */
 
 .navbar li:not(:last-child) {
     border-bottom: 1px solid rgba(161, 180, 84, 0.08);
@@ -13776,30 +13766,22 @@ body.navbar-locked {
             
             // Add click event listener to hamburger button - simple toggle
             hamburgerBtn.addEventListener('click', function() {
-                const isExpanded = navbar.classList.contains('expanded');
-                
-                if (isExpanded) {
-                    // Minimize navbar
-                    navbar.classList.remove('expanded');
-                    navbar.classList.add('minimized');
-                    navbar.style.transform = 'translateX(-230px)';
-                    document.body.style.paddingLeft = '90px';
-                    
-                    // Position hamburger button at floating icons position when minimized
-                    hamburgerBtn.style.left = '25px';
-                    hamburgerBtn.style.top = '50px'; // Reset to original position
-                    console.log('🍔 Navbar minimized');
+                if (isNavbarLocked) {
+                    // Unlock navbar
+                    isNavbarLocked = false;
+                    hamburgerBtn.classList.remove('locked');
+                    navbar.classList.remove('locked');
+                    document.body.classList.remove('navbar-locked');
+                    localStorage.setItem('navbarLocked', 'false');
+                    console.log('🔓 Navbar unlocked');
                 } else {
-                    // Expand navbar
-                    navbar.classList.remove('minimized');
-                    navbar.classList.add('expanded');
-                    navbar.style.transform = 'translateX(0)';
-                    document.body.style.paddingLeft = '320px';
-                    
-                    // Position hamburger button anchored to navbar when expanded
-                    hamburgerBtn.style.left = '250px';
-                    hamburgerBtn.style.top = '43px';
-                    console.log('🍔 Navbar expanded');
+                    // Lock navbar
+                    isNavbarLocked = true;
+                    hamburgerBtn.classList.add('locked');
+                    navbar.classList.add('locked');
+                    document.body.classList.add('navbar-locked');
+                    localStorage.setItem('navbarLocked', 'true');
+                    console.log('🔒 Navbar locked');
                 }
             });
             
@@ -13866,6 +13848,34 @@ body.navbar-locked {
             document.addEventListener('DOMContentLoaded', initNavbarHamburgerButton);
         } else {
             initNavbarHamburgerButton();
+        }
+        
+        // Load navbar lock state from localStorage on page load
+        function loadNavbarLockState() {
+            const savedLockState = localStorage.getItem('navbarLocked');
+            if (savedLockState === 'true') {
+                const navbar = document.getElementById('navbar');
+                const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
+                if (navbar && hamburgerBtn) {
+                    navbar.classList.add('locked');
+                    navbar.classList.add('expanded');
+                    navbar.classList.remove('minimized');
+                    navbar.style.transform = 'translateX(0)';
+                    document.body.style.paddingLeft = '320px';
+                    document.body.classList.add('navbar-locked');
+                    hamburgerBtn.classList.add('locked');
+                    hamburgerBtn.style.left = '250px';
+                    hamburgerBtn.style.top = '43px';
+                    isNavbarLocked = true;
+                }
+            }
+        }
+        
+        // Load lock state when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadNavbarLockState);
+        } else {
+            loadNavbarLockState();
         }
 
         // Floating Navigation Icons - Always visible like Gmail
