@@ -2,6 +2,19 @@
 // Start the session
 session_start();
 
+// Check if user requires password setup (security check to prevent bypassing)
+if (isset($_SESSION['requires_password_setup']) && $_SESSION['requires_password_setup'] === true) {
+    // Only allow access to password setup forms and AJAX handlers
+    $allowedActions = ['google_setup_password', 'save_personal_info'];
+    $currentAction = $_POST['ajax_action'] ?? '';
+    
+    // If not an allowed action and not accessing password setup forms, redirect to password setup
+    if (!in_array($currentAction, $allowedActions) && !isset($_GET['setup_password'])) {
+        // Set a flag to show password setup form
+        $_SESSION['force_password_setup'] = true;
+    }
+}
+
 // Simple session test
 if (isset($_POST['test_session'])) {
     $_SESSION['test'] = 'working';
@@ -160,6 +173,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
             $updateStmt->execute([$existingUser['user_id']]);
             
             if ($hasDefaultPassword) {
+                // Set session flag to require password setup
+                $_SESSION['requires_password_setup'] = true;
                 echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user', 'needs_password_change' => true]);
             } else {
                 echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user']);
@@ -190,6 +205,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
                 $_SESSION['is_admin'] = false;
                 
                 if ($hasDefaultPassword) {
+                    // Set session flag to require password setup
+                    $_SESSION['requires_password_setup'] = true;
                     echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user', 'needs_password_change' => true]);
                 } else {
                     echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user']);
@@ -286,6 +303,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
             $updateStmt->execute([$existingUser['user_id']]);
             
             if ($hasDefaultPassword) {
+                // Set session flag to require password setup
+                $_SESSION['requires_password_setup'] = true;
                 echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user', 'needs_password_change' => true]);
             } else {
                 echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user']);
@@ -316,6 +335,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
                 $_SESSION['is_admin'] = false;
                 
                 if ($hasDefaultPassword) {
+                    // Set session flag to require password setup
+                    $_SESSION['requires_password_setup'] = true;
                     echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user', 'needs_password_change' => true]);
                 } else {
                     echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user']);
@@ -787,6 +808,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                     $result = $updateStmt->execute([$hashedPassword, $user['user_id']]);
                     
                     if ($result) {
+                        // Clear the password setup requirement flag
+                        unset($_SESSION['requires_password_setup']);
+                        
                         // Check if personal info is missing
                         $needsPersonalInfo = empty($user['personal_email']) || empty($user['full_name']);
                         
@@ -804,6 +828,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                 }
             } catch (Exception $e) {
                 echo json_encode(['success' => false, 'message' => 'Password setup failed: ' . $e->getMessage()]);
+            }
+            exit;
+            
+        case 'check_password_setup_required':
+            // Check if user requires password setup
+            if (isset($_SESSION['requires_password_setup']) && $_SESSION['requires_password_setup'] === true) {
+                echo json_encode(['requires_password_setup' => true]);
+            } else {
+                echo json_encode(['requires_password_setup' => false]);
             }
             exit;
             
@@ -2651,6 +2684,9 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             // Check for password setup token FIRST, before any other initialization
             checkPasswordSetupToken();
             
+            // Check if user is forced to setup password (security check)
+            checkForcedPasswordSetup();
+            
             createParticles();
             setupPasswordToggles();
             setupVerificationForm();
@@ -3000,6 +3036,31 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
                     authForm.style.display = 'none';
                 }
             }
+        }
+        
+        // Check if user is forced to setup password (security check)
+        function checkForcedPasswordSetup() {
+            // Check if server has flagged this user for password setup
+            fetch('/home.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'ajax_action=check_password_setup_required'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.requires_password_setup) {
+                    // Force show password setup form
+                    hideAllForms();
+                    document.getElementById('google-password-setup-form').style.display = 'block';
+                    document.getElementById('auth-title').textContent = 'Set Up Your Password';
+                    showMessage('You must set up your password before accessing the system.', 'info');
+                }
+            })
+            .catch(error => {
+                console.error('Error checking password setup requirement:', error);
+            });
         }
         
         // Show personal info form
