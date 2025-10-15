@@ -945,8 +945,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_notification_cou
     }
     
     try {
-        // Get user count for confirmation modal
-        $users = getFCMTokensByLocation($location);
+        // Get WHO parameters from POST data
+        $whoStandard = $_POST['who_standard'] ?? '';
+        $classification = $_POST['classification'] ?? '';
+        $userStatus = $_POST['user_status'] ?? '';
+        
+        // Get user count for confirmation modal with WHO filtering
+        $users = getFCMTokensByLocation($location, $whoStandard, $classification, $userStatus);
         $userCount = count($users);
         
         // Return user count for confirmation modal
@@ -1483,10 +1488,98 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
             }
         }
         
+        // Build WHO classification filtering
+        $whoClassificationWhere = "";
+        $whoClassificationParams = [];
+        
         if (!empty($whoStandard) && !empty($classification)) {
-            // For now, skip WHO classification filtering since these are calculated dynamically
-            // TODO: Implement proper WHO classification filtering using assessment results
-            error_log("🔍 WHO Standard filtering requested but not implemented yet: $whoStandard = $classification");
+            error_log("🔍 WHO Standard filtering requested: $whoStandard = $classification");
+            
+            // Get all users and filter by WHO classification dynamically
+            $allUsers = [];
+            if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '' || $targetLocation === 'All Locations') {
+                // Get all users
+                $allUsersStmt = $db->getPDO()->prepare("
+                    SELECT user_id, fcm_token, email, barangay, municipality, weight, height, birthday, sex, screening_date
+                    FROM community_users
+                    WHERE fcm_token IS NOT NULL AND fcm_token != ''
+                ");
+                $allUsersStmt->execute();
+                $allUsers = $allUsersStmt->fetchAll(PDO::FETCH_ASSOC);
+            } else if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
+                // Get users by municipality
+                $municipalityName = str_replace('MUNICIPALITY_', '', $targetLocation);
+                $municipalityName = str_replace('_', ' ', $municipalityName);
+                $municipalityStmt = $db->getPDO()->prepare("
+                    SELECT user_id, fcm_token, email, barangay, municipality, weight, height, birthday, sex, screening_date
+                    FROM community_users
+                    WHERE fcm_token IS NOT NULL AND fcm_token != '' AND municipality = :municipality
+                ");
+                $municipalityStmt->bindParam(':municipality', $municipalityName);
+                $municipalityStmt->execute();
+                $allUsers = $municipalityStmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                // Get users by barangay
+                $barangayStmt = $db->getPDO()->prepare("
+                    SELECT user_id, fcm_token, email, barangay, municipality, weight, height, birthday, sex, screening_date
+                    FROM community_users
+                    WHERE fcm_token IS NOT NULL AND fcm_token != '' AND barangay = :barangay
+                ");
+                $barangayStmt->bindParam(':barangay', $targetLocation);
+                $barangayStmt->execute();
+                $allUsers = $barangayStmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+            
+            // Filter users by WHO classification
+            $filteredUsers = [];
+            require_once __DIR__ . '/api/who_growth_standards.php';
+            $who = new WHOGrowthStandards();
+            
+            foreach ($allUsers as $user) {
+                $userClassification = null;
+                
+                if ($whoStandard === 'bmi-adult') {
+                    // BMI adult uses simple BMI calculation
+                    $bmi = floatval($user['weight']) / pow(floatval($user['height']) / 100, 2);
+                    
+                    if ($bmi < 16.0) $userClassification = 'Severely Underweight';
+                    else if ($bmi < 18.5) $userClassification = 'Underweight';
+                    else if ($bmi < 25) $userClassification = 'Normal';
+                    else if ($bmi < 30) $userClassification = 'Overweight';
+                    else $userClassification = 'Obese';
+                } else {
+                    // For other WHO standards, use comprehensive assessment
+                    $assessment = $who->getComprehensiveAssessment(
+                        floatval($user['weight']),
+                        floatval($user['height']),
+                        $user['birthday'],
+                        $user['sex'],
+                        $user['screening_date'] ?? null
+                    );
+                    
+                    if ($assessment['success'] && isset($assessment['results'])) {
+                        $results = $assessment['results'];
+                        $standardKey = str_replace('-', '_', $whoStandard);
+                        
+                        if (isset($results[$standardKey]['classification'])) {
+                            $userClassification = $results[$standardKey]['classification'];
+                        }
+                    }
+                }
+                
+                // Check if user matches the target classification
+                if ($userClassification === $classification) {
+                    $filteredUsers[] = [
+                        'fcm_token' => $user['fcm_token'],
+                        'user_email' => $user['email'],
+                        'user_barangay' => $user['barangay'],
+                        'municipality' => $user['municipality']
+                    ];
+                }
+            }
+            
+            error_log("🔍 WHO filtering: Found " . count($filteredUsers) . " users with $whoStandard = $classification");
+            return $filteredUsers;
         }
         
         if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '' || $targetLocation === 'All Locations') {
@@ -1846,9 +1939,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_csv_notification
                     
                     if (empty($title) || empty($location)) continue;
                     
-                    // Get user count for this event - SAME AS MANUAL EVENT (no WHO filtering)
-                    error_log("🔍 Processing event: $title, Location: $location");
-                    $fcmTokenData = getFCMTokensByLocation($location);  // Match manual event - no WHO parameters
+                    // Get user count for this event - Now with proper WHO filtering
+                    error_log("🔍 Processing event: $title, Location: $location, WHO: $whoStandard, Classification: $classification, Status: $userStatus");
+                    $fcmTokenData = getFCMTokensByLocation($location, $whoStandard, $classification, $userStatus);
                     $userCount = count($fcmTokenData);
                     error_log("🔍 Found $userCount users for event: $title");
                     
@@ -2035,9 +2128,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                                 $notificationTitle = "🎯 Event: $title";
                                 $notificationBody = "New event: $title at $location" . (!empty($barangay) ? " - $barangay" : "") . " on " . date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s')));
                                 
-                                // Use the centralized getFCMTokensByLocation function - SAME AS MANUAL EVENT (no WHO filtering)
-                                error_log("🔍 CSV: Getting FCM tokens for location: $location");
-                                $fcmTokenData = getFCMTokensByLocation($location);  // Match manual event - no WHO parameters
+                                // Use the centralized getFCMTokensByLocation function with proper WHO filtering
+                                error_log("🔍 CSV: WHO Standard: '$whoStandard', Classification: '$classification', User Status: '$userStatus'");
+                                $fcmTokenData = getFCMTokensByLocation($location, $whoStandard, $classification, $userStatus);
                                 
                                 error_log("🔔 CSV: Found " . count($fcmTokenData) . " FCM tokens for location: $location");
                                 
@@ -8545,17 +8638,17 @@ function closeCreateEventModal() {
             
             let csvContent;
             if (isSuperAdmin) {
-                // Super admin template includes municipality column - Use same approach as manual event (no WHO filtering)
+                // Super admin template includes municipality column - Use WHO filtering like manual event
                 csvContent = `title,date_time,municipality,location,barangay,organizer,description,who_standard,classification,user_status
-vhjvhvf,${formatDate(future1)},MARIVELES,Alion,Alion,kevinpingol123,vhvhcghch,,,all
-Health Seminar,${formatDate(future2)},MARIVELES,Alion,,Dr. Juan Cruz,Community health education and awareness (all barangays),,,all
-Medical Mission,${formatDate(future3)},MARIVELES,Poblacion,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,,,all`;
+vhjvhvf,${formatDate(future1)},MARIVELES,Alion,Alion,kevinpingol123,vhvhcghch,bmi-adult,Underweight,all
+Health Seminar,${formatDate(future2)},MARIVELES,Alion,,Dr. Juan Cruz,Community health education and awareness (all barangays),weight-for-age,Severely Underweight,all
+Medical Mission,${formatDate(future3)},MARIVELES,Poblacion,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,height-for-age,Stunted,all`;
             } else {
-                // Regular user template uses their municipality automatically - Use same approach as manual event (no WHO filtering)
+                // Regular user template uses their municipality automatically - Use WHO filtering like manual event
                 csvContent = `title,date_time,location,barangay,organizer,description,who_standard,classification,user_status
-vhjvhvf,${formatDate(future1)},Alion,Alion,kevinpingol123,vhvhcghch,,,all
-Health Seminar,${formatDate(future2)},Alion,,Dr. Juan Cruz,Community health education and awareness (all barangays),,,all
-Medical Mission,${formatDate(future3)},Poblacion,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,,,all`;
+vhjvhvf,${formatDate(future1)},Alion,Alion,kevinpingol123,vhvhcghch,bmi-adult,Underweight,all
+Health Seminar,${formatDate(future2)},Alion,,Dr. Juan Cruz,Community health education and awareness (all barangays),weight-for-age,Severely Underweight,all
+Medical Mission,${formatDate(future3)},Poblacion,Poblacion,Dr. Ana Reyes,Free medical checkup and consultation,height-for-age,Stunted,all`;
             }
             
             const blob = new Blob([csvContent], { type: 'text/csv' });
