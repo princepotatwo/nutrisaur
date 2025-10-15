@@ -10796,8 +10796,11 @@ header {
                             <button class="food-history-btn success" onclick="addMHOTemplateFood()">
                                 Add Food to Template
                             </button>
-                            <button class="food-history-btn warning" onclick="bulkAddToTemplate()">
-                                Bulk Add Foods
+                            <button class="food-history-btn info" onclick="showMHOImportCSVModal()">
+                                Import CSV
+                            </button>
+                            <button class="food-history-btn warning" onclick="downloadMHOCSVTemplate()">
+                                Download CSV Template
                             </button>
                         </div>
                     </div>
@@ -11215,16 +11218,173 @@ header {
             });
         }
 
-        function bulkAddToTemplate() {
+        function downloadMHOCSVTemplate() {
+            const whoStandard = document.getElementById('manager-who-standard').value;
             const classification = document.getElementById('manager-classification').value;
             const duration = document.getElementById('manager-duration').value;
             
-            if (!classification || !duration) {
-                alert('Please select classification and duration first');
+            if (!whoStandard || !classification || !duration) {
+                alert('Please select WHO standard, classification, and duration first');
                 return;
             }
             
-            alert('Bulk add feature coming soon! For now, use the "Add Food to Template" button to add individual foods.');
+            const combinedClassification = `${whoStandard}-${classification}`;
+            
+            // Create CSV template with headers
+            const csvContent = [
+                ['user_email', 'food_name', 'serving_size', 'calories', 'protein', 'carbs', 'fat', 'fiber', 'day_number', 'meal_category'],
+                ['user1@example.com', 'Rice', '1 cup', '200', '4', '45', '0.5', '0.5', '1', 'Breakfast'],
+                ['user2@example.com', 'Chicken', '100g', '165', '31', '0', '3.6', '0', '1', 'Lunch'],
+                ['user3@example.com', 'Vegetables', '1 cup', '25', '2', '5', '0.2', '2', '1', 'Dinner']
+            ];
+            
+            // Convert to CSV string
+            const csvString = csvContent.map(row => row.join(',')).join('\n');
+            
+            // Create and download file
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `MHO_Food_Template_${combinedClassification}_${duration}days.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function showMHOImportCSVModal() {
+            const whoStandard = document.getElementById('manager-who-standard').value;
+            const classification = document.getElementById('manager-classification').value;
+            const duration = document.getElementById('manager-duration').value;
+            
+            if (!whoStandard || !classification || !duration) {
+                alert('Please select WHO standard, classification, and duration first');
+                return;
+            }
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 600px; background: var(--color-card); padding: 20px; border-radius: 8px;">
+                    <h3 style="color: var(--color-text); margin-bottom: 20px;">Import CSV Template</h3>
+                    <p style="color: var(--color-text); margin-bottom: 15px;">
+                        Upload a CSV file with food data for multiple users. 
+                        <a href="#" onclick="downloadMHOCSVTemplate()" style="color: var(--color-highlight);">Download template</a> to see the required format.
+                    </p>
+                    <form id="mho-csv-import-form" style="display: flex; flex-direction: column; gap: 12px;">
+                        <input type="hidden" id="mho-who-standard" value="${whoStandard}">
+                        <input type="hidden" id="mho-classification" value="${classification}">
+                        <input type="hidden" id="mho-duration" value="${duration}">
+                        
+                        <label style="color: var(--color-text);">Select CSV File:</label>
+                        <input type="file" id="mho-csv-file" accept=".csv" required style="padding: 8px; border: 1px solid var(--color-border); border-radius: 4px; background: var(--color-card); color: var(--color-text);">
+                        
+                        <div style="display: flex; gap: 8px; margin-top: 12px;">
+                            <button type="submit" class="food-history-btn success">Import CSV</button>
+                            <button type="button" class="food-history-btn" onclick="this.closest('.modal').remove()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Handle form submission
+            document.getElementById('mho-csv-import-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                importMHOCSV();
+            });
+        }
+        
+        function importMHOCSV() {
+            const fileInput = document.getElementById('mho-csv-file');
+            const whoStandard = document.getElementById('mho-who-standard').value;
+            const classification = document.getElementById('mho-classification').value;
+            const duration = document.getElementById('mho-duration').value;
+            
+            if (!fileInput.files[0]) {
+                alert('Please select a CSV file');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const csvText = e.target.result;
+                const lines = csvText.split('\n');
+                const headers = lines[0].split(',');
+                
+                // Validate headers
+                const expectedHeaders = ['user_email', 'food_name', 'serving_size', 'calories', 'protein', 'carbs', 'fat', 'fiber', 'day_number', 'meal_category'];
+                const isValidFormat = expectedHeaders.every(header => headers.includes(header));
+                
+                if (!isValidFormat) {
+                    alert('Invalid CSV format. Please use the template format.');
+                    return;
+                }
+                
+                // Process CSV data
+                const foodData = [];
+                for (let i = 1; i < lines.length; i++) {
+                    if (lines[i].trim()) {
+                        const values = lines[i].split(',');
+                        if (values.length >= expectedHeaders.length) {
+                            foodData.push({
+                                user_email: values[0],
+                                food_name: values[1],
+                                serving_size: values[2],
+                                calories: parseFloat(values[3]) || 0,
+                                protein: parseFloat(values[4]) || 0,
+                                carbs: parseFloat(values[5]) || 0,
+                                fat: parseFloat(values[6]) || 0,
+                                fiber: parseFloat(values[7]) || 0,
+                                day_number: parseInt(values[8]) || 1,
+                                meal_category: values[9]
+                            });
+                        }
+                    }
+                }
+                
+                if (foodData.length === 0) {
+                    alert('No valid data found in CSV file');
+                    return;
+                }
+                
+                // Send to API
+                const combinedClassification = `${whoStandard}-${classification}`;
+                fetch('api/mho_food_manager_api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'bulk_import_foods',
+                        classification: combinedClassification,
+                        duration: duration,
+                        foods: foodData
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`Successfully imported ${data.imported_count} food items for ${data.users_affected} users`);
+                        // Close modal and refresh the manager
+                        document.querySelector('.modal').remove();
+                        loadManagerFoods();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error importing CSV:', error);
+                    alert('Error importing CSV file');
+                });
+            };
+            
+            reader.readAsText(file);
         }
 
         // ==================== END MHO FOOD MANAGER ====================

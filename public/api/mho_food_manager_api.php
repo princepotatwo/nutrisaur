@@ -33,6 +33,9 @@ try {
         case 'add_template_food':
             addTemplateFood($pdo, $postData);
             break;
+        case 'bulk_import_foods':
+            bulkImportFoods($pdo, $postData);
+            break;
         default:
             echo json_encode(['success' => false, 'error' => 'Invalid action']);
     }
@@ -209,6 +212,102 @@ function addTemplateFood($pdo, $data) {
         echo json_encode(['success' => true, 'message' => 'Food added successfully', 'id' => $pdo->lastInsertId()]);
     } else {
         echo json_encode(['success' => false, 'error' => 'Failed to add food']);
+    }
+}
+
+function bulkImportFoods($pdo, $data) {
+    $classification = $data['classification'] ?? '';
+    $duration = $data['duration'] ?? 0;
+    $foods = $data['foods'] ?? [];
+    
+    if (empty($classification) || empty($duration) || empty($foods)) {
+        echo json_encode(['success' => false, 'error' => 'Missing required fields']);
+        return;
+    }
+    
+    $imported_count = 0;
+    $users_affected = [];
+    $errors = [];
+    
+    // Start transaction
+    $pdo->beginTransaction();
+    
+    try {
+        foreach ($foods as $food) {
+            $user_email = $food['user_email'] ?? '';
+            $food_name = $food['food_name'] ?? '';
+            $serving_size = $food['serving_size'] ?? '';
+            $calories = $food['calories'] ?? 0;
+            $protein = $food['protein'] ?? 0;
+            $carbs = $food['carbs'] ?? 0;
+            $fat = $food['fat'] ?? 0;
+            $fiber = $food['fiber'] ?? 0;
+            $day_number = $food['day_number'] ?? 1;
+            $meal_category = $food['meal_category'] ?? 'Breakfast';
+            
+            if (empty($user_email) || empty($food_name)) {
+                $errors[] = "Missing user_email or food_name for row";
+                continue;
+            }
+            
+            // Check if user exists
+            $userCheckSql = "SELECT email FROM community_users WHERE email = ?";
+            $userStmt = $pdo->prepare($userCheckSql);
+            $userStmt->execute([$user_email]);
+            $user = $userStmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$user) {
+                $errors[] = "User $user_email not found";
+                continue;
+            }
+            
+            // Add to user_food_history with is_mho_recommended = 1
+            $insertSql = "INSERT INTO user_food_history 
+                         (user_email, food_name, serving_size, calories, protein, carbs, fat, fiber, 
+                          meal_category, date, is_mho_recommended, classification, plan_duration, day_number) 
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'recommended', 1, ?, ?, ?)";
+            
+            $insertStmt = $pdo->prepare($insertSql);
+            $result = $insertStmt->execute([
+                $user_email,
+                $food_name,
+                $serving_size,
+                $calories,
+                $protein,
+                $carbs,
+                $fat,
+                $fiber,
+                $meal_category,
+                $classification,
+                $duration,
+                $day_number
+            ]);
+            
+            if ($result) {
+                $imported_count++;
+                if (!in_array($user_email, $users_affected)) {
+                    $users_affected[] = $user_email;
+                }
+            } else {
+                $errors[] = "Failed to import food for $user_email: $food_name";
+            }
+        }
+        
+        // Commit transaction
+        $pdo->commit();
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Bulk import completed',
+            'imported_count' => $imported_count,
+            'users_affected' => count($users_affected),
+            'errors' => $errors
+        ]);
+        
+    } catch (Exception $e) {
+        // Rollback transaction on error
+        $pdo->rollback();
+        echo json_encode(['success' => false, 'error' => 'Transaction failed: ' . $e->getMessage()]);
     }
 }
 ?>
