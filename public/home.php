@@ -868,15 +868,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             ]);
             exit;
             
-        case 'test_session':
-            // Simple session test
-            $_SESSION['test_value'] = 'session_working_' . time();
+        case 'test_basic':
+            // Basic test without sessions
             echo json_encode([
                 'success' => true,
-                'session_id' => session_id(),
-                'test_value' => $_SESSION['test_value'],
-                'session_data' => $_SESSION
+                'message' => 'Basic PHP is working',
+                'timestamp' => time()
             ]);
+            exit;
+            
+        case 'test_session':
+            // Simple session test
+            try {
+                $_SESSION['test_value'] = 'session_working_' . time();
+                echo json_encode([
+                    'success' => true,
+                    'session_id' => session_id(),
+                    'test_value' => $_SESSION['test_value'],
+                    'session_data' => $_SESSION
+                ]);
+            } catch (Exception $e) {
+                echo json_encode([
+                    'success' => false,
+                    'error' => 'Session test failed: ' . $e->getMessage()
+                ]);
+            }
             exit;
             
         case 'save_personal_info':
@@ -3203,8 +3219,21 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             try {
                 showMessage('Setting up password...', 'info');
                 
-                // Debug: Test session first
+                // Debug: Test basic PHP first
                 try {
+                    console.log('Testing basic PHP...');
+                    const basicResponse = await fetch('/home.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'ajax_action=test_basic'
+                    });
+                    const basicData = await basicResponse.json();
+                    console.log('Basic test:', basicData);
+                    
+                    // Now test session
+                    console.log('Testing session...');
                     const testResponse = await fetch('/home.php', {
                         method: 'POST',
                         headers: {
@@ -3216,6 +3245,7 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
                     console.log('Session test:', testData);
                     
                     // Now check session debug
+                    console.log('Testing debug session...');
                     const debugResponse = await fetch('/home.php', {
                         method: 'POST',
                         headers: {
@@ -3226,7 +3256,23 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
                     const debugData = await debugResponse.json();
                     console.log('Session debug:', debugData);
                 } catch (error) {
-                    console.error('Session test failed:', error);
+                    console.error('Debug test failed:', error);
+                    console.error('Error details:', error.message);
+                    
+                    // Try to get the raw response to see what we're actually getting
+                    try {
+                        const rawResponse = await fetch('/home.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: 'ajax_action=test_basic'
+                        });
+                        const rawText = await rawResponse.text();
+                        console.error('Raw response:', rawText.substring(0, 500)); // First 500 chars
+                    } catch (rawError) {
+                        console.error('Could not get raw response:', rawError);
+                    }
                 }
                 
                 const formData = new FormData();
