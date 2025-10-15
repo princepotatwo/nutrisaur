@@ -5909,7 +5909,7 @@ header:hover {
                 </div>
                 
                 <div class="form-group">
-                    <label for="eventMunicipality">Municipality</label>
+                    <label for="eventMunicipality">Municipality <span style="color: red;">*</span></label>
                     <select id="eventMunicipality" name="eventMunicipality" onchange="updateBarangayOptions()" required <?php echo (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin') ? '' : 'disabled'; ?>>
                         <?php if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin'): ?>
                             <option value="">Select Municipality</option>
@@ -5932,6 +5932,9 @@ header:hover {
                             </option>
                         <?php endif; ?>
                     </select>
+                    <?php if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin'): ?>
+                        <small class="form-help">Select a municipality to target users in that area</small>
+                    <?php endif; ?>
                                 </div>
                                 
                 <div class="form-group">
@@ -7239,6 +7242,12 @@ function closeCreateEventModal() {
     // Debug: Log municipality and barangay values
     console.log('🔍 Municipality value:', municipality);
     console.log('🔍 Barangay value:', barangay);
+    
+    // Validate municipality selection for Super Admin
+    if (!municipality || municipality === '') {
+        alert('Please select a municipality before creating an event.');
+        return;
+    }
     
     // Determine target location based on municipality and barangay selection
     let targetLocation;
