@@ -2162,7 +2162,7 @@ body {
     color: var(--color-text);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 20px;
-    padding-left: 60px; /* Space for minimized navbar + margin */
+    padding-left: 90px; /* Space for minimized navbar */
     line-height: 1.6;
     letter-spacing: 0.2px;
     transition: padding-left 0.4s ease;
@@ -3842,6 +3842,10 @@ body {
     padding: 25px;
     margin-bottom: 30px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    max-width: calc(100% - 60px);
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .event-header h2 {
