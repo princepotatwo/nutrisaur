@@ -905,8 +905,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_notification_cou
     $location = $_POST['eventLocation'] ?? 'all';
     $organizer = $_POST['eventOrganizer'] ?? '';
     
+    // Debug: Log received POST data
+    error_log("🔍 POST data received: " . json_encode($_POST));
+    error_log("🔍 Field values - Title: '$title', Type: '$type', Description: '$description', Date: '$date_time', Location: '$location', Organizer: '$organizer'");
+    
     // Validate required fields
     if (empty($title) || empty($type) || empty($description) || empty($date_time) || empty($organizer)) {
+        error_log("❌ Validation failed - missing fields: title=" . (empty($title) ? 'EMPTY' : 'OK') . ", type=" . (empty($type) ? 'EMPTY' : 'OK') . ", description=" . (empty($description) ? 'EMPTY' : 'OK') . ", date_time=" . (empty($date_time) ? 'EMPTY' : 'OK') . ", organizer=" . (empty($organizer) ? 'EMPTY' : 'OK'));
         echo json_encode(['success' => false, 'message' => 'Please fill in all required fields.']);
         exit;
     }
@@ -7230,6 +7235,10 @@ function closeCreateEventModal() {
     const whoStandard = formData.get('eventWhoStandard');
     const classification = formData.get('eventClassification');
     const userStatus = formData.get('eventUserStatus');
+    
+    // Debug: Log municipality and barangay values
+    console.log('🔍 Municipality value:', municipality);
+    console.log('🔍 Barangay value:', barangay);
     
     // Determine target location based on municipality and barangay selection
     let targetLocation;
