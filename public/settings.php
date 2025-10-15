@@ -5253,6 +5253,11 @@ header {
         }
 
         /* Navbar states */
+        /* Default navbar to minimized state */
+        .navbar {
+            transform: translateX(-230px);
+        }
+        
         .navbar.minimized {
             transform: translateX(-230px) !important;
         }
