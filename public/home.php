@@ -840,11 +840,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             
         case 'check_password_setup_required':
             // Check if user requires password setup
+            error_log("Checking password setup requirement - Session ID: " . session_id());
+            error_log("Session data: " . print_r($_SESSION, true));
+            
             if (isset($_SESSION['requires_password_setup']) && $_SESSION['requires_password_setup'] === true) {
                 echo json_encode(['requires_password_setup' => true]);
             } else {
                 echo json_encode(['requires_password_setup' => false]);
             }
+            exit;
+            
+        case 'debug_session':
+            // Debug session data
+            echo json_encode([
+                'session_id' => session_id(),
+                'session_data' => $_SESSION,
+                'user_id_set' => isset($_SESSION['user_id']),
+                'requires_password_setup' => isset($_SESSION['requires_password_setup'])
+            ]);
             exit;
             
         case 'save_personal_info':
@@ -3170,6 +3183,17 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
         async function setupGooglePassword(newPassword, confirmPassword) {
             try {
                 showMessage('Setting up password...', 'info');
+                
+                // Debug: Check session first
+                const debugResponse = await fetch('/home.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'ajax_action=debug_session'
+                });
+                const debugData = await debugResponse.json();
+                console.log('Session debug:', debugData);
                 
                 const formData = new FormData();
                 formData.append('new_password', newPassword);
