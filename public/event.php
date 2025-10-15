@@ -2162,7 +2162,7 @@ body {
     color: var(--color-text);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 20px;
-    padding-left: 60px; /* Space for minimized navbar + margin */
+    padding-left: 90px; /* Space for minimized navbar */
     line-height: 1.6;
     letter-spacing: 0.2px;
     transition: padding-left 0.4s ease;
@@ -2867,7 +2867,153 @@ body {
     z-index: 1000;
     display: flex;
     flex-direction: column;
+    align-items: stretch !important; /* Never center, always stretch */
     backdrop-filter: blur(10px);
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-230px); /* Show 90px when minimized */
+}
+
+/* Navbar states */
+.navbar.minimized {
+    transform: translateX(-230px) !important;
+}
+
+.navbar.expanded {
+    transform: translateX(0) !important;
+    width: 320px !important;
+}
+
+.navbar:hover, .navbar.expanded {
+    transform: translateX(0); /* Show full navbar */
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
+}
+
+.navbar.expanded * {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Navbar content visibility when minimized */
+.navbar.minimized .navbar-logo-text,
+.navbar.minimized span:not(.navbar-icon),
+.navbar.minimized .navbar-footer {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Navbar content visibility when expanded */
+.navbar.expanded .navbar-logo-text,
+.navbar.expanded span:not(.navbar-icon),
+.navbar.expanded .navbar-footer {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Navbar Hamburger Button - Match floating icons style */
+.navbar-hamburger-btn {
+    position: fixed;
+    top: 50px; /* positioned to align with floating icons */
+    /* left position controlled by JavaScript */
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(161, 180, 84, 0.3);
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1002;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-hamburger-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(161, 180, 84, 0.5);
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.hamburger-icon {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 20px;
+    height: 20px;
+}
+
+.hamburger-line {
+    width: 100%;
+    height: 2px;
+    background: rgba(161, 180, 84, 0.8);
+    border-radius: 1px;
+    transition: all 0.3s ease;
+}
+
+.navbar-hamburger-btn:hover .hamburger-line {
+    background: rgba(161, 180, 84, 1);
+}
+
+/* Floating Navigation Icons - Always visible like Gmail */
+.floating-nav-icons {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px 0;
+}
+
+.floating-nav-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(161, 180, 84, 0.3);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: var(--color-text);
+}
+
+.floating-nav-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(161, 180, 84, 0.5);
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    color: var(--color-highlight);
+}
+
+.floating-nav-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .navbar-hamburger-btn,
+    .floating-nav-icons {
+        display: none !important;
+    }
+    
+    .navbar {
+        transform: translateX(-100%) !important;
+    }
+    
+    body {
+        padding-left: 0 !important;
+    }
 }
 
 .navbar-header {
@@ -5943,8 +6089,10 @@ header:hover {
     </div>
     
 <!-- Navigation -->
-    <div class="navbar">
+    <!-- Desktop Sidebar Navigation (unchanged) -->
+    <div class="navbar" id="navbar">
         <div class="navbar-header">
+        
             <div class="navbar-logo">
                 <div class="navbar-logo-icon">
                     <img src="/logo.png" alt="Logo" style="width: 40px; height: 40px;">
@@ -5965,6 +6113,45 @@ header:hover {
             <div>NutriSaur v2.0 • © 2025</div>
             <div style="margin-top: 10px;">Logged in as: <?php echo htmlspecialchars($username); ?></div>
         </div>
+    </div>
+    
+    <!-- Hamburger Button - Outside navbar to avoid transform issues -->
+    <button class="navbar-hamburger-btn" id="navbarHamburgerBtn" title="Toggle Sidebar">
+        <div class="hamburger-icon">
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+            <div class="hamburger-line"></div>
+        </div>
+    </button>
+    
+    <!-- Floating Navigation Icons - Always visible like Gmail -->
+    <div class="floating-nav-icons">
+        <a href="dash" class="floating-nav-icon" id="floating-dash" title="Dashboard">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+        </a>
+        <a href="screening" class="floating-nav-icon" id="floating-screening" title="MHO Assessment">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+        </a>
+        <a href="event" class="floating-nav-icon" id="floating-event" title="Event Notifications">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+        </a>
+        <a href="settings" class="floating-nav-icon" id="floating-settings" title="Settings & Admin">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </a>
     </div>
 
     <!-- Mobile Top Navigation -->
@@ -9351,6 +9538,148 @@ Medical Mission,${formatDate(future3)},LIMAY,Poblacion,Dr. Ana Reyes,Free medica
             document.addEventListener('DOMContentLoaded', initNavigation);
         } else {
             initNavigation();
+        }
+
+        // Navbar Hamburger Button System
+        function initNavbarHamburgerButton() {
+            console.log('🍔 Initializing navbar hamburger button...');
+            
+            const hamburgerBtn = document.getElementById('navbarHamburgerBtn');
+            const navbar = document.getElementById('navbar');
+            
+            if (!hamburgerBtn || !navbar) {
+                console.error('❌ Navbar hamburger button or navbar not found');
+                return;
+            }
+            
+            // Add click event listener to hamburger button - simple toggle
+            hamburgerBtn.addEventListener('click', function() {
+                const isExpanded = navbar.classList.contains('expanded');
+                
+                if (isExpanded) {
+                    // Minimize navbar
+                    navbar.classList.remove('expanded');
+                    navbar.classList.add('minimized');
+                    navbar.style.transform = 'translateX(-230px)';
+                    document.body.style.paddingLeft = '90px';
+                    
+                    // Position hamburger button at floating icons position when minimized
+                    hamburgerBtn.style.left = '25px';
+                    hamburgerBtn.style.top = '50px';
+                    
+                    // Save state to localStorage
+                    localStorage.setItem('navbarExpanded', 'false');
+                    console.log('🍔 Navbar minimized');
+                } else {
+                    // Expand navbar
+                    navbar.classList.remove('minimized');
+                    navbar.classList.add('expanded');
+                    navbar.style.transform = 'translateX(0)';
+                    document.body.style.paddingLeft = '320px';
+                    
+                    // Position hamburger button anchored to navbar when expanded
+                    hamburgerBtn.style.left = '250px';
+                    hamburgerBtn.style.top = '43px';
+                    
+                    // Save state to localStorage
+                    localStorage.setItem('navbarExpanded', 'true');
+                    console.log('🍔 Navbar expanded');
+                }
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    hamburgerBtn.style.display = 'none';
+                } else {
+                    hamburgerBtn.style.display = 'flex';
+                }
+            });
+            
+            // Load saved navbar state from localStorage
+            const savedNavbarState = localStorage.getItem('navbarExpanded');
+            const isMobile = window.innerWidth <= 768;
+            
+            if (isMobile) {
+                hamburgerBtn.style.display = 'none';
+            } else {
+                hamburgerBtn.style.display = 'flex';
+                
+                if (savedNavbarState === 'false') {
+                    // Start with navbar MINIMIZED (saved state)
+                    navbar.classList.add('minimized');
+                    navbar.style.transform = 'translateX(-230px)';
+                    document.body.style.paddingLeft = '90px';
+                    hamburgerBtn.style.left = '25px';
+                    hamburgerBtn.style.top = '50px';
+                    console.log('📱 Loaded minimized navbar state');
+                } else {
+                    // Start with navbar EXPANDED (default or saved state)
+                    navbar.classList.add('expanded');
+                    navbar.style.transform = 'translateX(0)';
+                    document.body.style.paddingLeft = '320px';
+                    hamburgerBtn.style.left = '250px';
+                    hamburgerBtn.style.top = '43px';
+                    console.log('📱 Loaded expanded navbar state');
+                }
+            }
+            
+            console.log('✅ Navbar hamburger button initialized successfully');
+        }
+        
+        // Floating Navigation Icons
+        function initFloatingIcons() {
+            console.log('🎯 Initializing floating navigation icons...');
+            
+            const floatingIcons = document.querySelectorAll('.floating-nav-icon');
+            const navbar = document.getElementById('navbar');
+            
+            if (!navbar || floatingIcons.length === 0) {
+                console.log('⚠️ Navbar or floating icons not found');
+                return;
+            }
+            
+            // Position floating icons beside navbar menu items
+            function positionFloatingIcons() {
+                const navbarMenu = navbar.querySelector('.navbar-menu ul');
+                if (!navbarMenu) return;
+                
+                const menuItems = navbarMenu.querySelectorAll('li');
+                
+                floatingIcons.forEach((icon, index) => {
+                    if (index < menuItems.length) {
+                        const menuItem = menuItems[index];
+                        const rect = menuItem.getBoundingClientRect();
+                        
+                        // Position icon beside the menu item
+                        icon.style.position = 'fixed';
+                        icon.style.left = '25px';
+                        icon.style.top = (rect.top + rect.height / 2 - 28) + 'px';
+                        icon.style.zIndex = '1001';
+                    }
+                });
+            }
+            
+            // Position icons on load and resize
+            positionFloatingIcons();
+            window.addEventListener('resize', positionFloatingIcons);
+            
+            console.log('✅ Floating navigation icons initialized successfully');
+        }
+        
+        // Initialize navbar hamburger button when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initNavbarHamburgerButton);
+        } else {
+            initNavbarHamburgerButton();
+        }
+        
+        // Initialize floating icons when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initFloatingIcons);
+        } else {
+            initFloatingIcons();
         }
     </script>
 </body>
