@@ -9946,8 +9946,14 @@ Medical Mission,${formatDate(future3)},Poblacion,Poblacion,Dr. Ana Reyes,Free me
                     if (event.municipality) {
                         document.getElementById('editEventMunicipality').value = event.municipality;
                         updateEditBarangayOptions();
-                    }
-                    if (event.barangay) {
+                        // Set barangay after options are populated
+                        if (event.barangay) {
+                            setTimeout(() => {
+                                document.getElementById('editEventBarangay').value = event.barangay;
+                            }, 10);
+                        }
+                    } else if (event.barangay) {
+                        // If no municipality but has barangay, set it directly
                         document.getElementById('editEventBarangay').value = event.barangay;
                     }
                     if (event.who_standard) {
