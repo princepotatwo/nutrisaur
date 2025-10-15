@@ -7461,16 +7461,34 @@ header {
             const municipalitySelect = document.getElementById('addMunicipality');
             if (!municipalitySelect) return;
             
-            // Clear existing options except the first one
-            municipalitySelect.innerHTML = '<option value="">Select Municipality</option>';
+            const isSuperAdmin = <?php echo (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin') ? 'true' : 'false'; ?>;
+            const userMunicipality = '<?php echo htmlspecialchars($user_municipality ?? ""); ?>';
             
-            // Add municipality options
-            Object.keys(municipalities).forEach(municipality => {
+            if (isSuperAdmin) {
+                // Super admin: Show all municipalities (unlocked)
+                municipalitySelect.innerHTML = '<option value="">Select Municipality</option>';
+                municipalitySelect.disabled = false;
+                municipalitySelect.style.opacity = '1';
+                
+                // Add municipality options
+                Object.keys(municipalities).forEach(municipality => {
+                    const option = document.createElement('option');
+                    option.value = municipality;
+                    option.textContent = municipality;
+                    municipalitySelect.appendChild(option);
+                });
+            } else {
+                // Regular user: Lock to their municipality only
+                municipalitySelect.innerHTML = '';
+                municipalitySelect.disabled = true;
+                municipalitySelect.style.opacity = '0.6';
+                
                 const option = document.createElement('option');
-                option.value = municipality;
-                option.textContent = municipality;
+                option.value = userMunicipality;
+                option.textContent = userMunicipality || 'No Municipality Assigned';
+                option.selected = true;
                 municipalitySelect.appendChild(option);
-            });
+            }
         }
 
         function updateAddBarangayOptions() {
@@ -8863,20 +8881,13 @@ header {
                 // Regular user: Lock to their municipality only
                 select.innerHTML = '';
                 select.disabled = true;
-                select.style.backgroundColor = '#f5f5f5';
-                select.style.cursor = 'not-allowed';
+                select.style.opacity = '0.6';
                 
                 const option = document.createElement('option');
                 option.value = userMunicipality;
                 option.textContent = userMunicipality || 'No Municipality Assigned';
                 option.selected = true;
                 select.appendChild(option);
-                
-                // Add a small note to indicate it's locked
-                const label = document.querySelector('label[for="editMunicipality"]');
-                if (label) {
-                    label.innerHTML = 'Municipality * <small style="color: #666; font-weight: normal;">(Locked to your assigned municipality)</small>';
-                }
             }
         }
 
