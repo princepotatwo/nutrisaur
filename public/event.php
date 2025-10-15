@@ -1126,6 +1126,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
             $maxIdResult = $db->universalQuery("SELECT MAX(program_id) as max_id FROM programs");
             $nextId = ($maxIdResult['success'] && !empty($maxIdResult['data'])) ? $maxIdResult['data'][0]['max_id'] + 1 : 1;
             
+            // Parse municipality and barangay from location
+            $municipality = '';
+            $barangay = '';
+            if ($location && $location !== 'all') {
+                if (strpos($location, 'MUNICIPALITY_') === 0) {
+                    $municipality = str_replace(['MUNICIPALITY_', '_'], ['', ' '], $location);
+                } else {
+                    // It's a barangay - extract from location
+                    $barangay = $location;
+                    // Try to find municipality from barangay (you may need to improve this logic)
+                    $municipalities = ['ABUCAY', 'BAGAC', 'CITY OF BALANGA', 'DINALUPIHAN', 'HERMOSA', 'LIMAY', 'MARIVELES', 'MORONG', 'ORANI', 'ORION', 'PILAR', 'SAMAL'];
+                    foreach ($municipalities as $mun) {
+                        if (stripos($location, $mun) !== false) {
+                            $municipality = $mun;
+                            break;
+                        }
+                    }
+                }
+            }
+            
             $result = $db->universalInsert('programs', [
                 'program_id' => $nextId,
                 'title' => $title,
@@ -1134,6 +1154,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
                 'date_time' => $date_time,
                 'location' => $location,
                 'organizer' => $organizer,
+                'municipality' => $municipality,
+                'barangay' => $barangay,
+                'who_standard' => $whoStandard,
+                'classification' => $classification,
+                'user_status' => $userStatus,
             ]);
             
             if ($result['success']) {
@@ -1235,6 +1260,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         $maxIdResult = $db->universalQuery("SELECT MAX(program_id) as max_id FROM programs");
         $nextId = ($maxIdResult['success'] && !empty($maxIdResult['data'])) ? $maxIdResult['data'][0]['max_id'] + 1 : 1;
         
+        // Parse municipality and barangay from location
+        $municipality = '';
+        $barangay = '';
+        if ($location && $location !== 'all') {
+            if (strpos($location, 'MUNICIPALITY_') === 0) {
+                $municipality = str_replace(['MUNICIPALITY_', '_'], ['', ' '], $location);
+            } else {
+                // It's a barangay - extract from location
+                $barangay = $location;
+                // Try to find municipality from barangay
+                $municipalities = ['ABUCAY', 'BAGAC', 'CITY OF BALANGA', 'DINALUPIHAN', 'HERMOSA', 'LIMAY', 'MARIVELES', 'MORONG', 'ORANI', 'ORION', 'PILAR', 'SAMAL'];
+                foreach ($municipalities as $mun) {
+                    if (stripos($location, $mun) !== false) {
+                        $municipality = $mun;
+                        break;
+                    }
+                }
+            }
+        }
+        
         $result = $db->universalInsert('programs', [
             'program_id' => $nextId,
             'title' => $title,
@@ -1243,6 +1288,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
             'date_time' => $date_time,
             'location' => $location,
             'organizer' => $organizer,
+            'municipality' => $municipality,
+            'barangay' => $barangay,
+            'who_standard' => $whoStandard,
+            'classification' => $classification,
+            'user_status' => $userStatus,
         ]);
         
         if ($result['success']) {
@@ -2278,8 +2328,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                     // Insert into database - using community_users.barangay for targeting
                     error_log("🔍 CSV: Attempting to insert - ID: $nextId, Title: $title, Location: $location, Target Barangay: $barangay");
                     $stmt = $pdo->prepare("
-                        INSERT INTO programs (program_id, title, type, description, date_time, location, organizer) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        INSERT INTO programs (program_id, title, type, description, date_time, location, organizer, municipality, barangay, who_standard, classification, user_status) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     ");
                     
                     $success = $stmt->execute([
@@ -2289,7 +2339,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                         $description,
                         $dateObj->format('Y-m-d H:i:s'),
                         $location,
-                        $organizer
+                        $organizer,
+                        $municipality,
+                        $barangay,
+                        $whoStandard,
+                        $classification,
+                        $userStatus
                     ]);
                     
                     error_log("🔍 CSV: Insert result - Success: " . ($success ? 'YES' : 'NO'));
