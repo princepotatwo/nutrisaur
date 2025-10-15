@@ -899,6 +899,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
 // 🚨 COMPLETELY REWRITTEN EVENT CREATION LOGIC - NO REDIRECTS
 // Handle notification count check for confirmation modal
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_notification_count'])) {
+    error_log("🚨 CHECK NOTIFICATION COUNT HANDLER CALLED");
     header('Content-Type: application/json');
     
     $title = $_POST['eventTitle'] ?? '';
