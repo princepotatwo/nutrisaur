@@ -8503,12 +8503,12 @@ function triggerAutoScreening($email, $userData) {
         
         error_log("🔍 Auto-screening data: " . json_encode($screeningData));
         
-        // Call screening.php with auto-screening data
-        // Use the current domain dynamically
-        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $baseUrl = $protocol . '://' . $host;
-        $screeningUrl = $baseUrl . '/screening.php';
+                // Call screening.php with auto-screening data
+                // Use the current domain dynamically - force HTTPS for Railway
+                $protocol = 'https'; // Force HTTPS for Railway deployment
+                $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+                $baseUrl = $protocol . '://' . $host;
+                $screeningUrl = $baseUrl . '/screening.php';
         
         error_log("🔍 Auto-screening URL: $screeningUrl");
         
@@ -8518,6 +8518,9 @@ function triggerAutoScreening($email, $userData) {
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($screeningData));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirects
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification for Railway
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Disable SSL host verification
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: application/x-www-form-urlencoded',
             'Accept: application/json'
