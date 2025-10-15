@@ -578,12 +578,12 @@ body {
     flex-direction: column;
     backdrop-filter: blur(10px);
     transition: transform 0.3s ease-in-out;
-    transform: translateX(-280px); /* Show only 40px */
+    transform: translateX(0); /* Start expanded */
 }
 
 /* Base body styles */
 body {
-    padding-left: 40px; /* Space for minimized navbar */
+    padding-left: 320px; /* Space for expanded navbar */
     transition: padding-left 0.4s ease;
 }
 
