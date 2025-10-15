@@ -6953,8 +6953,24 @@ header:hover {
                         <span id="viewEventDateTime"></span>
                     </div>
                     <div class="detail-item">
-                        <label>Location:</label>
-                        <span id="viewEventLocation"></span>
+                        <label>Municipality:</label>
+                        <span id="viewEventMunicipality"></span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Barangay:</label>
+                        <span id="viewEventBarangay"></span>
+                    </div>
+                    <div class="detail-item">
+                        <label>WHO Standard:</label>
+                        <span id="viewEventWhoStandard"></span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Classification:</label>
+                        <span id="viewEventClassification"></span>
+                    </div>
+                    <div class="detail-item">
+                        <label>User Status Filter:</label>
+                        <span id="viewEventUserStatus"></span>
                     </div>
                     <div class="detail-item">
                         <label>Organizer:</label>
@@ -6968,7 +6984,6 @@ header:hover {
                 <div class="participants-header">
                     <h3>Participants (<span id="participantCount">0</span>)</h3>
                     <div class="participant-actions">
-                        <button type="button" class="btn btn-success" onclick="showBulkAddModal()">Bulk Add Participants</button>
                         <button type="button" class="btn btn-primary" onclick="saveAllParticipants()" id="saveAllBtn" style="display: none;">Save All Changes</button>
                     </div>
                 </div>
@@ -7218,7 +7233,11 @@ function closeCreateEventModal() {
                     document.getElementById('viewEventType').textContent = event.type;
                     document.getElementById('viewEventDescription').textContent = event.description;
                     document.getElementById('viewEventDateTime').textContent = new Date(event.date_time).toLocaleString();
-                    document.getElementById('viewEventLocation').textContent = event.location;
+                    document.getElementById('viewEventMunicipality').textContent = event.municipality || 'Not specified';
+                    document.getElementById('viewEventBarangay').textContent = event.barangay || 'Not specified';
+                    document.getElementById('viewEventWhoStandard').textContent = event.who_standard || 'Not specified';
+                    document.getElementById('viewEventClassification').textContent = event.classification || 'Not specified';
+                    document.getElementById('viewEventUserStatus').textContent = event.user_status || 'Not specified';
                     document.getElementById('viewEventOrganizer').textContent = event.organizer;
                     document.getElementById('participantCount').textContent = data.participant_count;
                 } else {
