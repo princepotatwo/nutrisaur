@@ -8219,6 +8219,7 @@ header {
             } else if (selectedStandard === 'bmi-adult') {
                 classificationFilter.innerHTML += `
                     <optgroup label="BMI Adult">
+                        <option value="Severely Underweight">Severely Underweight</option>
                         <option value="Underweight">Underweight</option>
                         <option value="Normal">Normal</option>
                         <option value="Overweight">Overweight</option>
@@ -8253,6 +8254,7 @@ header {
                         <option value="Obese">Obese</option>
                     </optgroup>
                     <optgroup label="BMI Adult">
+                        <option value="Severely Underweight">Severely Underweight</option>
                         <option value="Underweight">Underweight</option>
                         <option value="Normal">Normal</option>
                         <option value="Overweight">Overweight</option>

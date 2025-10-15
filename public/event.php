@@ -6967,6 +6967,7 @@ function getClassificationsForStandard(standard) {
             'Obese'
         ],
         'bmi-adult': [
+            'Severely Underweight',
             'Underweight',
             'Normal',
             'Overweight',
