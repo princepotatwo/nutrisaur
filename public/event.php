@@ -1479,27 +1479,9 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
         }
         
         if (!empty($whoStandard) && !empty($classification)) {
-            // Map WHO standard to database column
-            $classificationColumn = "";
-            switch ($whoStandard) {
-                case 'weight-for-age':
-                    $classificationColumn = "weight_for_age_classification";
-                    break;
-                case 'height-for-age':
-                    $classificationColumn = "height_for_age_classification";
-                    break;
-                case 'weight-for-height':
-                    $classificationColumn = "weight_for_height_classification";
-                    break;
-                case 'bmi-adult':
-                    $classificationColumn = "bmi_category";
-                    break;
-            }
-            
-            if (!empty($classificationColumn)) {
-                $classificationWhere = " AND $classificationColumn = :classification";
-                $classificationParams[':classification'] = $classification;
-            }
+            // For now, skip WHO classification filtering since these are calculated dynamically
+            // TODO: Implement proper WHO classification filtering using assessment results
+            error_log("🔍 WHO Standard filtering requested but not implemented yet: $whoStandard = $classification");
         }
         
         if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '' || $targetLocation === 'All Locations') {
@@ -6025,7 +6007,7 @@ header:hover {
                     <p>Upload a CSV file to import multiple events at once</p>
                 </div>
                 <div class="csv-upload-container">
-                    <form id="csvUploadForm" enctype="multipart/form-data" method="POST" action="event.php">
+                    <form id="csvUploadForm" enctype="multipart/form-data" method="POST">
                         <div class="csv-upload-area" id="uploadArea">
                             <div class="upload-icon">📄</div>
                             <div class="upload-text">
