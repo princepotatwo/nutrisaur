@@ -9924,6 +9924,10 @@ Medical Mission,${formatDate(future3)},Poblacion,Poblacion,Dr. Ana Reyes,Free me
         
         // Edit Modal Functions
         async function openEditModal(programId, title, type, description, dateTime, location, organizer) {
+            console.log('🔧 DEBUG: openEditModal called with:', {
+                programId, title, type, description, dateTime, location, organizer
+            });
+            
             // Set basic form values first
             document.getElementById('editEventId').value = programId;
             document.getElementById('editEventTitle').value = title;
@@ -9931,46 +9935,63 @@ Medical Mission,${formatDate(future3)},Poblacion,Poblacion,Dr. Ana Reyes,Free me
             document.getElementById('editEventDate').value = dateTime;
             document.getElementById('editEventOrganizer').value = organizer;
             
+            console.log('🔧 DEBUG: Basic form values set');
+            
             // Fetch complete event details to get filtering information
             try {
+                console.log('🔧 DEBUG: Fetching event details for ID:', programId);
                 const response = await fetch(`event.php?action=get_event_details&event_id=${programId}`);
                 const data = await response.json();
                 
+                console.log('🔧 DEBUG: Event details response:', data);
+                
                 if (data.success) {
                     const event = data.event;
+                    console.log('🔧 DEBUG: Event data received:', event);
                     
                     // Set filtering fields if they exist
                     if (event.municipality) {
+                        console.log('🔧 DEBUG: Setting municipality:', event.municipality);
                         document.getElementById('editEventMunicipality').value = event.municipality;
                         updateEditBarangayOptions();
                         // Set barangay after options are populated
                         if (event.barangay) {
+                            console.log('🔧 DEBUG: Setting barangay:', event.barangay);
                             setTimeout(() => {
                                 document.getElementById('editEventBarangay').value = event.barangay;
+                                console.log('🔧 DEBUG: Barangay value set to:', document.getElementById('editEventBarangay').value);
                             }, 10);
                         }
                     } else if (event.barangay) {
                         // If no municipality but has barangay, set it directly
+                        console.log('🔧 DEBUG: Setting barangay directly (no municipality):', event.barangay);
                         document.getElementById('editEventBarangay').value = event.barangay;
                     }
                     if (event.who_standard) {
+                        console.log('🔧 DEBUG: Setting WHO standard:', event.who_standard);
                         document.getElementById('editEventWhoStandard').value = event.who_standard;
                         updateEditClassificationOptions();
                     }
                     if (event.classification) {
+                        console.log('🔧 DEBUG: Setting classification:', event.classification);
                         document.getElementById('editEventClassification').value = event.classification;
                     }
                     if (event.user_status) {
+                        console.log('🔧 DEBUG: Setting user status:', event.user_status);
                         document.getElementById('editEventUserStatus').value = event.user_status;
                     }
+                } else {
+                    console.log('🔧 DEBUG: Event details fetch failed:', data.message);
                 }
             } catch (error) {
-                console.error('Error loading event details for editing:', error);
+                console.error('🔧 DEBUG: Error loading event details for editing:', error);
                 // Fallback to parsing location string if API fails
                 if (location) {
+                    console.log('🔧 DEBUG: Using fallback location parsing for:', location);
                     // Check if it's a municipality targeting (MUNICIPALITY_ format)
                     if (location.startsWith('MUNICIPALITY_')) {
                         const municipalityName = location.replace('MUNICIPALITY_', '').replace(/_/g, ' ');
+                        console.log('🔧 DEBUG: Parsed municipality from location:', municipalityName);
                         document.getElementById('editEventMunicipality').value = municipalityName;
                         document.getElementById('editEventBarangay').value = ''; // All barangays
                         updateEditBarangayOptions();
@@ -9985,11 +10006,13 @@ Medical Mission,${formatDate(future3)},Poblacion,Poblacion,Dr. Ana Reyes,Free me
                         }
                         
                         if (foundMunicipality) {
+                            console.log('🔧 DEBUG: Found municipality for barangay:', foundMunicipality);
                             document.getElementById('editEventMunicipality').value = foundMunicipality;
                             updateEditBarangayOptions();
                             document.getElementById('editEventBarangay').value = location;
                         } else {
                             // Fallback - treat as municipality
+                            console.log('🔧 DEBUG: Treating location as municipality:', location);
                             document.getElementById('editEventMunicipality').value = location;
                             document.getElementById('editEventBarangay').value = '';
                             updateEditBarangayOptions();
@@ -9999,6 +10022,7 @@ Medical Mission,${formatDate(future3)},Poblacion,Poblacion,Dr. Ana Reyes,Free me
             }
             
             // Show the modal
+            console.log('🔧 DEBUG: Showing edit modal');
             document.getElementById('editEventModal').style.display = 'block';
         }
         
