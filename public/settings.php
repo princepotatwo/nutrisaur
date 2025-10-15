@@ -8845,14 +8845,39 @@ header {
             ];
             
             const select = document.getElementById('editMunicipality');
-            select.innerHTML = '<option value="">Select Municipality</option>';
+            const isSuperAdmin = <?php echo (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin') ? 'true' : 'false'; ?>;
+            const userMunicipality = '<?php echo htmlspecialchars($user_municipality ?? ""); ?>';
             
-            municipalities.forEach(municipality => {
+            if (isSuperAdmin) {
+                // Super admin: Show all municipalities (unlocked)
+                select.innerHTML = '<option value="">Select Municipality</option>';
+                select.disabled = false;
+                
+                municipalities.forEach(municipality => {
+                    const option = document.createElement('option');
+                    option.value = municipality;
+                    option.textContent = municipality;
+                    select.appendChild(option);
+                });
+            } else {
+                // Regular user: Lock to their municipality only
+                select.innerHTML = '';
+                select.disabled = true;
+                select.style.backgroundColor = '#f5f5f5';
+                select.style.cursor = 'not-allowed';
+                
                 const option = document.createElement('option');
-                option.value = municipality;
-                option.textContent = municipality;
+                option.value = userMunicipality;
+                option.textContent = userMunicipality || 'No Municipality Assigned';
+                option.selected = true;
                 select.appendChild(option);
-            });
+                
+                // Add a small note to indicate it's locked
+                const label = document.querySelector('label[for="editMunicipality"]');
+                if (label) {
+                    label.innerHTML = 'Municipality * <small style="color: #666; font-weight: normal;">(Locked to your assigned municipality)</small>';
+                }
+            }
         }
 
         function updateBarangayOptions() {
