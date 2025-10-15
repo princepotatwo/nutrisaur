@@ -2406,7 +2406,7 @@ body {
     background-color: var(--color-bg);
     color: var(--color-text);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    padding: 20px;
+    padding: 0;
     padding-left: 90px; /* Space for minimized navbar */
     line-height: 1.6;
     letter-spacing: 0.2px;
