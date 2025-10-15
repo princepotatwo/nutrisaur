@@ -212,13 +212,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
                 $_SESSION['is_admin'] = false;
                 
                 if ($hasDefaultPassword) {
-                    // Set session flag to require password setup
-                    $_SESSION['pending_user_id'] = $existingUser['user_id'];
-                $_SESSION['pending_username'] = $existingUser['username'];
-                $_SESSION['pending_email'] = $existingUser['email'];
-                $_SESSION['pending_password_setup'] = true;
-                    echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user', 'needs_password_change' => true]);
+                    // Don't log in yet - just store user info for password setup
+                    $_SESSION['pending_user_id'] = $userByEmail['user_id'];
+                    $_SESSION['pending_username'] = $userByEmail['username'];
+                    $_SESSION['pending_email'] = $userByEmail['email'];
+                    $_SESSION['pending_password_setup'] = true;
+                    echo json_encode(['success' => true, 'message' => 'Please set up your password', 'user_type' => 'user', 'needs_password_change' => true]);
                 } else {
+                    // Log in normally
+                    $_SESSION['user_id'] = $userByEmail['user_id'];
+                    $_SESSION['username'] = $userByEmail['username'];
+                    $_SESSION['email'] = $userByEmail['email'];
+                    $_SESSION['is_admin'] = false;
                     echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user']);
                 }
             } else {
@@ -348,13 +353,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
                 $_SESSION['is_admin'] = false;
                 
                 if ($hasDefaultPassword) {
-                    // Set session flag to require password setup
-                    $_SESSION['pending_user_id'] = $existingUser['user_id'];
-                $_SESSION['pending_username'] = $existingUser['username'];
-                $_SESSION['pending_email'] = $existingUser['email'];
-                $_SESSION['pending_password_setup'] = true;
-                    echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user', 'needs_password_change' => true]);
+                    // Don't log in yet - just store user info for password setup
+                    $_SESSION['pending_user_id'] = $userByEmail['user_id'];
+                    $_SESSION['pending_username'] = $userByEmail['username'];
+                    $_SESSION['pending_email'] = $userByEmail['email'];
+                    $_SESSION['pending_password_setup'] = true;
+                    echo json_encode(['success' => true, 'message' => 'Please set up your password', 'user_type' => 'user', 'needs_password_change' => true]);
                 } else {
+                    // Log in normally
+                    $_SESSION['user_id'] = $userByEmail['user_id'];
+                    $_SESSION['username'] = $userByEmail['username'];
+                    $_SESSION['email'] = $userByEmail['email'];
+                    $_SESSION['is_admin'] = false;
                     echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user']);
                 }
             } else {
@@ -809,17 +819,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             }
             
             try {
-                // Check if user is logged in
-                error_log("Checking session - user_id: " . ($_SESSION['user_id'] ?? 'NOT SET'));
-                if (!isset($_SESSION['user_id'])) {
-                    error_log("User not logged in for password setup");
-                    echo json_encode(['success' => false, 'message' => 'You must be logged in to set up your password']);
+                // Check if user has pending password setup
+                error_log("Checking pending password setup - pending_user_id: " . ($_SESSION['pending_user_id'] ?? 'NOT SET'));
+                if (!isset($_SESSION['pending_user_id'])) {
+                    error_log("No pending user for password setup");
+                    echo json_encode(['success' => false, 'message' => 'No pending password setup found']);
                     exit;
                 }
                 
                 // Get user info including personal_email and full_name
                 $stmt = $pdo->prepare("SELECT user_id, username, email, personal_email, full_name FROM users WHERE user_id = ?");
-                $stmt->execute([$_SESSION['user_id']]);
+                $stmt->execute([$_SESSION['pending_user_id']]);
                 $user = $stmt->fetch();
                 
                 if ($user) {
@@ -831,15 +841,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                     $result = $updateStmt->execute([$hashedPassword, $user['user_id']]);
                     
                     if ($result) {
-                        // Clear the password setup requirement flag
-                        unset($_SESSION['requires_password_setup']);
+                        // Log the user in after successful password setup
+                        $_SESSION['user_id'] = $user['user_id'];
+                        $_SESSION['username'] = $user['username'];
+                        $_SESSION['email'] = $user['email'];
+                        $_SESSION['is_admin'] = false;
+                        
+                        // Clear the pending password setup flags
+                        unset($_SESSION['pending_user_id']);
+                        unset($_SESSION['pending_username']);
+                        unset($_SESSION['pending_email']);
+                        unset($_SESSION['pending_password_setup']);
                         
                         // Check if personal info is missing
                         $needsPersonalInfo = empty($user['personal_email']) || empty($user['full_name']);
                         
                         echo json_encode([
                             'success' => true, 
-                            'message' => 'Password set up successfully!',
+                            'message' => 'Password set up successfully! You are now logged in.',
                             'needs_personal_info' => $needsPersonalInfo,
                             'redirect' => $needsPersonalInfo ? null : '/dash'
                         ]);
@@ -859,7 +878,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
             error_log("Checking password setup requirement - Session ID: " . session_id());
             error_log("Session data: " . print_r($_SESSION, true));
             
-            if (isset($_SESSION['requires_password_setup']) && $_SESSION['requires_password_setup'] === true) {
+            if (isset($_SESSION['pending_password_setup']) && $_SESSION['pending_password_setup'] === true) {
                 echo json_encode(['requires_password_setup' => true]);
             } else {
                 echo json_encode(['requires_password_setup' => false]);
