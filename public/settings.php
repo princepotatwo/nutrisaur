@@ -8980,7 +8980,14 @@ header {
             try {
                 // Check if email already exists (only if email changed)
                 const originalEmail = document.getElementById('editEmail').getAttribute('data-original-email');
+                console.log('🔍 Email comparison:', { 
+                    currentEmail: userData.email, 
+                    originalEmail: originalEmail, 
+                    changed: userData.email !== originalEmail 
+                });
+                
                 if (userData.email !== originalEmail) {
+                    console.log('🔍 Email changed, checking for duplicates...');
                     const emailExists = await new Promise((resolve) => {
                         checkEmailExists(userData.email, resolve, originalEmail);
                     });
@@ -8991,6 +8998,8 @@ header {
                         saveButton.disabled = false;
                         return;
                     }
+                } else {
+                    console.log('🔍 Email unchanged, skipping duplicate check');
                 }
                 
                 // Make API request to update user
@@ -9060,6 +9069,7 @@ header {
         }
 
         function checkEmailExists(email, callback, excludeEmail = '') {
+            console.log('🔍 checkEmailExists called with:', { email, excludeEmail });
             fetch('api/DatabaseAPI.php?action=check_email_exists', {
                 method: 'POST',
                 headers: {
@@ -9072,6 +9082,7 @@ header {
             })
             .then(response => response.json())
             .then(data => {
+                console.log('🔍 checkEmailExists response:', data);
                 callback(data.exists || false);
             })
             .catch(error => {

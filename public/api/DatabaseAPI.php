@@ -6651,6 +6651,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $email = $data['email'] ?? '';
                     $excludeEmail = $data['exclude_email'] ?? ''; // Email to exclude from check (current user's email)
                     
+                    error_log("🔍 EMAIL CHECK: email='$email', excludeEmail='$excludeEmail'");
+                    
                     if (empty($email)) {
                         echo json_encode(['success' => false, 'message' => 'Email is required']);
                         break;
@@ -6664,13 +6666,17 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     
                     // Check if email exists in community_users table, excluding the current user's email
                     if (!empty($excludeEmail)) {
+                        error_log("🔍 EMAIL CHECK: Using exclusion query - email='$email', exclude='$excludeEmail'");
                         $stmt = $pdo->prepare("SELECT COUNT(*) FROM community_users WHERE email = ? AND email != ?");
                         $stmt->execute([$email, $excludeEmail]);
                     } else {
+                        error_log("🔍 EMAIL CHECK: Using normal query - email='$email'");
                         $stmt = $pdo->prepare("SELECT COUNT(*) FROM community_users WHERE email = ?");
                         $stmt->execute([$email]);
                     }
                     $count = $stmt->fetchColumn();
+                    
+                    error_log("🔍 EMAIL CHECK: Found $count matching emails");
                     
                     echo json_encode([
                         'success' => true,
