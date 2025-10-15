@@ -3249,18 +3249,9 @@ body {
         transition: transform 0.3s ease, width 0.3s ease;
     }
     
-    .navbar:hover {
-        width: 320px;
-    }
-    
     .navbar-logo-text, .navbar span:not(.navbar-icon) {
         opacity: 0;
         transition: opacity 0.2s ease;
-    }
-    
-    .navbar:hover .navbar-logo-text, 
-    .navbar:hover span:not(.navbar-icon) {
-        opacity: 1;
     }
     
     body {
