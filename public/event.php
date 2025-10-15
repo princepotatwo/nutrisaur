@@ -3904,6 +3904,10 @@ body {
     border-radius: 20px;
     padding: 25px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    max-width: calc(100% - 60px);
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .table-header {
@@ -4252,6 +4256,10 @@ body {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
     border: 2px dashed rgba(161, 180, 84, 0.3);
     transition: all 0.3s ease;
+    max-width: calc(100% - 60px);
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .csv-upload-section:hover {
