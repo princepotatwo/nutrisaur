@@ -178,7 +178,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
             
             if ($hasDefaultPassword) {
                 // Set session flag to require password setup
-                $_SESSION['requires_password_setup'] = true;
+                $_SESSION['pending_user_id'] = $existingUser['user_id'];
+                $_SESSION['pending_username'] = $existingUser['username'];
+                $_SESSION['pending_email'] = $existingUser['email'];
+                $_SESSION['pending_password_setup'] = true;
                 echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user', 'needs_password_change' => true]);
             } else {
                 echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user']);
@@ -210,7 +213,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth'])) {
                 
                 if ($hasDefaultPassword) {
                     // Set session flag to require password setup
-                    $_SESSION['requires_password_setup'] = true;
+                    $_SESSION['pending_user_id'] = $existingUser['user_id'];
+                $_SESSION['pending_username'] = $existingUser['username'];
+                $_SESSION['pending_email'] = $existingUser['email'];
+                $_SESSION['pending_password_setup'] = true;
                     echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user', 'needs_password_change' => true]);
                 } else {
                     echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user']);
@@ -308,7 +314,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
             
             if ($hasDefaultPassword) {
                 // Set session flag to require password setup
-                $_SESSION['requires_password_setup'] = true;
+                $_SESSION['pending_user_id'] = $existingUser['user_id'];
+                $_SESSION['pending_username'] = $existingUser['username'];
+                $_SESSION['pending_email'] = $existingUser['email'];
+                $_SESSION['pending_password_setup'] = true;
                 echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user', 'needs_password_change' => true]);
             } else {
                 echo json_encode(['success' => true, 'message' => 'Google login successful', 'user_type' => 'user']);
@@ -340,7 +349,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['google_oauth_code'])) 
                 
                 if ($hasDefaultPassword) {
                     // Set session flag to require password setup
-                    $_SESSION['requires_password_setup'] = true;
+                    $_SESSION['pending_user_id'] = $existingUser['user_id'];
+                $_SESSION['pending_username'] = $existingUser['username'];
+                $_SESSION['pending_email'] = $existingUser['email'];
+                $_SESSION['pending_password_setup'] = true;
                     echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user', 'needs_password_change' => true]);
                 } else {
                     echo json_encode(['success' => true, 'message' => 'Google account linked successfully', 'user_type' => 'user']);
