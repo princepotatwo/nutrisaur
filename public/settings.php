@@ -1048,7 +1048,7 @@ if ($db->isAvailable()) {
     flex-direction: column;
     backdrop-filter: blur(10px);
     transition: transform 0.3s ease-in-out;
-    transform: translateX(-280px); /* Show only 40px */
+    transform: translateX(-230px); /* Show 90px when minimized */
 }
 
 /* Dark theme navbar styles */
@@ -1299,24 +1299,7 @@ if ($db->isAvailable()) {
 }
 
 /* ===== NAVBAR TEXT VISIBILITY ===== */
-.navbar-logo-text,
-.navbar span:not(.navbar-icon),
-.navbar-footer {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    white-space: nowrap;
-}
-
-/* Minimized state */
-.navbar {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    padding-top: 20px;
-}
-
-/* Expanded state */
+/* This section is now handled by the navbar states above */
 
 /* ===== BODY PADDING FOR NAVBAR ===== */
 body {
@@ -5253,11 +5236,6 @@ header {
         }
 
         /* Navbar states */
-        /* Default navbar to minimized state */
-        .navbar {
-            transform: translateX(-230px);
-        }
-        
         .navbar.minimized {
             transform: translateX(-230px) !important;
         }
