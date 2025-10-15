@@ -1077,6 +1077,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_notification_cou
             'location' => $location,
             'organizer' => $organizer,
             'user_count' => $userCount,
+            'who_standard' => $whoStandard,
+            'classification' => $classification,
+            'user_status' => $userStatus,
             'needs_confirmation' => true
         ]);
         exit;
