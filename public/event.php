@@ -9868,41 +9868,71 @@ Medical Mission,${formatDate(future3)},Poblacion,Poblacion,Dr. Ana Reyes,Free me
         document.head.appendChild(style);
         
         // Edit Modal Functions
-        function openEditModal(programId, title, type, description, dateTime, location, organizer) {
-            // Set form values
+        async function openEditModal(programId, title, type, description, dateTime, location, organizer) {
+            // Set basic form values first
             document.getElementById('editEventId').value = programId;
             document.getElementById('editEventTitle').value = title;
             document.getElementById('editEventDescription').value = description;
             document.getElementById('editEventDate').value = dateTime;
             document.getElementById('editEventOrganizer').value = organizer;
             
-            // Handle location - parse municipality and barangay from location string
-            if (location) {
-                // Check if it's a municipality targeting (MUNICIPALITY_ format)
-                if (location.startsWith('MUNICIPALITY_')) {
-                    const municipalityName = location.replace('MUNICIPALITY_', '').replace(/_/g, ' ');
-                    document.getElementById('editEventMunicipality').value = municipalityName;
-                    document.getElementById('editEventBarangay').value = ''; // All barangays
-                    updateEditBarangayOptions();
-                } else {
-                    // It's a specific barangay - need to find which municipality it belongs to
-                    let foundMunicipality = '';
-                    for (const [municipality, barangays] of Object.entries(municipalityBarangays)) {
-                        if (barangays.includes(location)) {
-                            foundMunicipality = municipality;
-                            break;
-                        }
-                    }
+            // Fetch complete event details to get filtering information
+            try {
+                const response = await fetch(`event.php?action=get_event_details&event_id=${programId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const event = data.event;
                     
-                    if (foundMunicipality) {
-                        document.getElementById('editEventMunicipality').value = foundMunicipality;
+                    // Set filtering fields if they exist
+                    if (event.municipality) {
+                        document.getElementById('editEventMunicipality').value = event.municipality;
                         updateEditBarangayOptions();
-                        document.getElementById('editEventBarangay').value = location;
+                    }
+                    if (event.barangay) {
+                        document.getElementById('editEventBarangay').value = event.barangay;
+                    }
+                    if (event.who_standard) {
+                        document.getElementById('editEventWhoStandard').value = event.who_standard;
+                        updateEditClassificationOptions();
+                    }
+                    if (event.classification) {
+                        document.getElementById('editEventClassification').value = event.classification;
+                    }
+                    if (event.user_status) {
+                        document.getElementById('editEventUserStatus').value = event.user_status;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading event details for editing:', error);
+                // Fallback to parsing location string if API fails
+                if (location) {
+                    // Check if it's a municipality targeting (MUNICIPALITY_ format)
+                    if (location.startsWith('MUNICIPALITY_')) {
+                        const municipalityName = location.replace('MUNICIPALITY_', '').replace(/_/g, ' ');
+                        document.getElementById('editEventMunicipality').value = municipalityName;
+                        document.getElementById('editEventBarangay').value = ''; // All barangays
+                        updateEditBarangayOptions();
                     } else {
-                        // Fallback - treat as municipality
-                        document.getElementById('editEventMunicipality').value = location;
-                        document.getElementById('editEventBarangay').value = '';
-                        updateEditBarangayOptions();
+                        // It's a specific barangay - need to find which municipality it belongs to
+                        let foundMunicipality = '';
+                        for (const [municipality, barangays] of Object.entries(municipalityBarangays)) {
+                            if (barangays.includes(location)) {
+                                foundMunicipality = municipality;
+                                break;
+                            }
+                        }
+                        
+                        if (foundMunicipality) {
+                            document.getElementById('editEventMunicipality').value = foundMunicipality;
+                            updateEditBarangayOptions();
+                            document.getElementById('editEventBarangay').value = location;
+                        } else {
+                            // Fallback - treat as municipality
+                            document.getElementById('editEventMunicipality').value = location;
+                            document.getElementById('editEventBarangay').value = '';
+                            updateEditBarangayOptions();
+                        }
                     }
                 }
             }
