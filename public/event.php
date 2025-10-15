@@ -8364,6 +8364,32 @@ function closeCreateEventModal() {
             }
             
             console.log('✅ Navbar hamburger button initialized successfully');
+            
+            // Hide hamburger button when modals are open
+            const observer = new MutationObserver(function(mutations) {
+                const modals = document.querySelectorAll('.modal[style*="display: block"], .modal[style*="display:block"]');
+                const hasVisibleModal = modals.length > 0;
+                
+                if (hasVisibleModal) {
+                    hamburgerBtn.style.display = 'none';
+                    console.log('🍔 Hamburger button hidden (modal open)');
+                } else {
+                    // Only show if not on mobile
+                    const isMobile = window.innerWidth <= 768;
+                    if (!isMobile) {
+                        hamburgerBtn.style.display = 'flex';
+                        console.log('🍔 Hamburger button shown (modal closed)');
+                    }
+                }
+            });
+            
+            // Observe the entire document for modal changes
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['style', 'class']
+            });
         }
         
         // Floating Navigation Icons
