@@ -184,7 +184,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         $result = $db->universalInsert('programs', [
             'program_id' => $nextId,
             'title' => $title,
-            'type' => $type,
+            'type' => 'Event', // Default type since field no longer exists
             'description' => $description,
             'date_time' => $date_time,
             'location' => $location,
@@ -904,9 +904,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_notification_cou
     $title = $_POST['eventTitle'] ?? '';
     $type = $_POST['eventType'] ?? '';
     $description = $_POST['eventDescription'] ?? '';
-    $date_time = $_POST['eventDate'] ?? '';
+    $date_time = $_POST['date_time'] ?? $_POST['eventDate'] ?? '';
     $location = $_POST['eventLocation'] ?? 'all';
-    $organizer = $_POST['eventOrganizer'] ?? '';
+    $organizer = $_POST['organizer'] ?? $_POST['eventOrganizer'] ?? '';
     
     // Debug: Log received POST data
     error_log("🔍 POST data received: " . json_encode($_POST));
@@ -928,9 +928,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_notification_cou
         }
     }
     
-    // Validate required fields
-    if (empty($title) || empty($type) || empty($description) || empty($date_time) || empty($organizer)) {
-        error_log("❌ Validation failed - missing fields: title=" . (empty($title) ? 'EMPTY' : 'OK') . ", type=" . (empty($type) ? 'EMPTY' : 'OK') . ", description=" . (empty($description) ? 'EMPTY' : 'OK') . ", date_time=" . (empty($date_time) ? 'EMPTY' : 'OK') . ", organizer=" . (empty($organizer) ? 'EMPTY' : 'OK'));
+    // Validate required fields (removed type validation since eventType field no longer exists)
+    if (empty($title) || empty($description) || empty($date_time) || empty($organizer)) {
+        error_log("❌ Validation failed - missing fields: title=" . (empty($title) ? 'EMPTY' : 'OK') . ", description=" . (empty($description) ? 'EMPTY' : 'OK') . ", date_time=" . (empty($date_time) ? 'EMPTY' : 'OK') . ", organizer=" . (empty($organizer) ? 'EMPTY' : 'OK'));
         echo json_encode(['success' => false, 'message' => 'Please fill in all required fields.']);
         exit;
     }
@@ -953,7 +953,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_notification_cou
         echo json_encode([
             'success' => true,
             'title' => $title,
-            'type' => $type,
+            'type' => 'Event', // Default type since field no longer exists
             'description' => $description,
             'date_time' => $date_time,
             'location' => $location,
@@ -978,14 +978,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
     $title = $_POST['eventTitle'] ?? '';
     $type = $_POST['eventType'] ?? '';
     $description = $_POST['eventDescription'] ?? '';
-    $date_time = $_POST['eventDate'] ?? '';
+    $date_time = $_POST['date_time'] ?? $_POST['eventDate'] ?? '';
     $location = $_POST['eventLocation'] ?? 'all';
-    $organizer = $_POST['eventOrganizer'] ?? '';
+    $organizer = $_POST['organizer'] ?? $_POST['eventOrganizer'] ?? '';
     
     error_log("Form data received: Title=$title, Type=$type, Location=$location, Organizer=$organizer");
     
-    // Validate required fields
-    if (empty($title) || empty($type) || empty($description) || empty($date_time) || empty($organizer)) {
+    // Validate required fields (removed type validation since eventType field no longer exists)
+    if (empty($title) || empty($description) || empty($date_time) || empty($organizer)) {
         $errorMessage = "Please fill in all required fields.";
         error_log("Validation failed: Missing required fields");
     } else {
@@ -1002,7 +1002,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['create_event'])) {
             $db = DatabaseAPI::getInstance();
             $result = $db->universalInsert('programs', [
                 'title' => $title,
-                'type' => $type,
+                'type' => 'Event', // Default type since field no longer exists
                 'description' => $description,
                 'date_time' => $date_time,
                 'location' => $location,
@@ -1060,8 +1060,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
     
     error_log("AJAX Event data: Title=$title, Type=$type, Location=$location, Organizer=$organizer");
     
-    // Validate required fields
-    if (empty($title) || empty($type) || empty($description) || empty($date_time) || empty($organizer)) {
+    // Validate required fields (removed type validation since eventType field no longer exists)
+    if (empty($title) || empty($description) || empty($date_time) || empty($organizer)) {
         echo json_encode(['success' => false, 'message' => 'Invalid request']);
         exit;
     }
@@ -1086,7 +1086,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action']) && $_POST['a
         $result = $db->universalInsert('programs', [
             'program_id' => $nextId,
             'title' => $title,
-            'type' => $type,
+            'type' => 'Event', // Default type since field no longer exists
             'description' => $description,
             'date_time' => $date_time,
             'location' => $location,
@@ -7111,9 +7111,9 @@ function closeCreateEventModal() {
             formData.append('eventTitle', eventData.title);
             formData.append('eventType', eventData.type);
             formData.append('eventDescription', eventData.description);
-            formData.append('eventDate', eventData.date_time);
+            formData.append('date_time', eventData.date_time);
             formData.append('eventLocation', eventData.location);
-            formData.append('eventOrganizer', eventData.organizer);
+            formData.append('organizer', eventData.organizer);
 
             // Show loading state
             const confirmBtn = document.querySelector('#notificationConfirmModal .btn-primary');
