@@ -1467,13 +1467,14 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
         if (!empty($userStatus)) {
             switch ($userStatus) {
                 case 'flagged':
-                    $userStatusWhere = " AND flagged = 1";
+                    // For now, target all active users since flagged column doesn't exist
+                    $userStatusWhere = " AND status = 'active'";
                     break;
                 case 'with_notes':
                     $userStatusWhere = " AND notes IS NOT NULL AND notes != ''";
                     break;
                 case 'flagged_and_notes':
-                    $userStatusWhere = " AND flagged = 1 AND notes IS NOT NULL AND notes != ''";
+                    $userStatusWhere = " AND status = 'active' AND notes IS NOT NULL AND notes != ''";
                     break;
             }
         }
@@ -6023,7 +6024,7 @@ header:hover {
                             <div id="previewContent"></div>
                         </div>
                         <div class="csv-actions">
-                            <button type="button" class="btn btn-add" id="importBtn" disabled onclick="uploadCSVWithAjax()">
+                            <button type="button" class="btn btn-add" id="importBtn" disabled onclick="handleCsvImport()">
                                 📥 Import Events
                             </button>
                             <button type="submit" name="import_csv" class="btn btn-add" id="importBtnFallback" style="display: none;">
@@ -7360,6 +7361,47 @@ function closeCreateEventModal() {
             window.pendingEventData = null;
         }
 
+        // CSV Import Handler - Same pattern as manual event creation
+        async function handleCsvImport() {
+            console.log('🚨 CSV IMPORT STARTED - CHECKING NOTIFICATION COUNTS FIRST');
+            
+            const fileInput = document.getElementById('csvFile');
+            if (!fileInput.files[0]) {
+                alert('Please select a CSV file first.');
+                return;
+            }
+            
+            try {
+                console.log('🔄 Checking CSV notification counts...');
+                
+                const formData = new FormData();
+                formData.append('check_csv_notification_count', '1');
+                formData.append('csvFile', fileInput.files[0]);
+                
+                const checkResponse = await fetch('event.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const checkResult = await checkResponse.json();
+                console.log('📊 CSV notification count response:', checkResult);
+                
+                if (checkResult.success && checkResult.needs_confirmation) {
+                    console.log('✅ CSV notification count retrieved, showing confirmation modal');
+                    
+                    // Show CSV confirmation modal
+                    showCsvConfirmModal(checkResult);
+                } else {
+                    console.error('❌ Failed to get CSV notification count:', checkResult.message);
+                    alert('Error checking CSV: ' + checkResult.message);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error checking CSV notification count:', error);
+                alert('Error checking CSV: ' + error.message);
+            }
+        }
+
         // CSV Confirmation Modal Functions
         function showCsvConfirmModal(csvData) {
             // Update summary stats
@@ -8512,50 +8554,8 @@ Medical Mission,${formatDate(future3)},${userMunicipality},Poblacion,Dr. Ana Rey
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, initializing CSV upload...');
             
-            // Form submission handling
-            const csvUploadForm = document.getElementById('csvUploadForm');
-            if (csvUploadForm) {
-                csvUploadForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-                    console.log('CSV form submission started');
-                    const fileInput = document.getElementById('csvFile');
-                    if (!fileInput.files[0]) {
-                        alert('Please select a CSV file first.');
-                        return false;
-                    }
-                    
-                    try {
-                        // First check notification counts
-                        console.log('🔄 Checking CSV notification counts...');
-                        
-                        const formData = new FormData();
-                        formData.append('check_csv_notification_count', '1');
-                        formData.append('csvFile', fileInput.files[0]);
-                        
-                        const checkResponse = await fetch('event.php', {
-                            method: 'POST',
-                            body: formData
-                        });
-                        
-                        const checkResult = await checkResponse.json();
-                        console.log('📊 CSV notification count response:', checkResult);
-                        
-                        if (checkResult.success && checkResult.needs_confirmation) {
-                            console.log('✅ CSV notification count retrieved, showing confirmation modal');
-                            
-                            // Show CSV confirmation modal
-                            showCsvConfirmModal(checkResult);
-                        } else {
-                            console.error('❌ Failed to get CSV notification count:', checkResult.message);
-                            alert('Error checking CSV: ' + checkResult.message);
-                        }
-                        
-                    } catch (error) {
-                        console.error('❌ Error checking CSV notification count:', error);
-                        alert('Error checking CSV: ' + error.message);
-                    }
-                });
-            }
+            // CSV form submission is now handled by handleCsvImport() function
+            // No need for form event listener since we use onclick handler
             
             const uploadArea = document.getElementById('uploadArea') || document.querySelector('.csv-upload-area');
             const fileInput = document.getElementById('csvFile');
