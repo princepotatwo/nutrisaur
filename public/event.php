@@ -1799,6 +1799,93 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     }
 }
 
+// Handle CSV notification count check before import
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_csv_notification_count'])) {
+    header('Content-Type: application/json');
+    
+    if (isset($_FILES['csvFile']) && $_FILES['csvFile']['error'] == 0) {
+        $file = $_FILES['csvFile'];
+        
+        // Simple validation
+        if (strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)) !== 'csv') {
+            echo json_encode(['success' => false, 'message' => 'Please upload a CSV file only.']);
+            exit;
+        }
+        
+        try {
+            $db = DatabaseAPI::getInstance();
+            $pdo = $db->getPDO();
+            
+            $totalEvents = 0;
+            $totalUsers = 0;
+            $events = [];
+            
+            // Process CSV to get event details and user counts
+            if (($handle = fopen($file['tmp_name'], "r")) !== FALSE) {
+                $row = 0;
+                while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                    $row++;
+                    if ($row == 1) {
+                        continue; // Skip header
+                    }
+                    
+                    // Check if user is super admin to determine expected format
+                    $isSuperAdmin = isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin';
+                    
+                    // Validate columns based on user type
+                    if ($isSuperAdmin) {
+                        if (count($data) < 7) continue;
+                        $title = trim($data[0]);
+                        $location = trim($data[3]);
+                        $whoStandard = isset($data[7]) ? trim($data[7]) : '';
+                        $classification = isset($data[8]) ? trim($data[8]) : '';
+                        $userStatus = isset($data[9]) ? trim($data[9]) : '';
+                    } else {
+                        if (count($data) < 6) continue;
+                        $title = trim($data[0]);
+                        $location = trim($data[2]);
+                        $whoStandard = isset($data[6]) ? trim($data[6]) : '';
+                        $classification = isset($data[7]) ? trim($data[7]) : '';
+                        $userStatus = isset($data[8]) ? trim($data[8]) : '';
+                    }
+                    
+                    if (empty($title) || empty($location)) continue;
+                    
+                    // Get user count for this event
+                    $fcmTokenData = getFCMTokensByLocation($location, $whoStandard, $classification, $userStatus);
+                    $userCount = count($fcmTokenData);
+                    
+                    $events[] = [
+                        'title' => $title,
+                        'location' => $location,
+                        'user_count' => $userCount
+                    ];
+                    
+                    $totalEvents++;
+                    $totalUsers += $userCount;
+                }
+                fclose($handle);
+            }
+            
+            echo json_encode([
+                'success' => true,
+                'total_events' => $totalEvents,
+                'total_users' => $totalUsers,
+                'events' => $events,
+                'needs_confirmation' => true
+            ]);
+            exit;
+            
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'Error checking CSV: ' . $e->getMessage()]);
+            exit;
+        }
+    } else {
+        echo json_encode(['success' => false, 'message' => 'No CSV file uploaded.']);
+        exit;
+    }
+}
+
 // 🚨 CLEAN CSV IMPORT METHOD - NO COMPLEX LOGIC
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
     error_log("=== CLEAN CSV IMPORT STARTED ===");
@@ -4458,6 +4545,117 @@ body {
     transform: scale(1.02);
 }
 
+/* CSV Confirmation Modal Styles */
+.csv-summary {
+    background: var(--color-card);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--color-border);
+}
+
+.summary-stats {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: var(--color-highlight);
+    line-height: 1;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.9em;
+    color: var(--color-text-secondary);
+    margin-top: 5px;
+}
+
+.events-preview {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 10px;
+    background: var(--color-background);
+}
+
+.event-preview-item {
+    background: var(--color-card);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid var(--color-border);
+    transition: all 0.2s ease;
+}
+
+.event-preview-item:hover {
+    border-color: var(--color-highlight);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.event-preview-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.event-title {
+    font-size: 1.1em;
+}
+
+.event-details {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.event-location, .event-users {
+    font-size: 0.9em;
+    color: var(--color-text-secondary);
+}
+
+.csv-notification-summary {
+    background: var(--color-card);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    border: 1px solid var(--color-border);
+}
+
+.notification-breakdown {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.breakdown-item {
+    text-align: center;
+}
+
+.breakdown-label {
+    display: block;
+    font-size: 0.9em;
+    color: var(--color-text-secondary);
+    margin-bottom: 5px;
+}
+
+.breakdown-value {
+    display: block;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--color-highlight);
+}
+
 .light-theme .csv-upload-area.dragover {
     background: linear-gradient(135deg, rgba(142, 185, 110, 0.2), rgba(142, 185, 110, 0.15));
     border-color: var(--color-accent3);
@@ -6388,6 +6586,59 @@ header:hover {
     </div>
 </div>
 
+<!-- CSV Import Confirmation Modal -->
+<div id="csvConfirmModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📊 CSV Import Confirmation</h2>
+            <span class="close" onclick="closeCsvConfirmModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="csv-import-details">
+                <h3>📋 Import Summary:</h3>
+                <div class="csv-summary">
+                    <div class="summary-stats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="csvTotalEvents">0</span>
+                            <span class="stat-label">Events to Import</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="csvTotalUsers">0</span>
+                            <span class="stat-label">Total Notifications</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="events-list">
+                    <h4>📅 Events Preview:</h4>
+                    <div id="csvEventsList" class="events-preview">
+                        <!-- Events will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="csv-notification-summary">
+                    <h4>📊 Notification Summary:</h4>
+                    <div class="notification-breakdown">
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">Total Events:</span>
+                            <span class="breakdown-value" id="csvEventCount">0</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">Total Notifications:</span>
+                            <span class="breakdown-value" id="csvNotificationCount">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="confirmation-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeCsvConfirmModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmCsvImport()">Import Events & Send Notifications</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- View Event Modal -->
 <div id="viewEventModal" class="modal" style="display: none;">
     <div class="modal-content large-modal">
@@ -7125,6 +7376,92 @@ function closeCreateEventModal() {
         function closeNotificationConfirmModal() {
             document.getElementById('notificationConfirmModal').style.display = 'none';
             window.pendingEventData = null;
+        }
+
+        // CSV Confirmation Modal Functions
+        function showCsvConfirmModal(csvData) {
+            // Update summary stats
+            document.getElementById('csvTotalEvents').textContent = csvData.total_events;
+            document.getElementById('csvTotalUsers').textContent = csvData.total_users;
+            document.getElementById('csvEventCount').textContent = csvData.total_events;
+            document.getElementById('csvNotificationCount').textContent = csvData.total_users;
+            
+            // Populate events list with individual counts
+            const eventsList = document.getElementById('csvEventsList');
+            eventsList.innerHTML = '';
+            
+            csvData.events.forEach((event, index) => {
+                const eventDiv = document.createElement('div');
+                eventDiv.className = 'event-preview-item';
+                eventDiv.innerHTML = `
+                    <div class="event-preview-content">
+                        <div class="event-title">
+                            <strong>${event.title}</strong>
+                        </div>
+                        <div class="event-details">
+                            <span class="event-location">📍 ${event.location}</span>
+                            <span class="event-users">👥 ${event.user_count} users will be notified</span>
+                        </div>
+                    </div>
+                `;
+                eventsList.appendChild(eventDiv);
+            });
+            
+            // Store CSV data for confirmation
+            window.pendingCsvData = csvData;
+            
+            document.getElementById('csvConfirmModal').style.display = 'block';
+        }
+
+        function closeCsvConfirmModal() {
+            document.getElementById('csvConfirmModal').style.display = 'none';
+            window.pendingCsvData = null;
+        }
+
+        function confirmCsvImport() {
+            if (!window.pendingCsvData) {
+                console.error('No pending CSV data');
+                return;
+            }
+
+            // Show loading state
+            const confirmBtn = document.querySelector('#csvConfirmModal .btn-primary');
+            const originalText = confirmBtn.textContent;
+            confirmBtn.textContent = 'Importing Events...';
+            confirmBtn.disabled = true;
+
+            // Submit the CSV import
+            const formData = new FormData();
+            formData.append('import_csv', '1');
+            formData.append('csvFile', document.getElementById('csvFile').files[0]);
+
+            fetch('event.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Close confirmation modal
+                closeCsvConfirmModal();
+                
+                // Show success message
+                if (data.success) {
+                    showNotification(`Successfully imported ${data.imported_count} events and sent notifications!`, 'success');
+                } else {
+                    showNotification('CSV import failed: ' + data.message, 'error');
+                }
+                
+                // Reload the page to show the new events
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            })
+            .catch(error => {
+                console.error('Error importing CSV:', error);
+                showNotification('Error importing CSV: ' + error.message, 'error');
+                confirmBtn.textContent = originalText;
+                confirmBtn.disabled = false;
+            });
         }
 
         function confirmCreateEvent() {
@@ -8196,18 +8533,45 @@ Medical Mission,${formatDate(future3)},${userMunicipality},Poblacion,Dr. Ana Rey
             // Form submission handling
             const csvUploadForm = document.getElementById('csvUploadForm');
             if (csvUploadForm) {
-                csvUploadForm.addEventListener('submit', function(e) {
-                    console.log('Form submission started');
+                csvUploadForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    console.log('CSV form submission started');
                     const fileInput = document.getElementById('csvFile');
                     if (!fileInput.files[0]) {
-                        e.preventDefault();
                         alert('Please select a CSV file first.');
                         return false;
                     }
                     
-                    document.getElementById('importStatus').style.display = 'block';
-                    document.getElementById('importBtn').disabled = true;
-                    document.getElementById('cancelBtn').style.display = 'none';
+                    try {
+                        // First check notification counts
+                        console.log('🔄 Checking CSV notification counts...');
+                        
+                        const formData = new FormData();
+                        formData.append('check_csv_notification_count', '1');
+                        formData.append('csvFile', fileInput.files[0]);
+                        
+                        const checkResponse = await fetch('event.php', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const checkResult = await checkResponse.json();
+                        console.log('📊 CSV notification count response:', checkResult);
+                        
+                        if (checkResult.success && checkResult.needs_confirmation) {
+                            console.log('✅ CSV notification count retrieved, showing confirmation modal');
+                            
+                            // Show CSV confirmation modal
+                            showCsvConfirmModal(checkResult);
+                        } else {
+                            console.error('❌ Failed to get CSV notification count:', checkResult.message);
+                            alert('Error checking CSV: ' + checkResult.message);
+                        }
+                        
+                    } catch (error) {
+                        console.error('❌ Error checking CSV notification count:', error);
+                        alert('Error checking CSV: ' + error.message);
+                    }
                 });
             }
             
