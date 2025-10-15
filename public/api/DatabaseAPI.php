@@ -2822,6 +2822,22 @@ class DatabaseAPI {
             $result = $stmt->execute($params);
             
             if ($result) {
+                // Check if this is a community_users table update and if weight/height changed
+                if ($table === 'community_users') {
+                    $weightChanged = isset($data['weight']);
+                    $heightChanged = isset($data['height']);
+                    
+                    if ($weightChanged || $heightChanged) {
+                        // Get the email from WHERE params (assuming email is the identifier)
+                        $userEmail = !empty($whereParams) ? $whereParams[0] : null;
+                        
+                        if ($userEmail) {
+                            error_log("🔍 Auto-screening triggered via universalUpdate: weightChanged=$weightChanged, heightChanged=$heightChanged");
+                            triggerAutoScreening($userEmail, $data);
+                        }
+                    }
+                }
+                
                 return [
                     'success' => true,
                     'message' => 'Record updated successfully',
