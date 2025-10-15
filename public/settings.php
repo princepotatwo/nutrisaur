@@ -8979,7 +8979,7 @@ header {
             
             try {
                 // Check if email already exists (only if email changed)
-                const originalEmail = document.getElementById('editEmail').getAttribute('data-original-email');
+                const originalEmail = document.getElementById('modalEditEmail').getAttribute('data-original-email');
                 console.log('🔍 Email comparison:', { 
                     currentEmail: userData.email, 
                     originalEmail: originalEmail, 
