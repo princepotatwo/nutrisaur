@@ -8982,7 +8982,7 @@ header {
                 const originalEmail = document.getElementById('editEmail').getAttribute('data-original-email');
                 if (userData.email !== originalEmail) {
                     const emailExists = await new Promise((resolve) => {
-                        checkEmailExists(userData.email, resolve);
+                        checkEmailExists(userData.email, resolve, originalEmail);
                     });
                     
                     if (emailExists) {
@@ -9059,13 +9059,16 @@ header {
             return true;
         }
 
-        function checkEmailExists(email, callback) {
+        function checkEmailExists(email, callback, excludeEmail = '') {
             fetch('api/DatabaseAPI.php?action=check_email_exists', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email: email })
+                body: JSON.stringify({ 
+                    email: email,
+                    exclude_email: excludeEmail
+                })
             })
             .then(response => response.json())
             .then(data => {

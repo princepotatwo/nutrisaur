@@ -6649,6 +6649,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $input = file_get_contents('php://input');
                     $data = json_decode($input, true);
                     $email = $data['email'] ?? '';
+                    $excludeEmail = $data['exclude_email'] ?? ''; // Email to exclude from check (current user's email)
                     
                     if (empty($email)) {
                         echo json_encode(['success' => false, 'message' => 'Email is required']);
@@ -6661,9 +6662,14 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         break;
                     }
                     
-                    // Check if email exists in community_users table
-                    $stmt = $pdo->prepare("SELECT COUNT(*) FROM community_users WHERE email = ?");
-                    $stmt->execute([$email]);
+                    // Check if email exists in community_users table, excluding the current user's email
+                    if (!empty($excludeEmail)) {
+                        $stmt = $pdo->prepare("SELECT COUNT(*) FROM community_users WHERE email = ? AND email != ?");
+                        $stmt->execute([$email, $excludeEmail]);
+                    } else {
+                        $stmt = $pdo->prepare("SELECT COUNT(*) FROM community_users WHERE email = ?");
+                        $stmt->execute([$email]);
+                    }
                     $count = $stmt->fetchColumn();
                     
                     echo json_encode([
