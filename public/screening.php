@@ -576,6 +576,7 @@ body {
     z-index: 1000;
     display: flex;
     flex-direction: column;
+    align-items: stretch !important; /* Never center, always stretch */
     backdrop-filter: blur(10px);
     transition: transform 0.3s ease-in-out;
     transform: translateX(-230px); /* Show 90px when minimized */
