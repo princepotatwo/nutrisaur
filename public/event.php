@@ -2298,6 +2298,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                             $importedCount++;
                         error_log("✅ CSV: Row $row imported - ID: $nextId");
                         
+                        // Add eligible participants automatically
+                        try {
+                            error_log("👥 CSV: Adding eligible participants for event ID: $nextId");
+                            $participantsAdded = addEligibleParticipants($nextId, $location, $whoStandard, $classification, $userStatus);
+                            error_log("✅ CSV: Added $participantsAdded eligible participants to event");
+                        } catch (Exception $e) {
+                            error_log("⚠️ CSV: Error adding participants: " . $e->getMessage());
+                        }
+                        
                         // Send notification with duplicate prevention using file lock
                         try {
                             // Create unique lock file name based on event details
@@ -6972,63 +6981,6 @@ header:hover {
                             <span class="close" onclick="closeBulkAddModal()">&times;</span>
                         </div>
                         <div class="bulk-add-body">
-                            <!-- Filtering Options -->
-                            <div class="filter-options" style="margin-bottom: 20px; padding: 15px; background: var(--color-card); border-radius: 8px; border: 1px solid var(--color-border);">
-                                <h5 style="margin-bottom: 15px; color: var(--color-highlight);">Filter Eligible Participants</h5>
-                                <div class="filter-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                                    <div class="form-group">
-                                        <label for="filterLocation">Location:</label>
-                                        <select id="filterLocation" class="form-control" onchange="applyFilters()">
-                                            <option value="">All Locations</option>
-                                            <option value="MUNICIPALITY_Limay">Limay Municipality</option>
-                                            <option value="MUNICIPALITY_Orion">Orion Municipality</option>
-                                            <option value="MUNICIPALITY_Pilar">Pilar Municipality</option>
-                                            <option value="MUNICIPALITY_Balanga">Balanga Municipality</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="filterUserStatus">User Status:</label>
-                                        <select id="filterUserStatus" class="form-control" onchange="applyFilters()">
-                                            <option value="">All Users</option>
-                                            <option value="active">Active Users</option>
-                                            <option value="flagged">Flagged Users</option>
-                                            <option value="with_notes">Users with Notes</option>
-                                            <option value="flagged_and_notes">Flagged with Notes</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="filter-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                                    <div class="form-group">
-                                        <label for="filterWhoStandard">WHO Standard:</label>
-                                        <select id="filterWhoStandard" class="form-control" onchange="applyFilters()">
-                                            <option value="">No WHO Filter</option>
-                                            <option value="weight-for-age">Weight for Age</option>
-                                            <option value="height-for-age">Height for Age</option>
-                                            <option value="weight-for-height">Weight for Height</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="filterClassification">Classification:</label>
-                                        <select id="filterClassification" class="form-control" onchange="applyFilters()">
-                                            <option value="">All Classifications</option>
-                                            <option value="Severely Underweight">Severely Underweight</option>
-                                            <option value="Underweight">Underweight</option>
-                                            <option value="Normal">Normal</option>
-                                            <option value="Overweight">Overweight</option>
-                                            <option value="Obese">Obese</option>
-                                            <option value="Severely Stunted">Severely Stunted</option>
-                                            <option value="Stunted">Stunted</option>
-                                            <option value="Normal Height">Normal Height</option>
-                                            <option value="Tall">Tall</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div style="margin-top: 15px; text-align: right;">
-                                    <button type="button" class="btn btn-secondary" onclick="clearFilters()" style="margin-right: 10px;">Clear Filters</button>
-                                    <button type="button" class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
-                                </div>
-                            </div>
-                            
                             <div class="search-box">
                                 <input type="text" id="participantSearch" placeholder="Search participants..." class="form-control" onkeyup="filterParticipants()">
                             </div>
