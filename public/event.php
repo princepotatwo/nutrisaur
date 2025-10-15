@@ -1846,9 +1846,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['check_csv_notification
                     
                     if (empty($title) || empty($location)) continue;
                     
-                    // Get user count for this event
-                    error_log("🔍 Processing event: $title, Location: $location, WHO: $whoStandard, Classification: $classification, Status: $userStatus");
-                    $fcmTokenData = getFCMTokensByLocation($location, $whoStandard, $classification, $userStatus);
+                    // Get user count for this event - SAME AS MANUAL EVENT (no WHO filtering)
+                    error_log("🔍 Processing event: $title, Location: $location");
+                    $fcmTokenData = getFCMTokensByLocation($location);  // Match manual event - no WHO parameters
                     $userCount = count($fcmTokenData);
                     error_log("🔍 Found $userCount users for event: $title");
                     
@@ -2035,9 +2035,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['import_csv'])) {
                                 $notificationTitle = "🎯 Event: $title";
                                 $notificationBody = "New event: $title at $location" . (!empty($barangay) ? " - $barangay" : "") . " on " . date('M j, Y g:i A', strtotime($dateObj->format('Y-m-d H:i:s')));
                                 
-                                // Use the centralized getFCMTokensByLocation function with WHO classification and user status targeting
-                                error_log("🔍 CSV: WHO Standard: '$whoStandard', Classification: '$classification', User Status: '$userStatus'");
-                                $fcmTokenData = getFCMTokensByLocation($location, $whoStandard, $classification, $userStatus);
+                                // Use the centralized getFCMTokensByLocation function - SAME AS MANUAL EVENT (no WHO filtering)
+                                error_log("🔍 CSV: Getting FCM tokens for location: $location");
+                                $fcmTokenData = getFCMTokensByLocation($location);  // Match manual event - no WHO parameters
                                 
                                 error_log("🔔 CSV: Found " . count($fcmTokenData) . " FCM tokens for location: $location");
                                 
