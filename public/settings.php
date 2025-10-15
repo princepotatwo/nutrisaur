@@ -5440,7 +5440,6 @@ header {
                         </div>
                         <div>
                             <input type="text" id="searchInput" placeholder="Search by name, email, location, or gender..." class="search-input">
-                            <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
                         </div>
                     </div>
 

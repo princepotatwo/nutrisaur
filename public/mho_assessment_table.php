@@ -947,7 +947,6 @@ if (isDBConnected()) {
                     <div class="search-row">
                         <div class="search-container">
                             <input type="text" id="searchInput" placeholder="Search by name, location, or risk level..." class="search-input">
-                            <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
                         </div>
                         <div class="filter-container">
                             <select id="riskFilter" onchange="filterByRisk()" class="filter-select">

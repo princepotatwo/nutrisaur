@@ -6206,11 +6206,9 @@ header {
                     <div class="control-row-1">
                         <div class="action-section">
                             <button class="btn-add" onclick="openMHOFoodManager()">
-                                <span class="btn-icon">🍎</span>
                                 <span class="btn-text">MHO Food Manager</span>
                             </button>
                             <button class="btn-add" onclick="downloadCSVTemplate()">
-                                <span class="btn-icon">📥</span>
                                 <span class="btn-text">Download Template</span>
                             </button>
                             <button class="btn-secondary" onclick="showCSVImportModal()">
@@ -6264,7 +6262,6 @@ header {
                         
                         <div class="search-section">
                             <input type="text" id="searchInput" placeholder="Search by name, email..." class="search-input">
-                            <button type="button" onclick="searchAssessments()" class="search-btn">🔍</button>
                         </div>
                     </div>
 
