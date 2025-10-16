@@ -3767,6 +3767,7 @@ class DatabaseAPI {
                         
                         $severeCases[] = [
                             'name' => $user['name'] ?? 'Unknown',
+                            'email' => $user['email'] ?? '',
                             'age' => $ageText,
                             'classification' => $classification,
                             'screening_date' => $user['screening_date'],

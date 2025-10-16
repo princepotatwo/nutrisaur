@@ -13506,7 +13506,12 @@ body.navbar-locked {
                     caseItem.style.cursor = 'pointer';
                     
                     // Add onclick handler to view full details
-                    caseItem.onclick = () => viewSevereCaseDetails(caseData.email);
+                    console.log('🔍 Setting onclick for severe case:', caseData);
+                    console.log('🔍 Case email:', caseData.email);
+                    caseItem.onclick = () => {
+                        console.log('🔍 Severe case clicked, email:', caseData.email);
+                        viewSevereCaseDetails(caseData.email);
+                    };
                     
                     // Debug: Log the CSS class being applied
                     console.log('🔍 Severe case CSS class:', cssClass, 'for classification:', caseData.classification);
