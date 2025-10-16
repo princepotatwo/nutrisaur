@@ -5462,7 +5462,12 @@ header {
                             </button>
                         </div>
                         <div>
-                            <input type="text" id="searchInput" placeholder="Search by name, email, location, or gender..." class="search-input">
+                            <!-- Search bar for community users table -->
+                            <input type="text" id="searchInput" placeholder="Search by name, email, location, or gender..." class="search-input" style="display: block;">
+                            <!-- Search bar for admin users table (only for super admin) -->
+                            <?php if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin'): ?>
+                            <input type="text" id="searchInputAdmin" placeholder="Search admin users by ID, username, or email..." class="search-input" style="display: none;">
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -7143,6 +7148,18 @@ header {
                 controlRow2.style.display = 'none';
             }
             
+            // Switch search bars - hide community search, show admin search
+            const communitySearch = document.getElementById('searchInput');
+            const adminSearch = document.getElementById('searchInputAdmin');
+            if (communitySearch) {
+                communitySearch.style.display = 'none';
+                communitySearch.value = ''; // Clear the search
+            }
+            if (adminSearch) {
+                adminSearch.style.display = 'block';
+                adminSearch.value = ''; // Clear the search
+            }
+            
             // Fetch users from database and update table
             fetch('/settings.php', {
                 method: 'POST',
@@ -7187,6 +7204,18 @@ header {
             const controlRow2 = document.querySelector('.control-row-2');
             if (controlRow2) {
                 controlRow2.style.display = 'block';
+            }
+            
+            // Switch search bars - show community search, hide admin search
+            const communitySearch = document.getElementById('searchInput');
+            const adminSearch = document.getElementById('searchInputAdmin');
+            if (communitySearch) {
+                communitySearch.style.display = 'block';
+                communitySearch.value = ''; // Clear the search
+            }
+            if (adminSearch) {
+                adminSearch.style.display = 'none';
+                adminSearch.value = ''; // Clear the search
             }
             
             // Restore the original table structure and data
@@ -9479,8 +9508,33 @@ header {
         }
 
 
+        // Simple search function for admin users table (super admin only)
+        function searchAdminUsers() {
+            const searchInput = document.getElementById('searchInputAdmin');
+            const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            
+            const tableRows = document.querySelectorAll('.user-table tbody tr');
+            let visibleCount = 0;
+            
+            tableRows.forEach(row => {
+                if (searchTerm) {
+                    const rowText = row.textContent.toLowerCase();
+                    if (rowText.includes(searchTerm)) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                } else {
+                    row.style.display = '';
+                    visibleCount++;
+                }
+            });
+            
+            updateVisibleCount(visibleCount);
+        }
+
         function applyAllFilters() {
-            console.log('🔍 applyAllFilters called');
             const municipalityFilter = document.getElementById('municipalityFilter').value;
             const barangayFilter = document.getElementById('barangayFilter').value;
             const fromDate = document.getElementById('fromDate').value;
@@ -9489,11 +9543,7 @@ header {
             const searchInput = document.getElementById('searchInput');
             const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
             
-            console.log('🔍 Search term:', searchTerm);
-            console.log('🔍 Search input element:', searchInput);
-            
             const tableRows = document.querySelectorAll('.user-table tbody tr');
-            console.log('🔍 Found table rows:', tableRows.length);
             let visibleCount = 0;
             
             tableRows.forEach(row => {
@@ -9628,18 +9678,18 @@ header {
                 });
             }
             
-            // Add event listener for search input
+            // Add event listener for community users search input
             const searchInput = document.getElementById('searchInput');
-            console.log('🔍 Attempting to attach search listener. Element:', searchInput);
             if (searchInput) {
-                console.log('✅ Search input found! Attaching event listener...');
-                searchInput.addEventListener('input', function(e) {
-                    console.log('🔍 Search input event fired! Value:', e.target.value);
-                    applyAllFilters();
-                });
-                console.log('✅ Search input event listener attached successfully');
-            } else {
-                console.error('❌ Search input not found!');
+                console.log('✅ Community search input found and attached');
+                searchInput.addEventListener('input', applyAllFilters);
+            }
+            
+            // Add event listener for admin users search input (super admin only)
+            const searchInputAdmin = document.getElementById('searchInputAdmin');
+            if (searchInputAdmin) {
+                console.log('✅ Admin search input found and attached');
+                searchInputAdmin.addEventListener('input', searchAdminUsers);
             }
         });
 
