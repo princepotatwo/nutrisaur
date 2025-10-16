@@ -5765,7 +5765,7 @@ header {
                     <label for="email">Email *</label>
                     <input type="email" id="email" name="email" required>
                 </div>
-                <div class="input-group">
+                <div class="filter-item">
                     <label for="municipality">Municipality *</label>
                     <select id="municipality" name="municipality" required>
                         <option value="">Select Municipality</option>
@@ -5810,7 +5810,7 @@ header {
                         <small style="color: #666; font-size: 12px;">Default password: password123</small>
                     </div>
                     
-                    <div class="form-group">
+                    <div class="filter-item">
                         <label for="addMunicipality">Municipality *</label>
                         <select id="addMunicipality" name="municipality" required onchange="updateAddBarangayOptions()">
                             <option value="">Select Municipality</option>
@@ -9510,7 +9510,7 @@ header {
                     
                     <!-- Location Information -->
                     <div class="form-row">
-                        <div class="form-group">
+                        <div class="filter-item">
                             <label for="editMunicipality">Municipality *</label>
                             <select id="editMunicipality" name="municipality" required onchange="updateBarangayOptions()">
                                 <option value="">Select Municipality</option>
@@ -9622,7 +9622,7 @@ header {
             </div>
             <div class="modal-body">
                 <form id="deleteByLocationForm">
-                    <div class="form-group">
+                    <div class="filter-item">
                         <label for="deleteMunicipality">Select Municipality *</label>
                         <select id="deleteMunicipality" name="municipality" required onchange="updateDeleteBarangayOptions()">
                             <option value="">Select Municipality</option>
