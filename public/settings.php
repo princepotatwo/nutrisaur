@@ -5438,7 +5438,7 @@ header {
                                 <span class="btn-text">Delete All Users</span>
                             </button>
                             <?php endif; ?>
-                            <button class="btn-delete-location" onclick="showDeleteByLocationModal()" id="deleteByLocationBtn" style="display: none;">
+                            <button class="btn-delete-location" onclick="showDeleteByLocationModal()" id="deleteByLocationBtn">
                                 <span class="btn-text">
                                     <?php if (isset($_SESSION['is_super_admin']) && $_SESSION['is_super_admin'] === true): ?>
                                         Delete by Location
@@ -7069,7 +7069,7 @@ header {
                 }
             }
             
-            // Show/hide Delete by Location button (only for community users)
+            // Show/hide Delete by Location button (for both superadmin and regular users when viewing community users)
             const deleteByLocationBtn = document.getElementById('deleteByLocationBtn');
             if (deleteByLocationBtn) {
                 deleteByLocationBtn.style.display = currentTableType === 'community_users' ? 'flex' : 'none';
