@@ -4362,6 +4362,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                    $weight = $data['weight'] ?? 0;
                    $height = $data['height'] ?? 0;
                    $isPregnant = $data['is_pregnant'] ?? 0;
+                   $parentName = $data['parent_name'] ?? '';
+                   $parentEmail = $data['parent_email'] ?? '';
+                   $parentPhone = $data['parent_phone'] ?? '';
                     
                     // Validate required fields
                     if (empty($name) || empty($email) || empty($password) || empty($municipality) || empty($barangay) || empty($sex) || empty($birthday)) {
@@ -4406,8 +4409,8 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
                     
                     // Insert new community user
-                    $stmt = $pdo->prepare("INSERT INTO community_users (name, email, password, municipality, barangay, sex, birthday, is_pregnant, weight, height, screening_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-                    $result = $stmt->execute([$name, $email, $hashedPassword, $municipality, $barangay, $sex, $birthday, $isPregnant, $weight, $height]);
+                    $stmt = $pdo->prepare("INSERT INTO community_users (name, email, password, municipality, barangay, sex, birthday, is_pregnant, weight, height, parent_name, parent_email, parent_phone, screening_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+                    $result = $stmt->execute([$name, $email, $hashedPassword, $municipality, $barangay, $sex, $birthday, $isPregnant, $weight, $height, $parentName, $parentEmail, $parentPhone]);
                     
                     if ($result) {
                         echo json_encode([
@@ -6618,6 +6621,22 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                     if (isset($data['email']) && !empty($data['email']) && $data['email'] !== $originalEmail) {
                         $updateFields[] = "email = ?";
                         $updateValues[] = $data['email'];
+                    }
+                    
+                    // Parent information fields
+                    if (isset($data['parent_name'])) {
+                        $updateFields[] = "parent_name = ?";
+                        $updateValues[] = $data['parent_name'];
+                    }
+                    
+                    if (isset($data['parent_email'])) {
+                        $updateFields[] = "parent_email = ?";
+                        $updateValues[] = $data['parent_email'];
+                    }
+                    
+                    if (isset($data['parent_phone'])) {
+                        $updateFields[] = "parent_phone = ?";
+                        $updateValues[] = $data['parent_phone'];
                     }
                     
                     // Always update screening_date

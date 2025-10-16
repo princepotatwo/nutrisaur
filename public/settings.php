@@ -2365,6 +2365,19 @@ header {
         .form-group {
             margin-bottom: 20px;
         }
+        
+        .form-section-header {
+            margin: 30px 0 20px 0;
+            padding: 15px 0;
+            border-top: 2px solid var(--color-border);
+        }
+        
+        .form-section-header h3 {
+            margin: 0 0 5px 0;
+            color: var(--color-text);
+            font-size: 18px;
+            font-weight: 600;
+        }
 
         .form-label {
             display: block;
@@ -5869,6 +5882,27 @@ header {
                         <input type="number" id="addHeight" name="height" step="0.1" min="1" max="300" required>
                     </div>
                     
+                    <!-- Parent Information Section -->
+                    <div class="form-section-header">
+                        <h3>Parent/Guardian Information</h3>
+                        <p style="color: #666; font-size: 14px; margin: 5px 0 15px 0;">Required for children under 18 years old</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addParentName">Parent/Guardian Name</label>
+                        <input type="text" id="addParentName" name="parent_name" placeholder="Enter parent or guardian full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addParentEmail">Parent/Guardian Email</label>
+                        <input type="email" id="addParentEmail" name="parent_email" placeholder="Enter parent or guardian email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addParentPhone">Parent/Guardian Contact Number</label>
+                        <input type="tel" id="addParentPhone" name="parent_phone" placeholder="Enter parent or guardian phone number">
+                    </div>
+                    
                 </form>
             </div>
             <div class="modal-footer">
@@ -7702,6 +7736,9 @@ header {
             const weight = document.getElementById('addWeight').value;
             const height = document.getElementById('addHeight').value;
             const isPregnant = document.getElementById('addPregnancy').value;
+            const parentName = document.getElementById('addParentName').value.trim();
+            const parentEmail = document.getElementById('addParentEmail').value.trim();
+            const parentPhone = document.getElementById('addParentPhone').value.trim();
             
             // Basic validation
             if (!name) {
@@ -7769,7 +7806,10 @@ header {
                 birthday: birthday,
                 weight: parseFloat(weight),
                 height: parseFloat(height),
-                is_pregnant: isPregnant === 'Yes' ? 1 : 0
+                is_pregnant: isPregnant === 'Yes' ? 1 : 0,
+                parent_name: parentName,
+                parent_email: parentEmail,
+                parent_phone: parentPhone
             };
             
             console.log('Submitting community user data:', userData);
@@ -8498,6 +8538,11 @@ header {
             document.getElementById('editWeight').value = '';
             document.getElementById('editHeight').value = '';
             
+            // Set default values for parent fields (will be fetched from database on save)
+            document.getElementById('editParentName').value = '';
+            document.getElementById('editParentEmail').value = '';
+            document.getElementById('editParentPhone').value = '';
+            
             // Store original email for comparison
             document.getElementById('modalEditEmail').setAttribute('data-original-email', userData.email);
             
@@ -8585,6 +8630,9 @@ header {
                 document.getElementById('editBirthday').value = finalUserData.birthday || '';
                 document.getElementById('editWeight').value = finalUserData.weight || '';
                 document.getElementById('editHeight').value = finalUserData.height || '';
+                document.getElementById('editParentName').value = finalUserData.parent_name || '';
+                document.getElementById('editParentEmail').value = finalUserData.parent_email || '';
+                document.getElementById('editParentPhone').value = finalUserData.parent_phone || '';
                 
                 // Set pregnancy status if available
                 if (finalUserData.is_pregnant) {
@@ -9163,7 +9211,10 @@ header {
                 is_pregnant: formData.get('is_pregnant') || 'No',
                 weight: formData.get('weight'),
                 height: formData.get('height'),
-                muac: formData.get('muac') || '0'
+                muac: formData.get('muac') || '0',
+                parent_name: formData.get('parent_name'),
+                parent_email: formData.get('parent_email'),
+                parent_phone: formData.get('parent_phone')
             };
             
             // Show loading
@@ -9649,6 +9700,27 @@ header {
                             <input type="number" id="editHeight" name="height" step="0.1" min="1" max="300" required placeholder="Enter height in cm">
                             <small>Enter height in centimeters</small>
                         </div>
+                    </div>
+                    
+                    <!-- Parent Information Section -->
+                    <div class="form-section-header">
+                        <h3>Parent/Guardian Information</h3>
+                        <p style="color: #666; font-size: 14px; margin: 5px 0 15px 0;">Required for children under 18 years old</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editParentName">Parent/Guardian Name</label>
+                        <input type="text" id="editParentName" name="parent_name" placeholder="Enter parent or guardian full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editParentEmail">Parent/Guardian Email</label>
+                        <input type="email" id="editParentEmail" name="parent_email" placeholder="Enter parent or guardian email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editParentPhone">Parent/Guardian Contact Number</label>
+                        <input type="tel" id="editParentPhone" name="parent_phone" placeholder="Enter parent or guardian phone number">
                     </div>
                     
                 </form>
