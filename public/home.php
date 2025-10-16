@@ -2404,7 +2404,7 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
                     <input type="text" id="personal_verification_code" name="personal_verification_code" placeholder="Enter 4-digit code" maxlength="4" pattern="[0-9]{4}" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                 </div>
                 <button type="submit" class="auth-btn" id="verify-personal-email-btn">Verify Personal Email</button>
-                <button type="button" class="google-btn" id="resend-personal-code">Resend Code</button>
+                <button type="button" class="auth-btn" id="resend-personal-code">Resend Code</button>
                 <a href="#" class="toggle-link" id="back-to-personal-info">Back to Personal Info</a>
             </form>
         </div>
