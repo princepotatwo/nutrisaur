@@ -65,6 +65,26 @@ try {
             exit();
         }
         
+        // For MHO users, verify they can only delete from their own municipality
+        $user_municipality = null;
+        if (!isset($_SESSION['is_super_admin']) || $_SESSION['is_super_admin'] !== true) {
+            if (isset($_SESSION['user_id'])) {
+                // Get user municipality from database
+                $stmt = $pdo->prepare("SELECT municipality FROM users WHERE user_id = ?");
+                $stmt->execute([$_SESSION['user_id']]);
+                $userData = $stmt->fetch();
+                $user_municipality = $userData['municipality'] ?? null;
+                error_log("MHO User municipality: $user_municipality");
+                
+                // Verify MHO user can only delete from their own municipality
+                if ($user_municipality && $municipality !== $user_municipality) {
+                    error_log("MHO user attempted to delete from different municipality: $municipality vs $user_municipality");
+                    echo json_encode(['success' => false, 'message' => 'You can only delete users from your assigned municipality']);
+                    exit();
+                }
+            }
+        }
+        
         // Build the WHERE clause based on municipality and optional barangay
         $whereClause = "municipality = ?";
         $params = [$municipality];

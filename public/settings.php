@@ -5432,16 +5432,12 @@ header {
                                 <span class="btn-icon">➕</span>
                                 <span class="btn-text">Add User</span>
                             </button>
+                            <?php if (isset($_SESSION['is_super_admin']) && $_SESSION['is_super_admin'] === true): ?>
                             <button class="btn-delete-all" onclick="deleteAllUsers()">
                                 <span class="btn-icon">🗑️</span>
-                                <span class="btn-text">
-                                    <?php if (isset($_SESSION['is_super_admin']) && $_SESSION['is_super_admin'] === true): ?>
-                                        Delete All Users
-                                    <?php else: ?>
-                                        Delete All Users in My Municipality
-                                    <?php endif; ?>
-                                </span>
+                                <span class="btn-text">Delete All Users</span>
                             </button>
+                            <?php endif; ?>
                             <button class="btn-delete-location" onclick="showDeleteByLocationModal()" id="deleteByLocationBtn" style="display: none;">
                                 <span class="btn-text">
                                     <?php if (isset($_SESSION['is_super_admin']) && $_SESSION['is_super_admin'] === true): ?>
@@ -8739,20 +8735,38 @@ header {
         }
 
         function initializeDeleteMunicipalityDropdown() {
-            const municipalities = [
-                "ABUCAY", "BAGAC", "CITY OF BALANGA", "DINALUPIHAN", "HERMOSA", 
-                "LIMAY", "MARIVELES", "MORONG", "ORANI", "ORION", "PILAR", "SAMAL"
-            ];
+            // Get user's municipality from PHP session
+            const userMunicipality = <?php echo json_encode($user_municipality ?? null); ?>;
+            const isSuperAdmin = <?php echo json_encode(isset($_SESSION['is_super_admin']) && $_SESSION['is_super_admin'] === true); ?>;
             
             const select = document.getElementById('deleteMunicipality');
             select.innerHTML = '<option value="">Select Municipality</option>';
             
-            municipalities.forEach(municipality => {
+            if (isSuperAdmin) {
+                // Super admin can see all municipalities
+                const municipalities = [
+                    "ABUCAY", "BAGAC", "CITY OF BALANGA", "DINALUPIHAN", "HERMOSA", 
+                    "LIMAY", "MARIVELES", "MORONG", "ORANI", "ORION", "PILAR", "SAMAL"
+                ];
+                
+                municipalities.forEach(municipality => {
+                    const option = document.createElement('option');
+                    option.value = municipality;
+                    option.textContent = municipality;
+                    select.appendChild(option);
+                });
+            } else if (userMunicipality) {
+                // MHO users can only see their own municipality
                 const option = document.createElement('option');
-                option.value = municipality;
-                option.textContent = municipality;
+                option.value = userMunicipality;
+                option.textContent = userMunicipality;
+                option.selected = true; // Auto-select their municipality
                 select.appendChild(option);
-            });
+                select.disabled = true; // Disable selection for MHO users
+                
+                // Auto-populate barangay options
+                updateDeleteBarangayOptions();
+            }
         }
 
         function updateDeleteBarangayOptions() {
@@ -8800,10 +8814,14 @@ header {
                 return;
             }
             
-            // Show password confirmation modal
-            const confirmMessage = `You are about to delete all community users from ${municipality}${barangay ? `, ${barangay}` : ''}. This action cannot be undone. Please enter your admin password to confirm.`;
+            // Handle "All Barangays" option - set barangay to empty string
+            const targetBarangay = (barangay === '' || barangay === 'All Barangays') ? '' : barangay;
             
-            showPasswordConfirmModal(performDeleteByLocation, {municipality, barangay}, confirmMessage);
+            // Show password confirmation modal
+            const locationText = targetBarangay ? `${municipality}, ${targetBarangay}` : `all barangays in ${municipality}`;
+            const confirmMessage = `You are about to delete all community users from ${locationText}. This action cannot be undone. Please enter your admin password to confirm.`;
+            
+            showPasswordConfirmModal(performDeleteByLocation, {municipality, barangay: targetBarangay}, confirmMessage);
         }
 
         function performDeleteByLocation(deleteData) {
