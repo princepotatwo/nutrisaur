@@ -1724,19 +1724,46 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
         $whoClassificationWhere = "";
         $whoClassificationParams = [];
         
-        if (!empty($whoStandard) && !empty($classification)) {
+        // Get logged-in user's municipality for MHO users
+        $user_municipality = null;
+        if (!isset($_SESSION['is_super_admin']) || $_SESSION['is_super_admin'] !== true) {
+            if (isset($_SESSION['user_id'])) {
+                // Get user municipality from database
+                $stmt = $db->getPDO()->prepare("SELECT municipality FROM users WHERE user_id = ?");
+                $stmt->execute([$_SESSION['user_id']]);
+                $userData = $stmt->fetch();
+                $user_municipality = $userData['municipality'] ?? null;
+                error_log("🔍 MHO User municipality: $user_municipality");
+            }
+        }
+        
+        // When targetLocation is 'all', restrict to user's municipality for MHO users
+        if ($targetLocation === 'all' && !empty($user_municipality)) {
+            $targetLocation = 'MUNICIPALITY_' . str_replace(' ', '_', $user_municipality);
+            error_log("🔍 Changed 'all' to municipality-specific: $targetLocation");
+        }
+        
+        // Fix WHO filtering logic - properly check for null/empty values
+        if (!empty($whoStandard) && $whoStandard !== 'null' && !empty($classification) && $classification !== 'null') {
             error_log("🔍 WHO Standard filtering requested: $whoStandard = $classification");
             error_log("🔍 WHO filtering: whoStandard='$whoStandard', classification='$classification', userStatus='$userStatus'");
             
             // Get all users and filter by WHO classification dynamically
             $allUsers = [];
             if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '' || $targetLocation === 'All Locations') {
-                // Get all users
-                $allUsersStmt = $db->getPDO()->prepare("
+                // Get all users (for super admin) or users in MHO's municipality
+                $sql = "
                     SELECT fcm_token, email, barangay, municipality, weight, height, birthday, sex, screening_date
                     FROM community_users
                     WHERE fcm_token IS NOT NULL AND fcm_token != ''
-                ");
+                ";
+                if (!empty($user_municipality)) {
+                    $sql .= " AND municipality = :municipality";
+                }
+                $allUsersStmt = $db->getPDO()->prepare($sql);
+                if (!empty($user_municipality)) {
+                    $allUsersStmt->bindParam(':municipality', $user_municipality);
+                }
                 $allUsersStmt->execute();
                 $allUsers = $allUsersStmt->fetchAll(PDO::FETCH_ASSOC);
             } else if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {
@@ -1822,8 +1849,9 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
         }
         
         if (empty($targetLocation) || $targetLocation === 'all' || $targetLocation === '' || $targetLocation === 'All Locations') {
-            error_log("Processing 'all locations' case - getting all FCM tokens");
+            error_log("Processing 'all locations' case - getting FCM tokens");
             // Get all FCM tokens with optional WHO classification filtering
+            // For MHO users, restrict to their municipality
             $sql = "
                 SELECT fcm_token, email as user_email, barangay as user_barangay, municipality
                 FROM community_users
@@ -1832,10 +1860,18 @@ function getFCMTokensByLocation($targetLocation = null, $whoStandard = null, $cl
                 $classificationWhere
                 $userStatusWhere
             ";
+            if (!empty($user_municipality)) {
+                $sql .= " AND municipality = :user_municipality";
+                error_log("🔍 Restricting 'all' to MHO municipality: $user_municipality");
+            }
             $stmt = $db->getPDO()->prepare($sql);
             $allParams = array_merge($classificationParams, $userStatusParams);
+            if (!empty($user_municipality)) {
+                $allParams[':user_municipality'] = $user_municipality;
+            }
             $stmt->execute($allParams);
             $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            error_log("🔍 Found " . count($tokens) . " FCM tokens for 'all' locations");
         } else {
             // Check if it's a municipality (starts with MUNICIPALITY_)
             if (strpos($targetLocation, 'MUNICIPALITY_') === 0) {

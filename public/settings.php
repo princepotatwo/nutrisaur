@@ -5434,10 +5434,22 @@ header {
                             </button>
                             <button class="btn-delete-all" onclick="deleteAllUsers()">
                                 <span class="btn-icon">🗑️</span>
-                                <span class="btn-text">Delete All Users</span>
+                                <span class="btn-text">
+                                    <?php if (isset($_SESSION['is_super_admin']) && $_SESSION['is_super_admin'] === true): ?>
+                                        Delete All Users
+                                    <?php else: ?>
+                                        Delete All Users in My Municipality
+                                    <?php endif; ?>
+                                </span>
                             </button>
                             <button class="btn-delete-location" onclick="showDeleteByLocationModal()" id="deleteByLocationBtn" style="display: none;">
-                                <span class="btn-text">Delete by Location</span>
+                                <span class="btn-text">
+                                    <?php if (isset($_SESSION['is_super_admin']) && $_SESSION['is_super_admin'] === true): ?>
+                                        Delete by Location
+                                    <?php else: ?>
+                                        Delete by Barangay
+                                    <?php endif; ?>
+                                </span>
                             </button>
                         </div>
                         <div>
@@ -5671,6 +5683,7 @@ header {
                 </div>
 
                 <div class="profile-edit" id="profileEdit" style="display: none;">
+                    <?php if (!isset($_SESSION['is_super_admin']) || $_SESSION['is_super_admin'] !== true): ?>
                     <form id="profileForm">
                         <div class="form-group">
                             <label for="editName">Name:</label>
@@ -5699,6 +5712,9 @@ header {
                             </button>
                         </div>
                     </form>
+                    <?php else: ?>
+                    <p style="color: var(--text-color); padding: 20px; text-align: center;">Profile editing is disabled for super admin accounts.</p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -7157,10 +7173,6 @@ header {
                 row.innerHTML = `
                     <td colspan="7" style="text-align: center; padding: 20px; color: #666;">
                         No community users found. All users may have been deleted.
-                        <br><br>
-                        <button onclick="loadUsers()" style="background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">
-                            Refresh Data
-                        </button>
                     </td>
                 `;
                 tableBody.appendChild(row);

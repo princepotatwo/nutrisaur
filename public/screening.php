@@ -6629,7 +6629,40 @@ header {
             <!-- Status Message Area -->
             <div id="csvStatusMessage" style="display: none; margin-bottom: 20px; padding: 15px; border-radius: 8px; font-weight: 600;"></div>
             
-            <div class="csv-import-info">
+            <button type="button" onclick="showCSVFormatModal()" class="btn" style="margin-bottom: 15px; background: var(--color-highlight); color: var(--color-bg); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                📖 CSV Format Instructions
+            </button>
+            
+            <form id="csvImportForm">
+                <div class="csv-upload-area" id="uploadArea" onclick="document.getElementById('csvFile').click()" style="cursor: pointer;" 
+                     ondragover="handleDragOver(event)" 
+                     ondrop="handleDrop(event)" 
+                     ondragleave="handleDragLeave(event)">
+                    <input type="file" id="csvFile" accept=".csv" style="display: none;" onchange="handleFileSelect(event)">
+                    <div class="upload-text">
+                        <h4>Upload CSV File</h4>
+                        <p>Click here or drag and drop your CSV file</p>
+                        <small class="csv-format">Supported format: .csv</small>
+                    </div>
+                </div>
+                
+                <div id="csvPreview" style="display: none;"></div>
+                
+                <div class="csv-actions">
+                    <button type="button" class="btn btn-submit" id="importCSVBtn" disabled onclick="processCSVImport()">📥 Import CSV</button>
+                    <button type="button" class="btn btn-cancel" id="cancelBtn" style="display: none;" onclick="cancelUpload()">❌ Cancel Upload</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CSV Format Instructions Modal -->
+    <div id="csvFormatModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close" onclick="closeCsvFormatModal()">&times;</span>
+            <h2>CSV Import Format Instructions</h2>
+            <div style="max-height: 70vh; overflow-y: auto; padding-right: 10px;">
                 <div style="background-color: rgba(233, 141, 124, 0.2); border: 2px solid var(--color-danger); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <div>
@@ -6653,28 +6686,6 @@ header {
                 <p><strong>11.</strong> Template format must match exactly - no extra columns, no missing columns</p>
                 <p><strong>12.</strong> Upload your completed CSV file and review the preview</p>
                 <p><strong>13.</strong> Click Import CSV to process the data</p>
-            </div>
-            
-            <form id="csvImportForm">
-                <div class="csv-upload-area" id="uploadArea" onclick="document.getElementById('csvFile').click()" style="cursor: pointer;" 
-                     ondragover="handleDragOver(event)" 
-                     ondrop="handleDrop(event)" 
-                     ondragleave="handleDragLeave(event)">
-                    <input type="file" id="csvFile" accept=".csv" style="display: none;" onchange="handleFileSelect(event)">
-                    <div class="upload-text">
-                        <h4>Upload CSV File</h4>
-                        <p>Click here or drag and drop your CSV file</p>
-                        <small class="csv-format">Supported format: .csv</small>
-                    </div>
-                </div>
-                
-                <div id="csvPreview" style="display: none;"></div>
-                
-                <div class="csv-actions">
-                    <button type="button" class="btn btn-submit" id="importCSVBtn" disabled onclick="processCSVImport()">📥 Import CSV</button>
-                    <button type="button" class="btn btn-cancel" id="cancelBtn" style="display: none;" onclick="cancelUpload()">❌ Cancel Upload</button>
-                </div>
-            </form>
             </div>
         </div>
     </div>
@@ -8673,20 +8684,74 @@ header {
 
 
 
+        // CSV Format Modal Functions
+        function showCSVFormatModal() {
+            const modal = document.getElementById('csvFormatModal');
+            if (modal) {
+                modal.style.display = 'block';
+            }
+        }
+
+        function closeCsvFormatModal() {
+            const modal = document.getElementById('csvFormatModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
         // CSV Functions
         function downloadCSVTemplate() {
+            // Get user's municipality from PHP session
+            const userMunicipality = <?php echo json_encode($user_municipality ?? 'CITY OF BALANGA'); ?>;
+            
+            // Define barangays per municipality
+            const barangaysByMunicipality = {
+                'MARIVELES': ['Alion', 'Alas-asin', 'Baseco Country', 'Batangas I', 'Batangas II', 'Biaan', 'Cabcaben', 'Lucanin', 'Maligaya', 'Malaya', 'Poblacion', 'San Carlos', 'San Isidro', 'Santa Elena'],
+                'CITY OF BALANGA': ['Bagumbayan', 'Cabog-Cabog', 'Camacho', 'Cataning', 'Central', 'Cupang North', 'Cupang West', 'Doña Francisca', 'Ibayo', 'Lote', 'Malabia', 'Munting Batangas', 'Poblacion', 'Puerto Rivas', 'San Jose', 'Sibacan', 'Talisay', 'Tanato', 'Tenejero', 'Tortugas', 'Tuyo'],
+                'ABUCAY': ['Bangkal', 'Calaylayan', 'Capitangan', 'Gabon', 'Laon', 'Mabatang', 'Omboy', 'Palili', 'Salian', 'Wawa'],
+                'BAGAC': ['Atilano L. Ricardo', 'Bagac', 'Banawang', 'Binuangan', 'Binukawan', 'Binukod', 'Ibaba', 'Limaiin', 'Pag-asa', 'Quinawan', 'San Antonio', 'Saysain', 'Tabing-Ilog'],
+                'DINALUPIHAN': ['Aquino', 'Bangal', 'Bayan-bayanan', 'Bonifacio', 'Burgos', 'Colo', 'Daang Bago', 'Dalao', 'Gen. Luna', 'Happy Valley', 'Kataasan', 'Layac', 'Luacan', 'Mabini Ext', 'Mabini Proper', 'Magsaysay', 'Naparing', 'New San Jose', 'Old San Jose', 'Padre Gomez', 'Pagalanggang', 'Pentor', 'Pita', 'Poblacion', 'Roxas', 'Saguing', 'San Benito', 'San Isidro', 'San Pablo', 'San Ramon', 'San Simon', 'Santa Isabel', 'Santa Rosa', 'Santo Nino', 'Sapang Balas', 'Torres Bugauen', 'Tubo-tubo', 'Tucop', 'Zamora'],
+                'HERMOSA': ['A. Rivera', 'Almacen', 'Bacong', 'Balsic', 'Bamban', 'Burgos-Soliman', 'Cataning', 'Cuenca', 'Daungan', 'Mabiga', 'Mabuco', 'Maite', 'Mandama', 'Mataas na Lupa', 'Palihan', 'Pandaguitan', 'Pulo', 'Saba', 'Sacrifice Valley', 'Sumalo', 'Tipo'],
+                'LIMAY': ['Alangan', 'Duale', 'Kitang I', 'Kitang II', 'Lamao', 'Landing', 'Poblacion', 'Reformista', 'Saint Francis', 'San Francisco', 'Townsite', 'Wawa'],
+                'MORONG': ['Binaritan', 'Mabayo', 'Nagbalayong', 'Poblacion', 'Sabang'],
+                'ORANI': ['Apollo', 'Bagong Paraiso', 'Balut', 'Bayan', 'Calero', 'Centro I', 'Centro II', 'Dona', 'Kabalutan', 'Kaparangan', 'Masantol', 'Mulawin', 'Pag-asa', 'Palihan', 'Paking-Carbonero', 'Paking-Putol', 'Pantalan Bago', 'Pantalan Luma', 'Parang Parang', 'Puksuan', 'Sibul', 'Silahis', 'Tapulao', 'Tenejero', 'Tugatog', 'Wawa'],
+                'ORION': ['Arellano', 'Bagumbayan', 'Balagtas', 'Balut', 'Bantan Munti', 'Bantan Matanda', 'Bilolo', 'Calungusan', 'Camachile', 'Centro I', 'Centro II', 'Daang Bago', 'Daang Bilolo', 'Daang Pare', 'Gen. Lim', 'Kapunitan', 'Lati', 'Lusungan', 'Puting Buhangin', 'Sabatan', 'San Vicente', 'Santa Elena', 'Santo Domingo', 'Villa Angeles', 'Wakas', 'Wawa'],
+                'PILAR': ['Alauli', 'Bagumbayan', 'Balut I', 'Balut II', 'Bantan Matanda', 'Burgos', 'Del Rosario', 'Diwa', 'Landing', 'Liyang', 'Nagwaling', 'Panilao', 'Pantingan', 'Papaya', 'Poblacion', 'Pontevedra', 'Rizal', 'Santa Rosa', 'Wakas', 'Wawa'],
+                'SAMAL': ['East Calaguiman', 'West Calaguiman', 'East Daang Bago', 'West Daang Bago', 'Gugo', 'Ibaba', 'Imelda', 'Lalawigan', 'Palili', 'San Juan', 'San Roque', 'Santa Lucia', 'Sapa', 'Tabing Ilog']
+            };
+            
+            const barangays = barangaysByMunicipality[userMunicipality] || [];
+            
+            // Create CSV content with header and sample rows for each barangay
             const csvContent = [
-                ['name', 'email', 'password', 'municipality', 'barangay', 'sex', 'birthday', 'is_pregnant', 'weight', 'height', 'screening_date'],
-                ['John Doe', 'john@example.com', 'password123', 'CITY OF BALANGA', 'Bagumbayan', 'Male', '1999-01-15', 'No', '70.5', '175.0', '2024-01-15 10:30:00'],
-                ['Jane Smith', 'jane@example.com', 'mypass456', 'MARIVELES', 'Alion', 'Female', '1995-03-20', 'Yes', '65.2', '160.0', '2024-01-15 14:30:00']
+                ['name', 'email', 'password', 'municipality', 'barangay', 'sex', 'birthday', 'is_pregnant', 'weight', 'height', 'screening_date']
             ];
+            
+            // Add sample row for each barangay
+            barangays.forEach((brgy, i) => {
+                const sex = i % 2 === 0 ? 'Male' : 'Female';
+                const isPregnant = i % 2 === 0 ? 'No' : 'Yes';
+                csvContent.push([
+                    `Sample User ${i+1}`,
+                    `user${i+1}@${brgy.toLowerCase().replace(/\s+/g, '')}.com`,
+                    'password123',
+                    userMunicipality,
+                    brgy,
+                    sex,
+                    '2000-01-15',
+                    isPregnant,
+                    '65.0',
+                    '165.0',
+                    '2024-01-15 10:00:00'
+                ]);
+            });
             
             const csv = csvContent.map(row => row.map(field => `"${field}"`).join(',')).join('\n');
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'community_users_template.csv';
+            link.download = `community_users_template_${userMunicipality}.csv`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

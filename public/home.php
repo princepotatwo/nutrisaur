@@ -27,9 +27,35 @@ $isLoggedIn = isset($_SESSION['user_id']) || isset($_SESSION['admin_id']);
 $isAjaxRequest = isset($_POST['ajax_action']) || isset($_POST['google_oauth']) || isset($_POST['google_oauth_code']);
 
 if ($isLoggedIn && !$isAjaxRequest) {
-    // Redirect to dashboard if already logged in (but not for AJAX requests)
-    header("Location: /dash");
-    exit;
+    // For regular users, check if personal email is verified
+    if (isset($_SESSION['user_id'])) {
+        // Check if user has completed personal info verification
+        require_once __DIR__ . "/../config.php";
+        $pdo = getDatabaseConnection();
+        if ($pdo) {
+            $stmt = $pdo->prepare("SELECT personal_email_verified FROM users WHERE user_id = ?");
+            $stmt->execute([$_SESSION['user_id']]);
+            $userData = $stmt->fetch();
+            
+            // If personal email is not verified, don't redirect - keep them on home.php
+            if (!isset($userData['personal_email_verified']) || $userData['personal_email_verified'] != 1) {
+                // Don't redirect - user needs to complete personal email verification
+                // The JavaScript will handle showing the appropriate form
+            } else {
+                // Personal email verified, redirect to dashboard
+                header("Location: /dash");
+                exit;
+            }
+        } else {
+            // Can't check verification status, redirect to dashboard
+            header("Location: /dash");
+            exit;
+        }
+    } else {
+        // Admin user, redirect to dashboard
+        header("Location: /dash");
+        exit;
+    }
 }
 
 // Use the same database connection as the working nutritional assessment system
@@ -940,21 +966,146 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ajax_action'])) {
                     exit;
                 }
                 
-                // Update user's personal information
-                $updateStmt = $pdo->prepare("UPDATE users SET personal_email = ?, full_name = ? WHERE user_id = ?");
-                $result = $updateStmt->execute([$personalEmail, $fullName, $_SESSION['user_id']]);
+                // Store personal info in session temporarily
+                $_SESSION['pending_personal_email'] = $personalEmail;
+                $_SESSION['pending_full_name'] = $fullName;
+                
+                // Generate verification code for personal email
+                $verificationCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+                $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+                
+                // Update user's personal email verification code
+                $updateStmt = $pdo->prepare("UPDATE users SET personal_email_verification_code = ?, personal_email_verification_expires = ? WHERE user_id = ?");
+                $result = $updateStmt->execute([$verificationCode, $expiresAt, $_SESSION['user_id']]);
                 
                 if ($result) {
-                    echo json_encode([
-                        'success' => true, 
-                        'message' => 'Personal information saved successfully!',
-                        'redirect' => '/dash'
-                    ]);
+                    // Get username for email
+                    $stmt = $pdo->prepare("SELECT username FROM users WHERE user_id = ?");
+                    $stmt->execute([$_SESSION['user_id']]);
+                    $userData = $stmt->fetch();
+                    $username = $userData['username'] ?? 'User';
+                    
+                    // Send verification email to personal email
+                    $emailSent = sendVerificationEmail($personalEmail, $username, $verificationCode, 'Personal Email Verification - NUTRISAUR');
+                    
+                    if ($emailSent) {
+                        echo json_encode(['success' => true, 'message' => 'Verification code sent to your personal email!']);
+                    } else {
+                        echo json_encode(['success' => true, 'message' => 'Verification code: ' . $verificationCode]);
+                    }
                 } else {
-                    echo json_encode(['success' => false, 'message' => 'Failed to save personal information']);
+                    echo json_encode(['success' => false, 'message' => 'Failed to generate verification code']);
                 }
             } catch (Exception $e) {
-                echo json_encode(['success' => false, 'message' => 'Failed to save personal information: ' . $e->getMessage()]);
+                echo json_encode(['success' => false, 'message' => 'Failed to send verification code: ' . $e->getMessage()]);
+            }
+            exit;
+            
+        case 'verify_personal_email':
+            $verificationCode = trim($_POST['verification_code']);
+            
+            if (empty($verificationCode)) {
+                echo json_encode(['success' => false, 'message' => 'Please provide verification code']);
+                exit;
+            }
+            
+            if ($pdo === null) {
+                echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
+                exit;
+            }
+            
+            try {
+                // Check if user is logged in
+                if (!isset($_SESSION['user_id'])) {
+                    echo json_encode(['success' => false, 'message' => 'You must be logged in']);
+                    exit;
+                }
+                
+                // Verify code
+                $stmt = $pdo->prepare("SELECT user_id FROM users WHERE user_id = ? AND personal_email_verification_code = ? AND personal_email_verification_expires > NOW()");
+                $stmt->execute([$_SESSION['user_id'], $verificationCode]);
+                $user = $stmt->fetch();
+                
+                if ($user) {
+                    // Get pending personal info from session
+                    $personalEmail = $_SESSION['pending_personal_email'] ?? '';
+                    $fullName = $_SESSION['pending_full_name'] ?? '';
+                    
+                    if (empty($personalEmail) || empty($fullName)) {
+                        echo json_encode(['success' => false, 'message' => 'Session expired. Please try again.']);
+                        exit;
+                    }
+                    
+                    // Save personal information and mark as verified
+                    $updateStmt = $pdo->prepare("UPDATE users SET personal_email = ?, full_name = ?, personal_email_verified = 1, personal_email_verification_code = NULL, personal_email_verification_expires = NULL WHERE user_id = ?");
+                    $result = $updateStmt->execute([$personalEmail, $fullName, $_SESSION['user_id']]);
+                    
+                    if ($result) {
+                        // Clear pending session data
+                        unset($_SESSION['pending_personal_email']);
+                        unset($_SESSION['pending_full_name']);
+                        
+                        echo json_encode([
+                            'success' => true, 
+                            'message' => 'Personal email verified successfully!',
+                            'redirect' => '/dash'
+                        ]);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Failed to save personal information']);
+                    }
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Invalid or expired verification code']);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => 'Verification failed: ' . $e->getMessage()]);
+            }
+            exit;
+            
+        case 'resend_personal_verification':
+            if ($pdo === null) {
+                echo json_encode(['success' => false, 'message' => 'Database connection unavailable. Please try again later.']);
+                exit;
+            }
+            
+            try {
+                // Check if user is logged in
+                if (!isset($_SESSION['user_id'])) {
+                    echo json_encode(['success' => false, 'message' => 'You must be logged in']);
+                    exit;
+                }
+                
+                // Get pending personal email from session
+                $personalEmail = $_SESSION['pending_personal_email'] ?? '';
+                
+                if (empty($personalEmail)) {
+                    echo json_encode(['success' => false, 'message' => 'Session expired. Please try again.']);
+                    exit;
+                }
+                
+                // Generate new verification code
+                $verificationCode = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+                $expiresAt = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+                
+                // Update verification code
+                $updateStmt = $pdo->prepare("UPDATE users SET personal_email_verification_code = ?, personal_email_verification_expires = ? WHERE user_id = ?");
+                $updateStmt->execute([$verificationCode, $expiresAt, $_SESSION['user_id']]);
+                
+                // Get username for email
+                $stmt = $pdo->prepare("SELECT username FROM users WHERE user_id = ?");
+                $stmt->execute([$_SESSION['user_id']]);
+                $userData = $stmt->fetch();
+                $username = $userData['username'] ?? 'User';
+                
+                // Send verification email
+                $emailSent = sendVerificationEmail($personalEmail, $username, $verificationCode, 'Personal Email Verification - NUTRISAUR');
+                
+                if ($emailSent) {
+                    echo json_encode(['success' => true, 'message' => 'Verification code sent successfully!']);
+                } else {
+                    echo json_encode(['success' => true, 'message' => 'Verification code: ' . $verificationCode]);
+                }
+            } catch (Exception $e) {
+                echo json_encode(['success' => false, 'message' => 'Failed to resend verification code: ' . $e->getMessage()]);
             }
             exit;
     }
@@ -2172,9 +2323,17 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             
             <!-- Hidden password setup form -->
             <form id="password-setup-form" method="post" action="" style="display: none;">
-                <div class="input-group">
+                <div class="input-group password-field">
                     <label for="setup_new_password">New Password</label>
                     <input type="password" id="setup_new_password" name="new_password" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <button type="button" class="password-toggle" id="toggle-password-setup-new" data-target="setup_new_password" aria-label="Toggle password visibility" title="Show/Hide password">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                        <svg class="eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                            <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="input-group password-field">
                     <label for="setup_confirm_password">Confirm Password</label>
@@ -2194,9 +2353,17 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             
             <!-- Google OAuth Password Setup Form -->
             <form id="google-password-setup-form" method="post" action="" style="display: none;">
-                <div class="input-group">
+                <div class="input-group password-field">
                     <label for="google_setup_new_password">New Password</label>
                     <input type="password" id="google_setup_new_password" name="new_password" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                    <button type="button" class="password-toggle" id="toggle-google-password-setup-new" data-target="google_setup_new_password" aria-label="Toggle password visibility" title="Show/Hide password">
+                        <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                        <svg class="eye-slash-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                            <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="input-group password-field">
                     <label for="google_setup_confirm_password">Confirm Password</label>
@@ -2223,7 +2390,22 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
                     <label for="full_name">Full Name</label>
                     <input type="text" id="full_name" name="full_name" required autocomplete="name" readonly onfocus="this.removeAttribute('readonly')" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
                 </div>
-                <button type="submit" class="auth-btn" id="submit-personal-info-btn">Complete Setup</button>
+                <button type="submit" class="auth-btn" id="submit-personal-info-btn">Send Verification Code</button>
+            </form>
+            
+            <!-- Personal Email Verification Form -->
+            <form id="personal-email-verification-form" method="post" action="" style="display: none;">
+                <div class="input-group">
+                    <label for="verification_personal_email">Personal Email</label>
+                    <input type="email" id="verification_personal_email" name="verification_personal_email" readonly autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                </div>
+                <div class="input-group">
+                    <label for="personal_verification_code">Verification Code</label>
+                    <input type="text" id="personal_verification_code" name="personal_verification_code" placeholder="Enter 4-digit code" maxlength="4" pattern="[0-9]{4}" required autocomplete="off" style="background: rgba(255, 255, 255, 0.05); background-color: rgba(255, 255, 255, 0.05); color: #E8F0D6; border: 1px solid rgba(161, 180, 84, 0.3);">
+                </div>
+                <button type="submit" class="auth-btn" id="verify-personal-email-btn">Verify Personal Email</button>
+                <button type="button" class="google-btn" id="resend-personal-code">Resend Code</button>
+                <a href="#" class="toggle-link" id="back-to-personal-info">Back to Personal Info</a>
             </form>
         </div>
     </div>
@@ -2717,6 +2899,150 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
                     };
                 }
             }
+            
+            // Setup for password setup new password field
+            const setupNewPassword = document.getElementById('setup_new_password');
+            const setupNewToggle = document.getElementById('toggle-password-setup-new');
+            const setupNewIconShow = setupNewToggle?.querySelector('.eye-icon');
+            const setupNewIconHide = setupNewToggle?.querySelector('.eye-slash-icon');
+
+            if (setupNewPassword && setupNewToggle) {
+                let isPasswordVisible = false;
+                
+                setupNewToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    isPasswordVisible = !isPasswordVisible;
+                    setupNewPassword.type = isPasswordVisible ? 'text' : 'password';
+                    setupNewToggle.setAttribute('aria-pressed', isPasswordVisible ? 'true' : 'false');
+                    setupNewToggle.setAttribute('aria-label', isPasswordVisible ? 'Hide password' : 'Show password');
+                    setupNewToggle.title = isPasswordVisible ? 'Hide password' : 'Show password';
+                    if (isPasswordVisible) {
+                        if (setupNewIconShow) setupNewIconShow.style.display = 'none';
+                        if (setupNewIconHide) setupNewIconHide.style.display = 'inline';
+                    } else {
+                        if (setupNewIconShow) setupNewIconShow.style.display = 'inline';
+                        if (setupNewIconHide) setupNewIconHide.style.display = 'none';
+                    }
+                    setTimeout(() => setupNewPassword.focus(), 10);
+                });
+
+                setupNewToggle.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setupNewToggle.click();
+                    }
+                });
+            }
+            
+            // Setup for password setup confirm password field
+            const setupConfirmPassword = document.getElementById('setup_confirm_password');
+            const setupConfirmToggle = document.getElementById('toggle-password-setup-confirm');
+            const setupConfirmIconShow = setupConfirmToggle?.querySelector('.eye-icon');
+            const setupConfirmIconHide = setupConfirmToggle?.querySelector('.eye-slash-icon');
+
+            if (setupConfirmPassword && setupConfirmToggle) {
+                let isPasswordVisible = false;
+                
+                setupConfirmToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    isPasswordVisible = !isPasswordVisible;
+                    setupConfirmPassword.type = isPasswordVisible ? 'text' : 'password';
+                    setupConfirmToggle.setAttribute('aria-pressed', isPasswordVisible ? 'true' : 'false');
+                    setupConfirmToggle.setAttribute('aria-label', isPasswordVisible ? 'Hide password' : 'Show password');
+                    setupConfirmToggle.title = isPasswordVisible ? 'Hide password' : 'Show password';
+                    if (isPasswordVisible) {
+                        if (setupConfirmIconShow) setupConfirmIconShow.style.display = 'none';
+                        if (setupConfirmIconHide) setupConfirmIconHide.style.display = 'inline';
+                    } else {
+                        if (setupConfirmIconShow) setupConfirmIconShow.style.display = 'inline';
+                        if (setupConfirmIconHide) setupConfirmIconHide.style.display = 'none';
+                    }
+                    setTimeout(() => setupConfirmPassword.focus(), 10);
+                });
+
+                setupConfirmToggle.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setupConfirmToggle.click();
+                    }
+                });
+            }
+            
+            // Setup for Google OAuth password setup new password field
+            const googleSetupNewPassword = document.getElementById('google_setup_new_password');
+            const googleSetupNewToggle = document.getElementById('toggle-google-password-setup-new');
+            const googleSetupNewIconShow = googleSetupNewToggle?.querySelector('.eye-icon');
+            const googleSetupNewIconHide = googleSetupNewToggle?.querySelector('.eye-slash-icon');
+
+            if (googleSetupNewPassword && googleSetupNewToggle) {
+                let isPasswordVisible = false;
+                
+                googleSetupNewToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    isPasswordVisible = !isPasswordVisible;
+                    googleSetupNewPassword.type = isPasswordVisible ? 'text' : 'password';
+                    googleSetupNewToggle.setAttribute('aria-pressed', isPasswordVisible ? 'true' : 'false');
+                    googleSetupNewToggle.setAttribute('aria-label', isPasswordVisible ? 'Hide password' : 'Show password');
+                    googleSetupNewToggle.title = isPasswordVisible ? 'Hide password' : 'Show password';
+                    if (isPasswordVisible) {
+                        if (googleSetupNewIconShow) googleSetupNewIconShow.style.display = 'none';
+                        if (googleSetupNewIconHide) googleSetupNewIconHide.style.display = 'inline';
+                    } else {
+                        if (googleSetupNewIconShow) googleSetupNewIconShow.style.display = 'inline';
+                        if (googleSetupNewIconHide) googleSetupNewIconHide.style.display = 'none';
+                    }
+                    setTimeout(() => googleSetupNewPassword.focus(), 10);
+                });
+
+                googleSetupNewToggle.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        googleSetupNewToggle.click();
+                    }
+                });
+            }
+            
+            // Setup for Google OAuth password setup confirm password field
+            const googleSetupConfirmPassword = document.getElementById('google_setup_confirm_password');
+            const googleSetupConfirmToggle = document.getElementById('toggle-google-password-setup-confirm');
+            const googleSetupConfirmIconShow = googleSetupConfirmToggle?.querySelector('.eye-icon');
+            const googleSetupConfirmIconHide = googleSetupConfirmToggle?.querySelector('.eye-slash-icon');
+
+            if (googleSetupConfirmPassword && googleSetupConfirmToggle) {
+                let isPasswordVisible = false;
+                
+                googleSetupConfirmToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    isPasswordVisible = !isPasswordVisible;
+                    googleSetupConfirmPassword.type = isPasswordVisible ? 'text' : 'password';
+                    googleSetupConfirmToggle.setAttribute('aria-pressed', isPasswordVisible ? 'true' : 'false');
+                    googleSetupConfirmToggle.setAttribute('aria-label', isPasswordVisible ? 'Hide password' : 'Show password');
+                    googleSetupConfirmToggle.title = isPasswordVisible ? 'Hide password' : 'Show password';
+                    if (isPasswordVisible) {
+                        if (googleSetupConfirmIconShow) googleSetupConfirmIconShow.style.display = 'none';
+                        if (googleSetupConfirmIconHide) googleSetupConfirmIconHide.style.display = 'inline';
+                    } else {
+                        if (googleSetupConfirmIconShow) googleSetupConfirmIconShow.style.display = 'inline';
+                        if (googleSetupConfirmIconHide) googleSetupConfirmIconHide.style.display = 'none';
+                    }
+                    setTimeout(() => googleSetupConfirmPassword.focus(), 10);
+                });
+
+                googleSetupConfirmToggle.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        googleSetupConfirmToggle.click();
+                    }
+                });
+            }
         }
 
         // Setup verification form event listeners
@@ -2768,6 +3094,7 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             setupPasswordSetupForm();
             setupGooglePasswordSetupForm();
             setupPersonalInfoForm();
+            setupPersonalEmailVerificationForm();
             
             // Only show login form if no password setup token
             const urlParams = new URLSearchParams(window.location.search);
@@ -2910,7 +3237,7 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
         
         // Hide all forms
         function hideAllForms() {
-            const forms = ['auth-form', 'verification-form', 'forgot-password-form', 'reset-code-form', 'new-password-form', 'password-setup-form', 'google-password-setup-form', 'personal-info-form'];
+            const forms = ['auth-form', 'verification-form', 'forgot-password-form', 'reset-code-form', 'new-password-form', 'password-setup-form', 'google-password-setup-form', 'personal-info-form', 'personal-email-verification-form'];
             forms.forEach(formId => {
                 const form = document.getElementById(formId);
                 if (form) form.style.display = 'none';
@@ -3200,10 +3527,10 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
             }
         }
         
-        // Save personal info function
+        // Save personal info function - now sends verification code
         async function savePersonalInfo(personalEmail, fullName) {
             try {
-                showMessage('Saving personal information...', 'info');
+                showMessage('Sending verification code...', 'info');
                 
                 const formData = new FormData();
                 formData.append('personal_email', personalEmail);
@@ -3218,18 +3545,115 @@ function sendPasswordResetEmail($email, $username, $resetCode) {
                 const data = await response.json();
                 
                 if (data.success) {
-                    showMessage('Personal information saved successfully! Redirecting to dashboard...', 'success');
+                    showMessage(data.message, 'success');
+                    // Show personal email verification form
+                    hideAllForms();
+                    document.getElementById('personal-email-verification-form').style.display = 'block';
+                    document.getElementById('verification_personal_email').value = personalEmail;
+                    document.getElementById('auth-title').textContent = 'Verify Personal Email';
+                } else {
+                    showMessage(data.message || 'Failed to send verification code', 'error');
+                }
+            } catch (error) {
+                showMessage('An error occurred. Please try again later.', 'error');
+                console.error('Save personal info error:', error);
+            }
+        }
+        
+        // Verify personal email function
+        async function verifyPersonalEmail(verificationCode) {
+            try {
+                showMessage('Verifying code...', 'info');
+                
+                const formData = new FormData();
+                formData.append('verification_code', verificationCode);
+                formData.append('ajax_action', 'verify_personal_email');
+                
+                const response = await fetch('/home.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage('Personal email verified successfully! Redirecting to dashboard...', 'success');
                     if (data.redirect) {
                         setTimeout(() => {
                             window.location.href = data.redirect;
                         }, 2000);
                     }
                 } else {
-                    showMessage(data.message || 'Failed to save personal information', 'error');
+                    showMessage(data.message || 'Verification failed', 'error');
                 }
             } catch (error) {
                 showMessage('An error occurred. Please try again later.', 'error');
-                console.error('Save personal info error:', error);
+                console.error('Verify personal email error:', error);
+            }
+        }
+        
+        // Resend personal verification code function
+        async function resendPersonalVerificationCode() {
+            try {
+                showMessage('Resending verification code...', 'info');
+                
+                const formData = new FormData();
+                formData.append('ajax_action', 'resend_personal_verification');
+                
+                const response = await fetch('/home.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showMessage(data.message, 'success');
+                } else {
+                    showMessage(data.message || 'Failed to resend verification code', 'error');
+                }
+            } catch (error) {
+                showMessage('An error occurred. Please try again later.', 'error');
+                console.error('Resend personal verification error:', error);
+            }
+        }
+        
+        // Setup personal email verification form
+        function setupPersonalEmailVerificationForm() {
+            const verificationForm = document.getElementById('personal-email-verification-form');
+            
+            if (verificationForm) {
+                verificationForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const verificationCode = document.getElementById('personal_verification_code').value;
+                    
+                    if (!verificationCode || verificationCode.length !== 4) {
+                        showMessage('Please enter a valid 4-digit verification code', 'error');
+                        return;
+                    }
+                    
+                    await verifyPersonalEmail(verificationCode);
+                });
+            }
+            
+            // Resend code button
+            const resendBtn = document.getElementById('resend-personal-code');
+            if (resendBtn) {
+                resendBtn.addEventListener('click', async () => {
+                    await resendPersonalVerificationCode();
+                });
+            }
+            
+            // Back to personal info link
+            const backLink = document.getElementById('back-to-personal-info');
+            if (backLink) {
+                backLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    hideAllForms();
+                    document.getElementById('personal-info-form').style.display = 'block';
+                    document.getElementById('auth-title').textContent = 'Complete Your Profile';
+                    clearMessage();
+                });
             }
         }
         
