@@ -883,7 +883,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
            
        case 'archive_community_user':
            try {
-               $user_email = $_POST['user_email'] ?? '';
+               error_log("Archive community user action triggered - user_email: " . ($_POST['user_email'] ?? 'not set') . ", action: " . ($_POST['archive_action'] ?? 'not set'));
+               
+               $user_email = trim($_POST['user_email'] ?? '');
                $action = $_POST['archive_action'] ?? 'archive'; // 'archive' or 'unarchive'
                
                if (empty($user_email)) {
@@ -899,6 +901,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                    break;
                }
+               
+               // First, check if user exists and what their current status is
+               $checkStmt = $pdo->prepare("SELECT email, status FROM community_users WHERE email = ?");
+               $checkStmt->execute([$user_email]);
+               $existingUser = $checkStmt->fetch(PDO::FETCH_ASSOC);
+               
+               if (!$existingUser) {
+                   // Try case-insensitive search
+                   error_log("User not found with exact email match, trying case-insensitive search");
+                   $checkStmt = $pdo->prepare("SELECT email, status FROM community_users WHERE LOWER(email) = LOWER(?)");
+                   $checkStmt->execute([$user_email]);
+                   $existingUser = $checkStmt->fetch(PDO::FETCH_ASSOC);
+                   
+                   if (!$existingUser) {
+                       error_log("Archive community user failed: User '$user_email' not found in database");
+                       // List all emails for debugging
+                       $allEmailsStmt = $pdo->query("SELECT email FROM community_users LIMIT 10");
+                       $allEmails = $allEmailsStmt->fetchAll(PDO::FETCH_COLUMN);
+                       error_log("Available emails in database: " . implode(", ", $allEmails));
+                       echo json_encode(['success' => false, 'error' => 'User not found in database']);
+                       break;
+                   }
+                   // Use the actual email from database
+                   $user_email = $existingUser['email'];
+               }
+               
+               error_log("Found user in database. Current status: " . ($existingUser['status'] ?? 'NULL'));
                
                // Toggle the status for community users (1 = active, 0 = archived)
                $newStatus = ($action === 'archive') ? 0 : 1;
