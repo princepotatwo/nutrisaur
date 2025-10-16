@@ -4471,7 +4471,10 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                                 'weight-for-height' => $user['weight-for-height'] ?? '',
                                 'weight-for-age' => $user['weight-for-age'] ?? '',
                                 'weight-for-length' => $user['weight-for-length'] ?? '',
-                                'height-for-age' => $user['height-for-age'] ?? ''
+                                'height-for-age' => $user['height-for-age'] ?? '',
+                                'parent_name' => $user['parent_name'] ?? '',
+                                'parent_email' => $user['parent_email'] ?? '',
+                                'parent_phone' => $user['parent_phone'] ?? ''
                             ]
                         ]);
                     } else {
