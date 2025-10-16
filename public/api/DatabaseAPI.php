@@ -6623,20 +6623,20 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         $updateValues[] = $data['email'];
                     }
                     
-                    // Parent information fields
-                    if (isset($data['parent_name'])) {
+                    // Parent information fields (allow empty values to clear the fields)
+                    if (array_key_exists('parent_name', $data)) {
                         $updateFields[] = "parent_name = ?";
-                        $updateValues[] = $data['parent_name'];
+                        $updateValues[] = $data['parent_name'] ?? '';
                     }
                     
-                    if (isset($data['parent_email'])) {
+                    if (array_key_exists('parent_email', $data)) {
                         $updateFields[] = "parent_email = ?";
-                        $updateValues[] = $data['parent_email'];
+                        $updateValues[] = $data['parent_email'] ?? '';
                     }
                     
-                    if (isset($data['parent_phone'])) {
+                    if (array_key_exists('parent_phone', $data)) {
                         $updateFields[] = "parent_phone = ?";
-                        $updateValues[] = $data['parent_phone'];
+                        $updateValues[] = $data['parent_phone'] ?? '';
                     }
                     
                     // Always update screening_date
