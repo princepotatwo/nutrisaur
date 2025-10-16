@@ -5462,12 +5462,7 @@ header {
                             </button>
                         </div>
                         <div>
-                            <!-- Search bar for community users table -->
-                            <input type="text" id="searchInput" placeholder="Search by name, email, location, or gender..." class="search-input" style="display: block;">
-                            <!-- Search bar for admin users table (only for super admin) -->
-                            <?php if (isset($_SESSION['admin_id']) && $_SESSION['admin_id'] === 'super_admin'): ?>
-                            <input type="text" id="searchInputAdmin" placeholder="Search admin users by ID, username, or email..." class="search-input" style="display: none;">
-                            <?php endif; ?>
+                            <input type="text" id="searchInput" placeholder="Search by name, email, location, or gender..." class="search-input">
                         </div>
                     </div>
 
@@ -5602,11 +5597,11 @@ header {
                                     // Add archive/unarchive button based on status
                                     $userStatus = $user['status'] ?? 'active';
                                     if ($userStatus === 'active') {
-                                        echo '<button class="btn-archive" onclick="archiveUser(\'' . $userIdentifier . '\', \'archive\')" title="Archive User">';
+                                        echo '<button class="btn-archive" onclick="archiveUser(\'' . $userIdentifier . '\', \'archive\', event)" title="Archive User">';
                                         echo 'Archive';
                                         echo '</button>';
                                     } else {
-                                        echo '<button class="btn-unarchive" onclick="archiveUser(\'' . $userIdentifier . '\', \'unarchive\')" title="Unarchive User">';
+                                        echo '<button class="btn-unarchive" onclick="archiveUser(\'' . $userIdentifier . '\', \'unarchive\', event)" title="Unarchive User">';
                                         echo 'Unarchive';
                                         echo '</button>';
                                     }
@@ -7148,18 +7143,6 @@ header {
                 controlRow2.style.display = 'none';
             }
             
-            // Switch search bars - hide community search, show admin search
-            const communitySearch = document.getElementById('searchInput');
-            const adminSearch = document.getElementById('searchInputAdmin');
-            if (communitySearch) {
-                communitySearch.style.display = 'none';
-                communitySearch.value = ''; // Clear the search
-            }
-            if (adminSearch) {
-                adminSearch.style.display = 'block';
-                adminSearch.value = ''; // Clear the search
-            }
-            
             // Fetch users from database and update table
             fetch('/settings.php', {
                 method: 'POST',
@@ -7206,18 +7189,6 @@ header {
                 controlRow2.style.display = 'block';
             }
             
-            // Switch search bars - show community search, hide admin search
-            const communitySearch = document.getElementById('searchInput');
-            const adminSearch = document.getElementById('searchInputAdmin');
-            if (communitySearch) {
-                communitySearch.style.display = 'block';
-                communitySearch.value = ''; // Clear the search
-            }
-            if (adminSearch) {
-                adminSearch.style.display = 'none';
-                adminSearch.value = ''; // Clear the search
-            }
-            
             // Restore the original table structure and data
             console.log('Restoring original community users table');
             
@@ -7257,8 +7228,8 @@ header {
                                 Edit
                             </button>
                             ${(user.status == 1 || !user.status) ? 
-                                `<button class="btn-archive" onclick="archiveUser('${user.email}', 'archive')" title="Archive User">Archive</button>` :
-                                `<button class="btn-unarchive" onclick="archiveUser('${user.email}', 'unarchive')" title="Unarchive User">Unarchive</button>`
+                                `<button class="btn-archive" onclick="archiveUser('${user.email}', 'archive', event)" title="Archive User">Archive</button>` :
+                                `<button class="btn-unarchive" onclick="archiveUser('${user.email}', 'unarchive', event)" title="Unarchive User">Unarchive</button>`
                             }
                             <button class="btn-delete" onclick="deleteUser('${user.email}')" title="Delete User">
                                 Delete
@@ -7335,8 +7306,8 @@ header {
                                     Edit
                                 </button>
                                 ${user.is_active == 1 ? 
-                                    `<button class="btn-archive" onclick="archiveUser(${user.user_id}, 'archive')" title="Archive User">Archive</button>` :
-                                    `<button class="btn-unarchive" onclick="archiveUser(${user.user_id}, 'unarchive')" title="Unarchive User">Unarchive</button>`
+                                    `<button class="btn-archive" onclick="archiveUser(${user.user_id}, 'archive', event)" title="Archive User">Archive</button>` :
+                                    `<button class="btn-unarchive" onclick="archiveUser(${user.user_id}, 'unarchive', event)" title="Unarchive User">Unarchive</button>`
                                 }
                                 <button class="btn-delete" onclick="deleteUser(${user.user_id})" title="Delete User">
                                     Delete
@@ -7380,8 +7351,8 @@ header {
                                     Edit
                                 </button>
                                 ${(user.status === 'active' || !user.status) ? 
-                                    `<button class="btn-archive" onclick="archiveUser('${user.email}', 'archive')" title="Archive User">Archive</button>` :
-                                    `<button class="btn-unarchive" onclick="archiveUser('${user.email}', 'unarchive')" title="Unarchive User">Unarchive</button>`
+                                    `<button class="btn-archive" onclick="archiveUser('${user.email}', 'archive', event)" title="Archive User">Archive</button>` :
+                                    `<button class="btn-unarchive" onclick="archiveUser('${user.email}', 'unarchive', event)" title="Unarchive User">Unarchive</button>`
                                 }
                                 <button class="btn-delete" onclick="deleteUser('${user.email}')" title="Delete User">
                                     Delete
@@ -7429,8 +7400,8 @@ header {
                                 Edit
                             </button>
                             ${user.is_active == 1 ? 
-                                `<button class="btn-archive" onclick="archiveUser(${user.user_id}, 'archive')" title="Archive User">Archive</button>` :
-                                `<button class="btn-unarchive" onclick="archiveUser(${user.user_id}, 'unarchive')" title="Unarchive User">Unarchive</button>`
+                                `<button class="btn-archive" onclick="archiveUser(${user.user_id}, 'archive', event)" title="Archive User">Archive</button>` :
+                                `<button class="btn-unarchive" onclick="archiveUser(${user.user_id}, 'unarchive', event)" title="Unarchive User">Unarchive</button>`
                             }
                             <button class="btn-delete" onclick="deleteUser(${user.user_id})" title="Delete User">
                                 Delete
@@ -7474,8 +7445,8 @@ header {
                                 Edit
                             </button>
                             ${(user.status == 1 || !user.status) ? 
-                                `<button class="btn-archive" onclick="archiveUser('${user.email}', 'archive')" title="Archive User">Archive</button>` :
-                                `<button class="btn-unarchive" onclick="archiveUser('${user.email}', 'unarchive')" title="Unarchive User">Unarchive</button>`
+                                `<button class="btn-archive" onclick="archiveUser('${user.email}', 'archive', event)" title="Archive User">Archive</button>` :
+                                `<button class="btn-unarchive" onclick="archiveUser('${user.email}', 'unarchive', event)" title="Unarchive User">Unarchive</button>`
                             }
                             <button class="btn-delete" onclick="deleteUser('${user.email}')" title="Delete User">
                                 Delete
@@ -8199,7 +8170,7 @@ header {
             });
         }
 
-        function archiveUser(identifier, action = 'archive') {
+        function archiveUser(identifier, action = 'archive', event) {
             console.log('archiveUser called with:', identifier, action);
             if (!identifier || identifier === '') {
                 alert('Invalid user identifier');
@@ -8217,10 +8188,12 @@ header {
             }
 
             // Show loading state
-            const archiveBtn = event.target;
-            const originalText = archiveBtn.innerHTML;
-            archiveBtn.innerHTML = '⏳';
-            archiveBtn.disabled = true;
+            const archiveBtn = event ? event.target : null;
+            const originalText = archiveBtn ? archiveBtn.innerHTML : '';
+            if (archiveBtn) {
+                archiveBtn.innerHTML = '⏳';
+                archiveBtn.disabled = true;
+            }
 
             // Prepare request data based on table type
             let requestData = {};
@@ -8275,7 +8248,7 @@ header {
                                 if (archiveBtn) {
                                     archiveBtn.className = 'btn-unarchive';
                                     archiveBtn.innerHTML = 'Unarchive';
-                                    archiveBtn.setAttribute('onclick', `archiveUser('${identifier}', 'unarchive')`);
+                                    archiveBtn.setAttribute('onclick', `archiveUser('${identifier}', 'unarchive', event)`);
                                     archiveBtn.setAttribute('title', 'Unarchive User');
                                 }
                             } else {
@@ -8284,7 +8257,7 @@ header {
                                 if (unarchiveBtn) {
                                     unarchiveBtn.className = 'btn-archive';
                                     unarchiveBtn.innerHTML = 'Archive';
-                                    unarchiveBtn.setAttribute('onclick', `archiveUser('${identifier}', 'archive')`);
+                                    unarchiveBtn.setAttribute('onclick', `archiveUser('${identifier}', 'archive', event)`);
                                     unarchiveBtn.setAttribute('title', 'Archive User');
                                 }
                             }
@@ -8303,8 +8276,10 @@ header {
             })
             .finally(() => {
                 // Restore button state
-                archiveBtn.innerHTML = originalText;
-                archiveBtn.disabled = false;
+                if (archiveBtn) {
+                    archiveBtn.innerHTML = originalText;
+                    archiveBtn.disabled = false;
+                }
             });
         }
 
@@ -9508,40 +9483,13 @@ header {
         }
 
 
-        // Simple search function for admin users table (super admin only)
-        function searchAdminUsers() {
-            const searchInput = document.getElementById('searchInputAdmin');
-            const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
-            
-            const tableRows = document.querySelectorAll('.user-table tbody tr');
-            let visibleCount = 0;
-            
-            tableRows.forEach(row => {
-                if (searchTerm) {
-                    const rowText = row.textContent.toLowerCase();
-                    if (rowText.includes(searchTerm)) {
-                        row.style.display = '';
-                        visibleCount++;
-                    } else {
-                        row.style.display = 'none';
-                    }
-                } else {
-                    row.style.display = '';
-                    visibleCount++;
-                }
-            });
-            
-            updateVisibleCount(visibleCount);
-        }
-
         function applyAllFilters() {
             const municipalityFilter = document.getElementById('municipalityFilter').value;
             const barangayFilter = document.getElementById('barangayFilter').value;
             const fromDate = document.getElementById('fromDate').value;
             const toDate = document.getElementById('toDate').value;
             const sexFilter = document.getElementById('sexFilter').value;
-            const searchInput = document.getElementById('searchInput');
-            const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             
             const tableRows = document.querySelectorAll('.user-table tbody tr');
             let visibleCount = 0;
@@ -9549,64 +9497,76 @@ header {
             tableRows.forEach(row => {
                 let showRow = true;
                 
-                // Simple search - just search all cells in the row for the search term
+                // Search filter
                 if (searchTerm) {
-                    const rowText = row.textContent.toLowerCase();
-                    if (!rowText.includes(searchTerm)) {
+                    const name = row.cells[0].textContent.toLowerCase();
+                    const email = row.cells[1].textContent.toLowerCase();
+                    const municipality = row.cells[2].textContent.toLowerCase();
+                    const barangay = row.cells[3].textContent.toLowerCase();
+                    const sex = row.cells[4].textContent.toLowerCase();
+                    
+                    if (!name.includes(searchTerm) && 
+                        !email.includes(searchTerm) && 
+                        !municipality.includes(searchTerm) && 
+                        !barangay.includes(searchTerm) && 
+                        !sex.includes(searchTerm)) {
                         showRow = false;
                     }
                 }
                 
-                // Only apply other filters if we're viewing community users table
-                if (row.hasAttribute('data-user-email')) {
-                    // Municipality filter
-                    if (municipalityFilter && row.cells[2].textContent !== municipalityFilter) {
-                        showRow = false;
-                    }
+                // Municipality filter
+                if (municipalityFilter && row.cells[2].textContent !== municipalityFilter) {
+                    showRow = false;
+                }
+                
+                // Barangay filter
+                if (barangayFilter && row.cells[3].textContent !== barangayFilter) {
+                    showRow = false;
+                }
+                
+                // Date range filter (screening date)
+                if (fromDate || toDate) {
+                    // Get the screening date text content, trim whitespace
+                    const screeningDateText = row.cells[6].textContent.trim();
+                    console.log('Date filter - screeningDateText:', screeningDateText, 'fromDate:', fromDate, 'toDate:', toDate);
                     
-                    // Barangay filter
-                    if (barangayFilter && row.cells[3].textContent !== barangayFilter) {
-                        showRow = false;
-                    }
-                    
-                    // Date range filter (screening date)
-                    if (fromDate || toDate) {
-                        // Get the screening date text content, trim whitespace
-                        const screeningDateText = row.cells[6].textContent.trim();
+                    // Check if we have a valid date (not N/A, not empty, not just whitespace)
+                    if (screeningDateText && screeningDateText !== 'N/A' && screeningDateText !== '') {
+                        const screeningDate = new Date(screeningDateText);
+                        console.log('Date filter - parsed screeningDate:', screeningDate);
                         
-                        // Check if we have a valid date (not N/A, not empty, not just whitespace)
-                        if (screeningDateText && screeningDateText !== 'N/A' && screeningDateText !== '') {
-                            const screeningDate = new Date(screeningDateText);
-                            
-                            if (!isNaN(screeningDate.getTime())) {
-                                if (fromDate) {
-                                    const fromDateObj = new Date(fromDate);
-                                    if (screeningDate < fromDateObj) {
-                                        showRow = false;
-                                    }
+                        if (!isNaN(screeningDate.getTime())) {
+                            if (fromDate) {
+                                const fromDateObj = new Date(fromDate);
+                                console.log('Date filter - fromDateObj:', fromDateObj, 'screeningDate < fromDateObj:', screeningDate < fromDateObj);
+                                if (screeningDate < fromDateObj) {
+                                    showRow = false;
                                 }
-                                if (toDate) {
-                                    const toDateObj = new Date(toDate);
-                                    toDateObj.setHours(23, 59, 59, 999); // Include the entire day
-                                    if (screeningDate > toDateObj) {
-                                        showRow = false;
-                                    }
+                            }
+                            if (toDate) {
+                                const toDateObj = new Date(toDate);
+                                toDateObj.setHours(23, 59, 59, 999); // Include the entire day
+                                console.log('Date filter - toDateObj:', toDateObj, 'screeningDate > toDateObj:', screeningDate > toDateObj);
+                                if (screeningDate > toDateObj) {
+                                    showRow = false;
                                 }
-                            } else {
-                                showRow = false;
                             }
                         } else {
-                            // If screening date is N/A or empty, hide the row when date filters are active
-                            if (fromDate || toDate) {
-                                showRow = false;
-                            }
+                            console.log('Date filter - invalid date, hiding row');
+                            showRow = false;
+                        }
+                    } else {
+                        // If screening date is N/A or empty, hide the row when date filters are active
+                        if (fromDate || toDate) {
+                            console.log('Date filter - hiding row with N/A or empty screening date');
+                            showRow = false;
                         }
                     }
-                    
-                    // Sex filter
-                    if (sexFilter && row.cells[4].textContent !== sexFilter) {
-                        showRow = false;
-                    }
+                }
+                
+                // Sex filter
+                if (sexFilter && row.cells[4].textContent !== sexFilter) {
+                    showRow = false;
                 }
                 
                 if (showRow) {
@@ -9665,9 +9625,8 @@ header {
         document.addEventListener('DOMContentLoaded', function() {
             updateFilterBarangayOptions();
             
-            // Don't reload the table - it's already loaded by PHP
-            // Just ensure button text is correct
-            updateTableToggleButton();
+            // Load community users table by default
+            loadCommunityUsersTable();
             
             // Add event listener for municipality changes
             const municipalityFilter = document.getElementById('municipalityFilter');
@@ -9678,19 +9637,16 @@ header {
                 });
             }
             
-            // Add event listener for community users search input
+            // Add event listener for search input
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
-                console.log('✅ Community search input found and attached');
                 searchInput.addEventListener('input', applyAllFilters);
             }
             
-            // Add event listener for admin users search input (super admin only)
-            const searchInputAdmin = document.getElementById('searchInputAdmin');
-            if (searchInputAdmin) {
-                console.log('✅ Admin search input found and attached');
-                searchInputAdmin.addEventListener('input', searchAdminUsers);
-            }
+            // Ensure button text is set correctly after everything loads
+            setTimeout(() => {
+                updateTableToggleButton();
+            }, 100);
         });
 
     </script>
