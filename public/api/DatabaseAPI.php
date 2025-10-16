@@ -4594,6 +4594,9 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'DatabaseAPI.php' || basename($_SERVER
                         'is_pregnant' => ($data['is_pregnant'] ?? 'No') === 'Yes' ? 'Yes' : 'No',
                         'weight' => !empty($data['weight']) ? $data['weight'] : '0',
                         'height' => !empty($data['height']) ? $data['height'] : '0',
+                        'parent_name' => $data['parent_name'] ?? '',
+                        'parent_email' => $data['parent_email'] ?? '',
+                        'parent_phone' => $data['parent_phone'] ?? '',
                         'screening_date' => date('Y-m-d H:i:s')
                     ];
                     
