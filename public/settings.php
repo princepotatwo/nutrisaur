@@ -7433,7 +7433,7 @@ header {
                                 <button class="btn-edit" onclick="editUser('${user.email}')" title="Edit User">
                                     Edit
                                 </button>
-                                ${(user.status === 'active' || !user.status) ? 
+                                ${(user.status == 1 || !user.status) ? 
                                     `<button class="btn-archive" onclick="archiveUser('${user.email}', 'archive', event)" title="Archive User">Archive</button>` :
                                     `<button class="btn-unarchive" onclick="archiveUser('${user.email}', 'unarchive', event)" title="Unarchive User">Unarchive</button>`
                                 }
