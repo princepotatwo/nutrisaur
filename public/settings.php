@@ -9493,94 +9493,64 @@ header {
             tableRows.forEach(row => {
                 let showRow = true;
                 
-                // Determine table type based on the data attributes or column count
-                const isUsersTable = currentTableType === 'users' || row.hasAttribute('data-user-id');
-                const isCommunityTable = currentTableType === 'community_users' || row.hasAttribute('data-user-email');
-                
-                // Search filter - different logic for different table types
+                // Simple search - just search all cells in the row for the search term
                 if (searchTerm) {
-                    if (isUsersTable) {
-                        // Admin users table structure: ID, Username, Email, Verified, Created At, Last Login, ACTIONS
-                        const userId = row.cells[0].textContent.toLowerCase();
-                        const username = row.cells[1].textContent.toLowerCase();
-                        const email = row.cells[2].textContent.toLowerCase();
-                        
-                        if (!userId.includes(searchTerm) && 
-                            !username.includes(searchTerm) && 
-                            !email.includes(searchTerm)) {
-                            showRow = false;
-                        }
-                    } else {
-                        // Community users table structure: NAME, EMAIL, MUNICIPALITY, BARANGAY, SEX, BIRTHDAY, SCREENING DATE, ACTIONS
-                        const name = row.cells[0].textContent.toLowerCase();
-                        const email = row.cells[1].textContent.toLowerCase();
-                        const municipality = row.cells[2].textContent.toLowerCase();
-                        const barangay = row.cells[3].textContent.toLowerCase();
-                        const sex = row.cells[4].textContent.toLowerCase();
-                        
-                        if (!name.includes(searchTerm) && 
-                            !email.includes(searchTerm) && 
-                            !municipality.includes(searchTerm) && 
-                            !barangay.includes(searchTerm) && 
-                            !sex.includes(searchTerm)) {
-                            showRow = false;
-                        }
+                    const rowText = row.textContent.toLowerCase();
+                    if (!rowText.includes(searchTerm)) {
+                        showRow = false;
                     }
                 }
                 
-                // Municipality filter - only applies to community users table
-                if (municipalityFilter && isCommunityTable && row.cells[2].textContent !== municipalityFilter) {
-                    showRow = false;
-                }
-                
-                // Barangay filter - only applies to community users table
-                if (barangayFilter && isCommunityTable && row.cells[3].textContent !== barangayFilter) {
-                    showRow = false;
-                }
-                
-                // Date range filter (screening date) - only applies to community users table
-                if ((fromDate || toDate) && isCommunityTable) {
-                    // Get the screening date text content, trim whitespace
-                    const screeningDateText = row.cells[6].textContent.trim();
-                    console.log('Date filter - screeningDateText:', screeningDateText, 'fromDate:', fromDate, 'toDate:', toDate);
+                // Only apply other filters if we're viewing community users table
+                if (row.hasAttribute('data-user-email')) {
+                    // Municipality filter
+                    if (municipalityFilter && row.cells[2].textContent !== municipalityFilter) {
+                        showRow = false;
+                    }
                     
-                    // Check if we have a valid date (not N/A, not empty, not just whitespace)
-                    if (screeningDateText && screeningDateText !== 'N/A' && screeningDateText !== '') {
-                        const screeningDate = new Date(screeningDateText);
-                        console.log('Date filter - parsed screeningDate:', screeningDate);
+                    // Barangay filter
+                    if (barangayFilter && row.cells[3].textContent !== barangayFilter) {
+                        showRow = false;
+                    }
+                    
+                    // Date range filter (screening date)
+                    if (fromDate || toDate) {
+                        // Get the screening date text content, trim whitespace
+                        const screeningDateText = row.cells[6].textContent.trim();
                         
-                        if (!isNaN(screeningDate.getTime())) {
-                            if (fromDate) {
-                                const fromDateObj = new Date(fromDate);
-                                console.log('Date filter - fromDateObj:', fromDateObj, 'screeningDate < fromDateObj:', screeningDate < fromDateObj);
-                                if (screeningDate < fromDateObj) {
-                                    showRow = false;
+                        // Check if we have a valid date (not N/A, not empty, not just whitespace)
+                        if (screeningDateText && screeningDateText !== 'N/A' && screeningDateText !== '') {
+                            const screeningDate = new Date(screeningDateText);
+                            
+                            if (!isNaN(screeningDate.getTime())) {
+                                if (fromDate) {
+                                    const fromDateObj = new Date(fromDate);
+                                    if (screeningDate < fromDateObj) {
+                                        showRow = false;
+                                    }
                                 }
-                            }
-                            if (toDate) {
-                                const toDateObj = new Date(toDate);
-                                toDateObj.setHours(23, 59, 59, 999); // Include the entire day
-                                console.log('Date filter - toDateObj:', toDateObj, 'screeningDate > toDateObj:', screeningDate > toDateObj);
-                                if (screeningDate > toDateObj) {
-                                    showRow = false;
+                                if (toDate) {
+                                    const toDateObj = new Date(toDate);
+                                    toDateObj.setHours(23, 59, 59, 999); // Include the entire day
+                                    if (screeningDate > toDateObj) {
+                                        showRow = false;
+                                    }
                                 }
+                            } else {
+                                showRow = false;
                             }
                         } else {
-                            console.log('Date filter - invalid date, hiding row');
-                            showRow = false;
-                        }
-                    } else {
-                        // If screening date is N/A or empty, hide the row when date filters are active
-                        if (fromDate || toDate) {
-                            console.log('Date filter - hiding row with N/A or empty screening date');
-                            showRow = false;
+                            // If screening date is N/A or empty, hide the row when date filters are active
+                            if (fromDate || toDate) {
+                                showRow = false;
+                            }
                         }
                     }
-                }
-                
-                // Sex filter - only applies to community users table
-                if (sexFilter && isCommunityTable && row.cells[4].textContent !== sexFilter) {
-                    showRow = false;
+                    
+                    // Sex filter
+                    if (sexFilter && row.cells[4].textContent !== sexFilter) {
+                        showRow = false;
+                    }
                 }
                 
                 if (showRow) {
