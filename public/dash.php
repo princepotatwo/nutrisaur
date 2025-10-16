@@ -13583,7 +13583,7 @@ body.navbar-locked {
                 } else {
                     // Desktop: show desktop navbar, hide mobile top nav
                     if (navbar) navbar.style.display = 'flex';
-                    document.body.style.paddingLeft = '90px';
+                    // Don't set paddingLeft here - let initNavbarHamburgerButton() handle it
                     document.body.style.paddingTop = '0';
                     document.body.style.width = '';
                     document.body.style.maxWidth = '';
@@ -13820,30 +13820,34 @@ body.navbar-locked {
                 if (isMobile) {
                     // Mobile: hide hamburger button
                     hamburgerBtn.style.display = 'none';
-        } else {
+                } else {
                     // Desktop: show hamburger button
                     hamburgerBtn.style.display = 'flex';
                     
-                    // Respect lock state when switching to desktop
-                    const hoverZone = document.getElementById('navbarHoverZone');
-                    if (isNavbarLocked) {
-                        navbar.classList.add('locked');
+                    // Check current navbar state (from classes or localStorage)
+                    const isExpanded = navbar.classList.contains('expanded') || 
+                                      localStorage.getItem('navbarExpanded') === 'true';
+                    
+                    if (isExpanded) {
+                        // Maintain expanded state
                         navbar.classList.add('expanded');
                         navbar.classList.remove('minimized');
                         navbar.style.transform = 'translateX(0)';
                         document.body.style.paddingLeft = '320px';
-                        document.body.classList.add('navbar-locked');
                         
-                        // Hover zone now handled by CSS pseudo-element
+                        // Position hamburger button for expanded state
+                        hamburgerBtn.style.left = '250px';
+                        hamburgerBtn.style.top = '43px';
                     } else {
-                        navbar.classList.remove('locked');
+                        // Maintain minimized state
                         navbar.classList.remove('expanded');
                         navbar.classList.add('minimized');
                         navbar.style.transform = 'translateX(-230px)';
                         document.body.style.paddingLeft = '90px';
-                        document.body.classList.remove('navbar-locked');
                         
-                        // Hover zone now handled by CSS pseudo-element
+                        // Position hamburger button for minimized state
+                        hamburgerBtn.style.left = '25px';
+                        hamburgerBtn.style.top = '50px';
                     }
                 }
             });

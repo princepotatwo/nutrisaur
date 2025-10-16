@@ -6752,6 +6752,32 @@ header {
                 } else {
                     // Desktop: show hamburger button
                     hamburgerBtn.style.display = 'flex';
+                    
+                    // Check current navbar state (from classes or localStorage)
+                    const isExpanded = navbar.classList.contains('expanded') || 
+                                      localStorage.getItem('navbarExpanded') === 'true';
+                    
+                    if (isExpanded) {
+                        // Maintain expanded state
+                        navbar.classList.add('expanded');
+                        navbar.classList.remove('minimized');
+                        navbar.style.transform = 'translateX(0)';
+                        document.body.style.paddingLeft = '320px';
+                        
+                        // Position hamburger button for expanded state
+                        hamburgerBtn.style.left = '250px';
+                        hamburgerBtn.style.top = '43px';
+                    } else {
+                        // Maintain minimized state
+                        navbar.classList.remove('expanded');
+                        navbar.classList.add('minimized');
+                        navbar.style.transform = 'translateX(-230px)';
+                        document.body.style.paddingLeft = '90px';
+                        
+                        // Position hamburger button for minimized state
+                        hamburgerBtn.style.left = '25px';
+                        hamburgerBtn.style.top = '50px';
+                    }
                 }
             });
             
