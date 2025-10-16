@@ -10919,7 +10919,7 @@ header {
                             <button class="food-history-btn warning" onclick="downloadMHOCSVTemplate()">
                                 Download CSV Template
                             </button>
-                            <button class="food-history-btn danger" onclick="deleteAllFilteredMHOFoods()">
+                            <button class="food-history-btn" onclick="deleteAllFilteredMHOFoods()" style="background-color: #dc3545; color: white;">
                                 Delete All
                             </button>
                         </div>
@@ -11413,16 +11413,16 @@ header {
                 if (data.success) {
                     alert(`Successfully deleted ${data.deleted_count} food(s)`);
                     // Reload the manager content
-                    loadManagerContent();
+                    loadManagerFoods();
                 } else {
                     alert('Error deleting foods: ' + (data.error || 'Unknown error'));
-                    loadManagerContent();
+                    loadManagerFoods();
                 }
             })
             .catch(error => {
                 console.error('Error deleting foods:', error);
                 alert('Error deleting foods');
-                loadManagerContent();
+                loadManagerFoods();
             });
         }
         
