@@ -9609,8 +9609,9 @@ header {
         document.addEventListener('DOMContentLoaded', function() {
             updateFilterBarangayOptions();
             
-            // Load community users table by default
-            loadCommunityUsersTable();
+            // Don't reload the table - it's already loaded by PHP
+            // Just ensure button text is correct
+            updateTableToggleButton();
             
             // Add event listener for municipality changes
             const municipalityFilter = document.getElementById('municipalityFilter');
@@ -9624,13 +9625,11 @@ header {
             // Add event listener for search input
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {
+                console.log('Search input event listener attached');
                 searchInput.addEventListener('input', applyAllFilters);
+            } else {
+                console.error('Search input not found!');
             }
-            
-            // Ensure button text is set correctly after everything loads
-            setTimeout(() => {
-                updateTableToggleButton();
-            }, 100);
         });
 
     </script>
