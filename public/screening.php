@@ -7212,6 +7212,17 @@ header {
                 }
             }
             <?php endif; ?>
+            
+            // Check if we should auto-open a user modal from dashboard
+            const urlParams = new URLSearchParams(window.location.search);
+            const viewUser = urlParams.get('view_user');
+            if (viewUser) {
+                console.log('🔍 Auto-opening user modal for:', viewUser);
+                // Small delay to ensure page is fully loaded
+                setTimeout(() => {
+                    viewUserDetails(viewUser);
+                }, 500);
+            }
         });
 
 

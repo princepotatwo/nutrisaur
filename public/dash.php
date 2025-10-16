@@ -13505,12 +13505,13 @@ body.navbar-locked {
                     caseItem.className = `severe-case-item ${cssClass}`;
                     caseItem.style.cursor = 'pointer';
                     
-                    // Add onclick handler to view full details
+                    // Add onclick handler to redirect to screening page with user email
                     console.log('🔍 Setting onclick for severe case:', caseData);
                     console.log('🔍 Case email:', caseData.email);
                     caseItem.onclick = () => {
-                        console.log('🔍 Severe case clicked, email:', caseData.email);
-                        viewSevereCaseDetails(caseData.email);
+                        console.log('🔍 Severe case clicked, redirecting to screening with email:', caseData.email);
+                        // Redirect to screening page with user email parameter
+                        window.location.href = `screening.php?view_user=${encodeURIComponent(caseData.email)}`;
                     };
                     
                     // Debug: Log the CSS class being applied
@@ -13549,64 +13550,6 @@ body.navbar-locked {
             }
         }
         
-        // Function to view severe case details
-        function viewSevereCaseDetails(userEmail) {
-            console.log('🔍 ViewSevereCaseDetails function called for:', userEmail);
-            
-            // Validate userEmail
-            if (!userEmail || userEmail === 'undefined' || userEmail === 'null') {
-                console.error('❌ Invalid userEmail:', userEmail);
-                alert('Error: Invalid user email');
-                return;
-            }
-
-            // Show loading indicator
-            const loadingModal = document.createElement('div');
-            loadingModal.className = 'modal';
-            loadingModal.style.display = 'block';
-            loadingModal.innerHTML = `
-                <div class="modal-content" style="text-align: center; padding: 40px;">
-                    <h3>Loading user details...</h3>
-                    <div style="margin: 20px 0;">
-                        <div style="border: 4px solid #f3f3f3; border-top: 4px solid var(--color-highlight); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto;"></div>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(loadingModal);
-
-            console.log('📡 Fetching user details from API...');
-            
-            // Fetch user details via AJAX using email as identifier
-            fetch('api/DatabaseAPI.php?action=get_community_user_data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email: userEmail })
-            })
-            .then(response => {
-                console.log('📡 API response received');
-                return response.json();
-            })
-            .then(data => {
-                console.log('📡 API response data:', data);
-                // Remove loading modal
-                document.body.removeChild(loadingModal);
-                
-                if (data.success && data.user) {
-                    console.log('✅ User data loaded successfully');
-                    showUserDetailsModal(data.user);
-                } else {
-                    console.error('❌ API error:', data.error || 'Unknown error');
-                    alert('Error loading user details: ' + (data.error || 'Unknown error'));
-                }
-            })
-            .catch(error => {
-                console.error('❌ Fetch error:', error);
-                document.body.removeChild(loadingModal);
-                alert('Error loading user details: ' + error.message);
-            });
-        }
 
         // ===== MODERN MOBILE TOP NAVIGATION SYSTEM =====
         
@@ -14385,204 +14328,7 @@ body.navbar-locked {
         
         // ===== USER DETAILS MODAL FUNCTIONS (from screening.php) =====
         
-        function showUserDetailsModal(userData) {
-            // Remove any existing modals first to prevent duplicates
-            const existingModals = document.querySelectorAll('.user-profile-modal');
-            existingModals.forEach(modal => modal.remove());
-            
-            // Calculate age from birthday if available
-            let ageDisplay = 'N/A';
-            if (userData.birthday) {
-                const birthDate = new Date(userData.birthday);
-                const today = new Date();
-                const age = Math.floor((today - birthDate) / (365.25 * 24 * 60 * 60 * 1000));
-                ageDisplay = `${age} years old`;
-            }
-
-            // Calculate BMI if weight and height are available
-            let bmiDisplay = 'N/A';
-            if (userData.weight && userData.height) {
-                const heightInM = userData.height / 100;
-                const bmi = (userData.weight / (heightInM * heightInM)).toFixed(1);
-                bmiDisplay = bmi;
-            }
-
-            // Format dates
-            const formatDate = (dateString) => {
-                if (!dateString) return 'N/A';
-                const date = new Date(dateString);
-                return date.toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-            };
-
-            // Get pregnancy status display
-            const getPregnancyStatus = (isPregnant) => {
-                if (isPregnant === 'Yes') return 'Pregnant';
-                if (isPregnant === '0' || isPregnant === 0) return 'Not Pregnant';
-                return isPregnant || 'N/A';
-            };
-
-            // Format screening date for subtitle
-            const formatScreeningDate = (dateString) => {
-                if (!dateString) return '';
-                const date = new Date(dateString);
-                return `Screened on ${date.toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                })}`;
-            };
-
-            const modal = document.createElement('div');
-            modal.className = 'modal user-profile-modal';
-            modal.innerHTML = `
-                <div class="modal-content profile-modal-content">
-                    <button class="profile-close-btn" onclick="closeUserModal(this)">
-                        ×
-                    </button>
-                    <div class="profile-header">
-                        <div class="profile-avatar">
-                            <div class="avatar-circle">
-                                <span class="avatar-initials">${(userData.name || 'U').charAt(0).toUpperCase()}</span>
-                            </div>
-                        </div>
-                        <div class="profile-title">
-                            <h2>${userData.name || 'Unknown User'}</h2>
-                            <p class="profile-subtitle">${userData.email || 'No email provided'}</p>
-                            ${userData.screening_date ? `<p class="profile-screening-date">${formatScreeningDate(userData.screening_date)}</p>` : ''}
-                            <div class="profile-badges">
-                                <span class="badge ${userData.sex === 'Male' ? 'badge-blue' : 'badge-pink'}">${userData.sex || 'N/A'}</span>
-                                ${userData.is_pregnant === 'Yes' ? '<span class="badge badge-orange">Pregnant</span>' : ''}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="profile-content">
-                        <div class="profile-grid">
-                            <!-- Personal Information Card -->
-                            <div class="profile-card">
-                                <div class="card-header">
-                                    <h3>Personal Information</h3>
-                                </div>
-                                <div class="card-content">
-                                    <div class="info-row">
-                                        <span class="info-label">Full Name</span>
-                                        <span class="info-value">${userData.name || 'N/A'}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Email Address</span>
-                                        <span class="info-value">${userData.email || 'N/A'}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Date of Birth</span>
-                                        <span class="info-value">${formatDate(userData.birthday)}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Age</span>
-                                        <span class="info-value">${ageDisplay}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Sex</span>
-                                        <span class="info-value">${userData.sex || 'N/A'}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Weight</span>
-                                        <span class="info-value">${userData.weight ? `${userData.weight} kg` : 'N/A'}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Height</span>
-                                        <span class="info-value">${userData.height ? `${userData.height} cm` : 'N/A'}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">BMI</span>
-                                        <span class="info-value">${bmiDisplay}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Pregnancy Status</span>
-                                        <span class="info-value">${getPregnancyStatus(userData.is_pregnant)}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Parent Name</span>
-                                        <span class="info-value">${userData.parent_name || 'N/A'}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Parent Email</span>
-                                        <span class="info-value">${userData.parent_email || 'N/A'}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Parent Contact</span>
-                                        <span class="info-value">${userData.parent_phone || 'N/A'}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Location Information Card -->
-                            <div class="profile-card">
-                                <div class="card-header">
-                                    <h3>Location Details</h3>
-                                </div>
-                                <div class="card-content">
-                                    <div class="info-row">
-                                        <span class="info-label">Municipality</span>
-                                        <span class="info-value">${userData.municipality || 'N/A'}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Barangay</span>
-                                        <span class="info-value">${userData.barangay || 'N/A'}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Progress Tracking Card -->
-                            <div class="profile-card progress-chart-card" style="grid-column: 1 / -1;">
-                                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                                    <h3>Progress Tracking</h3>
-                                    <select id="whoStandardSelector-${userData.email}" onchange="changeProgressChartStandard('${userData.email}', this.value)" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); font-size: 14px;">
-                                        ${getApplicableWHOStandards(userData.birthday)}
-                                    </select>
-                                </div>
-                                <div class="card-content" style="padding-bottom: 20px;">
-                                    <div class="chart-container" style="height: 400px;">
-                                        <canvas id="progressChart-${userData.email}"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            modal.style.display = 'block';
-            
-            // Add animation
-            setTimeout(() => {
-                modal.classList.add('modal-show');
-            }, 10);
-            
-            // Close modal when clicking outside
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    closeUserModal(modal.querySelector('.profile-close-btn'));
-                }
-            });
-
-            // Close with Escape key
-            const handleEscape = (e) => {
-                if (e.key === 'Escape') {
-                    closeUserModal(modal.querySelector('.profile-close-btn'));
-                    document.removeEventListener('keydown', handleEscape);
-                }
-            };
-            document.addEventListener('keydown', handleEscape);
-            
-            // Load progress chart for this user
-            loadUserProgressChart(userData.email);
-        }
+        // Removed showUserDetailsModal - now redirects to screening.php instead
 
         function closeUserModal(button) {
             const modal = button.closest('.modal');
