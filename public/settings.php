@@ -9480,14 +9480,20 @@ header {
 
 
         function applyAllFilters() {
+            console.log('🔍 applyAllFilters called');
             const municipalityFilter = document.getElementById('municipalityFilter').value;
             const barangayFilter = document.getElementById('barangayFilter').value;
             const fromDate = document.getElementById('fromDate').value;
             const toDate = document.getElementById('toDate').value;
             const sexFilter = document.getElementById('sexFilter').value;
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            
+            console.log('🔍 Search term:', searchTerm);
+            console.log('🔍 Search input element:', searchInput);
             
             const tableRows = document.querySelectorAll('.user-table tbody tr');
+            console.log('🔍 Found table rows:', tableRows.length);
             let visibleCount = 0;
             
             tableRows.forEach(row => {
@@ -9624,11 +9630,16 @@ header {
             
             // Add event listener for search input
             const searchInput = document.getElementById('searchInput');
+            console.log('🔍 Attempting to attach search listener. Element:', searchInput);
             if (searchInput) {
-                console.log('Search input event listener attached');
-                searchInput.addEventListener('input', applyAllFilters);
+                console.log('✅ Search input found! Attaching event listener...');
+                searchInput.addEventListener('input', function(e) {
+                    console.log('🔍 Search input event fired! Value:', e.target.value);
+                    applyAllFilters();
+                });
+                console.log('✅ Search input event listener attached successfully');
             } else {
-                console.error('Search input not found!');
+                console.error('❌ Search input not found!');
             }
         });
 
