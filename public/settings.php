@@ -9493,35 +9493,53 @@ header {
             tableRows.forEach(row => {
                 let showRow = true;
                 
-                // Search filter
+                // Determine table type based on the data attributes or column count
+                const isUsersTable = currentTableType === 'users' || row.hasAttribute('data-user-id');
+                const isCommunityTable = currentTableType === 'community_users' || row.hasAttribute('data-user-email');
+                
+                // Search filter - different logic for different table types
                 if (searchTerm) {
-                    const name = row.cells[0].textContent.toLowerCase();
-                    const email = row.cells[1].textContent.toLowerCase();
-                    const municipality = row.cells[2].textContent.toLowerCase();
-                    const barangay = row.cells[3].textContent.toLowerCase();
-                    const sex = row.cells[4].textContent.toLowerCase();
-                    
-                    if (!name.includes(searchTerm) && 
-                        !email.includes(searchTerm) && 
-                        !municipality.includes(searchTerm) && 
-                        !barangay.includes(searchTerm) && 
-                        !sex.includes(searchTerm)) {
-                        showRow = false;
+                    if (isUsersTable) {
+                        // Admin users table structure: ID, Username, Email, Verified, Created At, Last Login, ACTIONS
+                        const userId = row.cells[0].textContent.toLowerCase();
+                        const username = row.cells[1].textContent.toLowerCase();
+                        const email = row.cells[2].textContent.toLowerCase();
+                        
+                        if (!userId.includes(searchTerm) && 
+                            !username.includes(searchTerm) && 
+                            !email.includes(searchTerm)) {
+                            showRow = false;
+                        }
+                    } else {
+                        // Community users table structure: NAME, EMAIL, MUNICIPALITY, BARANGAY, SEX, BIRTHDAY, SCREENING DATE, ACTIONS
+                        const name = row.cells[0].textContent.toLowerCase();
+                        const email = row.cells[1].textContent.toLowerCase();
+                        const municipality = row.cells[2].textContent.toLowerCase();
+                        const barangay = row.cells[3].textContent.toLowerCase();
+                        const sex = row.cells[4].textContent.toLowerCase();
+                        
+                        if (!name.includes(searchTerm) && 
+                            !email.includes(searchTerm) && 
+                            !municipality.includes(searchTerm) && 
+                            !barangay.includes(searchTerm) && 
+                            !sex.includes(searchTerm)) {
+                            showRow = false;
+                        }
                     }
                 }
                 
-                // Municipality filter
-                if (municipalityFilter && row.cells[2].textContent !== municipalityFilter) {
+                // Municipality filter - only applies to community users table
+                if (municipalityFilter && isCommunityTable && row.cells[2].textContent !== municipalityFilter) {
                     showRow = false;
                 }
                 
-                // Barangay filter
-                if (barangayFilter && row.cells[3].textContent !== barangayFilter) {
+                // Barangay filter - only applies to community users table
+                if (barangayFilter && isCommunityTable && row.cells[3].textContent !== barangayFilter) {
                     showRow = false;
                 }
                 
-                // Date range filter (screening date)
-                if (fromDate || toDate) {
+                // Date range filter (screening date) - only applies to community users table
+                if ((fromDate || toDate) && isCommunityTable) {
                     // Get the screening date text content, trim whitespace
                     const screeningDateText = row.cells[6].textContent.trim();
                     console.log('Date filter - screeningDateText:', screeningDateText, 'fromDate:', fromDate, 'toDate:', toDate);
@@ -9560,8 +9578,8 @@ header {
                     }
                 }
                 
-                // Sex filter
-                if (sexFilter && row.cells[4].textContent !== sexFilter) {
+                // Sex filter - only applies to community users table
+                if (sexFilter && isCommunityTable && row.cells[4].textContent !== sexFilter) {
                     showRow = false;
                 }
                 
