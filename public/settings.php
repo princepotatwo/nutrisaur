@@ -281,11 +281,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     
     // Check authentication for AJAX requests
     if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
+        error_log("Settings.php: Authentication failed - no user_id or admin_id in session");
         echo json_encode(['success' => false, 'error' => 'Not authenticated']);
         exit;
     }
     
     $action = $_POST['action'];
+    error_log("Settings.php: POST action received - '$action'");
+    error_log("Settings.php: POST data - " . json_encode($_POST));
     
     switch ($action) {
         case 'update_profile':
@@ -839,10 +842,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
            
        case 'archive_user':
            try {
+               error_log("Archive user action triggered - user_id: " . ($_POST['user_id'] ?? 'not set') . ", action: " . ($_POST['archive_action'] ?? 'not set'));
+               
                $user_id = $_POST['user_id'] ?? '';
                $action = $_POST['archive_action'] ?? 'archive'; // 'archive' or 'unarchive'
                
                if (empty($user_id)) {
+                   error_log("Archive user failed: User ID is empty");
                    echo json_encode(['success' => false, 'error' => 'User ID is required']);
                    break;
                }
@@ -850,22 +856,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                require_once __DIR__ . "/../config.php";
                $pdo = getDatabaseConnection();
                if (!$pdo) {
+                   error_log("Archive user failed: Database connection not available");
                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                    break;
                }
                
                // Toggle the is_active status
                $newStatus = ($action === 'archive') ? 0 : 1;
+               error_log("Updating user $user_id is_active to $newStatus");
                $updateStmt = $pdo->prepare("UPDATE users SET is_active = ? WHERE user_id = ?");
                $result = $updateStmt->execute([$newStatus, $user_id]);
                
                if ($result && $updateStmt->rowCount() > 0) {
                    $message = ($action === 'archive') ? 'User archived successfully' : 'User unarchived successfully';
+                   error_log("Archive user successful: $message");
                    echo json_encode(['success' => true, 'message' => $message]);
                } else {
+                   error_log("Archive user failed: User not found or could not be updated. Rows affected: " . $updateStmt->rowCount());
                    echo json_encode(['success' => false, 'error' => 'User not found or could not be updated']);
                }
            } catch (Exception $e) {
+               error_log("Archive user exception: " . $e->getMessage());
                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
            }
            break;
@@ -876,6 +887,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                $action = $_POST['archive_action'] ?? 'archive'; // 'archive' or 'unarchive'
                
                if (empty($user_email)) {
+                   error_log("Archive community user failed: User email is empty");
                    echo json_encode(['success' => false, 'error' => 'User email is required']);
                    break;
                }
@@ -883,22 +895,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                require_once __DIR__ . "/../config.php";
                $pdo = getDatabaseConnection();
                if (!$pdo) {
+                   error_log("Archive community user failed: Database connection not available");
                    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
                    break;
                }
                
                // Toggle the status for community users (1 = active, 0 = archived)
                $newStatus = ($action === 'archive') ? 0 : 1;
+               error_log("Updating community user $user_email status to $newStatus");
                $updateStmt = $pdo->prepare("UPDATE community_users SET status = ? WHERE email = ?");
                $result = $updateStmt->execute([$newStatus, $user_email]);
                
                if ($result && $updateStmt->rowCount() > 0) {
                    $message = ($action === 'archive') ? 'Community user archived successfully' : 'Community user unarchived successfully';
+                   error_log("Archive community user successful: $message");
                    echo json_encode(['success' => true, 'message' => $message]);
                } else {
+                   error_log("Archive community user failed: User not found or could not be updated. Rows affected: " . $updateStmt->rowCount());
                    echo json_encode(['success' => false, 'error' => 'Community user not found or could not be updated']);
                }
            } catch (Exception $e) {
+               error_log("Archive community user exception: " . $e->getMessage());
                echo json_encode(['success' => false, 'error' => $e->getMessage()]);
            }
            break;
