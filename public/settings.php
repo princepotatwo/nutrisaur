@@ -861,9 +861,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                    break;
                }
                
+               // Check current status first
+               $checkStmt = $pdo->prepare("SELECT is_active FROM users WHERE user_id = ?");
+               $checkStmt->execute([$user_id]);
+               $currentUser = $checkStmt->fetch(PDO::FETCH_ASSOC);
+               
+               if (!$currentUser) {
+                   error_log("Archive user failed: User not found");
+                   echo json_encode(['success' => false, 'error' => 'User not found']);
+                   break;
+               }
+               
+               $currentStatus = isset($currentUser['is_active']) ? (string)$currentUser['is_active'] : '1';
+               error_log("Found user. Current is_active: " . $currentStatus);
+               
                // Toggle the is_active status
                $newStatus = ($action === 'archive') ? 0 : 1;
-               error_log("Updating user $user_id is_active to $newStatus");
+               
+               // Check if status is already what we want
+               if ($currentStatus == (string)$newStatus) {
+                   $message = ($action === 'archive') ? 
+                       'User is already archived' : 
+                       'User is already active';
+                   error_log("No update needed: $message");
+                   echo json_encode(['success' => true, 'message' => $message]);
+                   break;
+               }
+               
+               error_log("Updating user $user_id is_active from $currentStatus to $newStatus");
                $updateStmt = $pdo->prepare("UPDATE users SET is_active = ? WHERE user_id = ?");
                $result = $updateStmt->execute([$newStatus, $user_id]);
                
@@ -927,11 +952,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                    $user_email = $existingUser['email'];
                }
                
-               error_log("Found user in database. Current status: " . ($existingUser['status'] ?? 'NULL'));
+               $currentStatus = isset($existingUser['status']) ? (string)$existingUser['status'] : '1';
+               error_log("Found user in database. Current status: " . $currentStatus);
                
                // Toggle the status for community users (1 = active, 0 = archived)
                $newStatus = ($action === 'archive') ? 0 : 1;
-               error_log("Updating community user $user_email status to $newStatus");
+               
+               // Check if status is already what we want
+               if ($currentStatus == (string)$newStatus) {
+                   $message = ($action === 'archive') ? 
+                       'User is already archived' : 
+                       'User is already active';
+                   error_log("No update needed: $message");
+                   echo json_encode(['success' => true, 'message' => $message]);
+                   break;
+               }
+               
+               error_log("Updating community user $user_email status from $currentStatus to $newStatus");
                $updateStmt = $pdo->prepare("UPDATE community_users SET status = ? WHERE email = ?");
                $result = $updateStmt->execute([$newStatus, $user_email]);
                
