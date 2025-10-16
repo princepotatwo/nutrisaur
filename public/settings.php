@@ -8276,56 +8276,43 @@ header {
             }))
             .then(data => {
                 if (data.success) {
-                    // Update the button in the row
-                    let row;
-                    if (currentTableType === 'users') {
-                        row = document.querySelector(`tr[data-user-id="${identifier}"]`);
-                    } else {
-                        row = document.querySelector(`tr[data-user-email="${identifier}"]`);
-                    }
-                    
-                    if (row) {
-                        const actionCell = row.querySelector('.action-buttons');
-                        if (actionCell) {
-                            // Update the archive button based on new status
-                            if (action === 'archive') {
-                                // Replace archive button with unarchive button
-                                const archiveBtn = actionCell.querySelector('.btn-archive');
-                                if (archiveBtn) {
-                                    archiveBtn.className = 'btn-unarchive';
-                                    archiveBtn.innerHTML = 'Unarchive';
-                                    archiveBtn.setAttribute('onclick', `archiveUser('${identifier}', 'unarchive', event)`);
-                                    archiveBtn.setAttribute('title', 'Unarchive User');
-                                }
-                            } else {
-                                // Replace unarchive button with archive button
-                                const unarchiveBtn = actionCell.querySelector('.btn-unarchive');
-                                if (unarchiveBtn) {
-                                    unarchiveBtn.className = 'btn-archive';
-                                    unarchiveBtn.innerHTML = 'Archive';
-                                    unarchiveBtn.setAttribute('onclick', `archiveUser('${identifier}', 'archive', event)`);
-                                    unarchiveBtn.setAttribute('title', 'Archive User');
-                                }
-                            }
+                    // Update the button directly
+                    if (archiveBtn) {
+                        if (action === 'archive') {
+                            // Change to unarchive button
+                            archiveBtn.className = 'btn-unarchive';
+                            archiveBtn.innerHTML = 'Unarchive';
+                            archiveBtn.setAttribute('onclick', `archiveUser('${identifier}', 'unarchive', event)`);
+                            archiveBtn.setAttribute('title', 'Unarchive User');
+                        } else {
+                            // Change to archive button
+                            archiveBtn.className = 'btn-archive';
+                            archiveBtn.innerHTML = 'Archive';
+                            archiveBtn.setAttribute('onclick', `archiveUser('${identifier}', 'archive', event)`);
+                            archiveBtn.setAttribute('title', 'Archive User');
                         }
+                        archiveBtn.disabled = false;
                     }
                     
                     const successMessage = action === 'archive' ? 'User archived successfully!' : 'User unarchived successfully!';
                     showNotification(successMessage, 'success');
                 } else {
+                    // Restore button on error
+                    if (archiveBtn) {
+                        archiveBtn.innerHTML = originalText;
+                        archiveBtn.disabled = false;
+                    }
                     showNotification('Error: ' + (data.message || data.error || 'Unknown error'), 'error');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showNotification('Error: ' + error.message, 'error');
-            })
-            .finally(() => {
-                // Restore button state
+                // Restore button on error
                 if (archiveBtn) {
                     archiveBtn.innerHTML = originalText;
                     archiveBtn.disabled = false;
                 }
+                showNotification('Error: ' + error.message, 'error');
             });
         }
 
