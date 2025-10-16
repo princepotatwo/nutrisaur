@@ -36,6 +36,9 @@ try {
         case 'bulk_import_foods':
             bulkImportFoods($pdo, $postData);
             break;
+        case 'delete_all_template_foods':
+            deleteAllTemplateFoods($pdo, $postData);
+            break;
         default:
             echo json_encode(['success' => false, 'error' => 'Invalid action']);
     }
@@ -291,6 +294,41 @@ function bulkImportFoods($pdo, $data) {
         // Rollback transaction on error
         $pdo->rollback();
         echo json_encode(['success' => false, 'error' => 'Transaction failed: ' . $e->getMessage()]);
+    }
+}
+
+function deleteAllTemplateFoods($pdo, $data) {
+    $classification = $data['classification'] ?? '';
+    $duration = $data['duration'] ?? 0;
+    
+    if (empty($classification) || empty($duration)) {
+        echo json_encode(['success' => false, 'error' => 'Missing classification or duration']);
+        return;
+    }
+    
+    // Count how many foods will be deleted
+    $countSql = "SELECT COUNT(*) as count FROM mho_food_templates 
+                 WHERE classification = ? AND plan_duration = ?";
+    $countStmt = $pdo->prepare($countSql);
+    $countStmt->execute([$classification, $duration]);
+    $countResult = $countStmt->fetch(PDO::FETCH_ASSOC);
+    $deletedCount = $countResult['count'];
+    
+    // Delete all foods matching the classification and duration
+    $sql = "DELETE FROM mho_food_templates 
+            WHERE classification = ? AND plan_duration = ?";
+    
+    $stmt = $pdo->prepare($sql);
+    $result = $stmt->execute([$classification, $duration]);
+    
+    if ($result) {
+        echo json_encode([
+            'success' => true, 
+            'message' => "Successfully deleted all foods for $classification ($duration days)",
+            'deleted_count' => $deletedCount
+        ]);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'Failed to delete foods']);
     }
 }
 ?>

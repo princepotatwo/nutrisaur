@@ -10919,6 +10919,9 @@ header {
                             <button class="food-history-btn warning" onclick="downloadMHOCSVTemplate()">
                                 Download CSV Template
                             </button>
+                            <button class="food-history-btn danger" onclick="deleteAllFilteredMHOFoods()">
+                                Delete All
+                            </button>
                         </div>
                     </div>
                     
@@ -11370,6 +11373,57 @@ header {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+        
+        function deleteAllFilteredMHOFoods() {
+            const whoStandard = document.getElementById('manager-who-standard').value;
+            const classification = document.getElementById('manager-classification').value;
+            const duration = document.getElementById('manager-duration').value;
+            
+            if (!whoStandard || !classification || !duration) {
+                alert('Please select WHO standard, classification, and duration first');
+                return;
+            }
+            
+            const combinedClassification = `${whoStandard}-${classification}`;
+            
+            // Confirm deletion
+            if (!confirm(`Are you sure you want to delete ALL foods for ${combinedClassification} (${duration} days)?\n\nThis action cannot be undone!`)) {
+                return;
+            }
+            
+            // Show loading state
+            const managerContent = document.getElementById('manager-content');
+            managerContent.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--color-text);"><div class="loading-spinner"></div><p>Deleting all foods...</p></div>';
+            
+            // Send delete request to backend API
+            fetch('/api/mho_food_manager_api.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'delete_all_template_foods',
+                    classification: combinedClassification,
+                    duration: duration
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Successfully deleted ${data.deleted_count} food(s)`);
+                    // Reload the manager content
+                    loadManagerContent();
+                } else {
+                    alert('Error deleting foods: ' + (data.error || 'Unknown error'));
+                    loadManagerContent();
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting foods:', error);
+                alert('Error deleting foods');
+                loadManagerContent();
+            });
         }
         
         function showMHOImportCSVModal() {
